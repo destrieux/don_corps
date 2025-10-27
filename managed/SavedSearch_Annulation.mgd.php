@@ -1,0 +1,171 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'SavedSearch_Annulation',
+    'entity' => 'SavedSearch',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Annulation',
+        'label' => E::ts('Annulation'),
+        'api_entity' => 'Contact',
+        'api_params' => [
+          'version' => 4,
+          'select' => [
+            'id',
+            'Promesse_de_don.N_de_don',
+            'contact_sub_type:label',
+            'Compl_m_nt_tat_civil.Civilit_user:label',
+            'first_name',
+            'last_name',
+            'Annulation.N_annulation',
+            'Annulation.Date_d_annulation',
+          ],
+          'orderBy' => [],
+          'where' => [
+            [
+              'contact_sub_type:name',
+              'CONTAINS',
+              'Donateur',
+            ],
+            [
+              'OR',
+              [
+                [
+                  'Annulation.Date_d_annulation',
+                  'IS NOT EMPTY',
+                ],
+                [
+                  'Annulation.N_annulation',
+                  'IS NOT EMPTY',
+                ],
+              ],
+            ],
+          ],
+          'groupBy' => [],
+          'join' => [],
+          'having' => [],
+        ],
+        'description' => E::ts('Donneurs annulés ; en principe tous anonymes'),
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Annulation_Group_Annulation_32',
+    'entity' => 'Group',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Annulation_32',
+        'title' => E::ts('annulations (incluant anonymes)'),
+        'description' => E::ts('Donneurs ayant révoqué leur consentement : suppression immédiate de toutes les données à l\'exclusion du numéro de carte qui ne peut être réutilisé'),
+        'saved_search_id.name' => 'Annulation',
+        'group_type:name' => ['Mailing List', 'Access Control'],
+        'frontend_title' => E::ts('annulatons non DCD'),
+        'frontend_description' => E::ts('Donneurs ayant révoqué leur consentement : suppression immédiate de toutes les données à l\'exclusion du numéro de carte qui ne peut être réutilisé'),
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Annulation_SearchDisplay_Annulation_non_d_c_d_s_Table_1',
+    'entity' => 'SearchDisplay',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Annulation_non_d_c_d_s_Table_1',
+        'label' => E::ts('Annulés'),
+        'saved_search_id.name' => 'Annulation',
+        'type' => 'table',
+        'settings' => [
+          'description' => E::ts('Annulations'),
+          'sort' => [
+            ['last_name', 'ASC'],
+            ['first_name', 'ASC'],
+          ],
+          'limit' => 50,
+          'pager' => [],
+          'placeholder' => 5,
+          'columns' => [
+            [
+              'type' => 'field',
+              'key' => 'Compl_m_nt_tat_civil.Civilit_user:label',
+              'dataType' => 'String',
+              'label' => E::ts('Civilité'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Promesse_de_don.N_de_don',
+              'dataType' => 'String',
+              'label' => E::ts('N° de don'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'first_name',
+              'dataType' => 'String',
+              'label' => E::ts('Prénom'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'last_name',
+              'dataType' => 'String',
+              'label' => E::ts('Nom de famille'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+              'rewrite' => '',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Annulation.N_annulation',
+              'dataType' => 'String',
+              'label' => E::ts('N° annulation'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Annulation.Date_d_annulation',
+              'dataType' => 'Date',
+              'label' => E::ts('Date d\'annulation'),
+              'sortable' => TRUE,
+            ],
+          ],
+          'actions' => TRUE,
+          'classes' => ['table', 'table-striped', 'table-bordered'],
+          'headerCount' => TRUE,
+          'actions_display_mode' => 'menu',
+        ],
+      ],
+      'match' => [
+        'saved_search_id',
+        'name',
+      ],
+    ],
+  ],
+];

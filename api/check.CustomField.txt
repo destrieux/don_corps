@@ -1,0 +1,97 @@
+[
+    {
+        "new_id": 21588,
+        "street": "L'Aumone",
+        "old_contact_id": 5163
+    },
+    {
+        "new_id": 15038,
+        "street": "Rocheboit",
+        "old_contact_id": 5164
+    },
+    {
+        "new_id": 19899,
+        "street": "160, Rue Travers Baudelin",
+        "old_contact_id": 5165
+    },
+    {
+        "new_id": 22466,
+        "street": "92, Bld de Chateaudun",
+        "old_contact_id": 5167
+    },
+    {
+        "new_id": 23722,
+        "street": "Mess s\/off.  Bat 273",
+        "old_contact_id": 5168
+    },
+    {
+        "new_id": 16072,
+        "street": "14, rue Pierre Loti",
+        "old_contact_id": 5169
+    },
+    {
+        "new_id": 16073,
+        "street": "14, rue Pierre Loti",
+        "old_contact_id": 5170
+    },
+    {
+        "new_id": 16340,
+        "street": "51, Rue de la Couture",
+        "old_contact_id": 5171
+    },
+    {
+        "new_id": 15405,
+        "street": "56, rue de Sologne",
+        "old_contact_id": 5172
+    },
+    {
+        "new_id": 16119,
+        "street": "73, route de Sandillon",
+        "old_contact_id": 5173
+    },
+    {
+        "new_id": 19942,
+        "street": "148, Bld Tonnell\u00e9",
+        "old_contact_id": 5174
+    },
+    {
+        "new_id": 14421,
+        "street": "8, rue de la Garenne",
+        "old_contact_id": 5176
+    },
+    {
+        "new_id": 14423,
+        "street": "8, rue de la Garenne",
+        "old_contact_id": 5177
+    },
+    {
+        "new_id": 13462,
+        "street": "140\/55 Rue de Vauguaid",
+        "old_contact_id": 5178
+    },
+    {
+        "new_id": 20161,
+        "street": "46, bld de la Ville",
+        "old_contact_id": 5179
+    },
+    {
+        "new_id": 27246,
+        "street": "4, Rue de Languedoc",
+        "old_contact_id": 5180
+    },
+    {
+        "new_id": 17093,
+        "street": "162 bis, Rue St Nicolas",
+        "old_contact_id": 5181
+    },
+    {
+        "new_id": 26937,
+        "street": "8, Rue Jean-Jacques Sabathier",
+        "old_contact_id": 5182
+    },
+    {
+        "new_id": 17173,
+        "street": "1, place du March\u00e9",
+        "old_contact_id": 5184
+    }
+]

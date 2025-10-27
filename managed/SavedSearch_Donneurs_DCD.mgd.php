@@ -1,0 +1,173 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'SavedSearch_Donneurs_DCD',
+    'entity' => 'SavedSearch',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Donneurs_DCD',
+        'label' => E::ts('Donneurs DCD'),
+        'api_entity' => 'Contact',
+        'api_params' => [
+          'version' => 4,
+          'select' => [
+            'Promesse_de_don.N_de_don',
+            'display_name',
+            'birth_date',
+            'age_years',
+            'deceased_date',
+            'Prise_en_charge_au_d_c_s.Date_d_arriv_e_au_CDC',
+            'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+            'Devenir_du_corps.devenir_effectif_du_corps:label',
+            'Devenir_du_corps.Date_op_rations_fun_raires',
+            'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires:label',
+            'id',
+          ],
+          'orderBy' => [],
+          'where' => [
+            [
+              'contact_sub_type:name',
+              'CONTAINS',
+              'Donateur',
+            ],
+            [
+              'OR',
+              [
+                ['is_deceased', '=', TRUE],
+                ['deceased_date', 'IS NOT EMPTY'],
+                [
+                  'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+                  'IS NOT EMPTY',
+                ],
+              ],
+            ],
+          ],
+          'groupBy' => [],
+          'join' => [],
+          'having' => [],
+        ],
+        'description' => E::ts('Donneurs décédés'),
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Donneurs_DCD_SearchDisplay_Donneurs_DCD',
+    'entity' => 'SearchDisplay',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Donneurs_DCD',
+        'label' => E::ts('Donneurs DCD'),
+        'saved_search_id.name' => 'Donneurs_DCD',
+        'type' => 'table',
+        'settings' => [
+          'description' => E::ts('Donneurs décédés'),
+          'sort' => [
+            ['deceased_date', 'DESC'],
+          ],
+          'limit' => 50,
+          'pager' => [],
+          'placeholder' => 5,
+          'columns' => [
+            [
+              'type' => 'field',
+              'key' => 'Promesse_de_don.N_de_don',
+              'dataType' => 'String',
+              'label' => E::ts('N° de don'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'display_name',
+              'dataType' => 'String',
+              'label' => E::ts('Nom'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'birth_date',
+              'dataType' => 'Date',
+              'label' => E::ts('Date de naissance'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'deceased_date',
+              'dataType' => 'Date',
+              'label' => E::ts('Date du décès'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+              'dataType' => 'String',
+              'label' => E::ts('N° de décès'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Devenir_du_corps.devenir_effectif_du_corps:label',
+              'dataType' => 'String',
+              'label' => E::ts('Opération funéraire réalisée'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Devenir_du_corps.Date_op_rations_fun_raires',
+              'dataType' => 'Date',
+              'label' => E::ts('Date opérations funéraires'),
+              'sortable' => TRUE,
+              'cssRules' => [],
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires:label',
+              'dataType' => 'Boolean',
+              'label' => E::ts('Date approximative'),
+              'sortable' => TRUE,
+            ],
+          ],
+          'actions' => TRUE,
+          'classes' => ['table', 'table-striped'],
+          'headerCount' => TRUE,
+        ],
+      ],
+      'match' => [
+        'saved_search_id',
+        'name',
+      ],
+    ],
+  ],
+];

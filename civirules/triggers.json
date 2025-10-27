@@ -1,0 +1,11 @@
+[
+    {
+      "name": "changed_corps",
+      "label": "Modification du n° de corps",
+      "object_name": "Contact",
+      "op": "edit",
+      "class_name": "CRM_DonCorps_CivirulesTriggers_ChangedCorpsField",
+      "cron": "0"
+    }
+  ]
+  

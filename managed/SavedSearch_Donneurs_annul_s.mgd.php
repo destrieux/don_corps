@@ -1,0 +1,184 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'SavedSearch_Donneurs_annul_s',
+    'entity' => 'SavedSearch',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Donneurs_annul_s',
+        'label' => E::ts('Donneurs annulés sans les donneurs purgés placés en archive'),
+        'api_entity' => 'Contact',
+        'api_params' => [
+          'version' => 4,
+          'select' => [
+            'id',
+            'Promesse_de_don.N_de_don',
+            'display_name',
+            'Annulation.N_annulation',
+            'Annulation.Date_d_annulation',
+            'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+          ],
+          'orderBy' => [],
+          'where' => [
+            [
+              'contact_sub_type:name',
+              'CONTAINS',
+              'Donateur',
+            ],
+            [
+              'OR',
+              [
+                [
+                  'Annulation.Date_d_annulation',
+                  'IS NOT EMPTY',
+                ],
+                [
+                  'Annulation.N_annulation',
+                  'IS NOT EMPTY',
+                ],
+              ],
+            ],
+            [
+              'groups:name',
+              'NOT IN',
+              ['Archives_61'],
+            ],
+          ],
+          'groupBy' => [],
+          'join' => [],
+          'having' => [],
+        ],
+        'description' => E::ts('Donneurs annulés : anonymisation immédiate - Les donneurs déjà annulés (dans le groupe "Archives" sont exclus de la purge)'),
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Donneurs_annul_s_Group_dons_annul_s_37',
+    'entity' => 'Group',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'dons_annul_s_37',
+        'title' => E::ts('dons annulés sans donneurs en archive deja purges'),
+        'description' => E::ts('Donneurs annulés : anonymisation immédiate'),
+        'saved_search_id.name' => 'Donneurs_annul_s',
+        'group_type' => [],
+        'frontend_title' => E::ts('dons annulés'),
+        'frontend_description' => E::ts('Donneurs annulés : anonymisation immédiate'),
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Donneurs_annul_s_SearchDisplay_Donneurs_annul_s',
+    'entity' => 'SearchDisplay',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Donneurs_annul_s',
+        'label' => E::ts('Donneurs annulés'),
+        'saved_search_id.name' => 'Donneurs_annul_s',
+        'type' => 'table',
+        'settings' => [
+          'description' => E::ts('Donneurs annulés à purger'),
+          'sort' => [
+            [
+              'Annulation.N_annulation',
+              'DESC',
+            ],
+          ],
+          'limit' => 50,
+          'pager' => [],
+          'placeholder' => 5,
+          'columns' => [
+            [
+              'type' => 'field',
+              'key' => 'Promesse_de_don.N_de_don',
+              'dataType' => 'String',
+              'label' => E::ts('Promesse de don: N° de don'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'display_name',
+              'dataType' => 'String',
+              'label' => E::ts('Nom'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Annulation.N_annulation',
+              'dataType' => 'String',
+              'label' => E::ts('N° annulation'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Annulation.Date_d_annulation',
+              'dataType' => 'Date',
+              'label' => E::ts('Date d\'annulation'),
+              'sortable' => TRUE,
+              'cssRules' => [],
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+              'dataType' => 'String',
+              'label' => E::ts('N° de décès'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+          ],
+          'actions' => TRUE,
+          'classes' => ['table', 'table-striped'],
+          'headerCount' => TRUE,
+        ],
+      ],
+      'match' => [
+        'saved_search_id',
+        'name',
+      ],
+    ],
+  ],
+];

@@ -1,0 +1,378 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'CustomGroup_Ant_c_dents_m_dicaux',
+    'entity' => 'CustomGroup',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Ant_c_dents_m_dicaux',
+        'title' => E::ts('Antécédents médicaux'),
+        'extends' => 'Individual',
+        'extends_entity_column_value' => ['Donateur'],
+        'weight' => 3,
+        'created_date' => '2021-04-18 19:51:35',
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'CustomGroup_Ant_c_dents_m_dicaux_CustomField_Ant_c_dents_m_dico_chirurgicaux',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'Ant_c_dents_m_dicaux',
+        'name' => 'Ant_c_dents_m_dico_chirurgicaux',
+        'label' => E::ts('Antécédents médico-chirurgicaux'),
+        'data_type' => 'Memo',
+        'html_type' => 'TextArea',
+        'is_searchable' => TRUE,
+        'attributes' => 'rows=4, cols=60',
+        'note_columns' => 100,
+        'note_rows' => 4,
+        'column_name' => 'ant_c_dents_m_dico_chirurgicaux_23',
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
+  [
+    'name' => 'CustomGroup_Ant_c_dents_m_dicaux_CustomField_Cause_du_d_c_s_si_connue',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'Ant_c_dents_m_dicaux',
+        'name' => 'Cause_du_d_c_s_si_connue',
+        'label' => E::ts('Cause du décès si connue'),
+        'html_type' => 'Text',
+        'text_length' => 255,
+        'note_columns' => 60,
+        'note_rows' => 4,
+        'column_name' => 'cause_du_d_c_s_si_connue_150',
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_stimulateur_pile_20210418195347',
+    'entity' => 'OptionGroup',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'stimulateur_pile_20210418195347',
+        'title' => E::ts('Stimulateur à pile'),
+        'data_type' => 'String',
+        'is_reserved' => FALSE,
+        'option_value_fields' => ['name', 'label', 'description'],
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_stimulateur_pile_20210418195347_OptionValue_Cardiaque_pace_maker_',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'stimulateur_pile_20210418195347',
+        'label' => E::ts('Cardiaque (pace maker)'),
+        'value' => '1',
+        'name' => 'Cardiaque_pace_maker_',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_stimulateur_pile_20210418195347_OptionValue_M_dullaire',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'stimulateur_pile_20210418195347',
+        'label' => E::ts('Médullaire'),
+        'value' => '2',
+        'name' => 'M_dullaire',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_stimulateur_pile_20210418195347_OptionValue_C_r_bral',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'stimulateur_pile_20210418195347',
+        'label' => E::ts('Cérébral'),
+        'value' => '3',
+        'name' => 'C_r_bral',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_stimulateur_pile_20210418195347_OptionValue_V_sical',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'stimulateur_pile_20210418195347',
+        'label' => E::ts('Vésical'),
+        'value' => '4',
+        'name' => 'V_sical',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'CustomGroup_Ant_c_dents_m_dicaux_CustomField_Stimulateur_pile',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'Ant_c_dents_m_dicaux',
+        'name' => 'Stimulateur_pile',
+        'label' => E::ts('Stimulateur à pile'),
+        'html_type' => 'CheckBox',
+        'is_searchable' => TRUE,
+        'text_length' => 20,
+        'note_columns' => 60,
+        'note_rows' => 4,
+        'column_name' => 'stimulateur_pile_24',
+        'option_group_id.name' => 'stimulateur_pile_20210418195347',
+        'serialize' => 1,
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible',
+    'entity' => 'OptionGroup',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'title' => E::ts('Antécédents médicaux :: Pathologie cible'),
+        'data_type' => 'Int',
+        'is_reserved' => FALSE,
+        'option_value_fields' => ['name', 'label', 'description'],
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_athrophie_multisyst_mique',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - athrophie multisystémique'),
+        'value' => '4',
+        'name' => 'SNC_athrophie_multisyst_mique',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_AVC',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - AVC'),
+        'value' => '5',
+        'name' => 'SNC_AVC',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Demence_Alzheimer',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Demence Alzheimer'),
+        'value' => '1',
+        'name' => 'SNC_Demence_Alzheimer',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Demence_autre',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Demence autre'),
+        'value' => '2',
+        'name' => 'SNC_Demence_autre',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Maladie_de_Parkinson',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Maladie de Parkinson'),
+        'value' => '3',
+        'name' => 'SNC_Maladie_de_Parkinson',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Paralysie_supranucl_aire',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Paralysie supranucléaire'),
+        'value' => '7',
+        'name' => 'SNC_Paralysie_supranucl_aire',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Tumeur',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Tumeur'),
+        'value' => '6',
+        'name' => 'SNC_Tumeur',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'CustomGroup_Ant_c_dents_m_dicaux_CustomField_Pathologie_cible',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'Ant_c_dents_m_dicaux',
+        'name' => 'Pathologie_cible',
+        'label' => E::ts('Pathologie cible'),
+        'data_type' => 'Int',
+        'html_type' => 'Select',
+        'is_searchable' => TRUE,
+        'text_length' => 255,
+        'note_columns' => 60,
+        'note_rows' => 4,
+        'column_name' => 'pathologie_cible_151',
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'serialize' => 1,
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
+];

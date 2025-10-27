@@ -1,0 +1,142 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'SavedSearch_Anonymis_s_par_la_purge',
+    'entity' => 'SavedSearch',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Anonymis_s_par_la_purge',
+        'label' => E::ts('Anonymisés par la purge'),
+        'api_entity' => 'Contact',
+        'api_params' => [
+          'version' => 4,
+          'select' => [
+            'id',
+            'last_name',
+            'first_name',
+            'contact_sub_type:label',
+            'Promesse_de_don.N_de_don',
+            'Annulation.N_annulation',
+            'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+            'Ant_c_dents_m_dicaux.Ant_c_dents_m_dico_chirurgicaux',
+          ],
+          'orderBy' => [],
+          'where' => [
+            ['last_name', '=', 'ANONYMISE'],
+          ],
+          'groupBy' => [],
+          'join' => [],
+          'having' => [],
+        ],
+        'description' => E::ts('Liste des contacts ayant été anonymisés par les purges'),
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Anonymis_s_par_la_purge_SearchDisplay_Anonymis_s_par_la_purge',
+    'entity' => 'SearchDisplay',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Anonymis_s_par_la_purge',
+        'label' => E::ts('Anonymisés par la purge'),
+        'saved_search_id.name' => 'Anonymis_s_par_la_purge',
+        'type' => 'table',
+        'settings' => [
+          'description' => E::ts('Contacts anonymisés par la purge. Le motif est dans une note.'),
+          'sort' => [
+            ['sort_name', 'ASC'],
+          ],
+          'limit' => 50,
+          'pager' => [],
+          'placeholder' => 5,
+          'columns' => [
+            [
+              'type' => 'field',
+              'key' => 'id',
+              'dataType' => 'Integer',
+              'label' => E::ts('Id. de contact'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'last_name',
+              'dataType' => 'String',
+              'label' => E::ts('Nom'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'html',
+              'key' => 'first_name',
+              'dataType' => 'String',
+              'label' => E::ts('Prénom'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'contact_sub_type:label',
+              'dataType' => 'String',
+              'label' => E::ts('Type de contact'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Promesse_de_don.N_de_don',
+              'dataType' => 'String',
+              'label' => E::ts('N° de don'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Annulation.N_annulation',
+              'dataType' => 'String',
+              'label' => E::ts('N° annulation'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+              'dataType' => 'String',
+              'label' => E::ts('N° de décès'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Ant_c_dents_m_dicaux.Ant_c_dents_m_dico_chirurgicaux',
+              'dataType' => 'Text',
+              'label' => E::ts('Antécédents médicaux: Antécédents médico-chirurgicaux'),
+              'sortable' => TRUE,
+            ],
+          ],
+          'actions' => TRUE,
+          'classes' => ['table', 'table-striped'],
+          'headerCount' => TRUE,
+        ],
+      ],
+      'match' => [
+        'saved_search_id',
+        'name',
+      ],
+    ],
+  ],
+];

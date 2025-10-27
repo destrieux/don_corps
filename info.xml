@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<extension key="don_corps" type="module">
+  <file>don_corps</file>
+  <name>don_corps</name>
+  <description>FIXME</description>
+  <license>AGPL-3.0</license>
+  <authors>
+    <author>
+      <name>Christophe Destrieux</name>
+      <email>christophe.destrieux@univ-tours.fr</email>
+      <role>Maintainer</role>
+    </author>
+  </authors>
+  <requires>
+    <!-- <ext>frenchpostcodes</ext> Pas utilisée car probleme de taille dynamique ds blocs et erreur si modificationchamp bloc perso de contact layout-->
+    <ext>de.systopia.civioffice</ext>
+    <ext>org.civicoop.civirules</ext>
+    <ext>org.civicoop.civiruleslogger</ext>
+    <ext>org.civicoop.documents</ext>
+    <ext>org.civicoop.emailapi</ext>
+    <ext>org.civicrm.afform_admin</ext>
+    <ext>org.civicrm.contactlayout</ext>
+    <ext>sktokens</ext>
+  </requires>
+  <urls>
+    <url desc="Main Extension Page">https://FIXME</url>
+    <url desc="Documentation">https://FIXME</url>
+    <url desc="Support">https://FIXME</url>
+    <url desc="Licensing">https://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2024-12-28</releaseDate>
+  <version>1.0.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>5.74</ver>
+  </compatibility>
+  <comments>This is a new, undeveloped module</comments>
+  <classloader>
+    <psr0 prefix="CRM_" path="."/>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
+  <civix>
+    <namespace>CRM/DonCorps</namespace>
+    <format>25.01.1</format>
+    <angularModule>crmDonCorps</angularModule>
+  </civix>
+  <mixins>
+    <mixin>mgd-php@1.0.0</mixin>
+    <mixin>setting-php@1.0.0</mixin>
+    <mixin>smarty@1.0.3</mixin>
+  </mixins>
+</extension>

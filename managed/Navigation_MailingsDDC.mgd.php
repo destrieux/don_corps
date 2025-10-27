@@ -1,0 +1,263 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'Navigation_MailingsDDC',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Mailings'),
+        'name' => 'MailingsDDC',
+        'icon' => 'crm-i fa-envelope-o',
+        'permission' => [
+          'access CiviMail',
+          'create mailings',
+          'approve mailings',
+          'schedule mailings',
+          'send SMS',
+        ],
+        'permission_operator' => 'OR',
+        'has_separator' => NULL,
+        'weight' => 53,
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_New_Mailing',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Nouveau Mailing'),
+        'name' => 'New Mailing',
+        'url' => 'civicrm/mailing/send?reset=1',
+        'permission' => [
+          'accéder à CiviMail',
+          'create mailings',
+        ],
+        'permission_operator' => 'OR',
+        'parent_id.name' => 'MailingsDDC',
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Draft_and_Unscheduled_Mailings',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Brouillons de Mailings'),
+        'name' => 'Draft and Unscheduled Mailings',
+        'url' => 'civicrm/mailing/browse/unscheduled?reset=1&scheduled=false',
+        'permission' => [
+          'accéder à CiviMail',
+          'create mailings',
+          'schedule mailings',
+        ],
+        'permission_operator' => 'OR',
+        'parent_id.name' => 'MailingsDDC',
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Scheduled_and_Sent_Mailings',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Mailings envoyés'),
+        'name' => 'Scheduled and Sent Mailings',
+        'url' => 'civicrm/mailing/browse/scheduled?reset=1&scheduled=true',
+        'permission' => [
+          'accéder à CiviMail',
+          'approve mailings',
+          'create mailings',
+          'schedule mailings',
+        ],
+        'permission_operator' => 'OR',
+        'parent_id.name' => 'MailingsDDC',
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Archived_Mailings',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Mailings archivés'),
+        'name' => 'Archived Mailings',
+        'url' => 'civicrm/mailing/browse/archived?reset=1',
+        'permission' => [
+          'accéder à CiviMail',
+          'create mailings',
+        ],
+        'permission_operator' => 'OR',
+        'parent_id.name' => 'MailingsDDC',
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Mod_les_de_Message',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Modèles de Message'),
+        'name' => 'Modèles de Message',
+        'url' => 'civicrm/admin/messageTemplates?reset=1',
+        'permission' => [
+          'modifier les modèles de messages de processus système',
+          'edit message templates',
+          'edit user-driven message templates',
+        ],
+        'permission_operator' => 'OR',
+        'parent_id.name' => 'MailingsDDC',
+        'has_separator' => 2,
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Ent_tes_Pieds_de_pages_et_messages_automatiques',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Entêtes, Pieds de pages et messages automatiques'),
+        'name' => 'Entêtes, Pieds de pages et messages automatiques',
+        'url' => 'civicrm/admin/component?reset=1',
+        'permission' => [
+          'Administrer CiviCRM',
+          'access CiviMail',
+        ],
+        'permission_operator' => 'AND',
+        'parent_id.name' => 'MailingsDDC',
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Adresses_courriel_d_exp_dition',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Adresses courriel d\'expédition'),
+        'name' => 'Adresses courriel d\'expédition',
+        'url' => 'civicrm/admin/options/from_email_address?reset=1',
+        'permission' => [
+          'Administrer CiviCRM',
+        ],
+        'permission_operator' => 'AND',
+        'parent_id.name' => 'MailingsDDC',
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_New_SMS',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Nouveau/Nouvelle SMS'),
+        'name' => 'New SMS',
+        'url' => 'civicrm/sms/send?reset=1',
+        'permission' => ['envoyer SMS'],
+        'permission_operator' => 'AND',
+        'parent_id.name' => 'MailingsDDC',
+        'is_active' => FALSE,
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Find_Mass_SMS',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Cherche Mass SMS'),
+        'name' => 'Find Mass SMS',
+        'url' => 'civicrm/mailing/browse?reset=1&sms=1',
+        'permission' => ['envoyer SMS'],
+        'permission_operator' => 'AND',
+        'parent_id.name' => 'MailingsDDC',
+        'is_active' => FALSE,
+        'has_separator' => 1,
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_New_A_B_Test',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Nouveau/Nouvelle A/B Test'),
+        'name' => 'New A/B Test',
+        'url' => 'civicrm/a/#/abtest/new',
+        'permission' => [
+          'accéder à CiviMail',
+        ],
+        'permission_operator' => 'AND',
+        'parent_id.name' => 'MailingsDDC',
+        'is_active' => FALSE,
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
+    'name' => 'Navigation_MailingsDDC_Navigation_Manage_A_B_Tests',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Manage A/B Tests'),
+        'name' => 'Manage A/B Tests',
+        'url' => 'civicrm/a/#/abtest',
+        'permission' => [
+          'accéder à CiviMail',
+        ],
+        'permission_operator' => 'AND',
+        'parent_id.name' => 'MailingsDDC',
+        'is_active' => FALSE,
+        'has_separator' => 1,
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+];

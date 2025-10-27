@@ -1,0 +1,290 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'UFGroup_name_and_address',
+    'entity' => 'UFGroup',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'name_and_address',
+        'group_type' => ['Donateur', 'Contact'],
+        'title' => E::ts('Inscription donateur'),
+        'frontend_title' => E::ts('Inscription donateur'),
+        'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_1',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'first_name',
+        'is_active' => FALSE,
+        'is_required' => TRUE,
+        'label' => E::ts('Prénom'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_2',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'last_name',
+        'is_active' => FALSE,
+        'is_required' => TRUE,
+        'label' => E::ts('Nom de famille'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_3',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'street_address',
+        'is_active' => FALSE,
+        'location_type_id.name' => 'Home',
+        'label' => E::ts('Rue (domicile)'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_4',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'city',
+        'is_active' => FALSE,
+        'location_type_id.name' => 'Home',
+        'label' => E::ts('Ville (domicile)'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_5',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'postal_code',
+        'is_active' => FALSE,
+        'location_type_id.name' => 'Home',
+        'label' => E::ts('Code postal (domicile)'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_6',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'country',
+        'is_active' => FALSE,
+        'location_type_id.name' => 'Home',
+        'label' => E::ts('Pays (domicile)'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_7',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'state_province',
+        'is_active' => FALSE,
+        'location_type_id.name' => 'Home',
+        'label' => E::ts('Subdivision Pays (État/région/province) (domicile)'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_8',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+        'is_required' => TRUE,
+        'visibility' => 'Public Pages and Listings',
+        'in_selector' => TRUE,
+        'label' => E::ts('Civilité'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_9',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'last_name',
+        'is_required' => TRUE,
+        'visibility' => 'Public Pages',
+        'in_selector' => TRUE,
+        'label' => E::ts('Nom de famille'),
+        'field_type' => 'Donateur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_10',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'first_name',
+        'is_required' => TRUE,
+        'visibility' => 'Public Pages',
+        'in_selector' => TRUE,
+        'label' => E::ts('Prénom'),
+        'field_type' => 'Donateur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_11',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'nick_name',
+        'visibility' => 'Public Pages and Listings',
+        'in_selector' => TRUE,
+        'label' => E::ts('Nom de naissance'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_12',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'birth_date',
+        'is_required' => TRUE,
+        'visibility' => 'Public Pages',
+        'in_selector' => TRUE,
+        'label' => E::ts('Date de naissance'),
+        'field_type' => 'Donateur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_13',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name:name' => 'Promesse_de_don.Centre_de_don',
+        'is_required' => TRUE,
+        'visibility' => 'Public Pages and Listings',
+        'in_selector' => TRUE,
+        'label' => E::ts('Centre de don'),
+        'field_type' => 'Donateur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_14',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name:name' => 'Promesse_de_don.N_de_don',
+        'is_required' => TRUE,
+        'help_post' => E::ts('37#AAAA-NNNNN
+AAAA: année
+NNNNN: numéro (5 chiffres)'),
+        'help_pre' => E::ts('37#AAAA-NNNNN
+AAAA: année
+NNNNN: numéro (5 chiffres)'),
+        'visibility' => 'Public Pages and Listings',
+        'in_selector' => TRUE,
+        'label' => E::ts('N° de don'),
+        'field_type' => 'Donateur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_15',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
+        'field_name:name' => 'Promesse_de_don.Date_du_don',
+        'is_required' => TRUE,
+        'visibility' => 'Public Pages and Listings',
+        'in_selector' => TRUE,
+        'label' => E::ts('Date du don'),
+        'field_type' => 'Donateur',
+      ],
+    ],
+  ],
+];

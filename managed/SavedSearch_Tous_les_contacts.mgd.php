@@ -1,0 +1,191 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'SavedSearch_Tous_les_contacts',
+    'entity' => 'SavedSearch',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Tous_les_contacts',
+        'label' => E::ts('Tous les contacts'),
+        'api_entity' => 'Contact',
+        'api_params' => [
+          'version' => 4,
+          'select' => [
+            'last_name',
+            'first_name',
+            'contact_sub_type:label',
+            'birth_date',
+            'deceased_date',
+            'Promesse_de_don.Centre_de_don:label',
+            'Promesse_de_don.N_de_don',
+            'Annulation.N_annulation',
+            'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+            'Devenir_du_corps.Date_op_rations_fun_raires',
+            'Contact_Custom_Utilisation_du_corps_entity_id_01.N_de_pi_ce_ou_de_corps',
+            'display_name',
+            'sort_name',
+            'id',
+          ],
+          'orderBy' => [],
+          'where' => [
+            [
+              'OR',
+              [
+                [
+                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Type_de_poi_ce_3:name',
+                  'IS EMPTY',
+                ],
+                [
+                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Type_de_poi_ce_3:name',
+                  'CONTAINS',
+                  'Corps_entier_tronc',
+                ],
+              ],
+            ],
+          ],
+          'groupBy' => [],
+          'join' => [
+            [
+              'Custom_Utilisation_du_corps AS Contact_Custom_Utilisation_du_corps_entity_id_01',
+              'LEFT',
+              [
+                'id',
+                '=',
+                'Contact_Custom_Utilisation_du_corps_entity_id_01.entity_id',
+              ],
+            ],
+          ],
+          'having' => [],
+        ],
+        'description' => E::ts('Affiche tous les individus de la base (donneurs, personnels, proches, demandeurs)'),
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Tous_les_contacts_SearchDisplay_Tous_les_contacts_Table_1',
+    'entity' => 'SearchDisplay',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Tous_les_contacts_Table_1',
+        'label' => E::ts('Tous les contacts Table 1'),
+        'saved_search_id.name' => 'Tous_les_contacts',
+        'type' => 'table',
+        'settings' => [
+          'description' => E::ts(''),
+          'sort' => [
+            ['last_name', 'ASC'],
+            ['first_name', 'ASC'],
+          ],
+          'limit' => 50,
+          'pager' => [],
+          'placeholder' => 5,
+          'columns' => [
+            [
+              'type' => 'field',
+              'key' => 'sort_name',
+              'dataType' => 'String',
+              'label' => E::ts('Nom'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'contact_sub_type:label',
+              'dataType' => 'String',
+              'label' => E::ts('Type de contact'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'birth_date',
+              'dataType' => 'Date',
+              'label' => E::ts('Date de naissance'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'deceased_date',
+              'dataType' => 'Date',
+              'label' => E::ts('Date de décès'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Promesse_de_don.Centre_de_don:label',
+              'dataType' => 'Integer',
+              'label' => E::ts('Centre de don'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Promesse_de_don.N_de_don',
+              'dataType' => 'String',
+              'label' => E::ts('N° de don'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Annulation.N_annulation',
+              'dataType' => 'String',
+              'label' => E::ts('N° annulation'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Prise_en_charge_au_d_c_s.N_de_d_c_s',
+              'dataType' => 'String',
+              'label' => E::ts('N° de décès'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Devenir_du_corps.Date_op_rations_fun_raires',
+              'dataType' => 'Date',
+              'label' => E::ts('Date opérations funéraires'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Contact_Custom_Utilisation_du_corps_entity_id_01.N_de_pi_ce_ou_de_corps',
+              'dataType' => 'String',
+              'label' => E::ts('Code Barres du corps'),
+              'sortable' => TRUE,
+            ],
+          ],
+          'actions' => TRUE,
+          'classes' => ['table', 'table-striped'],
+          'headerCount' => TRUE,
+          'button' => NULL,
+        ],
+      ],
+      'match' => [
+        'saved_search_id',
+        'name',
+      ],
+    ],
+  ],
+];
