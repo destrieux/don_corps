@@ -27,6 +27,7 @@ return [
             'Contact_RelationshipCache_Contact_01.address_primary.street_address',
             'Contact_RelationshipCache_Contact_01.email_greeting_display',
             'Contact_RelationshipCache_Contact_01.postal_greeting_display',
+            'id',
           ],
           'orderBy' => [],
           'where' => [

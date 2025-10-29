@@ -79,7 +79,7 @@ function purge_help()
   echo "                  date de restitution du corps ou des cendres"."\n";
   echo "  -Group        : supprime les groupes du contact et le rattache au groupe archive"."\n";
   echo "  -Event        : supprime les evenements auxquels le contact est inscrit"."\n";
-  echo "\n";
+  echo "\n"; 
 
   } // fin definition fonction purge_help
 
@@ -126,11 +126,9 @@ $today = date("Y-m-d H:i:s"); // utilisé pour horodatage
     $grp_id = $row['id'];
   };
 
-  if ($grp_id)
+  if (isset($grp_id)){
     echo "\n"."Traitement Groupe :".$grp."\n";
-
-
-  else {
+  }else {
     echo "\n"."Le groupe :".$grp." n'existe pas"."\n"."\n";
     purge_help();
     return;
@@ -139,15 +137,24 @@ $today = date("Y-m-d H:i:s"); // utilisé pour horodatage
   // récupère les variables à supprimer
   $numargs = func_num_args();
   unset($suppr_list_array);    // vide la table des variables à supprimer
+  $supp_contact = 0;
+  $mod_contact = 0;
+  $tag_atcd = 0;
+  $supp_usage = 0;
+  $supp_adresses = 0;
+  $supp_docs = 0;
+  $supp_relats = 0;
+  $supp_group =0;
+  $supp_event =0;
+
+
 //  print_r($suppr_list_array);
   for ($i = 1; $i < $numargs; $i++) {
       $arg = func_get_arg($i);
-      $supp_contact = 0;
-      $mod_contact = 0;
+
 //      echo $i." : ".$arg."\n"; // debug
 
         switch ($arg) {
-
           case 'Delete':
             echo "    - Suppression totale des contacts"."\n";
             $supp_contact = 1;
@@ -184,16 +191,14 @@ $today = date("Y-m-d H:i:s"); // utilisé pour horodatage
           case 'ATCD':
             echo "    - Suppression antécédents"."\n";
             $mod_contact = 1;
+            $tag_atcd = 1;
             $suppr_list_array["Ant_c_dents_m_dicaux.Ant_c_dents_m_dico_chirurgicaux"] = "";
             $suppr_list_array["Ant_c_dents_m_dicaux.Cause_du_d_c_s_si_connue"] = "";
             $suppr_list_array["Arriv_e_du_corps_new.Signataire_certificat_de_d_c_s"] = "";
             $suppr_list_array["Ant_c_dents_m_dicaux.Stimulateur_pile"] = "";
+            $suppr_list_array["Ant_c_dents_m_dicaux.Pathologie_cible:name"] = "";         
             break;
 
-          case 'ATCDnoProt':
-            echo "    - Suppression antécédents en l'absence de protocole"."\n";
-            $mod_atcd_noProt = 1;
-            break;
 
           case 'Choix':
             echo "    - Suppression choix exprimés sur déclaration de don"."\n";
@@ -201,13 +206,12 @@ $today = date("Y-m-d H:i:s"); // utilisé pour horodatage
             $suppr_list_array["Promesse_de_don.Refus_personne_referente"] = "";
             $suppr_list_array["Promesse_de_don.Devenir_souhait_"] = "";
 
-//       CES TROIS CHAMPS ONT ETE MODIFIES APRES INSTALLATION LYON 1/4/24
-//            $suppr_list_array["Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie"] = "";
-//            $suppr_list_array["Promesse_de_don.Souhait_lecture_nom"] = "";
-//            $suppr_list_array["Promesse_de_don.Souhiat_affichage_st_le"] = "";
-            $suppr_list_array["Promesse_de_don.Pr_venir_la_perosnne_r_f_rente"] = "";
+            //       CES TROIS CHAMPS ONT ETE MODIFIES APRES INSTALLATION LYON 1/4/24
+            $suppr_list_array["Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie"] = "";
+            $suppr_list_array["Promesse_de_don.Souhiat_affichage_st_le"] = "";
+            //$suppr_list_array["Promesse_de_don.Pr_venir_la_perosnne_r_f_rente"] = "";
             $suppr_list_array["Promesse_de_don.Souhait_lecture_nom"] = "";
-            $suppr_list_array["Promesse_de_don.Souait_affichage_sur_st_le"] = "";
+            //$suppr_list_array["Promesse_de_don.Souait_affichage_sur_st_le"] = "";
             break;
 
           case 'DC':
@@ -299,6 +303,7 @@ $today = date("Y-m-d H:i:s"); // utilisé pour horodatage
 echo "\n";
 
 
+
 // Suppression des contacts
 if ($supp_contact == 1){
 
@@ -382,7 +387,7 @@ foreach ($result as $contact) {
       ]);
   }
 
-
+//print_r($suppr_list_array);
 
   // Modification table contact
     if ($mod_contact == 1){
@@ -395,7 +400,31 @@ foreach ($result as $contact) {
         ],
         'checkPermissions' => FALSE,
       ]);
-    } // fin modification table contact
+
+      if ($tag_atcd==1){  // si les ATCD sonnt modifies : mise tag 'ATCD_Purges'
+
+        $entityTags = civicrm_api4('EntityTag', 'get', [   // on regarde si ce contact a déja le tag ATCD Purges
+          'where' => [
+            ['entity_table', '=', 'civicrm_contact'],
+            ['entity_id', '=', $id],
+            ['tag_id:name', '=', 'ATCD Purges'],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        if(!isset($entityTags[0])){  // si le tag ATCD Purges n'est pas mis
+            $results = civicrm_api4('EntityTag', 'create', [  // on le met pour éviter purges itératives
+              'values' => [
+              'entity_table' => 'civicrm_contact',
+              'entity_id' => $id,
+              'tag_id:name' => 'ATCD Purges',
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+        } // fin de verification / creation tag
+      }
+
+  } // fin modification table contact
 
   // Destruction coordonnées de ce contact
     if($supp_adresses == 1){
@@ -493,7 +522,8 @@ foreach ($result as $contact) {
 
       // si $tag_id non nul, le tag est déja mis pas
 
-      if(!$tag_id){  // si le tag n'est pas mis
+      //if(!$tag_id){  // si le tag n'est pas mis
+      if(!isset($tag_id)){  // si le tag n'est pas mis
           $results = civicrm_api4('EntityTag', 'create', [  // Tag le contact pour éviter purges itératives
             'values' => [
              'entity_table' => 'civicrm_contact',
@@ -561,67 +591,6 @@ foreach ($result as $contact) {
         'checkPermissions' => FALSE,
       ]);
    	} // fin Destruction des inscriptions à des evenements pour ce contact
-
-
-   	// Destruction des ATCD seulement en l'absence de protocole ex vivo
-   	if ($mod_atcd_noProt == 1){
-   	  echo ", antécédents en l'absence de protocole";
-
-      $results = civicrm_api4('Contact', 'update', [
-        'values' => [
-          'Ant_c_dents_m_dicaux.Ant_c_dents_m_dico_chirurgicaux' => "",
-          'Ant_c_dents_m_dicaux.Cause_du_d_c_s_si_connue' => "",
-          'Arriv_e_du_corps_new.Signataire_certificat_de_d_c_s' => "",
-          'Ant_c_dents_m_dicaux.Stimulateur_pile' => "",
-        ],
-
-        'where' => [
-          ['id', '=', $id],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-        // mise tag 'ATCD_Purges'
-
-
-      $entityTags = civicrm_api4('EntityTag', 'get', [
-        'where' => [
-          ['entity_table', '=', 'civicrm_contact'],
-          ['entity_id', '=', $id],
-          ['tag_id:name', '=', 'ATCD Purges'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-#      print_r($entityTags);
-unset ($tag_id);
-      foreach ($entityTags as $row) {
-        $tag_id = $row['id'];
-      }
-      // si $tag_id non nul, le tag est déja mis
-
-
-      if(!$tag_id){  // si le tag n'est pas mis
-          $results = civicrm_api4('EntityTag', 'create', [  // Tag le contact pour éviter purges itératives
-            'values' => [
-             'entity_table' => 'civicrm_contact',
-             'entity_id' => $id,
-             'tag_id:name' => 'ATCD Purges',
-             ],
-            'checkPermissions' => FALSE,
-          ]);
-
-      } // fin de verification / creation tag
-
-
-
-
-
-
-
-
-    }// Fn de Destruction des ATCD seulement en l'absence de protocole ex vivo
-
 
 
  		// crée une note informant des modifications
@@ -815,7 +784,7 @@ purge('demandeurs plus un an', 'Delete');
 
  //purge('Op funeraires de plus de 5 ans','Anon','Genre','DN','LieuN','Coord','Doc','Relat','ATCDnoProt','Choix','DC','DateDC','Accueil','Usage','Opp_fun','Group','Event');
 
- purge('Op funeraires de plus de 5 ans','Anon','DN','LieuN','Coord','Doc','Relat','Choix','DC','DateDC','Accueil','Usage','Opp_fun','Group','Event');
+ purge('Op funeraires de plus de 5 ans','Anon','DN','LieuN','Coord','Doc','Relat','Choix','DC','DateDC','Accueil','Opp_fun','Group','Event');
 
 // FIN DE LA PURGE DES DONNEURS 5 ANS APRES OPERATIONS FUNERAIRES #####################################################
 
@@ -828,7 +797,7 @@ purge('demandeurs plus un an', 'Delete');
 //    "Le numéro de carte de donneur est rendu anonyme. Il ne peut être réutilisé."
 //
 
-purge('dons annulés','Anon','Genre','DN','LieuN','Coord','Doc','Relat','ATCD','Choix','Group','Event');
+purge('dons annulés sans donneurs en archive deja purges','Anon','Genre','DN','LieuN','Coord','Doc','Relat','ATCD','Choix','Group','Event');
 // FIN DE LA PURGE DES DONNEURS ANNULES ###############################################################################
 
 
@@ -930,7 +899,7 @@ purge('don plus 120 ans','Anon','Genre','DN','LieuN','Coord','Doc','Relat','ATCD
 //    La fonction purge supprime les ATCD et pose un tag 'ATCD Purges'
 //
 
-purge('ATCD Anonymises sans protocole','ATCDnoProt');
+purge('Archives sans protocole in ni ex vivo','ATCD','Usage',);
 // FIN DE LA PURGE DES DONNEURS DE PLUS DE 120 ANS ##############################################################################
 
 

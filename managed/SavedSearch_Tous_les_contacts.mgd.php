@@ -26,40 +26,14 @@ return [
             'Annulation.N_annulation',
             'Prise_en_charge_au_d_c_s.N_de_d_c_s',
             'Devenir_du_corps.Date_op_rations_fun_raires',
-            'Contact_Custom_Utilisation_du_corps_entity_id_01.N_de_pi_ce_ou_de_corps',
             'display_name',
             'sort_name',
             'id',
           ],
           'orderBy' => [],
-          'where' => [
-            [
-              'OR',
-              [
-                [
-                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Type_de_poi_ce_3:name',
-                  'IS EMPTY',
-                ],
-                [
-                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Type_de_poi_ce_3:name',
-                  'CONTAINS',
-                  'Corps_entier_tronc',
-                ],
-              ],
-            ],
-          ],
+          'where' => [],
           'groupBy' => [],
-          'join' => [
-            [
-              'Custom_Utilisation_du_corps AS Contact_Custom_Utilisation_du_corps_entity_id_01',
-              'LEFT',
-              [
-                'id',
-                '=',
-                'Contact_Custom_Utilisation_du_corps_entity_id_01.entity_id',
-              ],
-            ],
-          ],
+          'join' => [],
           'having' => [],
         ],
         'description' => E::ts('Affiche tous les individus de la base (donneurs, personnels, proches, demandeurs)'),
@@ -168,18 +142,12 @@ return [
               'label' => E::ts('Date opérations funéraires'),
               'sortable' => TRUE,
             ],
-            [
-              'type' => 'field',
-              'key' => 'Contact_Custom_Utilisation_du_corps_entity_id_01.N_de_pi_ce_ou_de_corps',
-              'dataType' => 'String',
-              'label' => E::ts('Code Barres du corps'),
-              'sortable' => TRUE,
-            ],
           ],
           'actions' => TRUE,
           'classes' => ['table', 'table-striped'],
           'headerCount' => TRUE,
           'button' => NULL,
+          'actions_display_mode' => 'menu',
         ],
       ],
       'match' => [

@@ -85,7 +85,7 @@ if(isset ($savedSearches[0])){
 $groups = civicrm_api4('Group', 'get', [
     'select' => [
       'id',
-      'titre',
+      'title',
     ],
     'where' => [
       ['title', '=', 'Archives'],
@@ -93,9 +93,11 @@ $groups = civicrm_api4('Group', 'get', [
     'checkPermissions' => FALSE,
   ]);
 
+
+
   if(isset ($groups[0])){
     foreach ($groups as $group){
-      echo "exporting Search ".$group['titre']." (".$group['id'].")".PHP_EOL;
+      echo "exporting Search ".$group['title']." (".$group['id'].")".PHP_EOL;
       $cmd = "civix export Group ".$group['id'];
       echo $cmd.PHP_EOL;
       exec($cmd, $output, $retval);

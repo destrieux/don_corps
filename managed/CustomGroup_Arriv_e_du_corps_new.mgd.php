@@ -15,7 +15,7 @@ return [
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
         'style' => 'Tab',
-        'weight' => 5,
+        'weight' => 4,
         'collapse_adv_display' => TRUE,
         'created_date' => '2024-05-19 18:11:04',
       ],

@@ -6,8 +6,8 @@ $contact_default = 2; // id du contact par defaut lorsque le contact origine a d
 $custom = '/Applications/MAMP/htdocs/37_test/wp-content/uploads/civicrm/custom';   // repertoire contenant les pdf
 $custom_orig = $custom."/custom_orig";                                             // repertoire contenant les pdf de la base originale (cux qui sont utilisés sont  déplacés vers $custom)
 
-$check_custom_field = 0;
-$check_option_values =0 ;
+$check_custom_field = 1;
+$check_option_values =1 ;
 $import_organisations =1;
 $import_individus =1 ;
 $import_groups = 1 ;

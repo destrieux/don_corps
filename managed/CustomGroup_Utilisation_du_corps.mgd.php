@@ -517,7 +517,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'pr_par_par_131',
-        'filter' => 'action=lookup&group=13',
+        'filter' => 'action=lookup&group=22',
       ],
       'match' => [
         'name',
@@ -764,6 +764,426 @@ return [
         'label' => E::ts('Autre'),
         'value' => '1',
         'name' => 'Autre',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Banque_Pathologies',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Banque Pathologies'),
+        'value' => '2',
+        'name' => 'Banque_Pathologies',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Central_Sulcus_inside_out_Alex_Morrichon_',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Central Sulcus inside out (Alex Morrichon)'),
+        'value' => '20',
+        'name' => 'Central Sulcus inside out (Alex Morrichon)',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Central_Sulcus_vasculature_Etie',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Central Sulcus vasculature (Etienne Dugast)'),
+        'value' => '19',
+        'name' => 'Central_Sulcus_vasculature_Etie',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Chiasma_voies_optiques',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Chiasma voies optiques'),
+        'value' => '3',
+        'name' => 'Chiasma_voies_optiques',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Fibratlas',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Fibratlas'),
+        'value' => '4',
+        'name' => 'Fibratlas',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Fibravasc',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Fibravasc'),
+        'value' => '5',
+        'name' => 'Fibravasc',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Fornix_Vasculature_Euan_Strachan_',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Fornix Vasculature (Euan Strachan)'),
+        'value' => '17',
+        'name' => 'Fornix Vasculature (Euan Strachan)',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_FRM_tronc',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('FRM - tronc'),
+        'value' => '6',
+        'name' => 'FRM_tronc',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_HBP',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('HBP'),
+        'value' => '7',
+        'name' => 'HBP',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Ifopasuba',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Ifopasuba'),
+        'value' => '8',
+        'name' => 'Ifopasuba',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_inside_out_Guillaume_Dannhoff_',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('inside-out (Guillaume Dannhoff)'),
+        'value' => '22',
+        'name' => 'inside-out (Guillaume Dannhoff)',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_inside_out_IFOF',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('inside-out IFOF'),
+        'value' => '21',
+        'name' => 'inside-out IFOF',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Klingler_brebis',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Klingler brebis'),
+        'value' => '9',
+        'name' => 'Klingler_brebis',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Macaque',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Macaque'),
+        'value' => '13',
+        'name' => 'Macaque',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Moelle',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Moelle'),
+        'value' => '14',
+        'name' => 'Moelle',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Nerf_trijumeau_LMT',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Nerf trijumeau LMT'),
+        'value' => '15',
+        'name' => 'Nerf_trijumeau_LMT',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Pas_de_protocole',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Pas de protocole'),
+        'value' => '11',
+        'name' => 'Pas_de_protocole',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Scanner_MEDIT_Martin_Charron_',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Scanner MEDIT (Martin Charron)'),
+        'value' => '18',
+        'name' => 'Scanner_MEDIT_Martin_Charron_',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Stratum_Calcarinum_Martin_Charron_',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Stratum Calcarinum (Martin Charron)'),
+        'value' => '16',
+        'name' => 'Stratum Calcarinum (Martin Charron)',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_SUMMIT',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('SUMMIT'),
+        'value' => '12',
+        'name' => 'SUMMIT',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Tronc_c_r_bral',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+        'label' => E::ts('Tronc cérébral'),
+        'value' => '10',
+        'name' => 'Tronc_c_r_bral',
       ],
       'match' => [
         'option_group_id',
@@ -2266,6 +2686,126 @@ Pour en ajouter : Pièces Anatomiques > créer localisation pièces'),
         'label' => E::ts('inventaire_test'),
         'value' => '1',
         'name' => 'inventaire_test',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Inserm_labo_B1A_27_08',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC Tours - Inserm labo B1A_27/08/2025_Destrieux'),
+        'value' => '3',
+        'name' => 'CDC_Tours_Inserm_labo_B1A_27_08',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Salle_des_cuves_28_08',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC Tours - Salle des cuves_28/08/2025_Leveau'),
+        'value' => '7',
+        'name' => 'CDC_Tours_Salle_des_cuves_28_08',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Plastination_28_08_20',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC Tours - Plastination_28/08/2025_Leveau'),
+        'value' => '5',
+        'name' => 'CDC_Tours_Plastination_28_08_20',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Microanatomie_28_08_2',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC Tours - Microanatomie_28/08/2025_Leveau'),
+        'value' => '6',
+        'name' => 'CDC_Tours_Microanatomie_28_08_2',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Chambre_froide_2_C_28',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC Tours - Chambre froide +2°C_28/08/2025_Leveau'),
+        'value' => '8',
+        'name' => 'CDC_Tours_Chambre_froide_2_C_28',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Cong_l_Tiroirs_18_C_2',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC Tours - Congél Tiroirs -18°C_28/08/2025_Leveau'),
+        'value' => '9',
+        'name' => 'CDC_Tours_Cong_l_Tiroirs_18_C_2',
       ],
       'match' => [
         'option_group_id',

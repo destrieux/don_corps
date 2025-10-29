@@ -59,7 +59,7 @@ return [
               'key' => 'COUNT_Demandeur_information_Date_d_envoi_d_informations',
               'dataType' => 'Integer',
               'label' => E::ts('Nombre de demandes de dossier d\'information (A -1) :'),
-              'title' => E::ts(NULL),
+              'title' => E::ts(''),
             ],
           ],
           'placeholder' => 0,

@@ -28,7 +28,7 @@ return [
       'version' => 4,
       'values' => [
         'dedupe_rule_group_id.name' => 'numeros_don_annulation_dc_2',
-        'rule_table' => 'civicrm_value_annulation_19',
+        'rule_table' => 'civicrm_value_annulation_1',
         'rule_field' => 'n_annulation_18',
         'rule_weight' => 10,
       ],
@@ -43,8 +43,8 @@ return [
       'version' => 4,
       'values' => [
         'dedupe_rule_group_id.name' => 'numeros_don_annulation_dc_2',
-        'rule_table' => 'civicrm_value_prise_en_char_18',
-        'rule_field' => 'n_de_d_c_s_20',
+        'rule_table' => 'civicrm_value_promesse_de_d_9',
+        'rule_field' => 'n_de_don_14',
         'rule_weight' => 10,
       ],
     ],
@@ -58,8 +58,8 @@ return [
       'version' => 4,
       'values' => [
         'dedupe_rule_group_id.name' => 'numeros_don_annulation_dc_2',
-        'rule_table' => 'civicrm_value_promesse_de_d_17',
-        'rule_field' => 'n_de_don_14',
+        'rule_table' => 'civicrm_value_prise_en_char_8',
+        'rule_field' => 'n_de_d_c_s_20',
         'rule_weight' => 10,
       ],
     ],

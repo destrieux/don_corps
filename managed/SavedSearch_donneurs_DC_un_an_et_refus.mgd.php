@@ -25,49 +25,23 @@ return [
           'where' => [
             [
               'contact_sub_type:name',
-              '=',
+              'CONTAINS',
               'Donateur',
-            ],
-            [
-              'OR',
-              [
-                [
-                  'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-                  '=',
-                  'D_lai_d_pass_',
-                ],
-                [
-                  'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-                  '=',
-                  'Maladie_infectieuse',
-                ],
-                [
-                  'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-                  '=',
-                  'Obstacle_m_dico_l_gal',
-                ],
-                [
-                  'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-                  '=',
-                  'D_c_s_l_tranger',
-                ],
-                [
-                  'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-                  '=',
-                  'Transfert_vers_autre_centre',
-                ],
-                [
-                  'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-                  '=',
-                  'Etat_de_conservation_du_corps',
-                ],
-              ],
             ],
             [
               'NOT',
               [
                 ['deceased_date', '=', 'ending.year'],
               ],
+            ],
+            [
+              'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
+              '!=',
+              'Pas_de_refus',
+            ],
+            [
+              'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
+              'IS NOT EMPTY',
             ],
           ],
           'groupBy' => [],

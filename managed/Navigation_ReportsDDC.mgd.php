@@ -17,7 +17,7 @@ return [
           'access CiviReport',
         ],
         'has_separator' => NULL,
-        'weight' => 101,
+        'weight' => 102,
       ],
       'match' => ['name', 'domain_id'],
     ],

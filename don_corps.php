@@ -3383,10 +3383,19 @@ function don_corps_civicrm_postInstall() {
       //$api_params = [ 'version' => 4, 'select' => [ 'id', 'display_name', 'contact_sub_type:label', 'Contact_RelationshipCache_Contact_01.near_relation:label', 'Contact_RelationshipCache_Contact_01.far_relation:label', 'Contact_RelationshipCache_Contact_01.contact_sub_type:label', 'Contact_RelationshipCache_Contact_01.display_name', 'Contact_RelationshipCache_Contact_01.deceased_date', ], 'orderBy' => [], 'where' => [ [ 'OR', [ [ 'Contact_RelationshipCache_Contact_01.Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '=', 'D_lai_d_pass_', ], [ 'Contact_RelationshipCache_Contact_01.Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '=', 'Maladie_infectieuse', ], [ 'Contact_RelationshipCache_Contact_01.Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '=', 'Obstacle_m_dico_l_gal', ], [ 'Contact_RelationshipCache_Contact_01.Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '=', 'D_c_s_l_tranger', ], [ 'Contact_RelationshipCache_Contact_01.Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '=', 'Transfert_vers_autre_centre', ], [ 'Contact_RelationshipCache_Contact_01.Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '=', 'Etat_de_conservation_du_corps', ], ], ], [ 'contact_sub_type:name', '=', 'Proches', ], [ 'NOT', [ [ 'Contact_RelationshipCache_Contact_01.deceased_date', '=', 'ending.year', ], ], ], ], 'groupBy' => [], 'join' => [ [ 'Contact AS Contact_RelationshipCache_Contact_01', 'LEFT', 'RelationshipCache', [ 'id', '=', 'Contact_RelationshipCache_Contact_01.far_contact_id', ], [ 'OR', [ [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"est la personne de confiance de"', ], [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"Child of"', ], [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"Parent of"', ], [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"Spouse of"', ], [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"Sibling of"', ], [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"est la personne de confiance 2"', ], [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"est la PAQPF"', ], ], ], ], ], 'having' => [],];
       update_search($searchname, $api_params, 'purge');
 
+      $searchname = 'Contacts_impliqu_s_dans_un_protocole_ex_vivo';                   //    %    Contacts ayant au moins une piece impliquée dans un protocole ex vivo
+      update_search($searchname, $api_params, 'purge');
+
+      $searchname = 'Archives_dans_protocole_in_ni_ex_vivo';                   //    %    Contacts impliques dans aucun protocole
+      update_search($searchname, $api_params, 'purge');
+
+      $searchname = 'Personnels_tous';                   //    %    Liste les personnels des CDC ; utilisé pour crer un groupe pour filtrer les contacs dans utilisaito ncorps
+      update_search($searchname, $api_params, 'purge');
+
       // Requetes utilisées pour le bilan annuel (aform activité)
       $searchname = 'corps_pr_sents_au_1_1_ann_e_en_cours';                   // % requete Bilan : corps présents au 1/1 année en cours      
       //$api_params = ['version' => 4, 'select' => [ 'contact_type:label', 'COUNT(contact_sub_type:label) AS COUNT_contact_sub_type_label', ], 'orderBy' => [], 'where' => [ [ 'Prise_en_charge_au_d_c_s.Date_d_arriv_e_au_CDC', '<', 'this.year', ], [ 'OR', [ [ 'Devenir_du_corps.Date_de_sortie_d_finitive', 'IS EMPTY', ], [ 'Devenir_du_corps.Date_de_sortie_d_finitive', '>', 'previous.year', ], ], ], [ 'OR', [ [ 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires', '=', FALSE, ], [ 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires', 'IS EMPTY', ], ], ], ], 'groupBy' => [ 'contact_type', ], 'join' => [], 'having' => [],];
-     // update_search($searchname, $api_params, 'bilan');
+      update_search($searchname, $api_params, 'bilan');
 
       $searchname = 'bilan_corps_presents_au_31_12_ann_e_A_1';                // % requete bilan : corps presents au 31/12 année A -1         
       //$api_params = [ 'version' => 4, 'select' => [ 'COUNT(last_name) AS COUNT_last_name', ], 'orderBy' => [], 'where' => [ [ 'deceased_date', 'IS NOT EMPTY', ], [ 'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '=', 'Pas_de_refus', ], [ 'Prise_en_charge_au_d_c_s.Date_d_arriv_e_au_CDC', '<', 'this.year', ], [ 'OR', [ [ 'Devenir_du_corps.Date_de_sortie_d_finitive', 'IS EMPTY', ], [ 'Devenir_du_corps.Date_de_sortie_d_finitive', '>', 'previous.year', ], ], ], [ 'OR', [ [ 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires', 'IS EMPTY', ], [ 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires', '=', FALSE, ], ], ], ], 'groupBy' => [ 'contact_type', ], 'join' => [], 'having' => [], ];
@@ -3471,6 +3480,8 @@ function don_corps_civicrm_postInstall() {
       $searchname = 'Bilan_refus_ou_non_reception_corps';                   //    %    Corps refusés ou non recus année en cours
       //$api_params = ['version' => 4, 'select' => [ 'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:label', 'COUNT(last_name) AS COUNT_last_name', ], 'orderBy' => [], 'where' => [ [ 'contact_sub_type:name', 'CONTAINS', 'Donateur', ], [ 'deceased_date', '=', 'this.year', ], [ 'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name', '!=', 'Pas_de_refus', ], ], 'groupBy' => [ 'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps', ], 'join' => [], 'having' => [],];
       update_search($searchname, $api_params, 'bilan');
+
+
     
     // fin de Modifie les requetes qui ne sont pas correctement importées
 
@@ -3487,8 +3498,7 @@ function don_corps_civicrm_postInstall() {
 
     echo "  - Installation des layouts".PHP_EOL;
 
-      $layouts = 
-       [
+      $layouts = [
         [
           'id' => 1,
           'label' => E::ts('Donneur'),
@@ -3665,12 +3675,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 1,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 1,
               'icon' => 'crm-i fa-flask',
             ],
@@ -3771,12 +3781,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -3884,12 +3894,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -3998,12 +4008,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4111,12 +4121,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4216,12 +4226,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4329,12 +4339,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4434,12 +4444,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4459,20 +4469,21 @@ function don_corps_civicrm_postInstall() {
             [
               [
                 [
-                  'name' => 'custom.animal',
-                  'title' => E::ts('animal'),
-                  'collapsible' => TRUE,
-                  'collapsed' => FALSE,
-                ],
-                [
-                  'name' => 'profile.Dates_naissance_et_d_c_s_17',
-                  'title' => E::ts('Dates naissance et décès'),
+                  'name' => 'profile.Animal',
+                  'title' => E::ts('Animal'),
                   'collapsible' => FALSE,
                   'collapsed' => FALSE,
                   'showTitle' => FALSE,
                 ],
               ],
               [
+                [
+                  'name' => 'profile.D_mographie_animal',
+                  'title' => E::ts('Démographie animal'),
+                  'collapsible' => FALSE,
+                  'collapsed' => FALSE,
+                  'showTitle' => FALSE,
+                ],
                 [
                   'name' => 'custom.champs_caches',
                   'title' => E::ts('champs caches'),
@@ -4536,12 +4547,12 @@ function don_corps_civicrm_postInstall() {
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_11',
+              'id' => 'custom_12',
               'is_active' => 1,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_9',
+              'id' => 'custom_10',
               'is_active' => 1,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4550,37 +4561,6 @@ function don_corps_civicrm_postInstall() {
             'sub_type_operator' => 'OR',
           ],
         ],
-      ];
-
-    
-      /// FIN DE LA DEFINITION DE LA VARIABLE LAYOUT QUI COMPRENT LES PARAMETRES DE TOUS LES LAYOUTS
-      install_layouts ($layouts);
-
-
-      /// inactivation des onglets inutiles et changement des icones dans les layouts installés
-
-      echo "  - inactivation des onglets inutiles et changement des icones dans les layouts installés".PHP_EOL;
-
-      $icons_default = [                      /// modifier ici les icones à afficher par tab
-        ["name" => "Arriv_e_du_corps_new",
-        "id" => "",
-        "icon" => "crm-i fa-ambulance"],
-
-        ["name" => "Utilisation_du_corps",
-        "id" => "",
-        "icon" => "crm-i fa-sign-language"],
-
-        ["name" => "Protocoles_in_vivo",
-        "id" => "",
-        "icon" => "crm-i fa-flask"],
-
-        ["name" => "contribute",
-          'id' => 'contribute',
-        "icon" => "crm-i fa-money"],
-
-        ["name" => "participant",
-          'id' => 'participant',
-        "icon" => "crm-i fa-users"],
       ];
 
 

@@ -128,7 +128,7 @@ return [
         'name' => 'Civilit_user',
         'label' => E::ts('Civilité user'),
         'html_type' => 'Select',
-        'is_required' => TRUE,
+        'is_searchable' => TRUE,
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,

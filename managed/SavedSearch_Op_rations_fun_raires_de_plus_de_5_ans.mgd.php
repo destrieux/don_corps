@@ -31,7 +31,7 @@ return [
           'where' => [
             [
               'contact_sub_type:name',
-              '=',
+              'CONTAINS',
               'Donateur',
             ],
             [
@@ -48,6 +48,16 @@ return [
               'Devenir_du_corps.Date_op_rations_fun_raires',
               '<',
               'now',
+            ],
+            [
+              'NOT',
+              [
+                [
+                  'groups:name',
+                  'IN',
+                  ['Archives_61'],
+                ],
+              ],
             ],
           ],
           'groupBy' => [],
@@ -72,7 +82,7 @@ return [
         'name' => 'Op_funeraires_de_plus_de_5_ans_33',
         'title' => E::ts('Op funeraires de plus de 5 ans'),
         'saved_search_id.name' => 'Op_rations_fun_raires_de_plus_de_5_ans',
-        'group_type' => [],
+        'group_type:name' => ['Access Control', 'Mailing List'],
         'frontend_title' => E::ts('Op funeraires de plus de 5 ans'),
       ],
       'match' => ['name'],
@@ -181,6 +191,7 @@ return [
           'actions' => TRUE,
           'classes' => ['table', 'table-striped', 'table-bordered'],
           'headerCount' => TRUE,
+          'actions_display_mode' => 'menu',
         ],
       ],
       'match' => [
