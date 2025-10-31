@@ -1989,7 +1989,7 @@ function don_corps_civicrm_install(): void {
 
   echo "  -Création des Statuts de participants".PHP_EOL;
 
-    $to_create =  [   // On waitlist / invité
+    /* $to_create =  [   // On waitlist / invité
       'entity' => 'ParticipantStatusType',
       'values' => [
         'name' => 'On waitlist',
@@ -2032,7 +2032,7 @@ function don_corps_civicrm_install(): void {
         'visibility_id' => 2,
       ],
       ];
-      create_entity($to_create);     
+      create_entity($to_create);    */  
     
     $to_create =  [   // Transferred
       'entity' => 'ParticipantStatusType',
@@ -3276,6 +3276,13 @@ function don_corps_civicrm_postInstall() {
 
   
       // Requetes d'affichage de listes et de groupes
+
+      $searchname = 'Donneurs_sans_PAQPF';            // requete liste donneurs sans PAQPF et avec pers referente  //
+      update_search($searchname, $api_params, 'civi_ddc');
+
+      $searchname = 'A_PAQPF';            // groupe dynamique donneurs avec PAQPF  //
+      update_search($searchname, $api_params, 'civi_ddc');
+
       $searchname = 'Personnes_r_f_rentes_dont_le_donneur_est_d_c_d_sans_les_deux_mois_pr_c_dents';            // requete PAQF //
       //$api_params = ['version' => 4, 'select' => [ 'sort_name', 'Contact_RelationshipCache_Contact_01.far_relation:label', 'Contact_RelationshipCache_Contact_01.Prise_en_charge_au_d_c_s.N_de_d_c_s', 'Contact_RelationshipCache_Contact_01.display_name', 'Contact_RelationshipCache_Contact_01.deceased_date', 'Contact_RelationshipCache_Contact_01.Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie:label', 'Contact_Participant_contact_id_01.event_id.title', 'Contact_Participant_contact_id_01.status_id:label', 'Contact_Participant_contact_id_01_Participant_Event_event_id_01.title', 'Contact_Participant_contact_id_01_Participant_Event_event_id_01.start_date', 'id', ], 'orderBy' => [], 'where' => [ [ 'OR', [ [ 'contact_type:name', '=', 'Individual', ], ], ], [ 'Contact_RelationshipCache_Contact_01.deceased_date', '=', 'ending_2.year', ], [ 'OR', [ [ 'Contact_RelationshipCache_Contact_01.Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie:name', 'IS EMPTY', ], [ 'Contact_RelationshipCache_Contact_01.Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie:name', '!=', 'Non', ], ], ], [ 'OR', [ [ 'Contact_Participant_contact_id_01_Participant_Event_event_id_01.start_date', 'IS EMPTY', ], [ 'Contact_Participant_contact_id_01_Participant_Event_event_id_01.start_date', '>', 'now', ], ], ], ], 'groupBy' => [], 'join' => [ [ 'Contact AS Contact_RelationshipCache_Contact_01', 'INNER', 'RelationshipCache', [ 'id', '=', 'Contact_RelationshipCache_Contact_01.far_contact_id', ], [ 'Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"est la PAQPF"', ], ], [ 'Participant AS Contact_Participant_contact_id_01', 'LEFT', [ 'id', '=', 'Contact_Participant_contact_id_01.contact_id', ], ], [ 'Event AS Contact_Participant_contact_id_01_Participant_Event_event_id_01', 'LEFT', [ 'Contact_Participant_contact_id_01.event_id', '=', 'Contact_Participant_contact_id_01_Participant_Event_event_id_01.id', ], ], ], 'having' => [],];
       update_search($searchname, $api_params, 'civi_ddc');

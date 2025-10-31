@@ -45,7 +45,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Fonction_18',
         'field_name' => 'current_employer',
-        'label' => E::ts('Service'),
+        'label' => E::ts('Centre d\'accueil des corps'),
         'field_type' => 'Individual',
       ],
     ],
