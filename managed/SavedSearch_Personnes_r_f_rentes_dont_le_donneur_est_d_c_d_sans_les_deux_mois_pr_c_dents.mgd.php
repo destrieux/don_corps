@@ -219,8 +219,8 @@ return [
                 [
                   'bg-success',
                   'Contact_Participant_contact_id_01.status_id:name',
-                  'CONTAINS ONE OF',
-                  ['Registered', 'Cancelled'],
+                  '=',
+                  'Registered',
                 ],
                 [
                   'bg-danger',
@@ -232,6 +232,12 @@ return [
                   'Contact_Participant_contact_id_01.status_id:name',
                   '=',
                   'On waitlist',
+                ],
+                [
+                  'bg-info',
+                  'Contact_Participant_contact_id_01.status_id:name',
+                  '=',
+                  'Cancelled',
                 ],
               ],
               'alignment' => 'text-center',

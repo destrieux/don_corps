@@ -20,6 +20,7 @@
     <ext>org.civicoop.emailapi</ext>
     <ext>org.civicrm.afform_admin</ext>
     <ext>org.civicrm.contactlayout</ext>
+    <ext>de.systopia.eventmessages</ext>
     <ext>sktokens</ext>
   </requires>
   <urls>

@@ -30,7 +30,6 @@ return [
         'value' => '1',
         'name' => 'Dear {contact.first_name}',
         'filter' => 1,
-        'is_default' => TRUE,
       ],
       'match' => [
         'option_group_id',
@@ -73,6 +72,7 @@ return [
         'value' => '3',
         'name' => 'Dear {contact.prefix_id:label} {contact.last_name}',
         'filter' => 1,
+        'is_default' => TRUE,
       ],
       'match' => [
         'option_group_id',

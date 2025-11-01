@@ -656,6 +656,31 @@ function create_entity(){
           $descr=$values['msg_title'];
       break;
 
+      case 'Event':
+        $check_entity = civicrm_api4($entity, 'get', [    // message template
+          'where' => [
+            ['is_template', '=', TRUE],
+            ['template_title', 'CONTAINS', 'Modèle de cérémonie test'],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+        $descr=$values['template_title'];
+    break;
+
+    case 'EventMessageRule':
+
+      $check_entity = civicrm_api4($entity, 'get', [    // EventMessageRule
+        'where' => [
+          ['event_id', '=', $values['event_id']],
+          ['template_id', '=', $values['template_id']],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+      //print_r($values);
+      $descr=" règle";
+  break;
+
       case 'OptionValue':                                             // Option value
         $check_entity = civicrm_api4($entity, 'get', [    
             'where' => [
@@ -2681,6 +2706,8 @@ function don_corps_civicrm_postInstall() {
 
    // fin de modification du filtre du champ perso Preparé par 
 
+
+
   // création des rules
    echo "  -Création des Rules".PHP_EOL;
 
@@ -4586,7 +4613,7 @@ function don_corps_civicrm_postInstall() {
     // fin de creation des Layouts
 
   // Changement des icones de menus
-  echo PHP_EOL."  -Changement des icones de menus".PHP_EOL;
+    echo PHP_EOL."  -Changement des icones de menus".PHP_EOL;
       //change_icon('Contacts', 'crm-i fa-address-book-o');
       //change_icon('Search', 'crm-i fa-search');
       change_icon('Contributions','crm-i fa-money-bill-1');
@@ -4595,11 +4622,11 @@ function don_corps_civicrm_postInstall() {
       //change_icon('Report','crm-i fa-bar-chart');
       //change_icon('Support','crm-i fa-life-ring');
 
-  // Fin du Changement des icones de menus
+   // Fin du Changement des icones de menus
 
 
   // Modifie l'utilisation des profils créées par le mgd files et de menus qui permettent d'y accéder
-  echo "  -modification de l'utilisation des profils".PHP_EOL;
+    echo "  -modification de l'utilisation des profils".PHP_EOL;
     $uFGroups = civicrm_api4('UFGroup', 'get', [   // récupère la liste des profils
       'select' => [
           'name',
@@ -4646,10 +4673,10 @@ function don_corps_civicrm_postInstall() {
                 echo $profile_to_update." : Profil non trouvé non trouvé ////////.".PHP_EOL;
             }
       }
-  // fin de Modifie l'utilisation des profils créées par le mgd files
+   // fin de Modifie l'utilisation des profils créées par le mgd files
 
   /// Modification des menus de navigation liés aux profil de création de contacts
-  echo "  -modification des rmenus de navigation liés aux proils".PHP_EOL;
+    echo "  -modification des rmenus de navigation liés aux proils".PHP_EOL;
     $url_menus_to_change =[                             // Profil name, parent_id:name, name du menu navigation
       ['name_and_address', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
       ['Inscription_proche_donateur_14', 'ContactsDDC','Ajouter proche donateurDDC'],///MODIFIE
@@ -4691,10 +4718,10 @@ function don_corps_civicrm_postInstall() {
           echo "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
       }
     }
-  /// Fin de Modification des menus de navigation liés aux profil de création de contacts
+   /// Fin de Modification des menus de navigation liés aux profil de création de contacts
 
   /// Création des messages templates (hors cenx crees par les rules)
-  echo "  -Création des templates emails".PHP_EOL;
+   echo "  -Création des templates emails".PHP_EOL;
       $to_create =  [       
         'entity' => 'MessageTemplate',
         'values' => [
@@ -4731,7 +4758,299 @@ function don_corps_civicrm_postInstall() {
       ];
       create_entity($to_create);
 
+      $to_create =  [       
+        'entity' => 'MessageTemplate',
+        'values' => [
+          'msg_title' => '300 Cérémonie invitation (email)',
+          'msg_subject' => "{domain.name} - cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
+          'msg_text' => NULL,
+          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{contact.postal_greeting_display}</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous avons l'honneur de vous inviter à la cérémonie organisée par le Centre d'accueil des corps de {domain.city} en l'honneur des donneurs et de leurs proches.<br />\r\nElle aura lieu le<strong> {event.start_date} à {event.start_date|crmDate:\"Time\"} au&nbsp;</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><strong>{event.location}</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Cette manifestation, d'une durée d'environ deux heures, sera l'occasion de nous recueillir en mémoire des personnes qui, comme votre proche, ont donné récemment leur corps à des fins d'enseignement médical et de recherche.<br />\r\nMerci de nous indiquer par retour de mail si vous souhaitez y participer et de nous communiquer le nombre de personnes présentes.</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {contact.postal_greeting_display}, l'expression de notre parfaite considération.</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></p>",
+          'is_active' => TRUE,
+          'workflow_id' => NULL,
+          'workflow_name' => NULL,
+          'is_default' => TRUE,
+          'is_reserved' => FALSE,
+          'is_sms' => FALSE,
+          'pdf_format_id' => 0,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [       
+        'entity' => 'MessageTemplate',
+        'values' => [
+          'msg_title' => '310 Cérémonie confirmation  (email)',
+          'msg_subject' => "{domain.name} - cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
+          'msg_text' => NULL,
+          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{contact.postal_greeting_display}</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous vous confirmons votre inscription à la cérémonie d'hommage aux donneurs et à leurs proches qui débutera le<strong> {event.start_date} à {event.start_date|crmDate:\"Time\"} au&nbsp;</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><strong>{event.location}</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Merci de vous présenter au funérarium 15 minutes avant le début de la cérémonie et de respecter le nombre de personnes que vous nous avez communiqué.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {contact.postal_greeting_display}, l'expression de notre parfaite considération.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></font></p>",
+          'is_active' => TRUE,
+          'workflow_id' => NULL,
+          'workflow_name' => NULL,
+          'is_default' => TRUE,
+          'is_reserved' => FALSE,
+          'is_sms' => FALSE,
+          'pdf_format_id' => 0,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [       
+        'entity' => 'MessageTemplate',
+        'values' => [
+          'msg_title' => '320 Cérémonie non inscription  (email)',
+          'msg_subject' => "{domain.name} - cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
+          'msg_text' => NULL,
+          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{contact.postal_greeting_display}</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous avons bien noté que vous ne participerez pas à la cérémonie d'hommage aux donneurs et à leurs proches du<strong> {event.start_date}.</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {contact.postal_greeting_display}, l'expression de notre parfaite considération.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></font></p>",
+          'is_active' => TRUE,
+          'workflow_id' => NULL,
+          'workflow_name' => NULL,
+          'is_default' => TRUE,
+          'is_reserved' => FALSE,
+          'is_sms' => FALSE,
+          'pdf_format_id' => 0,
+        ],
+      ];
+      create_entity($to_create);
+
+
+
   /// Fin de Création des messages templates
+
+
+  // création des templates de cérmonies ; les statuts et les roles des participants doivent etre crées en amont
+  echo "  -Création des Templates de cérémonie".PHP_EOL;
+        
+  $to_create =  [        //Corriger_civililite : Déclaration de l'Action
+      'entity' => 'Event',
+      'values' => 
+      [ 'title' => 'Cérémonie test',
+          'summary' => "Cérémonie d'hommage aux donneurs et à leurs familles",
+          'description' => NULL,
+          'participant_listing_id' => NULL,
+          'is_public' => FALSE,
+          'start_date' => NULL,
+          'end_date' => NULL,
+          'is_online_registration' => FALSE,
+          'registration_link_text' => NULL,
+          'registration_start_date' => NULL,
+          'registration_end_date' => NULL,
+          'max_participants' => NULL,
+          'event_full_text' => 'Cet événement est actuellement complet.',
+          'is_monetary' => FALSE,
+          'financial_type_id' => NULL,
+          'payment_processor' => NULL,
+          'is_map' => FALSE,
+          'is_active' => TRUE,
+          'fee_label' => NULL,
+          'is_show_location' => FALSE,
+          'loc_block_id' => '',
+          'intro_text' => NULL,
+          'footer_text' => NULL,
+          'confirm_title' => NULL,
+          'confirm_text' => NULL,
+          'confirm_footer_text' => NULL,
+          'is_email_confirm' => FALSE,
+          'confirm_email_text' => NULL,
+          'confirm_from_name' => NULL,
+          'confirm_from_email' => NULL,
+          'cc_confirm' => NULL,
+          'bcc_confirm' => NULL,
+          'default_fee_id' => NULL,
+          'default_discount_fee_id' => NULL,
+          'thankyou_title' => NULL,
+          'thankyou_text' => NULL,
+          'thankyou_footer_text' => NULL,
+          'is_pay_later' => FALSE,
+          'pay_later_text' => NULL,
+          'pay_later_receipt' => NULL,
+          'is_partial_payment' => FALSE,
+          'initial_amount_label' => NULL,
+          'initial_amount_help_text' => NULL,
+          'min_initial_amount' => NULL,
+          'is_multiple_registrations' => FALSE,
+          'max_additional_participants' => 0,
+          'allow_same_participant_emails' => FALSE,
+          'has_waitlist' => FALSE,
+          'requires_approval' => FALSE,
+          'expiration_time' => NULL,
+          'allow_selfcancelxfer' => FALSE,
+          'selfcancelxfer_time' => 0,
+          'waitlist_text' => NULL,
+          'approval_req_text' => NULL,
+          'is_template' => TRUE,
+          'template_title' => 'Modèle de cérémonie test',
+          'created_id' => NULL,
+          'currency' => NULL,
+          'is_share' => FALSE,
+          'is_confirm_enabled' => TRUE,
+          'parent_event_id' => NULL,
+          'slot_label_id' => NULL,
+          'dedupe_rule_group_id' => NULL,
+          'is_billing_required' => FALSE,
+          'is_show_calendar_links' => TRUE,
+          'event_type_id:name' => 'Cérémonie Hommage',
+          'default_role_id:name' => 'Attendee',
+      ],
+  ];
+  $event_id=create_entity($to_create);
+
+// Inactivation du message template de confirmation d'inscription ; si non supprimé un message est envoyé à l'inscription prevenant d'une liste d attente
+$to_create =  [       
+  'entity' => 'MessageTemplate',
+  'values' => [
+    'msg_title' => "Événements - Confirmation d'inscription et reçu (hors ligne)",
+    'is_active' => FALSE,
+    'msg_subject' => '',
+    'msg_text' => '',
+    'msg_html' => '',
+  ],
+];
+create_entity($to_create);
+
+// installation des regles de message pour les cérémonies
+  // message '300 Cérémonie invitation (email)' pour statut 'On waitlist' (Invité)
+  $messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// récupère l'id du MessageTemplate
+    'select' => [
+      'id',
+    ],
+    'where' => [
+      ['msg_title', '=', '300 Cérémonie invitation (email)'],
+    ],
+    'limit' => 1,
+    'checkPermissions' => FALSE,
+  ]);
+
+  $participantStatusTypes = civicrm_api4('ParticipantStatusType', 'get', [    /// récupère l'id de statut pour 'On waitlist' (invité)
+    'where' => [
+      ['is_active', '=', TRUE],
+      ['name', '=', 'On waitlist'],
+    ],
+    'limit' => 1,
+    'checkPermissions' => FALSE,
+  ]);
+
+  if(isset($messageTemplates[0]) && isset($participantStatusTypes[0]) &&isset($event_id)){
+
+    $to_create =  [        //Corriger_civililite : Déclaration de l'Action
+      'entity' => 'EventMessageRule',
+      'values' => [
+          'event_id' => $event_id,
+          'is_active' => 1,
+          'template_id' => $messageTemplates[0]['id'],
+          'from_status' => [],
+          'to_status' => [
+            $participantStatusTypes[0]['id'],
+          ],
+          'languages' => [],
+          'roles' => [],
+          'attachments' => NULL,
+      ],
+    ];
+
+    //print_r($to_create);
+
+  } else {
+    echo "Message template, statut, ou évenement manquent".PHP_EOL;
+  }
+  create_entity($to_create);
+
+
+  // message '310 Cérémonie confirmation  (email)' pour statut Registered (Confirmé)
+   $messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// récupère l'id du MessageTemplate
+    'select' => [
+      'id',
+    ],
+    'where' => [
+      ['msg_title', '=', '310 Cérémonie confirmation  (email)'],
+    ],
+    'limit' => 1,
+    'checkPermissions' => FALSE,
+  ]);
+
+  $participantStatusTypes = civicrm_api4('ParticipantStatusType', 'get', [    /// récupère l'id de statut pour 'Registered' (Confirmé)
+    'where' => [
+      ['is_active', '=', TRUE],
+      ['name', '=', 'Registered'],
+    ],
+    'limit' => 1,
+    'checkPermissions' => FALSE,
+  ]);
+
+  if(isset($messageTemplates[0]) && isset($participantStatusTypes[0]) &&isset($event_id)){
+
+    $to_create =  [        //Corriger_civililite : Déclaration de l'Action
+      'entity' => 'EventMessageRule',
+      'values' => [
+          'event_id' => $event_id,
+          'is_active' => 1,
+          'template_id' => $messageTemplates[0]['id'],
+          'from_status' => [],
+          'to_status' => [
+            $participantStatusTypes[0]['id'],
+          ],
+          'languages' => [],
+          'roles' => [],
+          'attachments' => NULL,
+      ],
+    ];
+
+    //print_r($to_create);
+
+  } else {
+    echo "Message template, statut, ou évenement manquent".PHP_EOL;
+  }
+  create_entity($to_create);
+
+
+// message '320 Cérémonie non inscription  (email)' pour statut Cancelled (Annulé)
+$messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// récupère l'id du MessageTemplate
+  'select' => [
+    'id',
+  ],
+  'where' => [
+    ['msg_title', '=', '320 Cérémonie non inscription  (email)'],
+  ],
+  'limit' => 1,
+  'checkPermissions' => FALSE,
+]);
+
+$participantStatusTypes = civicrm_api4('ParticipantStatusType', 'get', [    /// récupère l'id de statut pour 'Registered' (Confirmé)
+  'where' => [
+    ['is_active', '=', TRUE],
+    ['name', '=', 'Cancelled'],
+  ],
+  'limit' => 1,
+  'checkPermissions' => FALSE,
+]);
+
+if(isset($messageTemplates[0]) && isset($participantStatusTypes[0]) &&isset($event_id)){
+
+  $to_create =  [        //Corriger_civililite : Déclaration de l'Action
+    'entity' => 'EventMessageRule',
+    'values' => [
+        'event_id' => $event_id,
+        'is_active' => 1,
+        'template_id' => $messageTemplates[0]['id'],
+        'from_status' => [],
+        'to_status' => [
+          $participantStatusTypes[0]['id'],
+        ],
+        'languages' => [],
+        'roles' => [],
+        'attachments' => NULL,
+    ],
+  ];
+
+  //print_r($to_create);
+
+} else {
+  echo "Message template, statut, ou évenement manquent".PHP_EOL;
+}
+create_entity($to_create);
+
+
+
+
 
 
   // Modification des filtres de profil
