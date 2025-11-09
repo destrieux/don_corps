@@ -17,7 +17,7 @@ return [
           'access CiviEvent',
         ],
         'has_separator' => NULL,
-        'weight' => 43,
+        'weight' => 44,
       ],
       'match' => ['name', 'domain_id'],
     ],

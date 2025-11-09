@@ -2012,7 +2012,17 @@ function don_corps_civicrm_install(): void {
 
     // Fin de création des types de participants
 
-  echo "  -Création des Statuts de participants".PHP_EOL;
+  echo "  -Désactivation des Statuts de participants".PHP_EOL;
+
+  $results = civicrm_api4('ParticipantStatusType', 'update', [
+    'values' => [
+      'is_active' => FALSE,
+    ],
+    'where' => [
+      ['base_module', 'NOT CONTAINS ONE OF', 'don_corps'],
+    ],
+    'checkPermissions' => FALSE,
+  ]);
 
     /* $to_create =  [   // On waitlist / invité
       'entity' => 'ParticipantStatusType',
@@ -2057,7 +2067,7 @@ function don_corps_civicrm_install(): void {
         'visibility_id' => 2,
       ],
       ];
-      create_entity($to_create);    */  
+      create_entity($to_create);     
     
     $to_create =  [   // Transferred
       'entity' => 'ParticipantStatusType',
@@ -2183,7 +2193,7 @@ function don_corps_civicrm_install(): void {
         'is_active' => FALSE,
       ],
       ];
-      create_entity($to_create);  
+      create_entity($to_create);   */
     
   
 
@@ -3532,7 +3542,8 @@ function don_corps_civicrm_postInstall() {
 
     echo "  - Installation des layouts".PHP_EOL;
 
-      $layouts = [
+      $layouts = 
+      [
         [
           'id' => 1,
           'label' => E::ts('Donneur'),
@@ -3704,17 +3715,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 1,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 1,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 1,
               'icon' => 'crm-i fa-flask',
             ],
@@ -3810,17 +3821,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -3923,17 +3934,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4037,17 +4048,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4150,17 +4161,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4255,17 +4266,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4368,17 +4379,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4473,17 +4484,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 0,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 0,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4503,8 +4514,8 @@ function don_corps_civicrm_postInstall() {
             [
               [
                 [
-                  'name' => 'profile.Animal',
-                  'title' => E::ts('Animal'),
+                  'name' => 'custom.animal',
+                  'title' => E::ts('animal'),
                   'collapsible' => FALSE,
                   'collapsed' => FALSE,
                   'showTitle' => FALSE,
@@ -4576,17 +4587,17 @@ function don_corps_civicrm_postInstall() {
               'is_active' => 1,
             ],
             [
-              'id' => 'custom_3',
+              'id' => 'custom_4',
               'is_active' => 0,
               'icon' => 'crm-i fa-ambulance',
             ],
             [
-              'id' => 'custom_12',
+              'id' => 'custom_13',
               'is_active' => 1,
               'icon' => 'crm-i fa-sign-language',
             ],
             [
-              'id' => 'custom_10',
+              'id' => 'custom_11',
               'is_active' => 1,
               'icon' => 'crm-i fa-flask',
             ],
@@ -4597,6 +4608,35 @@ function don_corps_civicrm_postInstall() {
         ],
       ];
 
+            /// FIN DE LA DEFINITION DE LA VARIABLE LAYOUT QUI COMPRENT LES PARAMETRES DE TOUS LES LAYOUTS
+            install_layouts ($layouts);
+
+
+            /// inactivation des onglets inutiles et changement des icones dans les layouts installés
+      
+            echo "  - inactivation des onglets inutiles et changement des icones dans les layouts installés".PHP_EOL;
+      
+            $icons_default = [                      /// modifier ici les icones à afficher par tab
+              ["name" => "Arriv_e_du_corps_new",
+              "id" => "",
+              "icon" => "crm-i fa-ambulance"],
+      
+              ["name" => "Utilisation_du_corps",
+              "id" => "",
+              "icon" => "crm-i fa-sign-language"],
+      
+              ["name" => "Protocoles_in_vivo",
+              "id" => "",
+              "icon" => "crm-i fa-flask"],
+      
+              ["name" => "contribute",
+                'id' => 'contribute',
+              "icon" => "crm-i fa-money"],
+      
+              ["name" => "participant",
+                'id' => 'participant',
+              "icon" => "crm-i fa-users"],
+            ];
 
       $inactive_tabs =[                       /// indiquer pour chaque profil la liste des tabs à desactiver
         ['Proches' =>["Protocoles_in_vivo", "Arriv_e_du_corps_new","Utilisation_du_corps"]],
@@ -4725,10 +4765,10 @@ function don_corps_civicrm_postInstall() {
       $to_create =  [       
         'entity' => 'MessageTemplate',
         'values' => [
-          'msg_title' => '01 - Préinscription: envoi informations MAIL',
-          'msg_subject' => 'Envoi information inscription par mail',
+          'msg_title' => '001 - Préinscription: envoi informations MAIL',
+          'msg_subject' => "Envoi d'informations d'inscription",
           'msg_text' => NULL,
-          'msg_html' => "<p>{contact.postal_greeting},</p>\r\n\r\n<p>Je vous remercie de votre volonté de donner votre corps à des fins d’enseignement et de recherche et vous engage à consulter notre site web : <strong><a href=\"https://dons-corps.univ-tours.fr/medias/fichier/guide-information-dec2023-avectours_1702540511292-pdf?ID_FICHE=402072&amp;INLINE=FALSE\">{domain.description}</a>.</strong></p>\r\n\r\n<p>Vous y trouverez de nombreuses informations et des réponses aux principales questions que vous pourriez vous poser.</p>\r\n\r\n<p>Vous pourrez télécharger les documents nécessaires à votre inscription :<br />\r\n<strong>1) le guide d’information officiel : <a href=\"https://dons-corps.univ-tours.fr/medias/fichier/guide-information-juil2024-avectours_1733124203133-pdf?ID_FICHE=402072&amp;INLINE=FALSE\">Téléchargez le guide</a></strong></p>\r\n\r\n<p><strong>2)&nbsp; le formulaire de promesse de don à nous retourner par courrier si vous poursuivez votre démarche : <a href=\"https://dons-corps.univ-tours.fr/medias/fichier/declaration-consentement-don-corps-avecrgpd-2023-09-22_1695360636047-pdf?ID_FICHE=402072&amp;INLINE=FALSE\">Téléchargez le dossier d'inscription</a></strong></p>\r\n\r\n<p>N’hésitez pas à nous contacter si vous avez besoin d’information complémentaire</p>\r\n\r\n<p>Je vous remercie à nouveau de votre intérêt pour le don du corps et vous prie d'agréer, {contact.postal_greeting}, l'expression de ma parfaite considération.</p>",
+          'msg_html' => "<p>{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label},</p>\r\n\r\n<p>Je vous remercie de votre volonté de donner votre corps à des fins d’enseignement et de recherche et vous engage à consulter notre site web : <strong><a href=\"https://dons-corps.univ-tours.fr\">{domain.description}</a>.</strong></p>\r\n\r\n<p>Vous y trouverez de nombreuses informations et des réponses aux principales questions que vous pourriez vous poser.</p>\r\n\r\n<p>Vous pourrez télécharger les documents nécessaires à votre inscription :<br />\r\n<strong>1) le guide d’information officiel : <a href=\"https://dons-corps.univ-tours.fr/medias/fichier/guide-information-juil2024-avectours_1733124203133-pdf?ID_FICHE=402072&amp;INLINE=FALSE\">Téléchargez le guide</a></strong></p>\r\n\r\n<p><strong>2)&nbsp; le formulaire de promesse de don à nous retourner par courrier si vous poursuivez votre démarche : <a href=\"https://dons-corps.univ-tours.fr/medias/fichier/declaration-consentement-don-corps-avecrgpd-2023-09-22_1759243997537-pdf?ID_FICHE=402072&amp;INLINE=FALSE\">Téléchargez le dossier d'inscription</a></strong></p>\r\n\r\n<p>N’hésitez pas à nous contacter si vous avez besoin d’information complémentaire</p>\r\n\r\n<p>Je vous remercie à nouveau de votre intérêt pour le don du corps et vous prie d'agréer, {Tokens_for_contact_Champs_de_fu.postal_greeting_id:label}, l'expression de ma parfaite considération.</p>\r\n\r\n<p>{domain.supplemental_address_3}<br />\r\nCentre d'accueil des corps de {domain.city}</p>",
           'is_active' => TRUE,
           'workflow_id' => NULL,
           'workflow_name' => NULL,
@@ -4743,10 +4783,10 @@ function don_corps_civicrm_postInstall() {
       $to_create =  [       
         'entity' => 'MessageTemplate',
         'values' => [
-          'msg_title' => '10 - Inscription : Mail accusé réception demande inscription',
-          'msg_subject' => 'Confirmation inscription Centre de don du corps',
+          'msg_title' => '010 - Inscription : Mail confirmation inscription',
+          'msg_subject' => "Confirmation inscription Centre d'accueil des corps",
           'msg_text' => NULL,
-          'msg_html' => "<p>{contact.postal_greeting},</p>\r\n<!-- --CIVILITE AUTOMATIQUE DETERMINEE A PARTIR DU GENRE --->\r\n\r\n<p>Nous vous remercions de votre demande d'inscription à notre centre de don du corps, dont nous accusons réception.<br />\r\nVotre numéro d'inscription est le {Tokens_for_contact_Champs_de_fu.Promesse_de_don.N_de_don}.<br />\r\nVotre carte définitive et les documents relatifs à votre inscription vont vous parvenir par courrier dans les semaines qui viennent.<br />\r\nNous vous prions de bien vouloir excuser ce délai lié à un grand nombre de demande. Votre inscription est effective à partir d'aujourd'hui.</p>\r\n\r\n<p>Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {contact.postal_greeting}, l'expression de notre parfaite considération.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>{domain.supplemental_address_3}<br />\r\nCentre de don du corps de {domain.city}</p>",
+          'msg_html' => "<p>{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label},</p>\r\n\r\n<p>Nous vous remercions de votre demande d'inscription à notre centre d'accueil des corps, dont nous accusons réception.<br />\r\nVotre numéro d'inscription est le {Tokens_for_contact_Champs_de_fu.Promesse_de_don.N_de_don}.<br />\r\nVotre carte définitive et les documents relatifs à votre inscription vous parviendront par courrier dans les semaines qui viennent.<br />\r\nNous vous prions de bien vouloir excuser ce délai, dû à un grand nombre de demandes.</p>\r\n\r\n<p><strong>Votre inscription est néanmoins effective dès aujourd'hui et nous vous engageons à conserver une copie de ce message avec vos papiers d'identité</strong>.</p>\r\n\r\n<p>Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {Tokens_for_contact_Champs_de_fu.postal_greeting_id:label}, l'expression de notre parfaite considération.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>{domain.supplemental_address_3}<br />\r\nCentre d'accueil des corps de {domain.city}</p>",
           'is_active' => TRUE,
           'workflow_id' => NULL,
           'workflow_name' => NULL,
@@ -4761,10 +4801,10 @@ function don_corps_civicrm_postInstall() {
       $to_create =  [       
         'entity' => 'MessageTemplate',
         'values' => [
-          'msg_title' => '300 Cérémonie invitation (email)',
-          'msg_subject' => "{domain.name} - cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
+          'msg_title' => '300 - Cérémonie invitation (email)',
+          'msg_subject' => "Cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
           'msg_text' => NULL,
-          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{contact.postal_greeting_display}</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous avons l'honneur de vous inviter à la cérémonie organisée par le Centre d'accueil des corps de {domain.city} en l'honneur des donneurs et de leurs proches.<br />\r\nElle aura lieu le<strong> {event.start_date} à {event.start_date|crmDate:\"Time\"} au&nbsp;</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><strong>{event.location}</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Cette manifestation, d'une durée d'environ deux heures, sera l'occasion de nous recueillir en mémoire des personnes qui, comme votre proche, ont donné récemment leur corps à des fins d'enseignement médical et de recherche.<br />\r\nMerci de nous indiquer par retour de mail si vous souhaitez y participer et de nous communiquer le nombre de personnes présentes.</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {contact.postal_greeting_display}, l'expression de notre parfaite considération.</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></p>",
+          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label},</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous avons l'honneur de vous inviter à la cérémonie organisée par le Centre d'accueil des corps de {domain.city} en l'honneur des donneurs et de leurs proches.<br />\r\nElle aura lieu le<strong> {event.start_date} à {event.start_date|crmDate:\"Time\"} au&nbsp;</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><strong>{event.location}</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Cette manifestation, d'une durée d'environ deux heures, sera l'occasion de nous recueillir en mémoire des personnes qui, comme votre proche, ont donné récemment leur corps à des fins d'enseignement médical et de recherche.<br />\r\nMerci de nous indiquer par retour de mail si vous souhaitez y participer et de nous communiquer le nombre de personnes présentes.</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {Tokens_for_contact_Champs_de_fu.postal_greeting_id:label}, l'expression de notre parfaite considération.</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu centre d'accueil des corps de {domain.city}</font></p>",
           'is_active' => TRUE,
           'workflow_id' => NULL,
           'workflow_name' => NULL,
@@ -4779,10 +4819,10 @@ function don_corps_civicrm_postInstall() {
       $to_create =  [       
         'entity' => 'MessageTemplate',
         'values' => [
-          'msg_title' => '310 Cérémonie confirmation  (email)',
-          'msg_subject' => "{domain.name} - cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
+          'msg_title' => '310 - Cérémonie confirmation  (email)',
+          'msg_subject' => "Cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
           'msg_text' => NULL,
-          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{contact.postal_greeting_display}</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous vous confirmons votre inscription à la cérémonie d'hommage aux donneurs et à leurs proches qui débutera le<strong> {event.start_date} à {event.start_date|crmDate:\"Time\"} au&nbsp;</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><strong>{event.location}</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Merci de vous présenter au funérarium 15 minutes avant le début de la cérémonie et de respecter le nombre de personnes que vous nous avez communiqué.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {contact.postal_greeting_display}, l'expression de notre parfaite considération.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></font></p>",
+          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label},</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous vous confirmons votre inscription à la cérémonie d'hommage aux donneurs et à leurs proches qui débutera le<strong> {event.start_date} à {event.start_date|crmDate:\"Time\"} au&nbsp;</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><strong>{event.location}</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Merci de vous présenter au funérarium 15 minutes avant le début de la cérémonie et de respecter le nombre de personnes que vous nous avez communiqué.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {Tokens_for_contact_Champs_de_fu.postal_greeting_id:label}, l'expression de notre parfaite considération.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></font></p>",
           'is_active' => TRUE,
           'workflow_id' => NULL,
           'workflow_name' => NULL,
@@ -4797,10 +4837,10 @@ function don_corps_civicrm_postInstall() {
       $to_create =  [       
         'entity' => 'MessageTemplate',
         'values' => [
-          'msg_title' => '320 Cérémonie non inscription  (email)',
-          'msg_subject' => "{domain.name} - cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
+          'msg_title' => '320 - Cérémonie non inscription  (email)',
+          'msg_subject' => "Cérémonie d'hommage {event.start_date} à {event.start_date|crmDate:\"Time\"}",
           'msg_text' => NULL,
-          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{contact.postal_greeting_display}</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous avons bien noté que vous ne participerez pas à la cérémonie d'hommage aux donneurs et à leurs proches du<strong> {event.start_date}.</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous restons à votre disposition pour tout renseignement complémentaire et vous prions d'agréer, {contact.postal_greeting_display}, l'expression de notre parfaite considération.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></font></p>",
+          'msg_html' => "<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label},</font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous avons bien noté que vous ne participerez pas à la cérémonie d'hommage aux donneurs et à leurs proches du<strong> {event.start_date}.</strong></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"3\">Nous vous prions d'agréer, {Tokens_for_contact_Champs_de_fu.postal_greeting_id:label}, l'expression de notre parfaite considération.</font></font></p>\r\n\r\n<p><font face=\"Arial, Verdana, sans-serif\" size=\"3\"><font face=\"Arial, Verdana, sans-serif\" size=\"2\">{domain.supplemental_address_3}<br />\r\n{domain.supplemental_address_2}<br />\r\ndu Centre de Don du Corps de {domain.city}</font></font></p>",
           'is_active' => TRUE,
           'workflow_id' => NULL,
           'workflow_name' => NULL,
@@ -4914,7 +4954,7 @@ create_entity($to_create);
       'id',
     ],
     'where' => [
-      ['msg_title', '=', '300 Cérémonie invitation (email)'],
+      ['msg_title', '=', '300 - Cérémonie invitation (email)'],
     ],
     'limit' => 1,
     'checkPermissions' => FALSE,
@@ -4961,7 +5001,7 @@ create_entity($to_create);
       'id',
     ],
     'where' => [
-      ['msg_title', '=', '310 Cérémonie confirmation  (email)'],
+      ['msg_title', '=', '310 - Cérémonie confirmation  (email)'],
     ],
     'limit' => 1,
     'checkPermissions' => FALSE,
@@ -5008,7 +5048,7 @@ $messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// 
     'id',
   ],
   'where' => [
-    ['msg_title', '=', '320 Cérémonie non inscription  (email)'],
+    ['msg_title', '=', '320 - Cérémonie non inscription  (email)'],
   ],
   'limit' => 1,
   'checkPermissions' => FALSE,
@@ -5082,4 +5122,8 @@ function don_corps_civicrm_uninstall() {
 
  
 }
+
+
+
+
 

@@ -35,7 +35,7 @@ class CRM_DonCorps_CivirulesActions_Contact_FixCivilite extends CRM_Civirules_Ac
                             'values' => [
                             'postal_greeting_id:name' => 'Monsieur',
                             'email_greeting_id:name' => 'Monsieur',
-                            'postal_greeting_display' => 'Monsieur',
+                            //'postal_greeting_display' => 'Monsieur',
                             'prefix_id:name' => 'Mr.',
                             'gender_id:name' => 'Male',
                             ],
@@ -51,7 +51,7 @@ class CRM_DonCorps_CivirulesActions_Contact_FixCivilite extends CRM_Civirules_Ac
                     'values' => [
                     'postal_greeting_id:name' => 'Madame',
                     'email_greeting_id:name' => 'Madame',
-                    'postal_greeting_display' => 'Madame',
+                    //'postal_greeting_display' => 'Madame',
                     'prefix_id:name' => 'Mrs.',
                     'gender_id:name' => 'Female',
                     ],
@@ -67,7 +67,7 @@ class CRM_DonCorps_CivirulesActions_Contact_FixCivilite extends CRM_Civirules_Ac
                     'values' => [
                     'postal_greeting_id:name' => 'Mademoiselle',
                     'email_greeting_id:name' => 'Mademoiselle',
-                    'postal_greeting_display' => 'Mademoiselle',
+                    //'postal_greeting_display' => 'Mademoiselle',
                     'prefix_id:name' => 'Ms.', 
                     'gender_id:name' => 'Female',
                     ],
@@ -83,8 +83,8 @@ class CRM_DonCorps_CivirulesActions_Contact_FixCivilite extends CRM_Civirules_Ac
                     'values' => [
                     'postal_greeting_id:name' => '{contact.first_name} {contact.last_name}',
                     'email_greeting_id:name' => '{contact.first_name} {contact.last_name}',
-                    'postal_greeting_display' => '{contact.first_name} {contact.last_name}',
-                    'prefix_id:name' => 'Mx.', 
+                    //'postal_greeting_display' => '{contact.first_name} {contact.last_name}',
+                    'prefix_id:name' => 'Dr.', 
                     'gender_id:name' => 'Other',
                     ],
                     'where' => [
@@ -94,6 +94,24 @@ class CRM_DonCorps_CivirulesActions_Contact_FixCivilite extends CRM_Civirules_Ac
                 ]);
             break;
         }  
+
+
+
+/*         $results = civicrm_api4('Contact', 'update', [
+          'values' => [
+          'postal_greeting_id:name' => 'toto',
+          'email_greeting_id:name' => 'toto',
+          'postal_greeting_display' => 'toto',
+          'prefix_id:name' => 'Mrs.',
+          'gender_id:name' => 'Female',
+          ],
+      'where' => [
+          ['id', '=', $contactId],
+          ],
+      'checkPermissions' => FALSE,
+      ]); */
+
+
   }
 
 

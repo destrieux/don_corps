@@ -14,7 +14,7 @@ return [
         'name' => 'ContactsDDC',
         'icon' => 'crm-i fa-address-book-o',
         'has_separator' => NULL,
-        'weight' => 24,
+        'weight' => 25,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -49,7 +49,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau proche de donneur'),
         'name' => 'Ajouter proche donateurDDC',
-        'url' => 'civicrm/profile/create/?gid=20&reset=1',
+        'url' => 'civicrm/profile/create/?gid=21&reset=1',
         'permission' => [
           'Ajouter des contacts',
         ],
@@ -69,7 +69,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau Demandeur d\'information'),
         'name' => 'New Demandeur_d_informationDDC',
-        'url' => 'civicrm/profile/create/?gid=17&reset=1',
+        'url' => 'civicrm/profile/create/?gid=18&reset=1',
         'permission' => [
           'Ajouter des contacts',
         ],
@@ -89,7 +89,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle pièce anat comparée'),
         'name' => 'Nouvelle pièce anat comparée',
-        'url' => 'civicrm/profile/create/?gid=19&reset=1',
+        'url' => 'civicrm/profile/create/?gid=20&reset=1',
         'icon' => 'crm-i fa-cow',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',
@@ -127,7 +127,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle Mairie'),
         'name' => 'New Mairies',
-        'url' => 'civicrm/profile/create/?gid=23&reset=1',
+        'url' => 'civicrm/profile/create/?gid=24&reset=1',
         'permission' => [
           'Ajouter des contacts',
         ],
@@ -223,7 +223,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau personnel de CDC'),
         'name' => 'New Personnel',
-        'url' => 'civicrm/profile/create/?gid=25&reset=1',
+        'url' => 'civicrm/profile/create/?gid=26&reset=1',
         'permission' => [
           'Ajouter des contacts',
         ],
@@ -281,7 +281,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle entreprise de Pompes Funèbres'),
         'name' => 'New Pompes',
-        'url' => 'civicrm/profile/create/?gid=21&reset=1',
+        'url' => 'civicrm/profile/create/?gid=22&reset=1',
         'permission' => [
           'Ajouter des contacts',
         ],

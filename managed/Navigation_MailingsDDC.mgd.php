@@ -22,7 +22,7 @@ return [
         ],
         'permission_operator' => 'OR',
         'has_separator' => NULL,
-        'weight' => 54,
+        'weight' => 55,
       ],
       'match' => ['name', 'domain_id'],
     ],

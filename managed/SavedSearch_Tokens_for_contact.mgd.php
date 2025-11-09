@@ -37,6 +37,7 @@ return [
             'Devenir_du_corps.Souhait_funeraire_personne_ref_rente:label',
             'champs_caches.piece_prinicpale',
             'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],

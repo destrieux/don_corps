@@ -15,7 +15,7 @@ return [
         'icon' => 'crm-i fa-heart-o',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',
-        'weight' => 55,
+        'weight' => 56,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -49,7 +49,7 @@ return [
       'values' => [
         'label' => E::ts('Créer Localisation pièces'),
         'name' => 'New Emprunteur',
-        'url' => 'civicrm/profile/create/?gid=22&reset=1',
+        'url' => 'civicrm/profile/create/?gid=23&reset=1',
         'icon' => 'crm-i fa-rectangle-list',
         'permission' => [
           'Ajouter des contacts',

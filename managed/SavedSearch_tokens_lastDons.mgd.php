@@ -21,6 +21,7 @@ return [
             'GROUP_FIRST(Contact_Contribution_contact_id_01.receive_date ORDER BY Contact_Contribution_contact_id_01.receive_date DESC) AS GROUP_FIRST_Contact_Contribution_contact_id_01_receive_date_Contact_Contribution_contact_id_01_receive_date',
             'id',
             'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [

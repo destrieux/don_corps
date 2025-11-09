@@ -11,7 +11,7 @@ return [
       'version' => 4,
       'values' => [
         'name' => 'Inscription_anat_compar_e',
-        'group_type' => ['Animal'],
+        'group_type' => ['Animal', 'Individual', 'Contact'],
         'title' => E::ts('Inscription anat comparée'),
         'frontend_title' => E::ts('Inscription anat comparée'),
         'description' => E::ts('Inscription pièce anatomie comparée'),
@@ -93,6 +93,52 @@ return [
         'field_name:name' => 'animal.Provenance',
         'label' => E::ts('Provenance'),
         'field_type' => 'Animal',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Inscription_anat_compar_e_UFField_6',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Inscription_anat_compar_e',
+        'field_name' => 'birth_date',
+        'label' => E::ts('Date de naissance'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Inscription_anat_compar_e_UFField_7',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Inscription_anat_compar_e',
+        'field_name' => 'deceased_date',
+        'label' => E::ts('Date de décès'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Inscription_anat_compar_e_UFField_8',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Inscription_anat_compar_e',
+        'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+        'help_pre' => E::ts('hh:mm'),
+        'label' => E::ts('Heure du décès'),
+        'field_type' => 'Contact',
       ],
     ],
   ],
