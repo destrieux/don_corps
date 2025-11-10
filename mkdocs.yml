@@ -1,0 +1,35 @@
+site_name: don_corps
+repo_url: https://github.com/destrieux/don_corps
+//edit_uri: https://lab.civicrm.org/extensions/yourproject_LANGUAGE/-/edit/master
+site_description: 'Documentation pour Civicrm Dons du Corps.'
+site_author: 'Chrisotphe Destrieux'
+theme:
+  name:
+    material
+
+nav:
+- Home: index.md
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - def_list
+  - pymdownx.highlight:
+      guess_lang: False
+  - toc:
+      permalink: True
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tilde
+  - pymdownx.betterem
+  - pymdownx.mark
+
+plugins:
+  - search:
+      lang: fr
+
+nav:
+  - A Propos: index.md
+  - Guide administrateur: GuideAdministrateur.md
+  - Paramétrage: Parametrage.md
+  - Guide utilisateur: GuideUtilisateur.md

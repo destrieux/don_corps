@@ -30,7 +30,8 @@ class CRM_DonCorps_CivirulesActions_Contact_CopyBarCode extends CRM_Civirules_Ac
         ['Custom_Utilisation_du_corps AS custom_utilisation_du_corps', 'LEFT', ['custom_utilisation_du_corps.entity_id', '=', 'id']],
       ],
       'where' => [
-        ['custom_utilisation_du_corps.Type_de_poi_ce_3', '=', 1],
+        //['custom_utilisation_du_corps.Type_de_poi_ce_3', '=', 1],
+        ['custom_utilisation_du_corps.Type_de_poi_ce_3:name', '=', 'Corps_entier_tronc'],
         ['id', '=', $contactId],
       ],
       'checkPermissions' => FALSE,
