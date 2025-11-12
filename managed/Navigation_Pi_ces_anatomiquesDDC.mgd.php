@@ -68,7 +68,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Lieux de stockage et emprunteurs'),
+        'label' => E::ts('Lieux de conservation'),
         'name' => 'LIste emprunteurs',
         'url' => 'civicrm/stockage',
         'icon' => 'crm-i fa-rectangle-list',
