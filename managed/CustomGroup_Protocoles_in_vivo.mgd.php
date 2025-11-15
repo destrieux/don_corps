@@ -15,7 +15,7 @@ return [
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
         'style' => 'Tab with table',
-        'weight' => 12,
+        'weight' => 11,
         'is_multiple' => TRUE,
         'collapse_adv_display' => TRUE,
       ],

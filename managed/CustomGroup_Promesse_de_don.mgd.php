@@ -14,7 +14,7 @@ return [
         'title' => E::ts('Promesse de don'),
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
-        'weight' => 8,
+        'weight' => 7,
         'created_date' => '2021-07-21 13:38:50',
       ],
       'match' => ['name'],

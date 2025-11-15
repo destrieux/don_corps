@@ -16,7 +16,7 @@ return [
         'extends_entity_column_value' => ['Donateur'],
         'collapse_display' => TRUE,
         'help_pre' => E::ts('<p>R&eacute;orientation du corps vers un autre centre de don</p>'),
-        'weight' => 11,
+        'weight' => 10,
         'collapse_adv_display' => TRUE,
         'created_date' => '2023-04-29 08:49:49',
       ],

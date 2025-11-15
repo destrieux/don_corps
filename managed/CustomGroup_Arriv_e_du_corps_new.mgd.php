@@ -694,7 +694,7 @@ return [
         'html_type' => 'TextArea',
         'default_value' => 'Aucun',
         'is_searchable' => TRUE,
-        'help_pre' => E::ts('En cas d\'effets personnels de valeur retrouvés sur le donneur : 1) décrivez les le plus précisément possible 2) imprimez le certificat de retrait et joignez-le à l\'objet avant de le remettre au secrétariat Action -&gt; Créer CiviOfficeDocument : Reçu effets personnels : cocher créer une activité Effets Personnels'),
+        'help_pre' => E::ts('En cas d\'effets personnels de valeur retrouvés sur le donneur : 1) décrivez les le plus précisément possible 2) imprimez le certificat de retrait et joignez-le à l\'objet avant de le remettre au secrétariat Action -&gt; Créer CiviOfficeDocument : 030-ARRIVEE_Reçu_objets_personnels : cocher créer une activité Effets Personnels et attacher le document au dossier'),
         'attributes' => 'rows=4, cols=60',
         'note_columns' => 60,
         'note_rows' => 6,

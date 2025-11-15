@@ -14,7 +14,7 @@ return [
         'title' => E::ts('Devenir du corps'),
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
-        'weight' => 9,
+        'weight' => 8,
         'created_date' => '2022-05-02 18:27:48',
       ],
       'match' => ['name'],
@@ -627,7 +627,7 @@ return [
       'values' => [
         'custom_group_id.name' => 'Devenir_du_corps',
         'name' => 'Souhait_funeraire_personne_ref_rente',
-        'label' => E::ts('Souhait funeraire personne reférente'),
+        'label' => E::ts('Souhait funeraire de la PAQPF'),
         'data_type' => 'Int',
         'html_type' => 'Select',
         'default_value' => '1',

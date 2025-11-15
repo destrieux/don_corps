@@ -30,8 +30,7 @@ plugins:
 
 nav:
   - A Propos: 'index.md'
-  - Guide administrateur: 
-    - 'dbut de la doc': 'GuideAdministrateur.md'
+
   - Guide utilisateur:
     - 'Demande information': 'GuideUser/demandeur/DemandeurInfo.md'
     - Inscription des donneurs: 
@@ -71,16 +70,28 @@ nav:
       - 'Inscrire un participant': 'GuideUser/ceremonie/participants.md'
       - 'Lister les participants': 'GuideUser/ceremonie/liste.md'
 
+    - In Memoriam: 'GuideUser/memoriam.md'
+
     - Gestion des documents:
       - 'Documents disponibles': 'GuideUser/documents/docsdispo.md'
       - 'Modifier un modèle de Documents': 'GuideUser/documents/docsmodif.md'
-      - 'Imprimer un Document': 'GuideUser/documents/docsimprim.md'      
+      - 'Imprimer un Document': 'GuideUser/documents/docsimprim.md' 
+
     - Gestion des courriels:
       - 'Envoyer un courriel individuel': 'GuideUser/mail/one.md'
       - 'Envoyer un courriel à moins de 50 contacts': 'GuideUser/mail/less50.md'
       - 'Envoyer un courriel à plus de 50 contacts': 'GuideUser/mail/more50.md'
 
+  - Parametrage:
+      - 'Paramétrage': 'Parametrage/intro.md'
+      - 'Paramètres Administrateur': 'Parametrage/admin.md'
+      - 'Paramètres Utilisateurs': 'Parametrage/user.md'
 
-  - Map: 'map.md' 
-  - Parametrage: 'Parametrage.md'   
-   
+  - Guide administrateur: 
+    - 'Contenu': 'GuideAdmin/intro/intro.md'
+    - 'Prerequis': 'GuideAdmin/intro/prerequis.md' 
+    - 'WordPress': 'GuideAdmin/intro/wordpress.md'
+    - CiviCRM:
+        - 'Installer CiviCRM': 'GuideAdmin/civicrm/installcivi.md'
+        - 'Installer les extensions de CiviCRM': 'GuideAdmin/civicrm/extensions.md'
+

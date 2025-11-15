@@ -14,7 +14,7 @@ return [
         'title' => E::ts('animal'),
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Animal'],
-        'weight' => 14,
+        'weight' => 13,
         'collapse_adv_display' => TRUE,
         'created_date' => '2025-08-28 16:30:32',
       ],

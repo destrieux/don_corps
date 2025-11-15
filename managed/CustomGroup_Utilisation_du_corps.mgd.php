@@ -15,7 +15,7 @@ return [
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur', 'Animal'],
         'style' => 'Tab with table',
-        'weight' => 13,
+        'weight' => 12,
         'is_multiple' => TRUE,
         'collapse_adv_display' => TRUE,
       ],
@@ -517,7 +517,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'pr_par_par_131',
-        'filter' => 'action=lookup&group=22',
+        'filter' => 'action=get&contact_sub_type=Personnel',
       ],
       'match' => [
         'name',

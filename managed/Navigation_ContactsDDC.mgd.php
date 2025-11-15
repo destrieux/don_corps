@@ -14,7 +14,7 @@ return [
         'name' => 'ContactsDDC',
         'icon' => 'crm-i fa-address-book-o',
         'has_separator' => NULL,
-        'weight' => 25,
+        'weight' => 26,
       ],
       'match' => ['name', 'domain_id'],
     ],

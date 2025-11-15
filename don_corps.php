@@ -3380,6 +3380,9 @@ function don_corps_civicrm_postInstall() {
       //$api_params = ['version' => 4, 'select' => [ 'GROUP_CONCAT(DISTINCT event_id.title) AS GROUP_CONCAT_event_id_title', 'GROUP_CONCAT(DISTINCT Participant_Event_event_id_01.start_date) AS GROUP_CONCAT_Participant_Event_event_id_01_start_date', 'GROUP_CONCAT(DISTINCT role_id:label) AS GROUP_CONCAT_role_id_label', 'GROUP_CONCAT(DISTINCT status_id:label) AS GROUP_CONCAT_status_id_label', 'GROUP_CONCAT(DISTINCT contact_id.sort_name) AS GROUP_CONCAT_contact_id_sort_name', 'GROUP_CONCAT(DISTINCT Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.far_relation:label) AS GROUP_CONCAT_Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01_far_relation_label', 'GROUP_FIRST(Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.near_contact_id.sort_name ORDER BY Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.deceased_date DESC) AS GROUP_FIRST_Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01_near_contact_id_sort_name_Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01_deceased_date', 'GROUP_CONCAT(DISTINCT Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.deceased_date) AS GROUP_CONCAT_Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01_deceased_date', ], 'orderBy' => [], 'where' => [], 'groupBy' => [ 'contact_id', ], 'join' => [ [ 'Contact AS Participant_Contact_contact_id_01', 'LEFT', [ 'contact_id', '=', 'Participant_Contact_contact_id_01.id', ], ], [ 'Contact AS Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01', 'LEFT', 'RelationshipCache', [ 'Participant_Contact_contact_id_01.id', '=', 'Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.far_contact_id', ], [ 'OR', [ [ 'Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"est la PAQPF"', ], [ 'Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"est la personne de confiance de"', ], [ 'Participant_Contact_contact_id_01_Contact_RelationshipCache_Contact_01.far_relation:name', '=', '"est la personne de confiance 2"', ], ], ], ], [ 'Event AS Participant_Event_event_id_01', 'LEFT', [ 'event_id', '=', 'Participant_Event_event_id_01.id', ], ], ], 'having' => [], ];
       update_search($searchname, $api_params, 'civi_ddc');
 
+      $searchname = 'in_memoriam';        // requete utilisée pour lister les donneurs défunts souhaitant inscription sur stele   
+      update_search($searchname, $api_params, 'civi_ddc');
+
       // Requetes utilisées par les purges
 
       $searchname = 'Donneurs_annul_s';          // requete donneurs annulés sans ceux placés en archive, ie deja purgé       
@@ -3542,8 +3545,7 @@ function don_corps_civicrm_postInstall() {
 
     echo "  - Installation des layouts".PHP_EOL;
 
-      $layouts = 
-      [
+      $layouts = [
         [
           'id' => 1,
           'label' => E::ts('Donneur'),
@@ -3568,7 +3570,7 @@ function don_corps_civicrm_postInstall() {
                   'title' => E::ts('Dates naissance et décès'),
                   'collapsible' => FALSE,
                   'collapsed' => FALSE,
-                  'showTitle' => FALSE,
+                  'showTitle' => TRUE,
                 ],
                 [
                   'name' => 'core.Address',
@@ -4299,11 +4301,10 @@ function don_corps_civicrm_postInstall() {
             [
               [
                 [
-                  'name' => 'custom.CDC_Administration',
-                  'title' => E::ts('CDC Administration'),
-                  'collapsible' => FALSE,
+                  'name' => 'custom.CDC_admin',
+                  'title' => E::ts('CDC admin'),
+                  'collapsible' => TRUE,
                   'collapsed' => FALSE,
-                  'showTitle' => FALSE,
                 ],
               ],
               [
@@ -4507,7 +4508,9 @@ function don_corps_civicrm_postInstall() {
           'id' => 9,
           'label' => E::ts('Animal'),
           'contact_type' => 'Individual',
-          'contact_sub_type' => NULL,
+          'contact_sub_type' => [
+            'Animal',
+          ],
           'groups' => NULL,
           'weight' => 8,
           'blocks' => [

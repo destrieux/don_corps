@@ -17,7 +17,7 @@ return [
           'access CiviContribute',
         ],
         'has_separator' => NULL,
-        'weight' => 34,
+        'weight' => 35,
       ],
       'match' => ['name', 'domain_id'],
     ],

@@ -13,7 +13,7 @@ return [
         'name' => 'Compl_m_nt_tat_civil',
         'title' => E::ts('Complémént état civil'),
         'collapse_display' => TRUE,
-        'weight' => 6,
+        'weight' => 5,
         'created_date' => '2022-04-16 07:37:18',
       ],
       'match' => ['name'],

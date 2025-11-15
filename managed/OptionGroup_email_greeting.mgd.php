@@ -30,6 +30,7 @@ return [
         'value' => '1',
         'name' => 'Dear {contact.first_name}',
         'filter' => 1,
+        'is_active' => FALSE,
       ],
       'match' => [
         'option_group_id',
@@ -51,6 +52,7 @@ return [
         'value' => '2',
         'name' => 'Dear {contact.prefix_id:label} {contact.first_name} {contact.last_name}',
         'filter' => 1,
+        'is_active' => FALSE,
       ],
       'match' => [
         'option_group_id',
@@ -73,28 +75,7 @@ return [
         'name' => 'Dear {contact.prefix_id:label} {contact.last_name}',
         'filter' => 1,
         'is_default' => TRUE,
-      ],
-      'match' => [
-        'option_group_id',
-        'name',
-        'value',
-      ],
-    ],
-  ],
-  [
-    'name' => 'OptionGroup_email_greeting_OptionValue_Customized',
-    'entity' => 'OptionValue',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'option_group_id.name' => 'email_greeting',
-        'label' => E::ts('Madame, Monsieur,'),
-        'value' => '4',
-        'name' => 'Customized',
-        'is_default' => TRUE,
-        'is_reserved' => TRUE,
+        'is_active' => FALSE,
       ],
       'match' => [
         'option_group_id',
@@ -117,6 +98,7 @@ return [
         'name' => 'Dear {contact.household_name}',
         'filter' => 2,
         'is_default' => TRUE,
+        'is_active' => FALSE,
       ],
       'match' => [
         'option_group_id',
@@ -180,6 +162,7 @@ return [
         'value' => '8',
         'name' => '{contact.first_name} {contact.last_name}',
         'filter' => 1,
+        'is_active' => FALSE,
       ],
       'match' => [
         'option_group_id',
@@ -201,6 +184,28 @@ return [
         'value' => '9',
         'name' => 'Mademoiselle',
         'filter' => 1,
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_email_greeting_OptionValue_Customized',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'email_greeting',
+        'label' => E::ts('Madame, Monsieur,'),
+        'value' => '4',
+        'name' => 'Customized',
+        'is_default' => TRUE,
+        'is_reserved' => TRUE,
       ],
       'match' => [
         'option_group_id',

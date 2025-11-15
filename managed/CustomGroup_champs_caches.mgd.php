@@ -12,7 +12,7 @@ return [
       'values' => [
         'name' => 'champs_caches',
         'title' => E::ts('champs caches'),
-        'weight' => 16,
+        'weight' => 15,
         'collapse_adv_display' => TRUE,
         'created_date' => '2024-05-27 13:45:04',
       ],
@@ -592,6 +592,31 @@ return [
         'column_name' => 'toutes_pieces_195',
         'option_group_id.name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
         'serialize' => 1,
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
+  [
+    'name' => 'CustomGroup_champs_caches_CustomField_centre_gestion_corps',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'champs_caches',
+        'name' => 'centre_gestion_corps',
+        'label' => E::ts('centre gestion corps'),
+        'data_type' => 'ContactReference',
+        'html_type' => 'Autocomplete-Select',
+        'text_length' => 255,
+        'note_columns' => 60,
+        'note_rows' => 4,
+        'column_name' => 'centre_gestion_corps_112',
+        'filter' => 'action=get&contact_sub_type=CDC',
       ],
       'match' => [
         'name',

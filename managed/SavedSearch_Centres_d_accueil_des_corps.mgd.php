@@ -16,6 +16,7 @@ return [
         'api_params' => [
           'version' => 4,
           'select' => [
+            'primary_contact_id',
             'sort_name',
             'Contact_Address_contact_id_01.street_address',
             'Contact_Address_contact_id_01.supplemental_address_1',

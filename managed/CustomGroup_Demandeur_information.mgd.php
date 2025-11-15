@@ -12,7 +12,7 @@ return [
       'values' => [
         'name' => 'Demandeur_information',
         'title' => E::ts('Demandeur information'),
-        'weight' => 7,
+        'weight' => 6,
         'collapse_adv_display' => TRUE,
         'created_date' => '2023-05-02 15:02:35',
       ],

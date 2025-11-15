@@ -14,7 +14,7 @@ return [
         'title' => E::ts('Prise en charge au décès'),
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
-        'weight' => 10,
+        'weight' => 9,
         'created_date' => '2021-07-21 13:46:19',
       ],
       'match' => ['name'],
