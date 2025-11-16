@@ -30,3 +30,10 @@ Complétez la fiche qui s'affiche, notamment :
 Vous devez créer les lieux de conservation des corps et des pièces internes ou externes (collaborateurs) à votre centre.
 
 La procédure est décrite [ici](../GuideUser/donneur/anonymat/lieux.md).
+
+## Entreprises de pompes funèbres
+Pour ajouter une entreprise de pompes funèbres : <br> 
+**Contacts > Pompes funèbres > Nouvelle entreprise de pompes funèbres**
+
+* Entrez le nom de l'entreprise, puis **Enregistrer**,
+* Une fiche plus complète s'ouvre pour y entrer des informations.

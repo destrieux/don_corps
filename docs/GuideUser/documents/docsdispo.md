@@ -20,7 +20,7 @@ Nom du modèle | Contenu
 035-ARRIVEE-info_deces_sans_restitution.docx | Information de la PAQPF que le décès est survenu et que la restitution est impossible
 036-ARRIVEE-info_deces_avec_restitution.docx |Information de la PAQPF que le décès est survenu et que la restitution est possible                     
 037-ARRIVEE-info_deces_avec_restitution_RAPPEL.docx | Rappel du courrier précédent en cas de non réponse de la PAQPF
-038-ARRIVEE-confirmation_refus_prise_en_charge_cendres.docx | Confirmation du refus de prise en charge des cendres par la PAQPF ou de sa bon réponse     
+038-ARRIVEE-confirmation_refus_prise_en_charge_cendres.docx | Confirmation du refus de prise en charge des cendres par la PAQPF ou de son absence de réponse     
 039-ARRIVEE-confirmation_demande_restitution.docx | Accusé de réception de la demande de restitution et information sur ses modalités
 040-OPP_FUN-demande_transport_et_date_cremation.docx | Demande d'un transport de cercueil et de la date de crémation <br>à envoyer au prestataire funéraire ; préférer les mails générés automatiquement        
 042-OPP_FUN-demande_auto_fermeture_et_cremation.docx | Demande à la mairie des documents administratifs indispensables à la crémation

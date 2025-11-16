@@ -1,5 +1,5 @@
 # Cérémonies d'hommage
-Une cérémonie en hommage des donneurs et de leurs proches doit être organisée annulement
+Une cérémonie en hommage aux donneurs et à leurs proches doit être organisée annullement.
 
 Ce processus comporte 3 étapes :
 
