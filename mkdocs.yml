@@ -84,7 +84,13 @@ nav:
 
   - Parametrage:
       - 'Paramétrage': 'Parametrage/intro.md'
-      - 'Paramètres Administrateur': 'Parametrage/admin.md'
+      - Paramètres Administrateur:
+          - 'Organisation par defaut': 'Parametrage/admin/org.md'
+          - 'Messagerie': 'Parametrage/admin/mail.md'       
+          - 'CiviOffice': 'Parametrage/admin/civioffice.md'      
+          - 'Utilisateurs et Permisions': 'Parametrage/admin/utilisateurs.md'     
+          - 'Tâches périodiques': 'Parametrage/admin/taches.md'    
+          - 'Purges': 'Parametrage/admin/purges.md'    
       - 'Paramètres Utilisateurs': 'Parametrage/user.md'
 
   - Guide administrateur: 
@@ -93,5 +99,9 @@ nav:
     - 'WordPress': 'GuideAdmin/intro/wordpress.md'
     - CiviCRM:
         - 'Installer CiviCRM': 'GuideAdmin/civicrm/installcivi.md'
-        - 'Installer les extensions de CiviCRM': 'GuideAdmin/civicrm/extensions.md'
-
+        - 'Installer cv et cli': 'GuideAdmin/civicrm/cv.md'
+        - 'Télécharger les extensions indispensables': 'GuideAdmin/civicrm/extensions.md'
+        - 'Installer don_corps': 'GuideAdmin/civicrm/doncorps.md'
+        - 'Migrer la base de données': 'GuideAdmin/civicrm/migration.md'
+        - 'Mise à jour de CiviCRM': 'GuideAdmin/civicrm/majcivi.md'
+    - 'Trucs': 'GuideAdmin/intro/trucs.md'
