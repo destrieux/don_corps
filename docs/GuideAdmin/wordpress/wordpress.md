@@ -1,5 +1,5 @@
 # Installation de Wordpress
-> Ne pas utiliser le paquet Debian Wordpress qui installe dans une arborescence différente
+> Ne pas utiliser le paquet Debian Wordpress qui s'installe dans une arborescence différente. 
 ## Création de la base de données
 
 * Créez un fichier de configuration qui va générer une base de données pour Wordpress avec le mot de passe *WORDPRESSPWD* <br>
@@ -17,7 +17,7 @@
 
 ## Préparez l'installation de Wordpress
 
-* Téléchargez Wordpress et l'installer dans le repertoire *ddctest*<br>
+* Téléchargez Wordpress et installez-le dans le répertoire *ddctest*,<br>
 ```cd /var/www/html``` <br>
 ```wget https://wordpress.org/latest.zip``` <br>
 ```unzip latest.zip``` <br>
@@ -25,7 +25,7 @@
 
 > Attention pas de caractères spéciaux dans le nom du site !
 
-* Éditez le ficher de configuration *wp-config.php* utilisé par Wordpress lors de l'installation <br>
+* Éditez le ficher de configuration *wp-config.php* utilisé par Wordpress lors de l'installation, <br>
 ```cd ddctest``` <br>
 ```cp wp-config-sample.php wp-config.php``` <br>
 ```nano wp-config.php``` <br>
@@ -43,7 +43,7 @@
 * Changez les permissions <br>
 ```chown -R www-data:www-data /var/www/html/ddctest```
 ## Créez le site
-* Déclarez le site 
+* Déclarez le site,
 ```cd /etc/apache2/sites-available```<br>
 ```cp 000-default.conf ddctest.conf```<br>
 ```nano ddctest.conf```<br>
@@ -51,17 +51,17 @@
         change : DocumentRoot /var/www/html/ddctest
         change : ServerAdmin mailadmin@domaine.fr
 
-* Désactivez l'hôte virtuel par défaut, activez le site et relancez le serveur web <br>
+* Désactivez l'hôte virtuel par défaut, activez le site et relancez le serveur web. <br>
 ```a2dissite 000-default``` <br>
 ```a2ensite ddctest``` <br>
 ```service apache2 reload``` <br>
 
-## Instalez Wordpress
-* dans un navigateur: http://ddc_test/
+## Installez Wordpress
+* dans un navigateur : http://ddc_test/
 
 * Entrez les informations demandées :
 
-    * langue
-    * titre du site : ddctest
-    * identifiant : USERWORDPRESS
-    * password : MDPUSERWORDPRESS
+    * langue,
+    * titre du site : ddctest,
+    * identifiant : USERWORDPRESS,
+    * password : MDPUSERWORDPRESS.

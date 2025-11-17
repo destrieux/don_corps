@@ -3,25 +3,25 @@
 Le système comporte de nombreux modèles de courriers dont la description est disponible [ici](../GuideUser/documents/docsdispo.md).
 
 Ce sont des documents Word que vous pouvez modifier.
-Avant la première utilisation vous devez revoir chacun de ces document pour utiliser votre propre entête.
+Avant la première utilisation, vous devez revoir chacun de ces documents pour utiliser votre propre en-tête.
 > Prenez bien garde à ne pas modifier les *tokens* qui sont du texte encadré par accolades {} et correspondent à des informations qui sont récupérées dans la base pour générer les courriers.
 
 ## Personnels du centre de don du corps
-Les utilisateurs crées par l'Administrateur dans Wordpress sont normalement automatiquement crés dans la base mais ne sont pas rattachés à votre organisation. <br>
+Les utilisateurs créés par l'administrateur dans Wordpress sont normalement automatiquement créés dans la base mais ne sont pas rattachés à votre organisation. <br>
 
-Pour rattacher un utilisateur à votre centre, recherchez sa fiche<br>
-**Rechercher > Tous contacts**
+Pour rattacher un utilisateur à votre centre, recherchez sa fiche :<br>
+**Rechercher > Tous contacts**.
 
 ![Modifier le type de contact personnel](../img/Personnel_modifier_Type.png)
 
-Dans la fiche, cliquez sur **Modifier** <br>
-Changez le **Type de contact** pour *Personnel*, **Enregistrer**
+Dans la fiche, cliquez sur **Modifier**, <br>
+Changez le **Type de contact** pour *Personnel*. **Enregistrer**
 
 Complétez la fiche qui s'affiche, notamment : 
 
 * **Fonction** : Préparateur, Gestionnaire, Directeur...
 * **Centre d'accueil des corps** : votre centre d'accueil ; pour le retrouver tapez %, tous les centres s'affichent,
-* **Metier** : BIATS ou enseignant chercheur, 
+* **Métier** : BIATS ou enseignant chercheur, 
 * **Catégorie et BAP** : pour les BIATS,
 * **Contrat** : Titulaire, CDI, CDD,
 * **Dates de début et de fin des fonctions**.

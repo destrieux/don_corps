@@ -1,20 +1,20 @@
 # Trucs et astuces
 ## Réinitialiser la numérotation des contacts (ID)
-Civicrm utilise un contact ID qui s'incrémente à chaque entrée. <br>
-Si vous effacez définitivemnt tous les contacts d'une base, l'incrémentation va continuer. Pour éviter cela:
+CiviCRM utilise un contact ID qui s'incrémente à chaque entrée. <br>
+Si vous effacez définitivement tous les contacts d'une base, l'incrémentation va continuer. Pour éviter cela :
 
 * Supprimez tous les contacts :
 
-    * Pour cela il faut supprimer tous les évenements, encaissements adhésions: faire une recherche et tous les selectionner pour suppression
-    * Puis supprimer les contacts : afficher la liste, tout selectionner, action : supprimer définitivement
+    * Pour cela il faut supprimer tous les évènements, encaissements adhésions: faire une recherche et tous les sélectionner pour suppression
+    * Puis supprimer les contacts : afficher la liste, tout sélectionner, action : *supprimer définitivement*
     * Supprimer ceux qui seraient en corbeille : recherche avancée, cocher chercher dans la corbeille, supprimer définitivement les résultats
-    * Tous les contacts vont être supprimés sauf l'utilisateuur connecté et l'organisation principale
+    * Tous les contacts vont être supprimés sauf l'utilisateur connecté et l'organisation principale
 
 * Allez dans PhpMyadmin, sur la table civicrm_contacts, onglet SQL, et lancez : <br>
 ```ALTER TABLE civicrm_contact AUTO_INCREMENT = 1```
 
-## Changer le timeout de wordpress
-Lors de l'import de grosses bases, WP interrompt le processus en raison d'un timeout trop court (30 sec par défaut). Ce parametre peut être changé dans php.ini
+## Changer le timeout de Wordpress
+Lors de l'import de grosses bases, WP interrompt le processus en raison d'un timeout trop court (30 sec par défaut). Ce paramètre peut être changé dans php.ini
 
 * Localiser php.ini <br>
 ```php -i | grep php.ini```
@@ -25,9 +25,9 @@ Lors de l'import de grosses bases, WP interrompt le processus en raison d'un tim
 
 * Une fois l'import terminé, N'OUBLIEZ PAS DE REMETTRE LA VALEUR INITIALE
 
-## Changer les limites de memoire de phpMyAdmin
+## Changer les limites de mémoire de phpMyAdmin
 Lors de l'import de grosses bases, phpMyAdmin interrompt le processus en raison d'une taille trop importante. <br> 
-Ce parametre peut être changé dans php.ini
+Ce paramètre peut être changé dans php.ini :
 
 * Localiser php.ini <br>
 ```php -i | grep php.ini```

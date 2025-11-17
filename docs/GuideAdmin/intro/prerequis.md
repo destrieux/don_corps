@@ -1,29 +1,28 @@
 # Prérequis à l'installation de CiviCRM et de l'extension don du corps
 ## Matériel
-La configuration est utilisée sur une machine ayant les caractérisques suivantes : 
+L'application est utilisée sur une machine ayant les caractéristiques suivantes : 
 
-* Machine virtuelle, 2 CPU
-* 16 Go de RAM
-* 16 Go de disque ; à augmenter en fonction du nombre de documents qui sont stockés sur le serveur (scan des promesses de don, des documents générés...)
-* Debian récente, 11 ou supé
-* Serveur Apache
-* PHP 8 ou supérieure
+* Machine virtuelle, 2 CPU,
+* 16 Go de RAM,
+* 16 Go de disque ; à augmenter en fonction du nombre de documents qui sont stockés sur le serveur (scan des promesses de don, documents générés...),
+* Debian récente, 11 ou supérieure,
+* Serveur Apache,
+* PHP version 8 ou supérieure.
 
 ## Installation du serveur LAMP
 ### PHP
 Pour installer PHP et les paquets demandés par CiviCRM : <br>
 ```apt-get install php composer libapache2-mod-php php-pear php-cgi php-common php-mbstring php-zip php-net-socket php-gd php-xml-util php-mysql php-bcmath php-intl php-imagick unzip wget curl git -y```
 
-Bien vérifier que les fonctions d'internationalisation de PHP sont activées : la ligne <br>
-```;extension=intl``` <br>
-doit être décommentée dans **les deux** fichiers : 
+Bien vérifier que les fonctions d'internationalisation de PHP sont activées : <br>
+la ligne ```;extension=intl``` doit être décommentée dans **les deux** fichiers : 
 
 * /etc/php/VERSION/apache2/php.ini
 * /etc/php/VERSION/cli/php.ini
 
 ### Mariadb
 
-* Installer Mariadb (au moins v. 10.5 sinon certaines requetes ne marchent pas) et phpmyadmin <br>
+* Installer Mariadb (au moins v. 10.5 sinon certaines requêtes ne marchent pas) et phpmyadmin <br>
 ```apt-get install mariadb-server mariadb-client phpmyadmin -y```
 
 * Démarrer Mariadb <br>

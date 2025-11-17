@@ -4,11 +4,11 @@ Il faut modifier l'adresse courriel de votre prestataire funéraire dans la règ
 
 Allez à **Administrer > CiviRules > Manage rules** pour afficher les règles disponibles.
 
-Dans la ligne *Envoyer mail de demande de crémation* sélectionner **Modifier**.
+Dans la ligne *Envoyer mail de demande de crémation*, sélectionnez **Modifier**.
 
 ![Modification rule demander crémation](../../img/rule_modif1.png)
 
-Allez dans la section **Linked action > Send Email > Modifier** 
+Allez dans la section **Linked action > Send Email > Modifier**.
 
 ![Modification rule demander crémation2](../../img/rule_modif2.png)
 

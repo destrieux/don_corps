@@ -31,6 +31,31 @@ plugins:
 nav:
   - A Propos: 'index.md'
 
+  - Guide administrateur: 
+    - 'Contenu': 'GuideAdmin/intro/intro.md'
+    - 'Prerequis': 'GuideAdmin/intro/prerequis.md' 
+    - 'WordPress': 'GuideAdmin/wordpress/wordpress.md'
+    - CiviCRM:
+        - 'Installer CiviCRM': 'GuideAdmin/civicrm/installcivi.md'
+        - 'Installer cv et cli': 'GuideAdmin/civicrm/cv.md'
+        - 'Télécharger les extensions indispensables': 'GuideAdmin/civicrm/extensions.md'
+        - 'Installer don_corps': 'GuideAdmin/civicrm/doncorps.md'
+        - 'Migrer la base de données': 'GuideAdmin/civicrm/migration.md'
+        - 'Mise à jour de CiviCRM': 'GuideAdmin/civicrm/majcivi.md'
+    - 'Trucs': 'GuideAdmin/trucs.md'
+
+  - Paramétrage:
+    - 'Paramétrage': 'Parametrage/intro.md'
+    - Paramètres Administrateur:
+        - 'Organisation par defaut': 'Parametrage/admin/org.md'
+        - 'Messagerie': 'Parametrage/admin/mail.md'       
+        - 'CiviOffice': 'Parametrage/admin/civioffice.md'    
+        - 'CiviRules': 'Parametrage/admin/rules.md' 
+        - 'Utilisateurs et Permisions': 'Parametrage/admin/utilisateurs.md'     
+        - 'Tâches périodiques': 'Parametrage/admin/taches.md'    
+        - 'Purges': 'Parametrage/admin/purges.md'    
+    - 'Paramètres Utilisateurs': 'Parametrage/user.md'
+
   - Guide utilisateur:
     - "Demande d'information": 'GuideUser/demandeur/DemandeurInfo.md'
     - Inscription des donneurs: 
@@ -82,27 +107,5 @@ nav:
       - 'Envoyer un courriel à moins de 50 contacts': 'GuideUser/mail/less50.md'
       - 'Envoyer un courriel à plus de 50 contacts': 'GuideUser/mail/more50.md'
 
-  - Paramétrage:
-      - 'Paramétrage': 'Parametrage/intro.md'
-      - Paramètres Administrateur:
-          - 'Organisation par defaut': 'Parametrage/admin/org.md'
-          - 'Messagerie': 'Parametrage/admin/mail.md'       
-          - 'CiviOffice': 'Parametrage/admin/civioffice.md'    
-          - 'CiviRules': 'Parametrage/admin/rules.md' 
-          - 'Utilisateurs et Permisions': 'Parametrage/admin/utilisateurs.md'     
-          - 'Tâches périodiques': 'Parametrage/admin/taches.md'    
-          - 'Purges': 'Parametrage/admin/purges.md'    
-      - 'Paramètres Utilisateurs': 'Parametrage/user.md'
 
-  - Guide administrateur: 
-    - 'Contenu': 'GuideAdmin/intro/intro.md'
-    - 'Prerequis': 'GuideAdmin/intro/prerequis.md' 
-    - 'WordPress': 'GuideAdmin/intro/wordpress.md'
-    - CiviCRM:
-        - 'Installer CiviCRM': 'GuideAdmin/civicrm/installcivi.md'
-        - 'Installer cv et cli': 'GuideAdmin/civicrm/cv.md'
-        - 'Télécharger les extensions indispensables': 'GuideAdmin/civicrm/extensions.md'
-        - 'Installer don_corps': 'GuideAdmin/civicrm/doncorps.md'
-        - 'Migrer la base de données': 'GuideAdmin/civicrm/migration.md'
-        - 'Mise à jour de CiviCRM': 'GuideAdmin/civicrm/majcivi.md'
-    - 'Trucs': 'GuideAdmin/intro/trucs.md'
+

@@ -3,8 +3,8 @@ L'article 4 de l'[arrêté du 22 juillet 2023](https://www.legifrance.gouv.fr/do
 
 La purge des données comporte plusieurs étapes :
 
-* Des requêtes SearchKit rattachent les contacts à des groupes dynamiques (par exemple *donneurs dont les opérations funéraires sont achevées depuis plus de 5 ans*, *Dons annulés*...)
-* une API purge les contacts de chacun des groupes en appliquant des règles différentes, définies par l'arrêté: <br>```/var/www/html/ddctest/wp-content/plugins/civicrm/civicrm/ext/don_corps/api/v3/Contact/Purge.php```
+* Des requêtes SearchKit rattachent les contacts à des groupes dynamiques (par exemple *donneurs dont les opérations funéraires sont achevées depuis plus de 5 ans*, *Dons annulés*...),
+* une API purge les contacts de chacun des groupes en appliquant des règles différentes, définies par l'arrêté : <br>```/var/www/html/ddctest/wp-content/plugins/civicrm/civicrm/ext/don_corps/api/v3/Contact/Purge.php```
 
 > Pour que l'API fonctionne, vous devez avoir installé [cv](../../GuideAdmin/civicrm/cv.md) préalablement.
 
@@ -15,11 +15,11 @@ Modifiez à la valeur souhaitée : <br>
     ```$logfile = "/var/www/html/ddctest/wp-content/uploads/civicrm/ConfigAndLog.purge.log"```
 
 ## Lancez les purges à la main 
-```cv api Contact.Purge```
-Les groupes de purges sont traités et les contacts sont supprimés ou leur identité est modifiée pour Anonymisé ANONYMISE
+```cv api Contact.Purge``` <br>
+Les groupes de purges sont traités et les contacts sont supprimés ou leur identité est modifiée pour *Anonymisé ANONYMISE*.
 
 ## Automatiser les purges 
-Une tâche Call Contact.Purge est crée pour lancer la purge automatiquement chaque jour : <br>
+Une tâche Call Contact.Purge peut lancer la purge automatiquement chaque jour : <br>
 **Administrer > Paramètres Système > Tache programmées**
 
 Elle est désactivée par défaut. 
