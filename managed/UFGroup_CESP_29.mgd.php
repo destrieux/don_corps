@@ -29,7 +29,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'CESP_29',
-        'field_name:name' => 'Devenir_du_corps.CESP',
+        'field_name' => 'custom_37',
         'label' => E::ts('Avis du Comité éthique'),
         'field_type' => 'Donateur',
       ],
@@ -44,7 +44,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'CESP_29',
-        'field_name:name' => 'Devenir_du_corps.ref_avis_CESP',
+        'field_name' => 'custom_38',
         'label' => E::ts('ref avis Comité éthique'),
         'field_type' => 'Donateur',
       ],

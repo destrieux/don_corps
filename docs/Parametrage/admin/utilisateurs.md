@@ -21,6 +21,7 @@ Les permissions dans CiviCRM sont gérées par le statut dans Wordpress :
 
 Les permissions sont réglées finement dans : <br>
 **Administration > Utilisateurs et permissions > Permissions > Wordpress control access**.
+> Elles sont normalement correctement réglées à l'installation de l'extension Don du Corps et vous n'avez pas besoin de les modifier.
 
 Les permissions type sont :
 ![permissions type](../../img/Reglage_ACL_Civicrm.png)

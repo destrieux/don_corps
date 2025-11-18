@@ -59,7 +59,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Fonction_18',
-        'field_name:name' => 'infos_personnel.M_tier',
+        'field_name' => 'custom_105',
         'label' => E::ts('Métier'),
         'field_type' => 'Personnel',
       ],
@@ -74,7 +74,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Fonction_18',
-        'field_name:name' => 'infos_personnel.Cat_gorie',
+        'field_name' => 'custom_106',
         'label' => E::ts('Catégorie'),
         'field_type' => 'Personnel',
       ],
@@ -89,7 +89,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Fonction_18',
-        'field_name:name' => 'infos_personnel.BAP',
+        'field_name' => 'custom_107',
         'label' => E::ts('BAP'),
         'field_type' => 'Personnel',
       ],
@@ -104,7 +104,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Fonction_18',
-        'field_name:name' => 'infos_personnel.Contrat',
+        'field_name' => 'custom_108',
         'label' => E::ts('Contrat'),
         'field_type' => 'Personnel',
       ],
@@ -119,7 +119,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Fonction_18',
-        'field_name:name' => 'infos_personnel.Date_debut_fonctions',
+        'field_name' => 'custom_103',
         'label' => E::ts('Date du début des fonctions'),
         'field_type' => 'Personnel',
       ],
@@ -134,7 +134,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Fonction_18',
-        'field_name:name' => 'infos_personnel.Date_fin_fonctions',
+        'field_name' => 'custom_104',
         'label' => E::ts('Date de la fin des fonctions'),
         'field_type' => 'Personnel',
       ],

@@ -29,7 +29,7 @@ return [
       'values' => [
         'label' => E::ts('Aide civicrm don du corps'),
         'name' => 'Aide civicrm don du corps',
-        'url' => 'https://doncorps.fr/wiki/index.php/Aide_CiviCRM',
+        'url' => 'https://cividdc.doncorps.fr/',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',
         'parent_id.name' => 'SupportDDC',
