@@ -1358,4 +1358,38 @@ return [
       ],
     ],
   ],
+  [
+    'name' => 'OptionGroup_activity_type_OptionValue_Inventaire',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'activity_type',
+        'label' => E::ts('Inventaire'),
+        'value' => '60',
+        'name' => 'Inventaire',
+        'description' => E::ts('<p>Inventaire des pièces et corps d\'un lieu de conservation,<strong> à créer depuis la fiche du lieu de conservation</strong>.</p>
+
+<p><strong>Les numéros de pièces (codes-barres) doivent être saisis dans le champ Détail</strong>.</p>
+
+<p>A la validation un rapport remplace la liste des pièces dans le champ détail :&nbsp;</p>
+
+<p>- Pièces bien localisées</p>
+
+<p>- Pièces inscrites dans la base comme détruites, manquantes ou crématisées et présentes dans l\'inventaire : leur statut est mis à Non éliminé et elles sont relocalisées</p>
+
+<p>- Pièces absentes de la base : à créer manuellement</p>
+
+<p>- Pièces inscrites dans la base dans une autre pièce : relocalisées</p>'),
+        'icon' => 'fa-list-check',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
 ];

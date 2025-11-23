@@ -12,6 +12,19 @@ require_once 'don_corps.civix.php';
 use CRM_DonCorps_ExtensionUtil as E;
 
 # DEFINITION DES FONCTIONS
+  
+  function don_corps_civicrm_pageRun($page) {
+    // Vérifie si c’est notre page personnalisée
+    if ($page->getVar('_name') === 'don_corps') {
+        require_once __DIR__ . '/CRM/DonCorps/Form/SetValue.php';
+        $form = new CRM_DonCorps_Form_SetValue();
+        $form->preProcess();
+        $form->buildQuickForm();
+        $form->postProcess();
+    }
+  }
+
+
   ############
   ## Les fonctions _myextension_remove_wp_capabilities et _myextension_add_wp_capabilities
   ##  modifient les privileges des utilisateurs wp selon leur rôle wordpress
@@ -1292,6 +1305,7 @@ use CRM_DonCorps_ExtensionUtil as E;
     //function don_corps_civicrm_config(&$config) {
     // echo PHP_EOL."@@@  hook_civicrm_config ".PHP_EOL;
     _don_corps_civix_civicrm_config($config);
+    
   }
 
 # IMPLEMENTS hook_civicrm_install()
@@ -2600,6 +2614,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 # IMPLEMENTS hook_civicrm_enable().
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  
+
   function don_corps_civicrm_enable(): void {   // pas d'affcicahge des messages consoles lors installation
   //function don_corps_civicrm_enable() {     // affiche les messages console lors de l'installation
     echo PHP_EOL."@@@  hook_civicrm_enable ".PHP_EOL;
@@ -2992,7 +3007,70 @@ use CRM_DonCorps_ExtensionUtil as E;
 
     // création des rules
     echo "  -Création des Rules".PHP_EOL;
+      echo PHP_EOL."   - Civirule : Inventaire ".PHP_EOL;
 
+      $to_create =  [        //Inventaire : Déclaration de l'Action
+        'entity' => 'CiviRulesAction',
+        'values' => [
+          'name' => 'creeinventaire',
+          'label' => 'Crée un inventaire de pièces anatomiques',
+          'class_name' => 'CRM_DonCorps_CivirulesActions_Activite_Creeinventaire',
+          'is_active' => TRUE,
+          'created_date' => date('Y-m-d'),
+          'created_user_id' => 1,
+          'modified_date' => NULL,
+          'modified_user_id' => NULL,
+        ],
+    ];
+    create_entity($to_create);
+
+    $to_create =  [         //Inventaire : Rule
+              
+      'entity' => 'CiviRulesRule',
+      'values' => [
+        'trigger_id:name' => 'new_activity',
+        'name' => "création_d'inventaire",
+        'label' => "Création d'inventaire",
+        'trigger_params' => "a:1:{s:11:\"record_type\";s:1:\"3\";}",
+        'is_active' => TRUE,
+        'description' => 'Crée un nouvel inventaire',
+        'help_text' => "<p>Lorsqu'une activité de type inventaire est créée depuis un lieu de conservation, un rapport remplace la liste des pièces dans le champ détail ; les pièces sont éventuellement relocalisées et leur statut est corrigé. Le champ 'Inventaires' des pièces et des corps concernés est mis à jour.</p>\r\n\r\n<p>&nbsp;</p>\r\n",
+        'created_date' => date('Y-m-d'),
+        'created_user_id' => 1,
+        'modified_date' => NULL,
+        'modified_user_id' => NULL,
+        'is_debug' => FALSE,
+      ],
+    ];
+    create_entity($to_create);
+
+    $to_create =  [    //Inventaire : Rule Action
+      'entity' => 'CiviRulesRuleAction',
+      'values' => [
+        'action_params' => NULL,
+        'delay' => NULL,
+        'ignore_condition_with_delay' => 0,
+        'is_active' => TRUE,
+        'rule_id.name' => "création_d'inventaire",
+        'action_id.name' => 'creeinventaire'
+      ],
+    ];
+    create_entity($to_create);
+ 
+
+    $to_create =  [                   //Inventaire : Rule condition
+      'entity' => 'CiviRulesRuleCondition',
+      'values' => [
+        'condition_link' => NULL,
+        'condition_params' => "a:2:{s:8:\"operator\";s:1:\"0\";s:16:\"activity_type_id\";a:1:{i:0;s:2:\"60\";}}",
+        'is_active' => TRUE,
+        'rule_id.name' => 'maj_genre_',
+        'condition_id.name' => 'contact_custom_field_changed',
+      ],
+    ];
+    create_entity($to_create);
+
+    
       echo PHP_EOL."   - Civirule : MAJ civilités ".PHP_EOL;
             
       $to_create =  [        //Corriger_civililite : Déclaration de l'Action

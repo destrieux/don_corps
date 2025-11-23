@@ -75,7 +75,7 @@ class CRM_DonCorps_CivirulesActions_Contact_CopyBarCode extends CRM_Civirules_Ac
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return FALSE;
+    return NULL;
   }
 
 

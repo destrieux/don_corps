@@ -28,6 +28,30 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'name_and_address',
+        'field_name' => 'custom_55',
+        'is_required' => TRUE,
+        'help_post' => E::ts('37#AAAA-NNNNN
+AAAA: année
+NNNNN: numéro (5 chiffres)'),
+        'help_pre' => E::ts('37#AAAA-NNNNN
+AAAA: année
+NNNNN: numéro (5 chiffres)'),
+        'visibility' => 'Public Pages and Listings',
+        'in_selector' => TRUE,
+        'label' => E::ts('N° de don'),
+        'field_type' => 'Donateur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_name_and_address_UFField_2',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'name_and_address',
         'field_name' => 'custom_56',
         'is_required' => TRUE,
         'visibility' => 'Public Pages and Listings',
@@ -38,7 +62,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_name_and_address_UFField_2',
+    'name' => 'UFGroup_name_and_address_UFField_3',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -56,7 +80,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_name_and_address_UFField_3',
+    'name' => 'UFGroup_name_and_address_UFField_4',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -74,7 +98,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_name_and_address_UFField_4',
+    'name' => 'UFGroup_name_and_address_UFField_5',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -92,7 +116,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_name_and_address_UFField_5',
+    'name' => 'UFGroup_name_and_address_UFField_6',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -101,6 +125,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'name_and_address',
         'field_name' => 'nick_name',
+        'is_required' => TRUE,
         'visibility' => 'Public Pages and Listings',
         'in_selector' => TRUE,
         'label' => E::ts('Nom de naissance'),
@@ -109,7 +134,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_name_and_address_UFField_6',
+    'name' => 'UFGroup_name_and_address_UFField_7',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -127,7 +152,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_name_and_address_UFField_7',
+    'name' => 'UFGroup_name_and_address_UFField_8',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -137,24 +162,6 @@ return [
         'uf_group_id.name' => 'name_and_address',
         'field_name' => 'custom_54',
         'is_required' => TRUE,
-        'visibility' => 'Public Pages and Listings',
-        'in_selector' => TRUE,
-        'label' => E::ts('Centre de don'),
-        'field_type' => 'Donateur',
-      ],
-    ],
-  ],
-  [
-    'name' => 'UFGroup_name_and_address_UFField_8',
-    'entity' => 'UFField',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'uf_group_id.name' => 'name_and_address',
-        'field_name' => 'custom_55',
-        'is_required' => TRUE,
         'help_post' => E::ts('37#AAAA-NNNNN
 AAAA: année
 NNNNN: numéro (5 chiffres)'),
@@ -163,7 +170,7 @@ AAAA: année
 NNNNN: numéro (5 chiffres)'),
         'visibility' => 'Public Pages and Listings',
         'in_selector' => TRUE,
-        'label' => E::ts('N° de don'),
+        'label' => E::ts('Centre de don'),
         'field_type' => 'Donateur',
       ],
     ],

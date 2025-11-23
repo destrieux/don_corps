@@ -2815,6 +2815,586 @@ Pour en ajouter : Pièces Anatomiques > créer localisation pièces'),
     ],
   ],
   [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_16:39:00'),
+        'value' => '10',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_16:44:00'),
+        'value' => '11',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_16:55:00'),
+        'value' => '12',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:02:00'),
+        'value' => '13',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:02:00'),
+        'value' => '14',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:04:00'),
+        'value' => '15',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:08:00'),
+        'value' => '16',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:10:00'),
+        'value' => '17',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:13:00'),
+        'value' => '18',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:16:00'),
+        'value' => '19',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:17:00'),
+        'value' => '20',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:18:00'),
+        'value' => '21',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:19:00'),
+        'value' => '22',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_CDC_Tours_Frigo_4_christophe_de',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr_2025-11-23_17:25:00'),
+        'value' => '23',
+        'name' => 'CDC_Tours_Frigo_4_christophe_de',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_28_00_christophe_',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:28:00_christophe.destrieux@univ-tours.fr_CDC_Tours_-Frigo_4°'),
+        'value' => '24',
+        'name' => '2025_11_23_17_28_00_christophe_',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_29_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:29:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '25',
+        'name' => '2025_11_23_17_29_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_32_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:32:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '26',
+        'name' => '2025_11_23_17_32_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_33_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:33:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '27',
+        'name' => '2025_11_23_17_33_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_36_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:36:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '28',
+        'name' => '2025_11_23_17_36_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_41_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:41:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '29',
+        'name' => '2025_11_23_17_41_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_44_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:44:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '30',
+        'name' => '2025_11_23_17_44_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_45_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:45:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '31',
+        'name' => '2025_11_23_17_45_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_45_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:45:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '32',
+        'name' => '2025_11_23_17_45_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_46_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:46:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '33',
+        'name' => '2025_11_23_17_46_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_17_52_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_17:52:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '34',
+        'name' => '2025_11_23_17_52_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_18_05_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_18:05:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '35',
+        'name' => '2025_11_23_18_05_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_18_06_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_18:06:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '36',
+        'name' => '2025_11_23_18_06_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_18_08_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_18:08:00_CDC_Tours_-Frigo_4°_christophe.destrieux@univ-tours.fr'),
+        'value' => '37',
+        'name' => '2025_11_23_18_08_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_23_18_23_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-23_18:23:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '38',
+        'name' => '2025_11_23_18_23_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
     'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Inventaires',
     'entity' => 'CustomField',
     'cleanup' => 'unused',

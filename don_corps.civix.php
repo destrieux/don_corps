@@ -31,6 +31,8 @@ class CRM_DonCorps_ExtensionUtil {
     return ts($text, $params);
   }
 
+ 
+
   /**
    * Get the URL of a resource file (in this extension).
    *

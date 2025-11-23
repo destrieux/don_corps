@@ -1,6 +1,6 @@
 <div af-fieldset="" store-values="1">
-  <af-field name="Inventaires" defn="{input_attrs: {multiple: true}}" />
-  <af-field name="Lacalisation" />
-  <af-field name="Type_de_poi_ce_3" defn="{input_attrs: {multiple: true}}" />
+  <af-field name="Inventaires" defn="{input_attrs: {multiple: true}, label: 'ABSENT de l\'Inventaires', search_operator: 'NOT CONTAINS'}" />
+  <af-field name="Lacalisation" defn="{label: 'Localisation', input_attrs: {}}" />
+  <af-field name="Type_de_poi_ce_3" defn="{input_attrs: {multiple: true}, label: 'Type de pi\u00e8ce'}" />
   <crm-search-display-table search-name="Inventaires" display-name="Inventaires_Table_1"></crm-search-display-table>
 </div>

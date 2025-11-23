@@ -3,256 +3,135 @@
 eval(`cv php:boot`);
 
 
-### Modification des privileges civicrm selon le role wordpress
-  $all_caps=[                   // liste tous les privileges
-    'access_all_custom_data',
-    'access_civicontribute',
-    'access_civicrm',
-    'access_civievent',
-    'access_civimail_subscribe_unsubscribe_pages',
-    'access_civimail',
-    'access_civimember',
-    'access_civioffice',
-    'access_civireport',
-    'access_contact_dashboard',
-    'access_contact_reference_fields',
-    'access_deleted_contacts',
-    'access_report_criteria',
-    'access_uploaded_files',
-    'activate_plugins',
-    'add_contact_notes',
-    'add_contacts',
-    'administer_afform',
-    'administer_dedupe_rules',
-    'administer_private_reports',
-    'administer_reports',
-    'administer_reserved_groups',
-    'administer_reserved_reports',
-    'administer_reserved_tags',
-    'administer_search_kit',
-    'administer_tagsets',
-    'administrator',
-    'author',
-    'contributor',
-    'create_users',
-    'delete_activities',
-    'delete_contacts',
-    'delete_in_civicontribute',
-    'delete_in_civievent',
-    'delete_in_civimail',
-    'delete_in_civimember',
-    'delete_others_pages',
-    'delete_others_posts',
-    'delete_pages',
-    'delete_plugins',
-    'delete_posts',
-    'delete_private_pages',
-    'delete_private_posts',
-    'delete_published_pages',
-    'delete_published_posts',
-    'delete_themes',
-    'delete_users',
-    'edit_all_contacts',
-    'edit_all_events',
-    'edit_contributions',
-    'edit_dashboard',
-    'edit_event_participants',
-    'edit_files',
-    'edit_groups',
-    'edit_inbound_email_basic_information_and_content',
-    'edit_inbound_email_basic_information',
-    'edit_memberships',
-    'edit_message_templates',
-    'edit_my_contact',
-    'edit_others_pages',
-    'edit_others_posts',
-    'edit_pages',
-    'edit_plugins',
-    'edit_posts',
-    'edit_private_pagesv',
-    'edit_private_posts',
-    'edit_published_pages',
-    'edit_published_posts',
-    'edit_system_workflow_message_templates',
-    'edit_theme_options',
-    'edit_themes',
-    'edit_user_driven_message_templates',
-    'edit_users',
-    'export',
-    'force_merge_duplicate_contacts',
-    'import',
-    'install_plugins',
-    'install_themes',
-    'level_0',
-    'level_1',
-    'level_10',
-    'level_2',
-    'level_3',
-    'level_4',
-    'level_5',
-    'level_6',
-    'level_7',
-    'level_8',
-    'level_9',
-    'list_users',
-    'make_online_contributions',
-    'manage_categories',
-    'manage_event_profiles',
-    'manage_links',
-    'manage_options',
-    'manage_tags',
-    'merge_duplicate_contacts',
-    'moderate_comments',
-    'profile_create',
-    'profile_edit',
-    'profile_listings',
-    'profile_view',
-    'promote_users',
-    'publish_pages',
-    'publish_posts',
-    'read_private_pages',
-    'read_private_posts',
-    'read',
-    'register_for_events',
-    'remove_users',
-    'save_report_criteria',
-    'sign_civicrm_petition',
-    'switch_themes',
-    'unfiltered_html',
-    'unfiltered_upload',
-    'update_core',
-    'update_plugins',
-    'update_themes',
-    'upload_files',
-    'view_all_activities',
-    'view_all_contacts',
-    'view_all_notes',
-    'view_event_info',
-    'view_event_participants',
-    'view_my_contact',
-    'view_my_invoices',
-    'view_public_civimail_content',
-    'view_report_sql',
-    ];
+$target_id=8; // n° du local
+$activityId = 61; // N° de l'activité
 
-  $author_caps = [              // liste des privileges du role author
-    'upload_files',
-    'edit_posts',
-    'edit_published_posts',
-    'publish_posts',
-    'read',
-    'level_2',
-    'level_1',
-    'level_0',
-    'delete_posts',
-    'delete_published_posts',
-    'sign_civicrm_petition',
-    'access_civimember',
-    'edit_memberships',
-    'delete_in_civimember',
-    'add_contacts',
-    'view_all_contacts',
-    'edit_all_contacts',
-    'view_my_contact',
-    'edit_my_contact',
-    'delete_contacts',
-    'access_deleted_contacts',
-    'edit_groups',
-    'access_uploaded_files',
-    'profile_listings',
-    'profile_create',
-    'profile_edit',
-    'profile_view',
-    'access_all_custom_data',
-    'view_all_activities',
-    'delete_activities',
-    'edit_inbound_email_basic_information',
-    'edit_inbound_email_basic_information_and_content',
-    'access_civicrm',
-    'access_contact_dashboard',
-    'manage_tags',
-    'administer_reserved_groups',
-    'administer_tagsets',
-    'administer_reserved_tags',
-    'administer_dedupe_rules',
-    'merge_duplicate_contacts',
-    'force_merge_duplicate_contacts',
-    'view_all_notes',
-    'add_contact_notes',
-    'access_contact_reference_fields',
-    'edit_message_templates',
-    'edit_system_workflow_message_templates',
-    'edit_user_driven_message_templates',
-    'view_my_invoices',
-    'access_civievent',
-    'edit_event_participants',
-    'edit_all_events',
-    'register_for_events',
-    'view_event_info',
-    'view_event_participants',
-    'delete_in_civievent',
-    'manage_event_profiles',
-    'access_civicontribute',
-    'edit_contributions',
-    'make_online_contributions',
-    'delete_in_civicontribute',
-    'access_civimail',
-    'access_civimail_subscribe_unsubscribe_pages',
-    'delete_in_civimail',
-    'view_public_civimail_content',
-    'access_civireport',
-    'access_report_criteria',
-    'save_report_criteria',
-    'administer_private_reports',
-    'administer_reserved_reports',
-    'administer_reports',
-    'view_report_sql',
-    'administer_search_kit',
-    'administer_afform',
-    'access_civioffice',
-    'author',
-    ];
-    
+$pieces = array("1234", "3333", "666666", "567", "7777777","1234567");
+sort($pieces);
 
-    
-  $contributor_caps = [         // liste des privileges du role contributor
-    'edit_posts',
-    'read',
-    'level_1',
-    'level_0',
-    'delete_posts',
-    'sign_civicrm_petition',
-    'view_all_contacts',
-    'view_my_contact',
-    'access_uploaded_files',
-    'profile_listings',
-    'profile_create',
-    'profile_edit',
-    'profile_view',
-    'access_all_custom_data',
-    'view_all_activities',
-    'access_civicrm',
-    'access_contact_dashboard',
-    'view_all_notes',
-    'add_contact_notes',
-    'view_my_invoices',
-    'access_civievent',
-    'register_for_events',
-    'view_event_info',
-    'view_event_participants',
-    'make_online_contributions',
-    'access_civimail_subscribe_unsubscribe_pages',
-    'view_public_civimail_content',
-    'contributor',
-    ];
+ print_r($pieces); 
 
-### Supprime tous les privilège de tous les roles
-_myextension_remove_wp_capabilities('editor', $all_caps);
-_myextension_remove_wp_capabilities('author', $all_caps);
-_myextension_remove_wp_capabilities('contributor', $all_caps);
-_myextension_remove_wp_capabilities('subscriber', $all_caps);
-_myextension_remove_wp_capabilities('anonymous_user', $all_caps);
 
-### Ajoute les privilèges souhaités aux roles utilises
-_myextension_add_wp_capabilities('author', $author_caps);
-_myextension_add_wp_capabilities('contributor', $contributor_caps);
+###############
+
+ $pieces_noUtilisation=array();   // pièces qui ne sont pas rattachées à une utilisation
+ $pieces_detruites=array();       // pieces détruites, manquante, crematisées
+ $pieces_locOK=array();           // pièces rattachées à une localisation et dans le bon local
+ $pieces_locbad=array();          // pièces rattachées à une localisation mais localisées ailleurs -> à rappatrier
+
+foreach($pieces as $piece){
+
+ $utilisationDuCorpses = civicrm_api4('Custom_Utilisation_du_corps', 'get', [
+   'select' => [
+     'id',
+     'N_de_pi_ce_ou_de_corps',
+     'Type_de_poi_ce_3:name',
+     'Lacalisation',
+     'Mode_limination_hors_corps_2:name',
+     'Protocole_de_recherche_ex_vivo2:label',
+   ],
+   'where' => [
+     ['N_de_pi_ce_ou_de_corps', '=', $piece],
+   ],
+   'checkPermissions' => FALSE,
+ ]);
+  echo PHP_EOL."Pièce : ".$piece;
+
+
+ if(isset($utilisationDuCorpses[0])){      //// la piece existe dans la base
+
+     // si la piece apparait dans l'inventaire alors qu'elle a été détruite ou manquante ou crematisée
+     $elim = $utilisationDuCorpses[0]['Mode_limination_hors_corps_2:name'];
+     echo " --> ".$elim;
+
+     if(($elim=='Cr_mation_comme_pi_ce_anatomiqu')||($elim=='Manquante')||($elim=='Destruction_par_la_m_thode_util')) {
+        array_push($pieces_detruites,$piece);
+        // On repasse en "non eliminé" et on relocalise dans la bonne pièce
+        $results = civicrm_api4('Custom_Utilisation_du_corps', 'update', [
+          'values' => [
+            'Lacalisation' => $target_id,
+            'Mode_limination_hors_corps_2:name' => 'Non_limin_e',
+          ],
+          'where' => [
+            ['id', '=', $utilisationDuCorpses[0]['id']],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+        echo " --> relocalisée vers ".$target_id." et passée en Non Eliminée".PHP_EOL;
+        continue;
+      } 
+
+     // si la piece apparait dans linventaire mais n'est pas localisée dans la bonne pièce
+     $loc =  $utilisationDuCorpses[0]['Lacalisation'];
+     echo " et localisée dans : ".$loc;
+
+     if($loc!=$target_id){
+      array_push($pieces_locbad,$piece);
+      // On relocalise la pièce : 
+      $results = civicrm_api4('Custom_Utilisation_du_corps', 'update', [
+        'values' => [
+          'Lacalisation' => $target_id,
+        ],
+        'where' => [
+          ['id', '=', $utilisationDuCorpses[0]['id']],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      echo " --> relocalisée de ".$loc." vers ".$target_id.PHP_EOL;
+      
+
+     }else{ // la piece apparait dans linventaire  et est  localisée dans la bonne pièce
+      array_push($pieces_locOK,$piece);
+      echo " --> bien localisée dans ".$loc.PHP_EOL;
+     }
+
+  }else{                                  //// la piece n'existe pas dans la base : ajoutée à $pieces_noUtilisation
+    echo " --> Pas dans la base".PHP_EOL; 
+    array_push($pieces_noUtilisation,$piece);
+    continue;
+  } 
+}
+
+### Prépare le rapport 
+if(count($pieces_locOK)!=0){
+$rapport1="<p>####### Pièces localisées correctement dans ce local : ".implode(", ",$pieces_locOK)."</p>";
+  } else{
+  $rapport1="";
+  }
+
+if(count($pieces_detruites)!=0){
+  $rapport2="<p>####### Pièces notées détruites avant inventaire --> Passées en non éliminées et relocalisées ici : ".implode(", ",$pieces_detruites)."</p>";
+  } else{
+  $rapport2="";
+  }
+
+
+if(count($pieces_locbad)!=0){
+  $rapport3="<p>####### Pièces localisées ailleurs avant inventaire --> Relocalisées dans ce local : ".implode(", ",$pieces_locbad)."</p>";
+  } else{
+  $rapport3="";
+  }
+
+if(count($pieces_noUtilisation)!=0){
+  $rapport4="<p>####### Pièces absentes de la base --> A CREER MANUELLEMENT : ".implode(", ",$pieces_noUtilisation)."</p>";
+  } else{
+  $rapport4="";
+  }
+
+$rapport=$rapport4.$rapport2.$rapport3.$rapport1;
+echo PHP_EOL.$rapport.PHP_EOL;
+
+/// INSCRIT LE RAPPORT ET LE SUJET DANS L'ACTIVITÉ
+
+$results = civicrm_api4('Activity', 'update', [
+  'values' => [
+    'details' => $rapport,
+    'status_id:name' => 'Completed',
+    'subject' => 'SUJET A AJOUTER ICI',
+  ],
+  'where' => [
+    ['id', '=', $activityId],
+  ],
+  'checkPermissions' => FALSE,
+]);
+
