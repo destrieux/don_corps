@@ -4,7 +4,8 @@
 /*VERIFICATION
 
 affichage groupes dynamiques dans CONTACT LAYOUT DB error
-
+civirules lots
+civirules inventaires
 */
 
 require_once 'don_corps.civix.php';
@@ -3007,6 +3008,71 @@ use CRM_DonCorps_ExtensionUtil as E;
 
     // création des rules
     echo "  -Création des Rules".PHP_EOL;
+
+      echo PHP_EOL."   - Civirule : Supprime los de pièces ".PHP_EOL;
+     
+      $to_create =  [        //Supprime lot : Déclaration de l'Action
+        'entity' => 'CiviRulesAction',
+        'values' => [
+        'name' => 'supprimelot',
+        'label' => 'Supprime un lot de pièces anatomiques',
+        'class_name' => 'CRM_DonCorps_CivirulesActions_Activite_Supprimelot',
+          'is_active' => TRUE,
+          'created_date' => date('Y-m-d'),
+          'created_user_id' => 1,
+          'modified_date' => NULL,
+          'modified_user_id' => NULL,
+        ],
+    ];
+    create_entity($to_create);
+
+    $to_create =  [         //Supprime Lot : Rule
+              
+      'entity' => 'CiviRulesRule',
+      'values' => [
+        'trigger_id:name' => 'new_activity',
+        'name' => 'supprime_lot_de_pièces',
+        'label' => E::ts('Supprime lot de pièces'),
+        'trigger_params' => 'a:1:{s:11:"record_type";s:1:"3";}',
+        'is_active' => TRUE,
+        'description' => E::ts('Supprime un lot de pièces identifiées par leur code Barres.'),
+        'help_text' => "<p>Lorsqu'une action de type Suppression de lot de pièce anatomique est créée, elle supprime les pièces figurant dans le champ détails de l'activité.</p>\r\n\r\n<p>Si un code-barres de corps est saisi, l'utilisateur est invité à utiliser le tableau de bord des corps.&nbsp;Les pièces manquantes ou déja détruites sont ignorées.</p>\r\n\r\n<p>Sinon, la pièce est passée en \"Crémation\" et sa localisation est supprimée.</p>\r\n\r\n<p>Un rapport remplace les données du champ Détails</p>\r\n\r\n<p>&nbsp;</p>\r\n",
+        'created_date' => date('Y-m-d'),
+        'created_user_id' => 1,
+        'modified_date' => NULL,
+        'modified_user_id' => NULL,
+        'is_debug' => FALSE,
+      ],
+    ];
+    create_entity($to_create);
+
+    $to_create =  [    //Supprime lot : Rule Action
+      'entity' => 'CiviRulesRuleAction',
+      'values' => [
+        'action_params' => NULL,
+        'delay' => NULL,
+        'ignore_condition_with_delay' => 0,
+        'is_active' => TRUE,
+        'rule_id.name' => 'supprime_lot_de_pièces',
+        'action_id.name' => 'supprimelot',
+      ],
+    ];
+    create_entity($to_create);
+ 
+
+    $to_create =  [                   //Supprime lot : Rule condition
+      'entity' => 'CiviRulesRuleCondition',
+      'values' => [
+        'condition_link' => NULL,
+        'is_active' => TRUE,
+        'rule_id.name' => 'supprime_lot_de_pièces',
+        'condition_id.name' => 'activity_of_type',
+        'condition_link' => NULL,
+        'condition_params' => 'a:2:{s:8:"operator";s:1:"0";s:16:"activity_type_id";a:1:{i:0;s:2:"61";}}',
+      ],
+    ];
+    create_entity($to_create);
+
       echo PHP_EOL."   - Civirule : Inventaire ".PHP_EOL;
 
       $to_create =  [        //Inventaire : Déclaration de l'Action
@@ -3062,10 +3128,10 @@ use CRM_DonCorps_ExtensionUtil as E;
       'entity' => 'CiviRulesRuleCondition',
       'values' => [
         'condition_link' => NULL,
-        'condition_params' => "a:2:{s:8:\"operator\";s:1:\"0\";s:16:\"activity_type_id\";a:1:{i:0;s:2:\"60\";}}",
+        'condition_params' => 'a:2:{s:8:"operator";s:1:"0";s:16:"activity_type_id";a:1:{i:0;s:2:"60";}}',
         'is_active' => TRUE,
-        'rule_id.name' => 'maj_genre_',
-        'condition_id.name' => 'contact_custom_field_changed',
+        'rule_id.name' => "création_d'inventaire",
+        'condition_id.name' => 'activity_of_type',
       ],
     ];
     create_entity($to_create);

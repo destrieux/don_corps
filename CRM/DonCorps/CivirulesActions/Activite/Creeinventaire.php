@@ -56,8 +56,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
       $target_id = $activityContacts[0]['contact_id.id'];
 
     } else {                              // SI L'ACTIVITÉ A ÉTÉ CREE DEPUIS UN AUTRE CONTACT, ON LA SUPPRIME 
-      CRM_Core_Session::setStatus('Les inventaires doivent être créés depuis un lieu de stockage');
-      CRM_Core_Session::setStatus('Inventaire non créé');
+      CRM_Core_Session::setStatus('Les inventaires doivent être créés depuis un lieu de stockage : inventaire non crée', 'alert');
 
       $results = civicrm_api4('Activity', 'delete', [
         'where' => [
@@ -128,7 +127,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
 
 
     $inventaire_value=$results[0]['value'];
-    CRM_Core_Error::debug_log_message(print_r($inventaire_value,TRUE));
+    //CRM_Core_Error::debug_log_message(print_r($inventaire_value,TRUE));
     
 
     /// récupère les données de l'inventaire et les transforme en un tableau 
@@ -168,15 +167,15 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
     if(isset($utilisationDuCorpses[0])){      //// la piece existe dans la base
 
 
-      CRM_Core_Error::debug_log_message(print_r($utilisationDuCorpses, TRUE));
+      //CRM_Core_Error::debug_log_message(print_r($utilisationDuCorpses, TRUE));
 
         // on récupère la liste des inventaires existants
         $inventaires_list=$utilisationDuCorpses[0]['Inventaires'];	// liste initiale des inventaires
 
-        CRM_Core_Error::debug_log_message(print_r($inventaires_list,TRUE));
+        //CRM_Core_Error::debug_log_message(print_r($inventaires_list,TRUE));
         array_push($inventaires_list, $inventaire_value);            // liste actualisée des inventaires
 
-        CRM_Core_Error::debug_log_message(print_r($inventaires_list,TRUE));
+        //CRM_Core_Error::debug_log_message(print_r($inventaires_list,TRUE));
 
 
 
@@ -197,7 +196,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
              ],
              'checkPermissions' => FALSE,
            ]);
-           CRM_Core_Session::setStatus('Pièce '.$piece.' notée éliminée dans la base - restaurées dans ce local ', 'Succès', 'success');
+           //CRM_Core_Session::setStatus('Pièce '.$piece.' notée éliminée dans la base - restaurées dans ce local ', 'Succès', 'success');
            continue;
          } 
    
@@ -232,7 +231,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
             'checkPermissions' => FALSE,
              ]);
           
-           CRM_Core_Error::debug_log_message(print_r($results, TRUE));
+           //CRM_Core_Error::debug_log_message(print_r($results, TRUE));
 
         }
    
@@ -245,12 +244,14 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
    ### Prépare le rapport 
    if(count($pieces_locOK)!=0){
    $rapport1="<p>####### Pièces localisées correctement dans ce local : ".implode(", ",$pieces_locOK)."</p>";
+   CRM_Core_Session::setStatus(implode(", ",$pieces_locOK), 'Pièces bien localisées', 'success');
      } else{
      $rapport1="";
      }
    
    if(count($pieces_detruites)!=0){
      $rapport2="<p>####### Pièces notées détruites avant inventaire --> Passées en non éliminées et relocalisées ici : ".implode(", ",$pieces_detruites)."</p>";
+     CRM_Core_Session::setStatus(implode(", ",$pieces_detruites), 'Pièces notées détruites avant inventaire : recréees - relocalisées', 'success');
      } else{
      $rapport2="";
      }
@@ -258,13 +259,15 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
    
    if(count($pieces_locbad)!=0){
      $rapport3="<p>####### Pièces localisées ailleurs avant inventaire --> Relocalisées dans ce local : ".implode(", ",$pieces_locbad)."</p>";
+     CRM_Core_Session::setStatus(implode(", ",$pieces_locbad), 'Pièces localisées ailleurs avant inventaire : relocalisées', 'success');
      } else{
      $rapport3="";
      }
    
    if(count($pieces_noUtilisation)!=0){
-     $rapport4="<p>####### Pièces absentes de la base --> A CREER MANUELLEMENT : ".implode(", ",$pieces_noUtilisation)."</p>";
-     } else{
+     $rapport4="<p>####### Pièces absentes de la base --> A CREER MANUELLEMENT : ".implode(", ",$pieces_noUtilisation)."</p>";  
+     CRM_Core_Session::setStatus(implode(", ",$pieces_noUtilisation), 'Pièces absentes de la base : à créer', 'alert'); 
+    } else{
      $rapport4="";
      }
    
@@ -285,17 +288,8 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
    ]);
 
 
-    ############
+    ###########
 
-
-
-
-
-
-
-
-
-    CRM_Core_Session::setStatus($activityId.' pour '.$inventaire_name, 'Succès', 'success');
     //CRM_Core_Error::debug_log_message(print_r($triggerData, TRUE));
     //CRM_Core_Error::debug_log_message(print_r($pieces,TRUE));
     //CRM_Core_Error::debug_log_message(print_r($pieces_noUtilisation, TRUE));
