@@ -45,7 +45,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
       ],
       'where' => [
         ['activity_id', '=', $activityId],
-        ['record_type_id', '=', 3], // cible du contact
+        ['record_type_id:name', '=', 'Activity Targets'], // cible du contact
         ['contact_id.contact_sub_type', 'IN', ['CDC', 'Emprunteur']],
       ],
       'checkPermissions' => FALSE,
@@ -84,7 +84,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
     ],
     'where' => [
       ['activity_id', '=', $activityId],
-      ['record_type_id', '=', 2], // source du contact
+      ['record_type_id:name', '=', 'Activity Source'], // source du contact
     ],
     'checkPermissions' => FALSE,
   ]);
@@ -243,30 +243,30 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
    
    ### Prépare le rapport 
    if(count($pieces_locOK)!=0){
-   $rapport1="<p>####### Pièces localisées correctement dans ce local : ".implode(", ",$pieces_locOK)."</p>";
-   CRM_Core_Session::setStatus(implode(", ",$pieces_locOK), 'Pièces bien localisées', 'success');
+   $rapport1="<p>####### ".count($pieces_locOK)." Pièce(s) localisée(s) correctement dans ce local : ".implode(", ",$pieces_locOK)."</p>";
+   CRM_Core_Session::setStatus(implode(", ",$pieces_locOK), count($pieces_locOK).' Pièce(s) bien localisée(s)', 'success');
      } else{
      $rapport1="";
      }
    
    if(count($pieces_detruites)!=0){
-     $rapport2="<p>####### Pièces notées détruites avant inventaire --> Passées en non éliminées et relocalisées ici : ".implode(", ",$pieces_detruites)."</p>";
-     CRM_Core_Session::setStatus(implode(", ",$pieces_detruites), 'Pièces notées détruites avant inventaire : recréees - relocalisées', 'success');
+     $rapport2="<p>####### ".count($pieces_detruites)." Pièce(s) notée(s) détruite(s) avant inventaire --> Passée(s) en non éliminée(s) et relocalisée(s) ici : ".implode(", ",$pieces_detruites)."</p>";
+     CRM_Core_Session::setStatus(implode(", ",$pieces_detruites), count($pieces_detruites).' Pièce(s) notées détruite(s) avant inventaire : recréee(s) - relocalisée(s)', 'success');
      } else{
      $rapport2="";
      }
    
    
    if(count($pieces_locbad)!=0){
-     $rapport3="<p>####### Pièces localisées ailleurs avant inventaire --> Relocalisées dans ce local : ".implode(", ",$pieces_locbad)."</p>";
-     CRM_Core_Session::setStatus(implode(", ",$pieces_locbad), 'Pièces localisées ailleurs avant inventaire : relocalisées', 'success');
+     $rapport3="<p>####### ".count($pieces_locbad)." Pièce(s) localisée(s) ailleurs avant inventaire --> Relocalisée(s) dans ce local : ".implode(", ",$pieces_locbad)."</p>";
+     CRM_Core_Session::setStatus(implode(", ",$pieces_locbad), count($pieces_locbad).'Pièce(s) localisée(s) ailleurs avant inventaire : relocalisée(s)', 'success');
      } else{
      $rapport3="";
      }
    
    if(count($pieces_noUtilisation)!=0){
-     $rapport4="<p>####### Pièces absentes de la base --> A CREER MANUELLEMENT : ".implode(", ",$pieces_noUtilisation)."</p>";  
-     CRM_Core_Session::setStatus(implode(", ",$pieces_noUtilisation), 'Pièces absentes de la base : à créer', 'alert'); 
+     $rapport4="<p>####### ".count($pieces_noUtilisation)." Pièce(s) absente(s) de la base --> A CREER MANUELLEMENT : ".implode(", ",$pieces_noUtilisation)."</p>";  
+     CRM_Core_Session::setStatus(implode(", ",$pieces_noUtilisation), count($pieces_noUtilisation).' Pièce(s) absente(s) de la base : à créer', 'alert'); 
     } else{
      $rapport4="";
      }
@@ -287,14 +287,6 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
      'checkPermissions' => FALSE,
    ]);
 
-
-    ###########
-
-    //CRM_Core_Error::debug_log_message(print_r($triggerData, TRUE));
-    //CRM_Core_Error::debug_log_message(print_r($pieces,TRUE));
-    //CRM_Core_Error::debug_log_message(print_r($pieces_noUtilisation, TRUE));
-    //CRM_Core_Error::debug_log_message(print_r($pieces_detruites, TRUE)); 
-    //CRM_Core_Error::debug_log_message(print_r($pieces_locOK, TRUE));
     //CRM_Core_Error::debug_log_message(print_r($pieces_locbad, TRUE));
 
   } // fin de process action

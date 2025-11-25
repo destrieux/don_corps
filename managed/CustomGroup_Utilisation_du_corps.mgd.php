@@ -3395,6 +3395,266 @@ Pour en ajouter : Pièces Anatomiques > créer localisation pièces'),
     ],
   ],
   [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_17_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:17:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '39',
+        'name' => '2025_11_24_15_17_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_25_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:25:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '40',
+        'name' => '2025_11_24_15_25_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_25_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:25:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '41',
+        'name' => '2025_11_24_15_25_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_26_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:26:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '42',
+        'name' => '2025_11_24_15_26_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_29_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:29:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '43',
+        'name' => '2025_11_24_15_29_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_50_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:50:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '44',
+        'name' => '2025_11_24_15_50_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_51_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:51:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '45',
+        'name' => '2025_11_24_15_51_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_52_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:52:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '46',
+        'name' => '2025_11_24_15_52_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_54_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:54:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '47',
+        'name' => '2025_11_24_15_54_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_56_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:56:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '48',
+        'name' => '2025_11_24_15_56_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_24_15_57_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-24_15:57:00_CDC_Tours_-Frigo_4°_M._DESTRIEUX'),
+        'value' => '49',
+        'name' => '2025_11_24_15_57_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_25_17_16_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-25_17:16:00_CDC_Tours_-Frigo_4°_M._Christophe_DESTRIEUX'),
+        'value' => '50',
+        'name' => '2025_11_25_17_16_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Utilisation_du_corps_Inventaires_OptionValue_2025_11_25_17_21_00_CDC_Tours_F',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Utilisation_du_corps_Inventaires',
+        'label' => E::ts('2025-11-25_17:21:00_CDC_Tours_-Frigo_4°_M._Christophe_DESTRIEUX'),
+        'value' => '51',
+        'name' => '2025_11_25_17_21_00_CDC_Tours_F',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
     'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Inventaires',
     'entity' => 'CustomField',
     'cleanup' => 'unused',

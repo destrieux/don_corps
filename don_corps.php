@@ -4,7 +4,8 @@
 /*VERIFICATION
 
 affichage groupes dynamiques dans CONTACT LAYOUT DB error
-civirules lots
+civirules supprime lots
+civirules déplace lots
 civirules inventaires
 */
 
@@ -3009,7 +3010,77 @@ use CRM_DonCorps_ExtensionUtil as E;
     // création des rules
     echo "  -Création des Rules".PHP_EOL;
 
-      echo PHP_EOL."   - Civirule : Supprime los de pièces ".PHP_EOL;
+
+
+
+    echo PHP_EOL."   - Civirule : Déplace lot de pièces ".PHP_EOL;
+     
+    $to_create =  [        //Déplace lot : Déclaration de l'Action
+      'entity' => 'CiviRulesAction',
+      'values' => [
+      'name' => 'deplacelot',
+      'label' => 'Déplace un lot de pièces anatomiques',
+      'class_name' => 'CRM_DonCorps_CivirulesActions_Activite_Deplacelot',
+        'is_active' => TRUE,
+        'created_date' => date('Y-m-d'),
+        'created_user_id' => 1,
+        'modified_date' => NULL,
+        'modified_user_id' => NULL,
+      ],
+  ];
+  create_entity($to_create);
+
+  $to_create =  [         //Déplace lot : Rule
+              
+    'entity' => 'CiviRulesRule',
+    'values' => [
+      'trigger_id:name' => 'new_activity',
+      'name' => 'déplace_un_lot_de_pièces_anatomiques_',
+      'label' =>'Déplace un lot de pièces anatomiques ',
+      'trigger_params' => 'a:1:{s:11:"record_type";s:1:"3";}',
+      'is_active' => TRUE,
+      'description' => 'Déplace un lot de pièces vers le local depuis lequel une activité déplacer pièces anatomiques est créée',
+      'help_text' => "<p>Déplace un lot de pièces identifiées par leurs codes-Barres.</p>\r\n\r\n<p>Lorsqu'une action de type Déplacement de lot de pièce anatomique est créée, elle déplace les pièces figurant dans le champ détails de l'activité vers le contact depuis lequel l'activité est crée (local de conservation).</p>\r\n\r\n<p>Les pièces manquantes ou déjà détruites sont localisées dans cette pièce de stockage et leur statut est modifié en <em>Non Eliminé.</em></p>\r\n",
+      'created_date' => date('Y-m-d'),
+      'created_user_id' => 1,
+      'modified_date' => NULL,
+      'modified_user_id' => NULL,
+      'is_debug' => FALSE,
+    ],
+  ];
+  create_entity($to_create);
+
+  $to_create =  [    //Déplace lot : Rule Action
+    'entity' => 'CiviRulesRuleAction',
+    'values' => [
+      'action_params' => NULL,
+      'delay' => NULL,
+      'ignore_condition_with_delay' => 0,
+      'is_active' => TRUE,
+      'rule_id.name' => 'déplace_un_lot_de_pièces_anatomiques_',
+      'action_id.name' => 'deplacelot',
+    ],
+  ];
+  create_entity($to_create);
+
+
+  $to_create =  [                   //Déplace lot : Rule condition
+    'entity' => 'CiviRulesRuleCondition',
+    'values' => [
+    'condition_link' => NULL,
+    'is_active' => TRUE,
+    'condition_id.name' => 'activity_of_type',
+    'rule_id.name' => 'déplace_un_lot_de_pièces_anatomiques_',
+    'condition_link' => NULL,
+    'condition_params' => 'a:2:{s:8:"operator";s:1:"0";s:16:"activity_type_id";a:1:{i:0;s:2:"62";}}',
+    ],
+  ];
+  create_entity($to_create);
+
+
+#####################
+
+      echo PHP_EOL."   - Civirule : Supprime lot de pièces ".PHP_EOL;
      
       $to_create =  [        //Supprime lot : Déclaration de l'Action
         'entity' => 'CiviRulesAction',
@@ -3025,6 +3096,8 @@ use CRM_DonCorps_ExtensionUtil as E;
         ],
     ];
     create_entity($to_create);
+
+    
 
     $to_create =  [         //Supprime Lot : Rule
               

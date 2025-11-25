@@ -620,29 +620,6 @@ return [
     ],
   ],
   [
-    'name' => 'OptionGroup_activity_type_OptionValue_Add_Client_To_Case',
-    'entity' => 'OptionValue',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'option_group_id.name' => 'activity_type',
-        'label' => E::ts('Ajouter un client au dossier'),
-        'value' => '27',
-        'name' => 'Add Client To Case',
-        'is_reserved' => TRUE,
-        'component_id:name' => 'CiviCase',
-        'icon' => 'fa-users',
-      ],
-      'match' => [
-        'option_group_id',
-        'name',
-        'value',
-      ],
-    ],
-  ],
-  [
     'name' => 'OptionGroup_activity_type_OptionValue_Change_Case_Tags',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
@@ -657,6 +634,29 @@ return [
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-tags',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_activity_type_OptionValue_Add_Client_To_Case',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'activity_type',
+        'label' => E::ts('Ajouter un client au dossier'),
+        'value' => '27',
+        'name' => 'Add Client To Case',
+        'is_reserved' => TRUE,
+        'component_id:name' => 'CiviCase',
+        'icon' => 'fa-users',
       ],
       'match' => [
         'option_group_id',
@@ -1330,6 +1330,7 @@ return [
         'value' => '58',
         'name' => 'Retrait effets personnels',
         'description' => E::ts('<p>Retrait d\'effet personnel de valeur</p>'),
+        'icon' => 'fa-diamond',
       ],
       'match' => [
         'option_group_id',
@@ -1350,6 +1351,7 @@ return [
         'label' => E::ts('Retrait de pace maker'),
         'value' => '59',
         'name' => 'Retrait de pace maker',
+        'icon' => 'fa-heart-circle-bolt',
       ],
       'match' => [
         'option_group_id',
@@ -1384,6 +1386,52 @@ return [
 
 <p>- Pièces inscrites dans la base dans une autre pièce : relocalisées</p>'),
         'icon' => 'fa-list-check',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_activity_type_OptionValue_Suppression_d_une_pi_ces',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'activity_type',
+        'label' => E::ts('Suppression d\'un lot de pièces'),
+        'value' => '61',
+        'name' => 'Suppression d\'une pièces',
+        'description' => E::ts('<p>Permet la suppression des pièces par lot.&nbsp;</p>
+
+<p>Pour les corps : passer par le tableau de bord des corps présents et demander la crémation.</p>'),
+        'icon' => 'fa-trash',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_activity_type_OptionValue_D_placer_un_lot_de_pi_ces_corps',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'activity_type',
+        'label' => E::ts('Déplacer un lot de pièces/corps'),
+        'value' => '62',
+        'name' => 'Déplacer un lot de pièces/corps',
+        'description' => E::ts('<p>Déplace vers ce local un lot de pièces ou de corps dont les codes-barres sont saisis dans le champ <em>Détails</em> de l\'activité.</p>'),
+        'icon' => 'fa-arrow-right-arrow-left',
       ],
       'match' => [
         'option_group_id',

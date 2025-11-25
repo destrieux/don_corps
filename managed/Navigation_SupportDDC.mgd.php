@@ -29,7 +29,8 @@ return [
       'values' => [
         'label' => E::ts('Aide civicrm don du corps'),
         'name' => 'Aide civicrm don du corps',
-        'url' => 'https://cividdc.doncorps.fr/',
+        'url' => 'https://destrieux.github.io/ddc-doc/',
+        'icon' => 'crm-i fa-book-open-reader',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',
         'parent_id.name' => 'SupportDDC',
