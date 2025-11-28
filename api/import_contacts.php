@@ -1,31 +1,39 @@
 <?php
 eval(`cv php:boot`);
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
+
 $exp_dir = '/Users/destri_c/Desktop/import/';       // racine du répertoire d'import export
 $contact_default = 2; // id du contact par defaut lorsque le contact origine a disparu
 
-$custom = '/Applications/MAMP/htdocs/37_test/wp-content/uploads/civicrm/custom';   // repertoire contenant les pdf
+$custom = '/Applications/MAMP/htdocs/preprod/wp-content/uploads/civicrm/custom';   // repertoire contenant les pdf
 $custom_orig = $custom."/custom_orig";                                             // repertoire contenant les pdf de la base originale (cux qui sont utilisés sont  déplacés vers $custom)
 
 $check_custom_field = 0;
 $check_option_values =0 ;
 $import_organisations =0;
+$import_FinancialType =0;
 $import_individus =0 ;
 $import_groups = 0 ;
 $import_adresses = 0 ;
-$import_telephones = 1 ;
-$import_email = 1 ;
-$import_relationships = 1 ;
-$import_utilisations =1;
-$import_protinvivo =1 ;
-$import_contributions =1 ;
-$import_events =0 ;
-$import_participants =0 ;
-$import_activites =1 ;
-$import_notes =1 ;
-$import_documents =1 ;   // a faire avant files
-$import_files =1 ;
-$mv_files = 1 ;
-$import_tags = 1 ;
+$import_telephones = 0 ;
+$import_email = 0 ;
+$import_relationships = 0 ;
+$import_utilisations =0;
+$import_protinvivo =0 ;
+$import_contributions =0 ;
+$import_events =1 ;
+$import_participants =0;
+$import_activites =0 ;
+$import_notes =0 ;
+$import_documents =0 ;   // a faire avant files
+$import_files =0 ;
+$mv_files = 0 ;
+$import_tags = 0 ;
 
 
 function check_custom(){
@@ -46,7 +54,7 @@ function check_custom(){
 
     if (!isset($customFields[0]['id'])){
       echo "Custom Field name : ".$custom['name']." | group :".$custom['custom_group_id:name']." n'existe pas".PHP_EOL;
-      $err=1; 
+      $err=1;
     }
 
   }
@@ -63,7 +71,7 @@ function check_custom(){
   } else {
     echo "Créez manuelement les champs custom manquants sur le site d'import".PHP_EOL;
     exit;
-  } 
+  }
 
 
 }
@@ -74,7 +82,7 @@ function check_option_values(){
   foreach ($options as $option_group){
 
     foreach($option_group as $val){
-      //echo "val : ".PHP_EOL;  
+      //echo "val : ".PHP_EOL;
       //print_r($val);
         $optionValues = civicrm_api4('OptionValue', 'get', [
           'where' => [
@@ -85,7 +93,7 @@ function check_option_values(){
           'limit' => 1,
           'checkPermissions' => FALSE,
         ]);
-        
+
 
         //var_dump($option);
 
@@ -107,16 +115,16 @@ function check_option_values(){
               ],
               'checkPermissions' => FALSE,
             ]);
-            
+
           }
 
-        } else{           // dans le cas ou la valeur numerique existe pour cette option 
+        } else{           // dans le cas ou la valeur numerique existe pour cette option
           //print_r($option);
           //echo $val['label'].PHP_EOL;
           //echo $option['label'].PHP_EOL;
           $option=$optionValues[0];
 
-            if ($option['label']==$val['label']){  // si le label est concordant on ne fait rien 
+            if ($option['label']==$val['label']){  // si le label est concordant on ne fait rien
               echo "Option non modifiée : group : ".$val['option_group_id.name']." ; value :".$val['value']." ; label : ".$val['label']." | ACTUAL value :".$option['value'].PHP_EOL;
               $results = civicrm_api4('OptionValue', 'update', [
                 'values' => [
@@ -128,14 +136,14 @@ function check_option_values(){
                 ],
                 'checkPermissions' => FALSE,
               ]);
-            
-            } else {                                        // SI LE LABEL N'EST PAS CONCORDANT 
+
+            } else {                                        // SI LE LABEL N'EST PAS CONCORDANT
               enterkb:      // point entrée pour goto saisie clavier
               echo "###### group : ".$val['option_group_id.name']." ; value :".$val['value']." ; label A IMPORTER : ".$val['label']." | label EXISTANT : ".$option['label'].PHP_EOL;
               echo "       Voulez vous conserver la valeur existante (C) ou importer la nouvelle (I) ?".PHP_EOL;
               $kb = trim(fgets(STDIN)); // Lire l'entrée et supprimer les espaces inutiles
-              
-              switch ($kb) { 
+
+              switch ($kb) {
 
                 case 'I':
                 case 'i':
@@ -152,7 +160,7 @@ function check_option_values(){
                     'checkPermissions' => FALSE,
                   ]);
                   break;
-                
+
                 case 'C':
                 case 'c':
                     echo "label  ".$option['label']." inchangé".PHP_EOL;
@@ -172,10 +180,58 @@ function check_option_values(){
                   goto enterkb;
               }
             }
-        } 
+        }
       }
-    } 
+    }
 }
+
+function import_FinancialType (){
+    $count=1;
+    $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
+    $values = func_get_arg(1);     // parametres de cette entité
+
+
+
+  foreach ($values as $value){    // Vérifie si ce financial type existe
+
+
+
+    $financialTypes = civicrm_api4('FinancialType', 'get', [
+      'where' => [
+      ['name', '=', $value['name']],
+      ],
+    'checkPermissions' => FALSE,
+    ]);
+
+    unset($value['id']);
+
+
+
+    if(isset($financialTypes[0])){    // si le type finanier existe = update
+      $results = civicrm_api4('FinancialType', 'update', [
+        'values' => $value,
+        'where' => [
+          ['id', '=', $financialTypes[0]['id']],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      echo $count." Updated : ".$value['name'].PHP_EOL;
+
+
+
+    }else{                            // si le type finanier n'eiste pas = creation
+      $results = civicrm_api4('FinancialType', 'create', [
+        'values' => $value,
+        'checkPermissions' => FALSE,
+      ]);
+      echo $count." Created : ".$value['name'].PHP_EOL;
+
+    }
+
+  }
+
+}
+
 
 function import_stuff(){
     $count=1;
@@ -183,9 +239,11 @@ function import_stuff(){
     $values = func_get_arg(1);     // parametres de cette entité
     $check=array();
       //print_r($values);
-   
+
+    
+    
     foreach ($values as $value) {
-        
+
         $value['external_identifier']=$value['id'];
 
         unset ($value['id']);
@@ -213,13 +271,15 @@ function import_stuff(){
         unset ($value['more_greetings_group.greeting_field_6_protected']);
         unset ($value['more_greetings_group.greeting_field_7_protected']);
         unset ($value['more_greetings_group.greeting_field_8_protected']);
-        unset ($value['more_greetings_group.greeting_field_9_protected']); 
+        unset ($value['more_greetings_group.greeting_field_9_protected']);
 
-        unset ($value['prefix_id']); 
-        unset ($value['suffix_id']); 
-        unset ($value['communication_style_id']); 
+        unset ($value['prefix_id']);
+        unset ($value['suffix_id']);
+        unset ($value['communication_style_id']);
 
-        if ($value['Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches'] <> NULL){                    // si le contact a un champ Pompes_fun_bres_mandat_es_par_proches non null
+       
+
+        if (isset($value['Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches'])){                    // si le contact a un champ Pompes_fun_bres_mandat_es_par_proches non null
           echo "pompes_id : ".$value['Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches'].PHP_EOL;   // on en modifie la valeur par l'id des pompes crées au préalable
           $pompes = civicrm_api4('Contact', 'get', [
             'select' => [
@@ -231,7 +291,7 @@ function import_stuff(){
             ],
             'checkPermissions' => FALSE,
           ]);
-          if ($pompes <> NULL){
+          if (isset($pompes)){
             //echo "pompes_id new : ".$pompes[0]['id'].PHP_EOL;
             $value['Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches']=$pompes[0]['id'];
             echo "pompes_id new: ".$value['Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches'].PHP_EOL;
@@ -253,7 +313,7 @@ function import_stuff(){
             ],
             'checkPermissions' => FALSE,
           ]);
-          if ($employeur <> NULL){
+          if (isset($employeur)){
             //echo "employeur_id new : ".$employeur[0]['id'].PHP_EOL;
             $value['employer_id']=$employeur[0]['id'];
             echo "employer_id new: ".$value['employer_id'].PHP_EOL;
@@ -265,51 +325,53 @@ function import_stuff(){
 
 
         $contacts = civicrm_api4('Contact', 'get', [
-            'select' => [
-              'id',
-            ],
+//            'select' => [
+//              'id',
+
+ //           ],
             'where' => [
               ['external_identifier', '=', $value['external_identifier']],
             ],
             'limit' => 1,
             'checkPermissions' => FALSE,
           ]);
-  
 
-        
+      //print_r($contacts);
 
-        
+
+
 
         if (!isset($contacts[0]['id'])){             // si le contact n'existe pas on le crée
             $results = civicrm_api4('Contact', 'create', [
              'values' => $value,
               'checkPermissions' => FALSE,
-            ]); 
+            ]);
             echo $count." Created : ".$value['sort_name']." | external id : ".$value['external_identifier'].PHP_EOL;
             ++$count;
-  
+
           } else {                                // si le contact exite on l'update
-            
-             $id_to_update=$contacts[0]['id'];
+
+             $id_to_update=$contacts[0]['id']; 
+
              $results = civicrm_api4('Contact', 'update', [
               'values' => $value,
               'where' => [
                 ['id', '=', $id_to_update],
               ],
               'checkPermissions' => FALSE,
-            ]); 
+            ]);
             echo $count." Updated : ".$value['sort_name']." | external id : ".$value['external_identifier']." | id : ".$id_to_update.PHP_EOL;
 
             ++$count;
             //var_dump($creation);
-          
-            
+
+
            }
 
            //print_r($results[0]['id']);
-           array_push($check, $results[0]['id']); 
+           array_push($check, $results[0]['id']);
 
-
+ 
 
   }
   //print_r($check);
@@ -331,13 +393,13 @@ function import_address(){
   $values = func_get_arg(1);     // parametres de cette entité
   $check=array();
   //print_r($values);
- 
+
   foreach ($values as $value) {
 
     //echo $value['contact_id'].PHP_EOL;
-      
+
       // on verifie que le contact rattaché à l'adresse existe bien ; normalement vérifié à l'export
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
           'select' => [
             'id',
           ],
@@ -351,9 +413,9 @@ function import_address(){
       //var_dump($contacts[0]);
       $contact_id=$contacts[0]['id'];
 
-      if($value['master_id.contact_id'] <> NULL){                      // si un master_id existe (addresse partagée)
+      if(isset($value['master_id.contact_id'])){                      // si un master_id existe (addresse partagée)
           echo "Recuperer l'adresse du contact partagé (original id : ".$value['master_id.contact_id'].PHP_EOL;
-          $contacts = civicrm_api4('Contact', 'get', [     //  on récupère l'id du contact correspondant à partir de son id externe  
+          $contacts = civicrm_api4('Contact', 'get', [     //  on récupère l'id du contact correspondant à partir de son id externe
             'select' => [
               'id',
             ],
@@ -366,7 +428,7 @@ function import_address(){
 
           //print_r(contacts);
 
-        $value['master_id.contact_id']=$contacts[0]['id'];               // on assigne l'id du contact maitre 
+        $value['master_id.contact_id']=$contacts[0]['id'];               // on assigne l'id du contact maitre
 
       }
 
@@ -384,12 +446,12 @@ function import_address(){
             ['location_type_id', '=',$value['location_type_id']],
           ],
           'checkPermissions' => FALSE,
-          
-        ]); 
+
+        ]);
         $old_contact_id=$value['contact_id'];
         $value['contact_id']=$contact_id;
 
-        
+
         //echo "Contact id : ".$contact_id." / adresse id : ".$address_to_create.PHP_EOL;
 
         if (!isset($addresses[0]['id'])){             //  cette adresse n'existe pas pour ce contact ; on la crée
@@ -399,10 +461,10 @@ function import_address(){
           $results = civicrm_api4('Address', 'create', [
            'values' => $value,
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Created adress: ".$value['street_address']." for contact id ".$value['contact_id'].PHP_EOL;
           ++$count;
-      
+
         }  else {                                // cette adresse existe pour ce contact ; on la cmodifie
             $address_to_create = $addresses[0]['id'];
             $creation = civicrm_api4('Address', 'update', [
@@ -411,16 +473,16 @@ function import_address(){
               ['id', '=', $address_to_create],
             ],
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Updated address : ".$value['street_address']." for contact id ".$value['contact_id'].PHP_EOL;
           //echo $contact_id."   |   ".$value['street_address']."   |   ".$old_contact_id.PHP_EOL;
 
           //echo ".";
           ++$count;
           //var_dump($creation);
-        
+
           //print_r($results);
-       } 
+       }
     }
     array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
                                           // à utiliser avec check_address.php
@@ -441,13 +503,13 @@ function import_phone(){
   $values = func_get_arg(1);     // parametres de cette entité
   $check=array();
   //print_r($values);
- 
+
   foreach ($values as $value) {
 
     //echo $value['contact_id'].PHP_EOL;
-      
+
       // on verifie que le contact rattaché à l'adresse existe bien ; normalement vérifié à l'export
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
           'select' => [
             'id',
           ],
@@ -459,7 +521,7 @@ function import_phone(){
         ]);
 
       //var_dump($contacts[0]);
-      
+
       if (isset($contacts[0]['id'])){          // le contact lié à l'adresse existe
          $contact_id=$contacts[0]['id'];       // adresse du contact dans la nouvelle base
          $phones = civicrm_api4('Phone', 'get', [   // on recherche si un téléphone identique existe pour ce contact
@@ -471,12 +533,12 @@ function import_phone(){
             ['phone', '=',$value['phone']],
           ],
           'checkPermissions' => FALSE,
-          
-        ]); 
+
+        ]);
         $old_contact_id=$value['contact_id'];     // on remplace le contact_id de l'anceinne base par celui dans la nouvelle
         $value['contact_id']=$contact_id;
 
-        
+
         //echo "Contact id : ".$contact_id." / phone id : ".$phone_to_create.PHP_EOL;
 
         if (!isset($phones[0]['id'])){             //  ce tel n'existe pas pour ce contact ; on la crée
@@ -486,10 +548,10 @@ function import_phone(){
           $results = civicrm_api4('Phone', 'create', [
            'values' => $value,
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Created phone: ".$value['phone']." for contact id ".$value['contact_id'].PHP_EOL;
           ++$count;
-      
+
         }  else {                                // ce tel existe pour ce contact ; on la cmodifie
             $phone_to_create = $phones[0]['id'];
             $creation = civicrm_api4('Phone', 'update', [
@@ -498,20 +560,20 @@ function import_phone(){
               ['id', '=', $phone_to_create],
             ],
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Updated phone : ".$value['phone']." for contact id ".$value['contact_id'].PHP_EOL;
           //echo $contact_id."   |   ".$value['phone']."   |   ".$old_contact_id.PHP_EOL;
 
           //echo ".";
           ++$count;
           //var_dump($creation);
-        
+
           //print_r($results);
-       } 
+       }
     }
     array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
                                           // à utiliser avec check_address.php
-    
+
   }
 
 
@@ -523,7 +585,7 @@ function import_phone(){
       echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
     }
     return ($check);
-} 
+}
 
 function import_email(){
   $count=1;
@@ -531,14 +593,14 @@ function import_email(){
   $values = func_get_arg(1);     // parametres de cette entité
   $check=array();
   //print_r($values);
- 
+
   foreach ($values as $value) {
 
     //echo "old : ".$value['contact_id'].PHP_EOL;
-    
-      
+
+
       // on verifie que le contact rattaché à l'adresse existe bien ; normalement vérifié à l'export
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
           'select' => [
             'id',
           ],
@@ -565,12 +627,12 @@ function import_email(){
             ['email', '=',$value['email']],
           ],
           'checkPermissions' => FALSE,
-          
-        ]); 
-        $old_contact_id=$value['contact_id'];     
+
+        ]);
+        $old_contact_id=$value['contact_id'];
         $value['contact_id']=$contact_id;       // on remplace le contact_id de l'anceinne base par celui dans la nouvelle
 
-        
+
         //echo "Contact id : ".$contact_id." / phone id : ".$phone_to_create.PHP_EOL;
 
         if (!isset($emails[0]['id'])){             //  ce mail n'existe pas pour ce contact ; on la crée
@@ -580,10 +642,10 @@ function import_email(){
           $results = civicrm_api4('Email', 'create', [
            'values' => $value,
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Created email: ".$value['email']." for contact id new ".$value['contact_id'].PHP_EOL;
           ++$count;
-      
+
         }  else {                                // ce tel existe pour ce contact ; on la cmodifie
             $email_to_create = $emails[0]['id'];
             $creation = civicrm_api4('Email', 'update', [
@@ -592,17 +654,17 @@ function import_email(){
               ['id', '=', $email_to_create],
             ],
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Updated email : ".$value['email']." for contact id new ".$value['contact_id'].PHP_EOL;
           //echo $contact_id."   |   ".$value['email']."   |   ".$old_contact_id.PHP_EOL;
           //echo ".";
           ++$count;
 
-       } 
+       }
     }
     array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
                                           // à utiliser avec check_address.php
-    
+
   }
 
 
@@ -614,7 +676,7 @@ function import_email(){
       echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
     }
     return ($check);
-} 
+}
 
 function import_groups(){
   global $contact_default;                 // recupere la valeur de cette variable
@@ -640,7 +702,7 @@ function import_groups(){
     // si elle existe on remplace son id par celle de la nouvelle base
     // si ce contact n'est pas défini dans la base originale la valeur est laissée à null
     // si le contact n'existe pas dans la nouvelle base on met l'id du contact par defaut
- 
+
     $contacts = civicrm_api4('Contact', 'get', [
       'select' => [
         'id',
@@ -651,10 +713,10 @@ function import_groups(){
       'checkPermissions' => FALSE,
     ]);
 
-    if (!isset($contacts[0]['id'])){                                // si aucun contact correspondant n'existe dans la nouvelle base 
-      $contacts[0]['id']=$contact_default;                          //  --> on met le contact par défaut en créateur  
-    } 
-    $groups_import['created_id']=$contacts[0]['id'];                // id du contact aynt cré le groupe ou du contact par défaut dans la nouvelle base ou 
+    if (!isset($contacts[0]['id'])){                                // si aucun contact correspondant n'existe dans la nouvelle base
+      $contacts[0]['id']=$contact_default;                          //  --> on met le contact par défaut en créateur
+    }
+    $groups_import['created_id']=$contacts[0]['id'];                // id du contact aynt cré le groupe ou du contact par défaut dans la nouvelle base ou
 
     // on récupère dans la nouvelle base l'id du contact ayant MAJ le groupe
     $contacts = civicrm_api4('Contact', 'get', [
@@ -669,12 +731,12 @@ function import_groups(){
 
     if (!isset($contacts[0]['id'])){  // si aucun contact correspondant existe dans la nouvelle base et id non nulle dans l'ancienne
       $contacts[0]['id']=$contact_default;
-    } 
+    }
     $groups_import['modified_id']=$contacts[0]['id'];
 
 
     // on vérifie si ce groupe existe dans la nouvelle base
-    $group = civicrm_api4($entity, 'get', [            
+    $group = civicrm_api4($entity, 'get', [
       'select' => [
         'id',
       ],
@@ -693,13 +755,13 @@ function import_groups(){
           ['id', '=', $group[0]['id']],
         ],
         'checkPermissions' => FALSE,
-      ]); 
+      ]);
 
     } else {                       // si le groupe n'existe pas : CREATION
       $results = civicrm_api4($entity, 'create', [
         'values' => $groups_import,
         'checkPermissions' => FALSE,
-      ]); 
+      ]);
       echo " n'existe pas dans la nouvelle base - CREATION avec l'id :".$results[0]['id'];
     }
     echo " --- Crée par contact : ".$results[0]['created_id']." et MAJ par contact ".$results[0]['modified_id'].PHP_EOL;
@@ -719,7 +781,7 @@ function import_groups(){
     echo "GroupeContact id originale : ".$groupcontact_id_orig." - Groupe ".$groupscontacts_import['group_id']." - Contact  ".$groupscontacts_import['contact_id'];
 
     // on récupère l'id du groupe dans la nouvelle base
-    $groupscontacts_import['group_id']=$check[$groupscontacts_import['group_id']]; 
+    $groupscontacts_import['group_id']=$check[$groupscontacts_import['group_id']];
 
     // on récupère l'id du contact dans la nouvelle base
     $contacts = civicrm_api4('Contact', 'get', [
@@ -732,7 +794,7 @@ function import_groups(){
         'checkPermissions' => FALSE,
       ]);
 
-    if (isset($contacts[0]['id'])){         // si un contact  existe dans la nouvelle base 
+    if (isset($contacts[0]['id'])){         // si un contact  existe dans la nouvelle base
       $groupscontacts_import['contact_id']=$contacts[0]['id'];
 
     } else {
@@ -763,13 +825,13 @@ function import_groups(){
           ['id', '=', $GroupContacts[0]['id']],
         ],
         'checkPermissions' => FALSE,
-      ]); 
+      ]);
 
     } else {                       // si le groupeContact n'existe pas : CREATION
       $results = civicrm_api4('GroupContact', 'create', [
         'values' => $groupscontacts_import,
         'checkPermissions' => FALSE,
-      ]); 
+      ]);
       echo " ---> CREATION - ";
     }
 
@@ -777,16 +839,16 @@ function import_groups(){
 
     ++$count_group_contact;
     $check_groupcontacs[$groupcontact_id_orig]=$results[0]['id'];
-    
-  } 
+
+  }
 
     //array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
                                           // à utiliser avec check_address.php
-    
+
 
   echo PHP_EOL.$entity." : ".count($check)." groupes ont été importées sur ".count($groups_imports);
   echo PHP_EOL.$entity." : ".count($check_groupcontacs)." groupContacts ont été importées sur ".count($groupscontacts_imports);
-  
+
 
     if ((count($check)==count($groups_imports)) AND (count($check_groupcontacs)==count($groupscontacts_imports))) {// le bon nombre de lignes a été importées
         echo " ---> OK".PHP_EOL;
@@ -798,11 +860,11 @@ function import_groups(){
     print_r($error_log).PHP_EOL;
 
     $check_groupcontacs_file = $exp_dir."check_28_Groups_Groups_Contacts.txt";
-    file_put_contents($check_groupcontacs_file, json_encode($check_groupcontacs, JSON_PRETTY_PRINT));     
+    file_put_contents($check_groupcontacs_file, json_encode($check_groupcontacs, JSON_PRETTY_PRINT));
     echo $check_groupcontacs_file." écrit".PHP_EOL;
 
     return ($check);
-} 
+}
 
 function import_relationship(){
   $count=1;
@@ -818,15 +880,15 @@ function import_relationship(){
     'checkPermissions' => FALSE,
   ]);
   echo count($results)." relations en attente supprimées".PHP_EOL;
- 
+
   foreach ($values as $value) {
     $relationship_id_old=$value['id'];
-    unset($value['id']); 
+    unset($value['id']);
     //print_r($value);
 
     //echo "old : ".$value['contact_id'].PHP_EOL;
       // on verifie que la paire de contacts de cette relation existe bien ; normalement vérifié à l'export
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
           'select' => [
             'id',
           ],
@@ -838,7 +900,7 @@ function import_relationship(){
 
       $contact_id_a=$contacts[0]['id'];
 
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
         'select' => [
           'id',
         ],
@@ -867,17 +929,17 @@ function import_relationship(){
             ['relationship_type_id:name', '=',$value['relationship_type_id:name']],
           ],
           'checkPermissions' => FALSE,
-          
-        ]); 
+
+        ]);
         //print_r($relationships);
 
-        $old_contact_id_a=$value['contact_id_a'];    
+        $old_contact_id_a=$value['contact_id_a'];
         $old_contact_id_b=$value['contact_id_b'];
 
         $value['contact_id_a']=$contact_id_a;       // on remplace le contact_id de l'anceinne base par celui dans la nouvelle
         $value['contact_id_b']=$contact_id_b;       // on remplace le contact_id de l'anceinne base par celui dans la nouvelle
 
-        
+
         //echo "Contact id : ".$contact_id." / phone id : ".$phone_to_create.PHP_EOL;
 
          if (!isset($relationships[0]['id'])){             //  cette relation n'existe pas pour cette paire de contacts ; on la crée
@@ -887,7 +949,7 @@ function import_relationship(){
 
           $relation_orig=$value['relationship_type_id:name'];
           //echo $relation_orig.PHP_EOL;
-          
+
           $value['relationship_type_id:name']='en attente';
           //print_r($value);
           //echo "toto".PHP_EOL;
@@ -895,9 +957,9 @@ function import_relationship(){
           $results = civicrm_api4('Relationship', 'create', [
            'values' => $value,
             'checkPermissions' => FALSE,
-          ]); 
-          
-          
+          ]);
+
+
 
           $relationship_to_create = $results[0]['id'];
           echo $count." Relation provisoire ".$relationship_to_create." crée : ".$value['contact_id_a']." (new) ".$value['relationship_type_id:name']." ".$value['contact_id_b']." (new) ---> ";
@@ -906,8 +968,8 @@ function import_relationship(){
         }  else {
           $relationship_to_create = $relationships[0]['id'];
         }
-        
-        
+
+
         //else {                                // ette relation existe pour cette paire de contacts ; on la MAJ
             //$relationship_to_create = $relationships[0]['id'];
             $creation = civicrm_api4('Relationship', 'update', [
@@ -916,21 +978,21 @@ function import_relationship(){
               ['id', '=', $relationship_to_create],
             ],
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Relation ".$relationship_to_create." MAJ : ".$value['contact_id_a']." (new) ".$value['relationship_type_id:name']." ".$value['contact_id_b']." (new)";
           //echo ".";
           ++$count;
 
-       //}  
+       //}
     }
-    
-    
+
+
     $check[$relationship_id_old]=$relationship_to_create;
     echo " [ OLD relationship id : ".$relationship_id_old." ]".PHP_EOL.PHP_EOL;
 
     //array_push($check, $old_contact_id_a); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
                                           // à utiliser avec check_address.php
-    
+
   }
 
   echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
@@ -941,7 +1003,7 @@ function import_relationship(){
       echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
     }
     return ($check);
-} 
+}
 
 function import_utilisation(){
   $count=1;
@@ -949,15 +1011,15 @@ function import_utilisation(){
   $values = func_get_arg(1);     // parametres de cette entité
   $check=array();
   $error_log=array();                   // chaine contenant les messages d'erreur à loguer
- 
+
   foreach ($values as $value) {
     //print_r($value);
     //echo "old : ".$value['contact_id'].PHP_EOL;
-    // on récupere les id des 3 contacts de cette utilisation dans la nouvelle base 
+    // on récupere les id des 3 contacts de cette utilisation dans la nouvelle base
 
     // Contact 1 : localiation de la pièce (peut etre null si piece élimiinée) dans nouvelle base
     $old_Lacalisation=$value['Lacalisation'];      // id de la localisation dans l'ancienne base
-    $contacts = civicrm_api4('Contact', 'get', [            
+    $contacts = civicrm_api4('Contact', 'get', [
          'select' => [
           'id',
         ],
@@ -967,22 +1029,22 @@ function import_utilisation(){
           'checkPermissions' => FALSE,
         ]);
 
-      
 
-      
-      if (isset($contacts[0]['id'])){                            
-        $Lacalisation=$contacts[0]['id'];                     
+
+
+      if (isset($contacts[0]['id'])){
+        $Lacalisation=$contacts[0]['id'];
       } else {
         $Lacalisation=NULL;                          // cas ou La pièce est éliminée : elle n'a pas de localisation
       }
-      
+
       //echo "Localisation OLD: ".$old_Lacalisation."   |   NEW:".$Lacalisation;
-      
+
       // Contact 2 : personne ayant préparé la pièce (peut etre null 5 ans apres depart du centre) dans nouvelle base
       unset($contacts);
       $old_Pr_par_par=$value['Pr_par_par'];                 // id du préparateur dans l'ancienne base
 
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
         'select' => [
           'id',
         ],
@@ -998,14 +1060,14 @@ function import_utilisation(){
         $Pr_par_par=NULL;                                   // id du préparateur a NULL si n'est plus la depuis 5ans
       }
 
-      
+
       //echo "  |   Préparé par OLD:".$old_Pr_par_par."   |  NEW :".$Pr_par_par.PHP_EOL;
 
       // Contact 3 : donneur dot provient la pièce ; doit exister dans la nouvelle base
       unset($contacts);
       $old_entity_id=$value['entity_id'];                   // id du donneur dans l'ancienne base
 
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
         'select' => [
           'id',
         ],
@@ -1017,7 +1079,7 @@ function import_utilisation(){
 
       if(isset($contacts[0]['id'])){                        // Si le donneur lié à la pièce existe dans la nouvelle base
         $entity_id=$contacts[0]['id'];                      // id du donneur dans la nouvelle base
-      
+
          $utilisations = civicrm_api4('Custom_Utilisation_du_corps', 'get', [     // on recherche si une utilisation existe pour ce contacts et ce N° de piece
           'select' => [
             'id',
@@ -1027,22 +1089,22 @@ function import_utilisation(){
             ['N_de_pi_ce_ou_de_corps', '=', $value['N_de_pi_ce_ou_de_corps']],
           ],
           'checkPermissions' => FALSE,
-          
-        ]); 
+
+        ]);
 
         //var_dump($utilisations);
 
         $value['Pr_par_par']=$Pr_par_par;                         // on remplace les contact_id de l'anceinne base par ceux dans la nouvelle
-        $value['entity_id']=$entity_id;                           
+        $value['entity_id']=$entity_id;
         $value['Lacalisation']=$Lacalisation;
 
-        
+
         if (!isset($utilisations[0]['id'])){                     //  cette utilisaiton n'exista pas ; on la crée
           $results = civicrm_api4('Custom_Utilisation_du_corps', 'create', [
             'values' => $value,
             'checkPermissions' => FALSE,
-          ]); 
-        
+          ]);
+
           echo $count." Custom_Utilisation_du_corps crée pour piece ou corps n° : ".$value['N_de_pi_ce_ou_de_corps'].PHP_EOL;
           ++$count;
 
@@ -1056,19 +1118,19 @@ function import_utilisation(){
               ['id', '=', $utilisation_to_create],
             ],
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
             echo $count." Custom_Utilisation_du_corps ".$utilisation_to_create." MAJ pour piece ou corps n° : ".$value['N_de_pi_ce_ou_de_corps'].PHP_EOL;
             //echo ".";
             ++$count;
-        }             
+        }
 
         array_push($check, $value['N_de_pi_ce_ou_de_corps']); // crée un tableau avec les n° des pieces et corps
 
-    
+
       } else{
         $entity_id=NULL;                                    // cas ou le donneur n'existe pas dans la nouvelle base : erreur
         $error = "Pas de contact lié à la pièce ".$value['N_de_pi_ce_ou_de_corps'];
-        array_push($error_log,$error); 
+        array_push($error_log,$error);
       }
 
   }
@@ -1091,19 +1153,19 @@ function import_utilisation(){
 
 }
 
-function import_contribution(){
+function import_contribution(){ 
   $count=1;
   $entity = func_get_arg(0);                // nom de l'entité à créer (contact...)
   $values = func_get_arg(1);                // parametres de cette entité
   //$contribution_old = func_get_arg(2);      //tableau de coreespondance entre anciennes (clé) et nouvelle entité des contributions
   $check=array();
   $error_log=array();
- 
+
   foreach ($values as $value) {
     $contribution_id_orig = $value['id'];
     unset($value['id']);
 
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
         'select' => [
           'id',
         ],
@@ -1114,10 +1176,11 @@ function import_contribution(){
       ]);
 
 
-      
+
       $old_contact_id=$value['contact_id'];                  // idem dans base orig
 
-
+  //echo $old_contact_id.PHP_EOL;
+  //echo $contacts[0]['id'].PHP_EOL;
 
       if (isset($contacts[0]['id'])) {                                       // le donneur asscocié à cette contribution existe
         $contact_id=$contacts[0]['id'];                        // donneur lié à cette contribution dans nouvelle base
@@ -1130,43 +1193,44 @@ function import_contribution(){
             ['OR', [['receive_date', '=', $value['receive_date']],['total_amount', '=', $value['total_amount']]]],
           ],
           'checkPermissions' => FALSE,
-          
-        ]);  
 
-     
+        ]);
+
+
 
         $value['contact_id']=$contact_id;                         // on remplace le contact_id de l'anceinne base par celle dans la nouvelle
-        
-        
+  //print_r($value);
+
         if (!isset($contributions[0]['id'])){                         //  cette contribution n'existe pas
+          echo "creation".PHP_EOL;
           $results = civicrm_api4('Contribution', 'create', [   // on la crée
               'values' => $value,
               'checkPermissions' => FALSE,
-            ]); 
+            ]);
           echo $count." Contribution id ".$results[0]['id']." crée pour contact : ".$value['contact_id']." [old : ".$old_contact_id."]".PHP_EOL;
 
           $check[$contribution_id_orig]=$results[0]['id'];
           ++$count;
 
          } else {                                                  // cette contribution existe  ; on la MAJ
-          $contribution_to_create = $contributions[0]['id'];  
+          $contribution_to_create = $contributions[0]['id'];
           $maj = civicrm_api4('Contribution', 'update', [
               'values' => $value,
               'where' => [
                 ['id', '=', $contribution_to_create],
               ],
             'checkPermissions' => FALSE,
-          ]); 
+          ]);
           echo $count." Contribution ".$contribution_to_create." MAJ pour contact : ".$value['contact_id']." [old : ".$old_contact_id."]".PHP_EOL;
           //echo ".";
           $check[$contribution_id_orig]=$contribution_to_create;
           ++$count;
-           } 
+           }
 
        // array_push($check, $old_contact_id); // crée un tableau avec les id des contacts dans base originale
                                             // à utiliser avec check_address.php
-    
-      }else{        // le donneur associé à cette contribution n'existe pas 
+
+      }else{        // le donneur associé à cette contribution n'existe pas
         $error="Contribution originale (id : ".$contribution_id_orig.") : le contact ayant l'id : ".$value['contact_id']." dans la base originale n'existe pas dans la nouvelle";
         //echo $error.PHP_EOL;
         array_push($error_log,$error);
@@ -1181,7 +1245,7 @@ function import_contribution(){
       echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
     }
 
-    
+
     if (isset($error_log)){
       echo PHP_EOL."Erreurs :".PHP_EOL;
       print_r($error_log).PHP_EOL;
@@ -1195,9 +1259,9 @@ function import_event(){
   $count=1;
   $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
   $values = func_get_arg(1);     // parametres de cette entité
-  $check=array();                // tableau pour vérification 
+  $check=array();                // tableau pour vérification
   $error_log=array();                   // chaine contenant les messages d'erreur à loguer
- 
+
   foreach ($values as $value) {   // pour chaque event a créer
     $old_id = $value['id'];
     unset ($value['id']);
@@ -1214,7 +1278,7 @@ function import_event(){
 
     if (!isset($events[0]['id'])){     // cet evenement n'existe pas : on le crée
 
-      // si la cérémonie comporte une adresse, on la crée 
+      // si la cérémonie comporte une adresse, on la crée
       if (($value['address.street_address']!=NULL) OR ($value['address.supplemental_address_1']) OR ($value['address.postal_code'] != NULL) OR ($value['address.city'] != NULL)){
         $address = civicrm_api4('Address', 'create', [
           'values' => [
@@ -1226,7 +1290,7 @@ function import_event(){
           'checkPermissions' => FALSE,
         ]);
         $adresse_id = $address[0]['id'];
-      } else {                
+      } else {
         $adresse_id = NULL;         // id de l'adresse créee dans la nouvelle base
       }
 
@@ -1235,8 +1299,8 @@ function import_event(){
       unset ($value['address.postal_code']);
       unset ($value['address.city']);
 
-      
-      if ($value['phone.phone']!=NULL){                  // si la cérémonie comporte un telephone, on le crée 
+
+      if ($value['phone.phone']!=NULL){                  // si la cérémonie comporte un telephone, on le crée
         $phone = civicrm_api4('Phone', 'create', [
           'values' => [
             'phone' => $value['phone.phone'],
@@ -1249,7 +1313,7 @@ function import_event(){
       }
       unset ($value['phone.phone']);                    // on supprime les données en clair du tel qui sont contenues dans $phone_id
 
-      if ($value['email.email']!=NULL){                  // si la cérémonie comporte un email, on le crée 
+      if ($value['email.email']!=NULL){                  // si la cérémonie comporte un email, on le crée
         $email = civicrm_api4('Email', 'create', [
           'values' => [
             'email' => $value['email.email'],
@@ -1281,8 +1345,8 @@ function import_event(){
       $results = civicrm_api4('Event', 'create', [    // on crée la cérémonie en lui attachant le loc_block_id crée dans la base d'import
         'values' => $value,
         'checkPermissions' => FALSE,
-      ]); 
-    
+      ]);
+
       echo "     -->".$count." Cérémonie crée : ".$value['title']." id : ".$results[0]['id'].PHP_EOL;
       ++$count;
 
@@ -1294,7 +1358,7 @@ function import_event(){
       $event_to_create = $events[0]['id'];
       $error = "Cérémonie existe déja NON MODIFIEE: ".$value['title']." id : ".$event_to_create;
       echo $error.PHP_EOL;
-      array_push($error_log,$error); 
+      array_push($error_log,$error);
       $check[$old_id]=$event_to_create;
                                         }
 
@@ -1329,7 +1393,7 @@ function import_participant(){
       $participant_id_orig = $value['id'];
       unset($value['id']);
 
-      $contacts = civicrm_api4('Contact', 'get', [            
+      $contacts = civicrm_api4('Contact', 'get', [
         'select' => [
           'id',
         ],
@@ -1339,10 +1403,10 @@ function import_participant(){
         'checkPermissions' => FALSE,
       ]);
 
-      
+
       $old_contact_id=$value['contact_id'];                  // id du donneur dans base orig
       $event_id = $toimport_event[$value['event_id']];       // nouvelle valeur pour l'event id
-      
+
       if (isset($contacts[0]['id'])) {                                       // le donneur existe
         $contact_id=$contacts[0]['id'];                        // id du donneur dans nouvelle base
          $events = civicrm_api4('Event', 'get', [     // on verifie que l'event existe dans le nouvelle base
@@ -1353,8 +1417,8 @@ function import_participant(){
             ['id', '=', $event_id],
            ],
           'checkPermissions' => FALSE,
-          
-        ]);  
+
+        ]);
 
         //var_dump($utilisations);
 
@@ -1363,7 +1427,7 @@ function import_participant(){
           $value['contact_id']=$contact_id;     // on remplace le contact_id dans l'ancienne base par celle dans la nouvelle
           $value['event_id']=$event_id;         // on remplace l'event id dans l'ancienne base par celle dans la nouvelle
 
-          $participants = civicrm_api4('Participant', 'get', [      // verification si un participant existe 
+          $participants = civicrm_api4('Participant', 'get', [      // verification si un participant existe
             'where' => [
               ['contact_id', '=', $contact_id],                             // avec ce contact id
               ['event_id', '=', $event_id],                         // pour cette ceremonie
@@ -1373,23 +1437,23 @@ function import_participant(){
 
 
           if (!isset($participants[0]['id'])){        //  ce participant n'exista pas : creation
-              $results = civicrm_api4('Participant', 'create', [  
+              $results = civicrm_api4('Participant', 'create', [
                 'values' => $value,
                 'checkPermissions' => FALSE,
-              ]); 
+              ]);
             ++$count;
             echo "-> Création du participant".PHP_EOL;
             $check[$participant_id_orig]=$results[0]['id'];
 
           } else {                               //  ce participant existe : MAJ
             $participant_to_create = $participants[0]['id'];
-            $results = civicrm_api4('Participant', 'update', [  
-              'values' => $value, 
+            $results = civicrm_api4('Participant', 'update', [
+              'values' => $value,
               'where' => [
                 ['id', '=', $participant_to_create],
-              ],              
+              ],
               'checkPermissions' => FALSE,
-            ]); 
+            ]);
           ++$count;
           echo "-> MAJ du participant".PHP_EOL;
           $check[$participant_id_orig]=$participant_to_create;
@@ -1402,8 +1466,8 @@ function import_participant(){
         }
 
             //array_push($check, $old_contact_id); // crée un tableau avec les id des contacts dans base originale
-                                            
-    
+
+
       } else {
         $error ="Contact ".$contact_id." [".$old_contact_id."] n'existe pas --> Participant non créé";
         array_push($error_log,$error);
@@ -1433,8 +1497,8 @@ function import_activites(){
   $entity = func_get_arg(0);     // nom de l'entité à créer (activité...)
   $values = func_get_arg(1);     // liste des entités à importer
   $check=array();
- 
- 
+
+
   foreach ($values as $value) {     /// pour chaque activtié à importer
     $target_ids=array();
     $assignee_ids=array();
@@ -1499,9 +1563,9 @@ function import_activites(){
 
       }
       $value['assignee_contact_id']=$assignee_ids;
-  } 
+  }
 
-    // on recherche si l'activité existe déja 
+    // on recherche si l'activité existe déja
     $source_id=$value['source_contact_id'];
     $target_id=$value['target_contact_id'];
     $assignee_id=$value['assignee_contact_id'];
@@ -1519,7 +1583,7 @@ function import_activites(){
     //print_r($activities);
 
 
-    
+
 
     if (!isset($activities[0]['id'])){     // l'activité n'existe pas on la crée
       unset($value['phone_id']);
@@ -1529,7 +1593,7 @@ function import_activites(){
       $results = civicrm_api4('Activity', 'create', [
         'values' => $value,
          'checkPermissions' => FALSE,
-       ]); 
+       ]);
 
       echo $count." Activité crée: ".$results[0]['id']." OLd : ".$activity_id_old.PHP_EOL.PHP_EOL;
       $check[$activity_id_old]=$results[0]['id'];
@@ -1543,7 +1607,7 @@ function import_activites(){
           ['id', '=', $activity_to_create],
         ],
         'checkPermissions' => FALSE,
-      ]); 
+      ]);
       echo $count." Activité MAJ : ".$results[0]['id']." OLd : ".$activity_id_old.PHP_EOL.PHP_EOL;
       $check[$activity_id_old]=$activity_to_create;
       ++$count;
@@ -1557,15 +1621,15 @@ function import_activites(){
           echo " ---> OK".PHP_EOL;
       }else {
         echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
-      } 
+      }
       return ($check);
-} 
+}
 
 function import_files(){
   global $contact_default;                 // recupere la valeur de cette variable
   $entity = func_get_arg(0);              // nom de l'entité à créer (activité...)
   $filetoimport = func_get_arg(1);        // liste des fichiers à importer
-  $filetoimport=array_column($filetoimport, null, 'id');  // reindexe file to import pour 
+  $filetoimport=array_column($filetoimport, null, 'id');  // reindexe file to import pour
   //print_r($filetoimport);
   $entityfiletoimport = func_get_arg(2);  // liste des entityfiles à importer
   $activitytable = func_get_arg(3);       // table de correspondance entre anciennes (key) et nouvelles id des activités
@@ -1584,20 +1648,20 @@ function import_files(){
         $target = "Activity";
         $target_table = $activitytable;
         break;
-  
+
       case 'civicrm_note':
         $target = "Note";
         $target_table = $notetable;
         break;
-  
+
       case 'civicrm_case':
         $target = "Case";
         break;
-  
+
       case 'civicrm_document_version':
         $target = "DocumentVersion";
         $target_table = $versiontable;
-        break; 
+        break;
 
       default : // si une autre valeur, on passe au entityfile suivant
         continue 2; // 1 : suivant dans la boucle swith 2 dans la foreach
@@ -1605,7 +1669,7 @@ function import_files(){
 
     echo PHP_EOL."EntityFile Original id : ".$entityfile['id'].PHP_EOL;
 
-    // on vérifie si un document version existe bien 
+    // on vérifie si un document version existe bien
     echo "   ".$target." id Original : ".$entityfile['entity_id'];
 
     if (isset($target_table[$entityfile['entity_id']])){
@@ -1618,7 +1682,7 @@ function import_files(){
       echo "  Pas d'entrée avec cette id originale".PHP_EOL;
       continue;
     }
-   
+
     // on vérifie si un fichier existe bien
     echo "   File id Original : ".$entityfile['file_id'];
     if (isset($entityfile['file_id'])){
@@ -1649,7 +1713,7 @@ function import_files(){
       }  else{
         $contacts[0]['id']=$contact_default;
         echo " Manquant !!!   New (assigné par defaut au contact id ".$contacts[0]['id'].")".PHP_EOL;
-      } 
+      }
       $values['created_id']=$contacts[0]['id'];
       unset ($values['id']);
 
@@ -1668,8 +1732,8 @@ function import_files(){
     //print_r($files);
 
     if (isset($files[0]['id'])){        // si ce fichier existe dans la nouvelle base
-  
-      
+
+
       $results = civicrm_api4('File', 'update', [
         'where' => [
           ['id', '=', $files[0]['id']],
@@ -1686,8 +1750,8 @@ function import_files(){
         'checkPermissions' => FALSE,
       ]);
       echo " n'existe pas dans la nouvelle base --> CREATION avec l'id :".$results[0]['id'].PHP_EOL;
-      
-    } 
+
+    }
     $entityfile['file_id']=$results[0]['id'];
 
     //$uri_to_keep[$results[0]['id']]=$results[0]['uri'];
@@ -1701,7 +1765,7 @@ function import_files(){
     unset($entityfile['id']);
     //print_r($entityfile).PHP_EOL;
 
-    // on vérifie si l'entity file existe ou non 
+    // on vérifie si l'entity file existe ou non
     $entityFiles = civicrm_api4('EntityFile', 'get', [
       'select' => [
         'id',
@@ -1733,11 +1797,11 @@ function import_files(){
           echo " ---> OK".PHP_EOL;
       }else {
         echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
-      } 
+      }
       print_r($error_log);
-      
-      return ($check); 
-} 
+
+      return ($check);
+}
 
 function mv_files(){
   $filetoimport = func_get_arg(0);                       // liste des fichiers à déplacer (clé : id OLD du file)
@@ -1767,13 +1831,13 @@ function mv_files(){
       if (file_exists($target)){        // et un fichier cible existe déja --> inchangé
         echo "    --> INCHANGE car présent dans seulement : ".$custom.PHP_EOL;
         ++$count;
-      }else{                            // et il n'y a pas de fichier cible  --> rien à faire 
+      }else{                            // et il n'y a pas de fichier cible  --> rien à faire
         echo "    --> MANQUE; non importé :".$orig.PHP_EOL;
         $error = "File MANQUE, non importé :".$orig;
         array_push($error_log, $error);
       }
     }
-  } 
+  }
   echo $custom.PHP_EOL;
   echo $custom_orig.PHP_EOL;
   echo PHP_EOL.$count." fichiers ont été importés ou sont déja présents sur le disque sur ".count($filetoimport);
@@ -1782,10 +1846,10 @@ function mv_files(){
           echo " ---> OK".PHP_EOL;
       }else {
         echo "---> VERIFIER LIMPORT : fichiers MANQUANTS".PHP_EOL;
-      } 
+      }
       print_r($error_log);
-      return ; 
-} 
+      return ;
+}
 
 function import_notes(){
   $count=1;
@@ -1797,7 +1861,7 @@ function import_notes(){
 
   $check=array();
   $error_log=array();
- 
+
   foreach ($values as $value) {     /// pour chaque activtié à importer
 
     //print_r($value).PHP_EOL;
@@ -1817,9 +1881,9 @@ function import_notes(){
           ],
           'checkPermissions' => FALSE,
         ]);
-    
+
         //print_r($value).PHP_EOL;
-    
+
         if(isset($contacts[0]['id'])){                        // si le contact existe on remplace son id initiale par son id ds la nouvelle base
           $value['contact_id'] = $contacts[0]['id'];
         }else {
@@ -1828,7 +1892,7 @@ function import_notes(){
           array_push($error_log,$error);
           echo $error.PHP_EOL;
         }
-    
+
         $contacts = civicrm_api4('Contact', 'get', [          // On vérifie que le contact cible de la note (contact_id) existe
           'select' => [
             'id',
@@ -1842,7 +1906,7 @@ function import_notes(){
 
         if(isset($contacts[0]['id'])){                        // si le contact existe on remplace son id initiale par son id ds la nouvelle base
           $value['entity_id'] = $contacts[0]['id'];
-          
+
         }else {
           $error = "Note : ".$note_id_old." : Le contact ayant l'id ".$value['entity_id']." dans la base originale n'existe pas";
           array_push($error_log,$error);
@@ -1863,7 +1927,7 @@ function import_notes(){
           ],
           'checkPermissions' => FALSE,
         ]);
-    
+
         if(isset($contacts[0]['id'])){                        // si le contact existe on remplace son id initiale par son id ds la nouvelle base
           $value['contact_id'] = $contacts[0]['id'];
         }else {
@@ -1881,15 +1945,15 @@ function import_notes(){
           ],
           'checkPermissions' => FALSE,
         ]);
-      
+
         if(isset($relationships[0]['id'])){                        // si la relation existe on remplace son id initiale par son id ds la nouvelle base
-          $value['entity_id'] = $relationships_old[$value['entity_id']]; 
+          $value['entity_id'] = $relationships_old[$value['entity_id']];
 
         }else {
           $error = "Note : ".$note_id_old." : La relation contact ayant l'id ".$value['entity_id']." dans la base originale n'existe pas";
           array_push($error_log,$error);
           $value['entity_id'] = NULL;                     // si le contact n'existe pas on met entity_id à NULL ce qui induit le non traitement de la note
-        } 
+        }
         break;
 
       case 'civicrm_participant':
@@ -1925,13 +1989,13 @@ function import_notes(){
         ]);
 
         if(isset($participant[0]['id'])){                        // si le participant existe on remplace son id initiale par son id ds la nouvelle base
-          $value['entity_id'] = $participant_old[$value['entity_id']]; 
+          $value['entity_id'] = $participant_old[$value['entity_id']];
 
         }else {
           $error = "Note : ".$note_id_old." : Le participant  ayant l'id ".$value['entity_id']." dans la base originale n'existe pas";
           array_push($error_log,$error);
           $value['entity_id'] = NULL;                     // si le contact n'existe pas on met entity_id à NULL ce qui induit le non traitement de la note
-        } 
+        }
         break;
 
       case 'civicrm_contribution':
@@ -1965,15 +2029,15 @@ function import_notes(){
           ],
           'checkPermissions' => FALSE,
         ]);
-      
+
         if(isset($contribution[0]['id'])){                        // si le participant existe on remplace son id initiale par son id ds la nouvelle base
-          $value['entity_id'] = $contribution_old[$value['entity_id']]; 
+          $value['entity_id'] = $contribution_old[$value['entity_id']];
 
         }else {
           $error = "Note : ".$note_id_old." : la contribution ayant l'id ".$value['entity_id']." dans la base originale n'existe pas";
           array_push($error_log,$error);
           $value['entity_id'] = NULL;                     // si le contact n'existe pas on met entity_id à NULL ce qui induit le non traitement de la note
-        } 
+        }
         break;
 
       case 'civicrm_note':
@@ -1984,7 +2048,7 @@ function import_notes(){
     }
 
     //print_r($value).PHP_EOL;
-  
+
     if(isset($value['entity_id'])){                    // si l'entité (contact, relation...) associée à cette note existe
       $notes = civicrm_api4('Note', 'get', [            // on vérifie si une note ayant les memes caractéristiques existe déja
         'where' => [
@@ -2031,27 +2095,27 @@ function import_notes(){
       }else {
         echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
 
-      } 
+      }
       echo "Erreurs : ".PHP_EOL;
       print_r($error_log).PHP_EOL;
       return ($check);
-} 
+}
 
 function import_documents(){
   global $contact_default;                            // recupere la valeur de cette variable
   $count=1;
   $entity = func_get_arg(0);                          // nom de l'entité à créer (note...)
-  $documentsContacts = func_get_arg(1);               // liste initiale documents Contacts à importer  
-  $documentsVersions = func_get_arg(2);               // liste initiale documents Version à importer  
+  $documentsContacts = func_get_arg(1);               // liste initiale documents Contacts à importer
+  $documentsVersions = func_get_arg(2);               // liste initiale documents Version à importer
 
   $check=array();             // table des versions de document importées : clé ancienen id ; veleur nouvelell id
   $check_docs=array();        // table des documents importés : clé ancienne id ; veleur nouvelell id
-  
+
   $error_log=array();
- 
+
   foreach ($documentsContacts as $documentsContact) {     /// pour chaque Document contact à importer
     echo PHP_EOL."DocumentContact : ".$documentsContact['id'].PHP_EOL;
-    
+
       // on vérifie si le contact ayant créé le document contact existe dans la nouvelle base
         echo " Document added by Contact OLD id : ".$documentsContact['document.added_by'];
         $contacts = civicrm_api4('Contact', 'get', [      // on vérifie si le contact ayant ajouté le document  existe dans la nouvelle base
@@ -2096,7 +2160,7 @@ function import_documents(){
 
       // on vérifie si le contact associé au document contact existe dans la nouvelle base
         echo " Contact associé au DocumentContact id OLD : ".$documentsContact['contact_id'];
-        $contacts = civicrm_api4('Contact', 'get', [                
+        $contacts = civicrm_api4('Contact', 'get', [
           'select' => [
             'id',
           ],
@@ -2154,12 +2218,12 @@ function import_documents(){
               ],
               'checkPermissions' => FALSE,
             ]);
-            
-            echo " NEW (créé) ".$documents[0]['id'].PHP_EOL; 
+
+            echo " NEW (créé) ".$documents[0]['id'].PHP_EOL;
             $check_docs[$documentsContact['document_id']]=$documents[0]['id'];   // on ajoute ce nouveau docment à $check_docs
-            
+
             $documentsContact['document_id']=$documents[0]['id'];   // on met l'id de ce document dans Document contact 'document_id'
-            
+
             $results = civicrm_api4('DocumentContact', 'create', [
               'values' => [
                 'document_id' => $documentsContact['document_id'],
@@ -2168,19 +2232,19 @@ function import_documents(){
               'checkPermissions' => FALSE,
             ]);
 
-            echo " Document contact créé, id : ".$results[0]['id'].PHP_EOL; 
+            echo " Document contact créé, id : ".$results[0]['id'].PHP_EOL;
 
           }else {
             $error = " DocumentContact id ".$documentsContact['id']." couple Document/DocumentContact non importé car existe déja";
             array_push($error_log,$error);
             echo " New (existe) : ".$documents[0]['id'].PHP_EOL;
             $check_docs[$documentsContact['document_id']]=$documents[0]['id'];   // on ajoute ce nouveau docment à $check_docs
-            echo $error.PHP_EOL; 
+            echo $error.PHP_EOL;
           }
 
       // On recheche les versions attachées à ce document
         // on cherche quelles vesions contiennent l'id originale du document dans dans la colonne document id
-        $version_keys=array_keys(array_column($documentsVersions, 'document_id'), $document_id_orig );  
+        $version_keys=array_keys(array_column($documentsVersions, 'document_id'), $document_id_orig );
 
         if (count($version_keys)!=0){     // si une version existe
 
@@ -2188,9 +2252,9 @@ function import_documents(){
             $version_to_create=$documentsVersions[$version_key];
             echo " Version (".$version_to_create['version'].") id OLD : ".$version_to_create['id']." MAJ par contact id OLD : ".$version_to_create['updated_by'].PHP_EOL;
             $version_to_create['document_id']=$documents[0]['id']; // on assigne la valeur de doc id dans la nouvelle base
-   
+
             // on recherche si le contact ayant MAJ la version existe dans la base ; sinon on lui met la valeur par defaut
-            $contacts = civicrm_api4('Contact', 'get', [      
+            $contacts = civicrm_api4('Contact', 'get', [
               'select' => [
                 'id',
               ],
@@ -2199,7 +2263,7 @@ function import_documents(){
               ],
               'checkPermissions' => FALSE,
             ]);
-    
+
             if (isset($contacts[0]['id'])){                                // si le contact ayant MAJ la version existe dans la base
               $version_to_create['updated_by']=$contacts[0]['id'];     // on remplace son id par celle dans la nouvelle base
 
@@ -2217,11 +2281,11 @@ function import_documents(){
               ],
               'checkPermissions' => FALSE,
             ]);
-          
+
             $version_id_orig=$version_to_create['id'];
             unset($version_to_create['id']);
 
-            if (!isset($Versions[0]['id'])){      // cette version n'existe pas dans la base ; on la crée 
+            if (!isset($Versions[0]['id'])){      // cette version n'existe pas dans la base ; on la crée
               $results = civicrm_api4('DocumentVersion', 'create', [
                 'values' => $version_to_create,
                 'checkPermissions' => FALSE,
@@ -2251,18 +2315,18 @@ function import_documents(){
       }else {
         echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
 
-      } 
+      }
       echo $entity." : ".count($check)." version ont été importées".PHP_EOL;
       echo "Erreurs : ".PHP_EOL;
       print_r($error_log).PHP_EOL;
-     
+
       return ($check);
-} 
+}
 
 function import_protinvivo(){
   $count=1;
   $entity = func_get_arg(0);                          // nom de l'entité à créer (Protocole in vivo...)
-  $protocoles = func_get_arg(1);               // liste initiale documents Contacts à importer  
+  $protocoles = func_get_arg(1);               // liste initiale documents Contacts à importer
   $check=array();             // table des protocoles importées : clé ancienen id ; veleur nouvelell id
   $error_log=array();
 
@@ -2311,14 +2375,14 @@ function import_protinvivo(){
         ],
         'checkPermissions' => FALSE,
       ]);
-      
+
     } else {                                         // si le protocole n'existe pas pour ce contact creation
       $results = civicrm_api4('Custom_Protocoles_in_vivo', 'create', [
         'values' => $protocole,
         'checkPermissions' => FALSE,
       ]);
       echo "  |    création avec id :".$results[0]['id'].PHP_EOL;
-      
+
     }
     ++$count;
     $check[$protocole_id_old]=$results[0]['id'];
@@ -2331,19 +2395,19 @@ function import_protinvivo(){
   }else {
     echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
 
-  } 
- 
+  }
+
   echo "Erreurs : ".PHP_EOL;
   print_r($error_log).PHP_EOL;
- 
+
   return ($check);
 
 }
 
- 
+
 
 function import_tags(){
-  global $exp_dir;    
+  global $exp_dir;
   $count=1;
   $entity = func_get_arg(0);                // nom de l'entité à créer (Tags...)
   $values = func_get_arg(1);                // liste des entités (Tags) à importer
@@ -2397,13 +2461,13 @@ function import_tags(){
 
   foreach($entitytagstoimport as $entitytagtoimport){
 
-    // on récupère la nouvelle id de l'entité 
+    // on récupère la nouvelle id de l'entité
     switch ($entitytagtoimport['entity_table']){         // target indique l'entité considérée ; note, activite ou case
       /*case 'civicrm_activity':
         $target = "Activity";
         $target_table = $activitytable;
         break;*/
-  
+
       case 'civicrm_contact':
         $target = "Contact";
         $contacts = civicrm_api4('Contact', 'get', [                          // on récupère l'id du contact dans la nouvelle base
@@ -2427,17 +2491,17 @@ function import_tags(){
           continue 2;
         }
         break;
-  
+
       /*case 'civicrm_case':                  // non utilisés
         $target = "Case";
         break;*/
-  
+
       /*case 'civicrm_file':
         print_r($entitytagtoimport);
         $target = "File";
         $target_table = $filestable;
         print_r($target_table[$entitytagtoimport['entity_id']]);
-        
+
         if(isset($target_table[$entitytagtoimport['entity_id']])){
           $entity_id_new=$target_table[$entitytagtoimport['entity_id']]['new_id'];
         }
@@ -2455,7 +2519,7 @@ function import_tags(){
         continue 2; // 1 : suivant dans la boucle swith 2 dans la foreach
     }
 
-    // fin de la récupération de la nouvelle id de l'entité 
+    // fin de la récupération de la nouvelle id de l'entité
 
     // on récupère la nouvelle id du tag
 
@@ -2506,15 +2570,15 @@ function import_tags(){
   }
 
 
- 
-  
+
+
   echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
       if (count($check)==count($values)) {// le bon nombre de lignes a été importées
           echo " ---> OK".PHP_EOL;
       }else {
         echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
 
-      } 
+      }
 
   echo PHP_EOL."Entity Tags :".count($check_entity_tags)." lignes ont été importées sur ".count($entitytagstoimport);
       if (count($check_entity_tags)==count($entitytagstoimport)) {// le bon nombre de lignes entity tags a été importées
@@ -2522,24 +2586,24 @@ function import_tags(){
     }else {
       echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
 
-    } 
+    }
 
       echo "Erreurs : ".PHP_EOL;
       print_r($error_log).PHP_EOL;
 
 
       $check_tags_file = $exp_dir."check_130_EntityTags.txt";
-      file_put_contents($check_tags_file, json_encode($check_entity_tags, JSON_PRETTY_PRINT));     
+      file_put_contents($check_tags_file, json_encode($check_entity_tags, JSON_PRETTY_PRINT));
       echo $check_tags_file." écrit".PHP_EOL;
 
 
       return ($check);
-} 
+}
 
 
 // check custom fields
   if ($check_custom_field == 1){
-    $custom_file = $exp_dir."02_CustomField.txt";  
+    $custom_file = $exp_dir."02_CustomField.txt";
     $json = file_get_contents($custom_file);
     $options = json_decode($json, true);
     check_custom($options);
@@ -2554,7 +2618,7 @@ function import_tags(){
     }
 
 // importe organisations
-  if($import_organisations ==1) { 
+  if($import_organisations ==1) {
     $name =  "05_organisations";
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
@@ -2573,19 +2637,41 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
 
     }
+
+
+
+
 
 // importe individus
   if($import_individus == 1){
       $contact_file = $exp_dir."10_individuals.txt";
       $json = file_get_contents($contact_file);
       $contacts = json_decode($json, true);
-      import_stuff('Contact',$contacts); 
+      import_stuff('Contact',$contacts);
+
+
+
+      echo "Continuer à importer (O/N) ?";
+      $kb = trim(fgets(STDIN)); // Lire l'entrée et supprimer les espaces inutiles
+
+      if ($kb=='O' OR $kb=='o'){
+        echo "On y va !!!".PHP_EOL;
+      } else {
+        echo "Vérifiez vos imports et reprenez".PHP_EOL;
+        exit;
+      }
     }
 
-// importe adresses 
+
+
+
+
+
+
+// importe adresses
   if($import_adresses == 1){
     $name =  "15_adresses";
     $toimport_file = $exp_dir.$name.".txt";
@@ -2607,12 +2693,12 @@ function import_tags(){
       } else {
         echo "Vérifiez vos imports et reprenez".PHP_EOL;
         exit;
-      }  
+      }
     }
 
 // importe telephones
   if($import_telephones == 1){
-        $name = '20_telephone';                     // nom du fichier à importer sans le suffixe 
+        $name = '20_telephone';                     // nom du fichier à importer sans le suffixe
         $toimport_file = $exp_dir.$name.".txt";
         $json = file_get_contents($toimport_file);
         $toimport = json_decode($json, true);
@@ -2626,18 +2712,18 @@ function import_tags(){
 
         echo "Continuer à importer (O/N) ?";
         $kb = trim(fgets(STDIN)); // Lire l'entrée et supprimer les espaces inutiles
-    
+
       if ($kb=='O' OR $kb=='o'){
         echo "On y va !!!".PHP_EOL;
       } else {
         echo "Vérifiez vos imports et reprenez".PHP_EOL;
         exit;
-      } 
+      }
     }
- 
+
 // importe email
     if($import_email == 1){
-      $name = '25_Email';                     // nom du fichier à importer sans le suffixe 
+      $name = '25_Email';                     // nom du fichier à importer sans le suffixe
       $toimport_file = $exp_dir.$name.".txt";
       $json = file_get_contents($toimport_file);
       $toimport = json_decode($json, true);
@@ -2656,13 +2742,13 @@ function import_tags(){
       } else {
         echo "Vérifiez vos imports et reprenez".PHP_EOL;
         exit;
-      }  
-      
+      }
+
       }
 
 // importe Groups
   if($import_groups ==1){
-    $name = '28_Groups';                     // nom du fichier des groupes importer sans le suffixe 
+    $name = '28_Groups';                     // nom du fichier des groupes importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $groupstoimport = json_decode($json, true);
@@ -2690,38 +2776,38 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
 
 // importe relationships
   if($import_relationships ==1 ){
-      $name = '30_Relationship';                     // nom du fichier à importer sans le suffixe 
+      $name = '30_Relationship';                     // nom du fichier à importer sans le suffixe
       $toimport_file = $exp_dir.$name.".txt";
       $json = file_get_contents($toimport_file);
       $toimport = json_decode($json, true);
-    
+
       echo count($toimport)." Relationships à importer".PHP_EOL;
       $check=import_relationship('Relationship',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
-    
+
 
         $chk_file = $exp_dir."check_".$name.".txt";
       file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
       echo $chk_file." écrit".PHP_EOL;
-    
+
       echo "Continuer à importer (O/N) ?";
       $kb = trim(fgets(STDIN)); // Lire l'entrée et supprimer les espaces inutiles
-    
+
       if ($kb=='O' OR $kb=='o'){
         echo "On y va !!!".PHP_EOL;
       } else {
         echo "Vérifiez vos imports et reprenez".PHP_EOL;
         exit;
-      }  
+      }
     }
 
 // importe utilisations
   if($import_utilisations ==1){
-    $name = '40_Custom_Utilisation_du_corps';                     // nom du fichier à importer sans le suffixe 
+    $name = '40_Custom_Utilisation_du_corps';                     // nom du fichier à importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport = json_decode($json, true);
@@ -2742,12 +2828,12 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }   
+    }
   }
 
 // importe protocoles in vivo
   if($import_protinvivo ==1){
-    $name = '45_Custom_ProtocolesInVivo';                     // nom du fichier à importer sans le suffixe 
+    $name = '45_Custom_ProtocolesInVivo';                     // nom du fichier à importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport = json_decode($json, true);
@@ -2768,16 +2854,47 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }   
+    }
   }
 
-// importe contributions
-  if($import_contributions ==1){
-    $name = '50_Contribution';                     // nom du fichier à importer sans le suffixe 
+
+// importe FinancialType
+  if($import_FinancialType ==1){
+    $name = '12_FinancialType';                     // nom du fichier à importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport = json_decode($json, true);
-    $chk_file = $exp_dir."check_".$name.".txt";    // nom du fichier enreigstrant les entités crées 
+    $chk_file = $exp_dir."check_".$name.".txt";    // nom du fichier enreigstrant les entités crées
+
+    echo count($toimport)." Financial types à importer".PHP_EOL;
+
+      $check=import_FinancialType('FinancialType',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
+      //$check=import_contribution('Contribution',$toimport,$contribution_old);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
+
+      file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
+      echo $chk_file." écrit".PHP_EOL;
+    //}
+
+    echo "Continuer à importer (O/N) ?";
+    $kb = trim(fgets(STDIN)); // Lire l'entrée et supprimer les espaces inutiles
+
+    if ($kb=='O' OR $kb=='o'){
+      echo "On y va !!!".PHP_EOL;
+    } else {
+      echo "Vérifiez vos imports et reprenez".PHP_EOL;
+      exit;
+    }
+
+  }
+
+
+// importe contributions
+  if($import_contributions ==1){
+    $name = '50_Contribution';                     // nom du fichier à importer sans le suffixe
+    $toimport_file = $exp_dir.$name.".txt";
+    $json = file_get_contents($toimport_file);
+    $toimport = json_decode($json, true);
+    $chk_file = $exp_dir."check_".$name.".txt";    // nom du fichier enreigstrant les entités crées
 
     echo count($toimport)." Contributions à importer".PHP_EOL;
 
@@ -2796,13 +2913,13 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }   
+    }
 
   }
 
 // importe events
   if($import_events ==1){
-    $name = '60_Event';                     // nom du fichier à importer sans le suffixe 
+    $name = '60_Event';                     // nom du fichier à importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport = json_decode($json, true);
@@ -2823,11 +2940,11 @@ function import_tags(){
       } else {
         echo "Vérifiez vos imports et reprenez".PHP_EOL;
         exit;
-      }  
+      }
     }
 // importe participants
   if($import_participants ==1){
-    $name = '70_Participant';                     // nom du fichier des pariticpantsà importer sans le suffixe 
+    $name = '70_Participant';                     // nom du fichier des pariticpantsà importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport = json_decode($json, true);
@@ -2835,8 +2952,8 @@ function import_tags(){
 
     echo count($toimport)." Participants à importer".PHP_EOL;
 
-    $name = 'check_60_Event';                           // nom du fichier check event (correspondance ancienne et nouvelle id des event) 
-                                                        //des evenements à importer, sans le suffixe 
+    $name = 'check_60_Event';                           // nom du fichier check event (correspondance ancienne et nouvelle id des event)
+                                                        //des evenements à importer, sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport_event = json_decode($json, true);
@@ -2846,7 +2963,7 @@ function import_tags(){
 
     $check=import_participant('Participant',$toimport,$toimport_event);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
 
-    
+
     file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
     echo $chk_file." écrit".PHP_EOL;
 
@@ -2858,13 +2975,13 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
 
 
 // importe Activités
   if($import_activites ==1){
-    $name = '80_Activites';                     // nom du fichier des pariticpantsà importer sans le suffixe 
+    $name = '80_Activites';                     // nom du fichier des pariticpantsà importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport = json_decode($json, true);
@@ -2888,15 +3005,15 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
 
 
 
-  
+
 // importe Notes
   if($import_notes ==1){
-    $name = '100_Notes';                     // nom du fichier des notes importer sans le suffixe 
+    $name = '100_Notes';                     // nom du fichier des notes importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $toimport = json_decode($json, true);
@@ -2924,7 +3041,7 @@ function import_tags(){
     $check= import_notes('Note',$toimport,$relationships_old,$participant_old,$contribution_old);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
 
 
-    
+
     file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
     echo $chk_file." écrit".PHP_EOL;
 
@@ -2936,9 +3053,9 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
-  
+
 // importe Documents
   if($import_documents ==1){
     $name = '115_DocumentsContact';                     // nom du fichier des documents contacts
@@ -2949,7 +3066,7 @@ function import_tags(){
 
     echo count($documentsContacts)." Documents à importer".PHP_EOL;
 
-    $name = '120_DocumentsVersion';                     // nom du fichier des documents version 
+    $name = '120_DocumentsVersion';                     // nom du fichier des documents version
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $documentsVersions = json_decode($json, true);
@@ -2968,12 +3085,12 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
 
 // importe Files
   if($import_files ==1){
-    $name = '90_Files';                     // nom du fichier à importer sans le suffixe 
+    $name = '90_Files';                     // nom du fichier à importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $filetoimport = json_decode($json, true);
@@ -3014,10 +3131,10 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
 
-  
+
 
 // move Files
   if($mv_files ==1){
@@ -3038,13 +3155,13 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
 
 
 // importe tags
   if($import_tags ==1){
-    $name = '130_Tags';                     // nom du fichier à importer sans le suffixe 
+    $name = '130_Tags';                     // nom du fichier à importer sans le suffixe
     $toimport_file = $exp_dir.$name.".txt";
     $json = file_get_contents($toimport_file);
     $tagstoimport = json_decode($json, true);
@@ -3081,12 +3198,11 @@ function import_tags(){
     } else {
       echo "Vérifiez vos imports et reprenez".PHP_EOL;
       exit;
-    }  
+    }
   }
-  
+
 
    echo "on continue".PHP_EOL;
 
 
 
-  
