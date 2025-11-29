@@ -3,27 +3,27 @@ eval(`cv php:boot`);
 
 $exp_dir = '/Users/destri_c/Desktop/import/';       // racine du répertoire d'import export
 
-$check_custom_field = 0 ;
-$check_option_values =0 ;
-$import_organisations =0 ;
+$check_custom_field = 1 ;
+$check_option_values =1 ;
+$import_organisations =1 ;
 $import_FinancialType = 1 ;
-$import_individus =0 ;
-$import_groups =0 ;
-$import_adresses = 0 ;
-$import_telephones = 0 ;
-$import_email =0 ;
-$import_relationships =0 ;
-$import_utilisations =0 ;
-$import_protinvivo = 0;
-$import_contributions =0;
-$import_events =0 ;
-$import_participants =0 ;
-$import_activites =0 ;
-$import_notes =0 ;
-$import_documentsContact =0 ;
-$import_documentsVersion =0 ;
-$import_files =0 ;
-$import_tags =0 ;
+$import_individus =1 ;
+$import_groups =1 ;
+$import_adresses = 1 ;
+$import_telephones = 1 ;
+$import_email =1 ;
+$import_relationships =1 ;
+$import_utilisations =1 ;
+$import_protinvivo = 1;
+$import_contributions =1;
+$import_events =1 ;
+$import_participants =1 ;
+$import_activites =1 ;
+$import_notes =1 ;
+$import_documentsContact =1 ;
+$import_documentsVersion =1 ;
+$import_files =1 ;
+$import_tags =1 ;
 
 
 function export_stuff(){

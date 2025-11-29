@@ -16,8 +16,8 @@ $custom_orig = $custom."/custom_orig";                                          
 $check_custom_field = 0;
 $check_option_values =0 ;
 $import_organisations =0;
-$import_FinancialType =0;
-$import_individus =0 ;
+$import_FinancialType =1;
+$import_individus =1 ;
 $import_groups = 0 ;
 $import_adresses = 0 ;
 $import_telephones = 0 ;
@@ -250,8 +250,14 @@ function import_stuff(){
         unset ($value['hash']);
         //unset ($value['display_name']);
         //unset ($value['sort_name']);
-        //unset ($value['email_greeting_display']);
-        //unset ($value['postal_greeting_display']);
+        unset ($value['email_greeting_id']);
+        unset ($value['email_greeting_custom']);
+        unset ($value['email_greeting_display']);
+
+        unset ($value['postal_greeting_id']);
+        unset ($value['postal_greeting_custom']);
+        unset ($value['postal_greeting_display']);
+
         //unset ($value['addressee_display']);
         unset ($value['more_greetings_group.greeting_field_1']);
         unset ($value['more_greetings_group.greeting_field_2']);
@@ -273,11 +279,25 @@ function import_stuff(){
         unset ($value['more_greetings_group.greeting_field_8_protected']);
         unset ($value['more_greetings_group.greeting_field_9_protected']);
 
-        unset ($value['prefix_id']);
+        //unset ($value['prefix_id']);
+  
         unset ($value['suffix_id']);
         unset ($value['communication_style_id']);
+        
+        
 
-       
+       /// dans les anciennses versions le genre de l'animal était ocnservé dans un custom field
+       /// du groupe animal
+       /// ce champ a été supprimé au profit de Gender qu'il écrase s'il est défini. 
+
+       if (isset($value['contact_sub_type']) && in_array('Animal',$value['contact_sub_type']) && isset($value['animal.Sexe'])){
+          
+            $value['gender_id']=$value['animal.Sexe'];
+            unset($value['animal.Sexe']);
+            //echo "Animal : Champ Sexe du custom group animal non importé -> Gender mis à : ".$value['gender_id'].PHP_EOL;
+       }
+
+       //echo $value['gender_id'].PHP_EOL;
 
         if (isset($value['Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches'])){                    // si le contact a un champ Pompes_fun_bres_mandat_es_par_proches non null
           echo "pompes_id : ".$value['Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches'].PHP_EOL;   // on en modifie la valeur par l'id des pompes crées au préalable
@@ -322,7 +342,107 @@ function import_stuff(){
           }
         }
 
+        // Dans la nouvelle base un Champ Civilité user du groupe Complement Etat Civil
+        // Les formules de politesse sont déduites de ce champ
+        // Dans les anciennes versions, la civilité est données par prefix
 
+
+
+       
+        if (isset($value['contact_sub_type']) && $value['contact_type']=='Individual'){
+            //echo "c'est un individu ";
+
+
+            if (in_array('Animal',$value['contact_sub_type'])){
+                //echo " et un animal ".PHP_EOL;
+                unset ($value['prefix_id']);
+                unset ($value['email_greeting_id']);
+                unset ($value['postal_greeting_id']);
+                unset ($value['Compl_m_nt_tat_civil.Civilit_user']);
+                $value['gender_id']=NULL;
+                //echo "unset gender et prefix".PHP_EOL;
+
+            } else {
+
+              //echo "prefix ".$value['prefix_id'].PHP_EOL;
+              //echo "gender ".$value['gender_id'].PHP_EOL;
+
+                //echo " mais pas un animal : modification civilité et formules politesse".PHP_EOL;
+                //echo "civilité originale ".$value['prefix_id']." ".$value['prefix_id:name'].PHP_EOL;
+                switch($value['prefix_id']){
+                  case '1': // Mme
+                    //echo "cas mme".PHP_EOL;
+                    $value['gender_id']=1;
+                    $value['Compl_m_nt_tat_civil.Civilit_user']=2;
+                    $value['email_greeting_id:name']='Madame';
+                    $value['postal_greeting_id:name']='Madame';
+                    //$value['email_greeting_display'];
+                    //$value['postal_greeting_display'];
+
+                  break;
+
+                  case '2': // Melle
+                    //echo "cas MLLE".PHP_EOL;
+                    $value['gender_id']=1;
+                    $value['Compl_m_nt_tat_civil.Civilit_user']=3;
+                    $value['email_greeting_id:name']='Mademoiselle';
+                    $value['postal_greeting_id:name']='Mademoiselle';
+
+                  break;
+
+                  case '3': // Mr
+                    //echo "cas MR".PHP_EOL;
+                    $value['gender_id']=2;
+                    $value['Compl_m_nt_tat_civil.Civilit_user']=1;
+                    $value['email_greeting_id:name']='Monsieur';
+                    $value['postal_greeting_id:name']='Monsieur';
+                  break;
+
+                  default :  // la civilité n'est pas définie ; on regarde la valeur du genre 
+                    //echo "PAS DE PREFIXE".PHP_EOL;
+
+                    if ($value['gender_id']==1){ // féminin
+                      $value['Compl_m_nt_tat_civil.Civilit_user']=2;
+                      $value['email_greeting_id:name']='Madame';
+                      $value['postal_greeting_id:name']='Madame';
+                      $value['prefix_id']='1';
+                    }
+
+                    if ($value['gender_id']==2){ // Mascilin
+                      $value['Compl_m_nt_tat_civil.Civilit_user']=1;
+                      $value['email_greeting_id:name']='Monsieur';
+                      $value['postal_greeting_id:name']='Monsieur';
+                      $value['prefix_id']='3';
+                    }
+
+                    if ($value['gender_id']==3){ /// other 
+                      $value['Compl_m_nt_tat_civil.Civilit_user']=4;
+                      $value['email_greeting_id:name']='{contact.first_name} {contact.last_name}';
+                      $value['postal_greeting_id:name']='{contact.first_name} {contact.last_name}';
+                    } 
+
+                    if ($value['gender_id']==NULL){ /// other 
+                      $value['email_greeting_id:name']='Madame, Monsieur';
+                      $value['postal_greeting_id:name']='Madame, Monsieur';
+                    }
+
+
+
+
+                  break;
+                }
+            }
+
+        } else { /// il s'agit d'une organisation ou d'un animal : pas de formule de politess ni de genre
+            //echo "c'est une organisation ".PHP_EOL;
+            unset ($value['prefix_id']);
+            unset ($value['email_greeting_id']);
+            unset ($value['postal_greeting_id']);
+            unset ($value['Compl_m_nt_tat_civil.Civilit_user']);
+            $value['gender_id']=NULL;
+            //echo "unset gender et prefix".PHP_EOL;
+        }
+//print_r($value);
 
         $contacts = civicrm_api4('Contact', 'get', [
 //            'select' => [
@@ -339,7 +459,7 @@ function import_stuff(){
       //print_r($contacts);
 
 
-
+$value['addressee_id']=1;
 
         if (!isset($contacts[0]['id'])){             // si le contact n'existe pas on le crée
             $results = civicrm_api4('Contact', 'create', [
