@@ -7,6 +7,9 @@ affichage groupes dynamiques dans CONTACT LAYOUT DB error
 civirules supprime lots
 civirules déplace lots
 civirules inventaires
+
+que les formules de politess par courrier et par mail suivantes sont actives
+madame; monsieur; madamoiselle; MadameMonsieur, nom prénom
 */
 
 require_once 'don_corps.civix.php';
@@ -4351,11 +4354,18 @@ use CRM_DonCorps_ExtensionUtil as E;
                     'showTitle' => FALSE,
                   ],
                   [
-                    'name' => 'profile.Fonction_18',
-                    'title' => E::ts('Fonction'),
+                    'name' => 'profile.Employeur',
+                    'title' => E::ts('Employeur'),
                     'collapsible' => FALSE,
                     'collapsed' => FALSE,
-                    'showTitle' => TRUE,
+                    'showTitle' => FALSE,
+                  ],
+                  [
+                    'name' => 'custom.infos_personnel',
+                    'title' => E::ts('Informations Personnel'),
+                    'collapsible' => FALSE,
+                    'collapsed' => FALSE,
+                    'showTitle' => FALSE,
                   ],
                 ],
                 [
@@ -4892,9 +4902,7 @@ use CRM_DonCorps_ExtensionUtil as E;
             'id' => 8,
             'label' => E::ts('Mairie'),
             'contact_type' => 'Organization',
-            'contact_sub_type' => [
-              'Mairies',
-            ],
+            'contact_sub_type' => NULL,
             'groups' => NULL,
             'weight' => 6,
             'blocks' => [

@@ -11,13 +11,13 @@ $exp_dir = '/Users/destri_c/Desktop/import/';       // racine du répertoire d'i
 $contact_default = 2; // id du contact par defaut lorsque le contact origine a disparu
 
 $custom = '/Applications/MAMP/htdocs/preprod/wp-content/uploads/civicrm/custom';   // repertoire contenant les pdf
-$custom_orig = $custom."/custom_orig";                                             // repertoire contenant les pdf de la base originale (cux qui sont utilisés sont  déplacés vers $custom)
+$custom_orig = $custom."/custom_orig/";                                             // repertoire contenant les pdf de la base originale (cux qui sont utilisés sont  déplacés vers $custom)
 
 $check_custom_field = 0;
 $check_option_values =0 ;
 $import_organisations =0;
-$import_FinancialType =1;
-$import_individus =1 ;
+$import_FinancialType =0;
+$import_individus =0 ;
 $import_groups = 0 ;
 $import_adresses = 0 ;
 $import_telephones = 0 ;
@@ -26,14 +26,14 @@ $import_relationships = 0 ;
 $import_utilisations =0;
 $import_protinvivo =0 ;
 $import_contributions =0 ;
-$import_events =1 ;
+$import_events =0 ;
 $import_participants =0;
 $import_activites =0 ;
 $import_notes =0 ;
-$import_documents =0 ;   // a faire avant files
-$import_files =0 ;
-$mv_files = 0 ;
-$import_tags = 0 ;
+$import_documents =1 ;   // a faire avant files
+$import_files =1 ;
+$mv_files = 1 ;
+$import_tags = 1 ;
 
 
 function check_custom(){
@@ -240,8 +240,8 @@ function import_stuff(){
     $check=array();
       //print_r($values);
 
-    
-    
+
+
     foreach ($values as $value) {
 
         $value['external_identifier']=$value['id'];
@@ -280,18 +280,18 @@ function import_stuff(){
         unset ($value['more_greetings_group.greeting_field_9_protected']);
 
         //unset ($value['prefix_id']);
-  
+
         unset ($value['suffix_id']);
         unset ($value['communication_style_id']);
-        
-        
+
+
 
        /// dans les anciennses versions le genre de l'animal était ocnservé dans un custom field
        /// du groupe animal
-       /// ce champ a été supprimé au profit de Gender qu'il écrase s'il est défini. 
+       /// ce champ a été supprimé au profit de Gender qu'il écrase s'il est défini.
 
        if (isset($value['contact_sub_type']) && in_array('Animal',$value['contact_sub_type']) && isset($value['animal.Sexe'])){
-          
+
             $value['gender_id']=$value['animal.Sexe'];
             unset($value['animal.Sexe']);
             //echo "Animal : Champ Sexe du custom group animal non importé -> Gender mis à : ".$value['gender_id'].PHP_EOL;
@@ -348,7 +348,7 @@ function import_stuff(){
 
 
 
-       
+
         if (isset($value['contact_sub_type']) && $value['contact_type']=='Individual'){
             //echo "c'est un individu ";
 
@@ -398,7 +398,7 @@ function import_stuff(){
                     $value['postal_greeting_id:name']='Monsieur';
                   break;
 
-                  default :  // la civilité n'est pas définie ; on regarde la valeur du genre 
+                  default :  // la civilité n'est pas définie ; on regarde la valeur du genre
                     //echo "PAS DE PREFIXE".PHP_EOL;
 
                     if ($value['gender_id']==1){ // féminin
@@ -415,13 +415,13 @@ function import_stuff(){
                       $value['prefix_id']='3';
                     }
 
-                    if ($value['gender_id']==3){ /// other 
+                    if ($value['gender_id']==3){ /// other
                       $value['Compl_m_nt_tat_civil.Civilit_user']=4;
                       $value['email_greeting_id:name']='{contact.first_name} {contact.last_name}';
                       $value['postal_greeting_id:name']='{contact.first_name} {contact.last_name}';
-                    } 
+                    }
 
-                    if ($value['gender_id']==NULL){ /// other 
+                    if ($value['gender_id']==NULL){ /// other
                       $value['email_greeting_id:name']='Madame, Monsieur';
                       $value['postal_greeting_id:name']='Madame, Monsieur';
                     }
@@ -471,7 +471,7 @@ $value['addressee_id']=1;
 
           } else {                                // si le contact exite on l'update
 
-             $id_to_update=$contacts[0]['id']; 
+             $id_to_update=$contacts[0]['id'];
 
              $results = civicrm_api4('Contact', 'update', [
               'values' => $value,
@@ -491,7 +491,7 @@ $value['addressee_id']=1;
            //print_r($results[0]['id']);
            array_push($check, $results[0]['id']);
 
- 
+
 
   }
   //print_r($check);
@@ -1139,6 +1139,7 @@ function import_utilisation(){
 
     // Contact 1 : localiation de la pièce (peut etre null si piece élimiinée) dans nouvelle base
     $old_Lacalisation=$value['Lacalisation'];      // id de la localisation dans l'ancienne base
+
     $contacts = civicrm_api4('Contact', 'get', [
          'select' => [
           'id',
@@ -1232,6 +1233,7 @@ function import_utilisation(){
 
           } else {                                                  // cette utilisation existe  ; on la MAJ
             $utilisation_to_create = $utilisations[0]['id'];
+
             $maj = civicrm_api4('Custom_Utilisation_du_corps', 'update', [
             'values' => $value,
             'where' => [
@@ -1239,6 +1241,7 @@ function import_utilisation(){
             ],
             'checkPermissions' => FALSE,
           ]);
+
             echo $count." Custom_Utilisation_du_corps ".$utilisation_to_create." MAJ pour piece ou corps n° : ".$value['N_de_pi_ce_ou_de_corps'].PHP_EOL;
             //echo ".";
             ++$count;
@@ -1273,7 +1276,7 @@ function import_utilisation(){
 
 }
 
-function import_contribution(){ 
+function import_contribution(){
   $count=1;
   $entity = func_get_arg(0);                // nom de l'entité à créer (contact...)
   $values = func_get_arg(1);                // parametres de cette entité

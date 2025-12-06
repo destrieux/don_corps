@@ -162,7 +162,6 @@ return [
         'value' => '8',
         'name' => '{contact.first_name} {contact.last_name}',
         'filter' => 1,
-        'is_active' => FALSE,
       ],
       'match' => [
         'option_group_id',
