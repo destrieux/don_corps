@@ -1,6 +1,58 @@
 <?php
 eval(`cv php:boot`);
 
+// Contact Layouts : civix exports crée tous les layouts avec le même nom qu'il faut modifier
+// Il faut aussi modifier le nom dans le fichier mgd
+
+function replaceInfile($file, $find, $replace) {
+        if ($find != $replace) {
+            //recupere la totalité du fichier
+            $str = file_get_contents($file);
+            if ($str === false) {
+                return false;
+            } else {
+                //effectue le remplacement dans le texte
+                $str = str_replace($find, $replace, $str);
+                //remplace dans le fichier
+                if (file_put_contents($file, $str) === false) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+$contactLayouts = civicrm_api4('ContactLayout', 'get', [
+  'select' => [
+    'id',
+    'label',
+  ],
+  'where' => [
+    ['base_module', '=', 'don_corps'],
+  ],
+  'checkPermissions' => FALSE,
+]);
+
+if(isset($contactLayouts[0])){
+      foreach ($contactLayouts as $contactLayout){
+        $name='ContactLayout_'.str_replace(' ', '_', $contactLayout['label']);
+        echo "exporting Contact Layout ".$contactLayout['label']." (id : ".$contactLayout['id'].")".' as : '.$name.PHP_EOL;
+        $cmd = "civix export ContactLayout ".$contactLayout['id'];
+        echo $cmd.PHP_EOL;
+        exec($cmd, $output, $retval);
+        echo "Returned with status $retval and output:\n";
+        print_r($output);
+        unset ($output);
+
+        $new="'name' => '".$name."'";
+        echo $new.PHP_EOL;
+
+        replaceInfile('managed/ContactLayout_1.mgd.php', "'name' => 'ContactLayout_1'", $new);
+        rename('managed/ContactLayout_1.mgd.php', 'managed/'.$name.'.mgd.php');
+    }
+
+}
 
 // UF Groups
 $uFGroups = civicrm_api4('UFGroup', 'get', [

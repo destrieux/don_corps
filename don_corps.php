@@ -176,7 +176,7 @@ use CRM_DonCorps_ExtensionUtil as E;
     }
   }// Fin de définition de la fonction : change_icon()
 
-  function install_layouts () {
+ /*  function install_layouts () {
     /// LLa variable $layout QUI COMPREND LES PARAMETRES DE TOUS LES LAYOUTS doit etre définie
     /// rechercher "DEFINITION DE LA VARIABLE" dans ce script et suivez les instructions
     // Définition de function install_layouts ()
@@ -436,9 +436,9 @@ use CRM_DonCorps_ExtensionUtil as E;
       }
     }     // fin de la boucle pour chacun des Layouts
 
-  }// Fin de la définition de la fonction : install_layouts()
+  }// Fin de la définition de la fonction : install_layouts() */
 
-  function change_tabs(){
+/*   function change_tabs(){
     ##### Recuperation de la liste actuelle des tabs pour ce layout
       $icons_default= func_get_arg(0);         // array contenant les icones par defaut
       $inactive_tabs= func_get_arg(1);         // array contenant les tabs à inactiver par profil
@@ -467,7 +467,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
 
 
-      foreach($icons_default as $icon_default){
+      /* foreach($icons_default as $icon_default){
           ##### recupération des codes correspondant aux group/tabs
           #print_r($icon_default);
           $customGroups = civicrm_api4('CustomGroup', 'get', [
@@ -588,9 +588,9 @@ use CRM_DonCorps_ExtensionUtil as E;
         $t2++;
       }
     $t++;
-    }
+    } */
     
-    
+    /* 
     
     foreach($inactive_tabs as $inactive_tab){
     
@@ -653,7 +653,7 @@ use CRM_DonCorps_ExtensionUtil as E;
     }
     
   }// Fin de la définition de la fonction : change_tabs() 
-    
+     */
   function create_entity(){
     //////////// function create_entity /////////
     // Cette fonction est invoquée à l'installation pour créer les types de contacts, des options ... préalablement à la création des Custom groups/fields
@@ -4023,7 +4023,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
       
       // fin de Modifie les requetes qui ne sont pas correctement importées
-
+/* 
     // création des layouts
 
         /// DEFINITION DE LA VARIABLE $layout QUI COMPREND LES PARAMETRES DE TOUS LES LAYOUTS
@@ -5151,7 +5151,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
         change_tabs($icons_default, $inactive_tabs);
       // fin de creation des Layouts
-
+ */
     // Changement des icones de menus
       echo PHP_EOL."  -Changement des icones de menus".PHP_EOL;
         //change_icon('Contacts', 'crm-i fa-address-book-o');
