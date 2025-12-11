@@ -27,7 +27,7 @@ function _civicrm_api3_piece_anatomique_Relocate_spec(&$spec) {
  */
 function civicrm_api3_piece_anatomique_Relocate($params) {
 
-// liste les pièces et corps
+// liste les pièces et corps détruits, manquants, crématisés (I.E qui ne devraient pas avoir de loc) et qui ont une localisation
 $utilisationDuCorpses = civicrm_api4('Custom_Utilisation_du_corps', 'get', [
   'select' => [
     'N_de_pi_ce_ou_de_corps',
@@ -36,6 +36,10 @@ $utilisationDuCorpses = civicrm_api4('Custom_Utilisation_du_corps', 'get', [
     'Mode_limination_hors_corps_2:name',
     'Lacalisation',
     'Type_de_poi_ce_3:name',
+  ],
+  'where' => [
+    ['Mode_limination_hors_corps_2:name', 'IN', ['Manquante', 'Destruction_par_la_m_thode_util', 'Cr_mation_comme_pi_ce_anatomiqu']],
+    ['Lacalisation', 'IS NOT NULL'],
   ],
   'orderBy' => [
     'N_de_pi_ce_ou_de_corps' => 'ASC',

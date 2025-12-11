@@ -75,7 +75,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_anat_compar_e',
-        'field_name' => 'custom_95',
+        'field_name' => 'custom_115',
         'label' => E::ts('Espèce'),
         'field_type' => 'Animal',
       ],
@@ -90,7 +90,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_anat_compar_e',
-        'field_name' => 'custom_94',
+        'field_name' => 'custom_114',
         'label' => E::ts('Provenance'),
         'field_type' => 'Animal',
       ],

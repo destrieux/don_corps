@@ -2,136 +2,243 @@
 
 eval(`cv php:boot`);
 
-
-$target_id=8; // n° du local
-$activityId = 61; // N° de l'activité
-
-$pieces = array("1234", "3333", "666666", "567", "7777777","1234567");
-sort($pieces);
-
- print_r($pieces); 
-
-
-###############
-
- $pieces_noUtilisation=array();   // pièces qui ne sont pas rattachées à une utilisation
- $pieces_detruites=array();       // pieces détruites, manquante, crematisées
- $pieces_locOK=array();           // pièces rattachées à une localisation et dans le bon local
- $pieces_locbad=array();          // pièces rattachées à une localisation mais localisées ailleurs -> à rappatrier
-
-foreach($pieces as $piece){
-
- $utilisationDuCorpses = civicrm_api4('Custom_Utilisation_du_corps', 'get', [
-   'select' => [
-     'id',
-     'N_de_pi_ce_ou_de_corps',
-     'Type_de_poi_ce_3:name',
-     'Lacalisation',
-     'Mode_limination_hors_corps_2:name',
-     'Protocole_de_recherche_ex_vivo2:label',
-   ],
-   'where' => [
-     ['N_de_pi_ce_ou_de_corps', '=', $piece],
-   ],
-   'checkPermissions' => FALSE,
- ]);
-  echo PHP_EOL."Pièce : ".$piece;
+echo "Modification des profils personnalisés".PHP_EOL;
+#####
+# Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
+# ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
+# Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
+# Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
+# et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
+ $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
+ $json = file_get_contents($toimport_file);
+ $convert = json_decode($json, true);
 
 
- if(isset($utilisationDuCorpses[0])){      //// la piece existe dans la base
+ $new = [];
+$new[0]['id']=NULL;
+$new[0]['field_name']=NULL;
+$new[0]['field_name:name']=NULL;
+$new[0]['label']=NULL;
 
-     // si la piece apparait dans l'inventaire alors qu'elle a été détruite ou manquante ou crematisée
-     $elim = $utilisationDuCorpses[0]['Mode_limination_hors_corps_2:name'];
-     echo " --> ".$elim;
+ foreach ($convert as $k => $v) {
+    $new[$k + 1] = $v;
+ }
 
-     if(($elim=='Cr_mation_comme_pi_ce_anatomiqu')||($elim=='Manquante')||($elim=='Destruction_par_la_m_thode_util')) {
-        array_push($pieces_detruites,$piece);
-        // On repasse en "non eliminé" et on relocalise dans la bonne pièce
-        $results = civicrm_api4('Custom_Utilisation_du_corps', 'update', [
-          'values' => [
-            'Lacalisation' => $target_id,
-            'Mode_limination_hors_corps_2:name' => 'Non_limin_e',
-          ],
-          'where' => [
-            ['id', '=', $utilisationDuCorpses[0]['id']],
-          ],
-          'checkPermissions' => FALSE,
-        ]);
-        echo " --> relocalisée vers ".$target_id." et passée en Non Eliminée".PHP_EOL;
-        continue;
-      } 
-
-     // si la piece apparait dans linventaire mais n'est pas localisée dans la bonne pièce
-     $loc =  $utilisationDuCorpses[0]['Lacalisation'];
-     echo " et localisée dans : ".$loc;
-
-     if($loc!=$target_id){
-      array_push($pieces_locbad,$piece);
-      // On relocalise la pièce : 
-      $results = civicrm_api4('Custom_Utilisation_du_corps', 'update', [
-        'values' => [
-          'Lacalisation' => $target_id,
-        ],
-        'where' => [
-          ['id', '=', $utilisationDuCorpses[0]['id']],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-      echo " --> relocalisée de ".$loc." vers ".$target_id.PHP_EOL;
-      
-
-     }else{ // la piece apparait dans linventaire  et est  localisée dans la bonne pièce
-      array_push($pieces_locOK,$piece);
-      echo " --> bien localisée dans ".$loc.PHP_EOL;
-     }
-
-  }else{                                  //// la piece n'existe pas dans la base : ajoutée à $pieces_noUtilisation
-    echo " --> Pas dans la base".PHP_EOL; 
-    array_push($pieces_noUtilisation,$piece);
-    continue;
-  } 
-}
-
-### Prépare le rapport 
-if(count($pieces_locOK)!=0){
-$rapport1="<p>####### Pièces localisées correctement dans ce local : ".implode(", ",$pieces_locOK)."</p>";
-  } else{
-  $rapport1="";
-  }
-
-if(count($pieces_detruites)!=0){
-  $rapport2="<p>####### Pièces notées détruites avant inventaire --> Passées en non éliminées et relocalisées ici : ".implode(", ",$pieces_detruites)."</p>";
-  } else{
-  $rapport2="";
-  }
+ $convert=$new;
 
 
-if(count($pieces_locbad)!=0){
-  $rapport3="<p>####### Pièces localisées ailleurs avant inventaire --> Relocalisées dans ce local : ".implode(", ",$pieces_locbad)."</p>";
-  } else{
-  $rapport3="";
-  }
+ print_r ($convert);
 
-if(count($pieces_noUtilisation)!=0){
-  $rapport4="<p>####### Pièces absentes de la base --> A CREER MANUELLEMENT : ".implode(", ",$pieces_noUtilisation)."</p>";
-  } else{
-  $rapport4="";
-  }
+  $labels_table = array_column($convert, 'label');
+  $names_table = array_column($convert, 'field_name:name');
+  $customs_table = array_column($convert, 'field_name');
 
-$rapport=$rapport4.$rapport2.$rapport3.$rapport1;
-echo PHP_EOL.$rapport.PHP_EOL;
 
-/// INSCRIT LE RAPPORT ET LE SUJET DANS L'ACTIVITÉ
+print_r ($labels_table);
 
-$results = civicrm_api4('Activity', 'update', [
-  'values' => [
-    'details' => $rapport,
-    'status_id:name' => 'Completed',
-    'subject' => 'SUJET A AJOUTER ICI',
+
+$uFFields = civicrm_api4('UFField', 'get', [
+  'select' => [
+    'field_name',
+    'field_name:name',
+    'label',
   ],
   'where' => [
-    ['id', '=', $activityId],
+    ['field_name', 'CONTAINS', 'custom_'],
+  ],
+  'orderBy' => [
+    'uf_group_id:name' => 'ASC',
   ],
   'checkPermissions' => FALSE,
 ]);
+
+
+
+if (isset($uFFields[0])){
+
+  echo "il y a des uffields ".PHP_EOL;
+  
+  foreach ($uFFields as $uFField){
+    echo PHP_EOL.PHP_EOL;
+    print_r($uFField);
+    if (isset($uFField['label'])) {           // si un label existe, on récupère la valeur de field_name_name 
+      //echo 'un label existe'.PHP_EOL;         // depuis la table de conversion en utilisant le label comme critere de concordance
+      
+      $label=$uFField['label'];
+
+      $key = array_search($label, $labels_table); 
+
+      //var_dump($key);
+      
+      if ($key){
+            $name=$convert[$key]['field_name:name'];
+      //echo "on recupere dans convert la valeur field_name : ".$name.' pour label :'.$label.PHP_EOL;
+      } else {
+        echo "ERREUR : pas de label ".$label.' dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+        exit;
+      }
+
+
+
+    }  else { // si ce label n'existe pas 
+        //echo 'pas de label'.PHP_EOL;
+
+        if (isset($uFField['field_name:name'])){    // si un field_name:name de type customgroup.customfield existe
+          $name=$uFField['field_name:name'];          // on la conserve
+          $key = array_search($name, $names_table);   
+
+          if ($key){
+                $label=$convert[$key]['field_name:label'];  // on récupère label depuis la table de correspondance en utilisant le field_name:name comme critere de concordance
+          } else {
+            echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+            exit;
+          }
+
+        } else {                                          // pas de field _name:name de type customgroup.customfield 
+          $key = array_search($name, $customs_table);
+
+          if ($key){
+            $label=$convert[$key]['field_name:label'];      // on récupère label et name depuis table correspondance
+            $name=$convert[$key]['field_name:name'];        // en utilisant le custom_name comme critere de concordance
+          } else {
+            echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+            exit;
+          }
+
+        }
+         
+    }
+
+
+    $position = strpos($name, '.');             // retrouve la position du point dans le nom
+    if ($position !== false) {
+      $group = substr($name, 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+      $custom = substr($name, $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+
+      //echo 'group : '.$group.'        custom field :'.$custom.PHP_EOL;
+
+        $customFields = civicrm_api4('CustomField', 'get', [
+          'select' => [
+            'id',
+          ],
+          'where' => [
+            ['custom_group_id:name', '=', $group],
+            ['name', '=', $custom],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        if(isset($customFields[0])){
+          $field_name='custom_'.$customFields[0]['id'];
+          
+        }
+
+
+
+      echo "name : ".$name."    ////   label : ".$label."    ////    field name : ".$field_name."\n";
+
+      if($field_name!=$uFField['field_name']){
+        echo "MAJ UF Field";
+/*         $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
+          'values' => [
+            'label' => $label,
+            'field_name' => $field_name,
+          ],
+
+          'where' => [
+            ['field_name', '=', $uFField['field_name']],
+          ],
+
+          'checkPermissions' => FALSE,
+        ]);  */
+
+        }else {
+          echo "UF Field inchangé".PHP_EOL;
+        }
+
+
+    }
+  }
+}
+
+$contactLayouts = civicrm_api4('ContactLayout', 'get', [
+  'select' => [
+    'blocks',
+  ],
+  'checkPermissions' => FALSE,
+]);
+
+$summary_profile_list=array();
+
+foreach($contactLayouts as $contactLayout){
+  $block_cols=$contactLayout['blocks'];
+  foreach($block_cols as $block_col){
+    $blocks=$block_col;
+    foreach($blocks as $block){
+      $profiles=$block;
+      foreach ($profiles as $profile){
+      echo $profile['name'].PHP_EOL;
+
+        $position = strpos($profile['name'], '.');             // retrouve la position du point dans le nom
+        if ($position !== false) {
+          $prefix = substr($profile['name'], 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+          $postfix = substr($profile['name'], $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+          print_r($profile).PHP_EOL;
+          if ($prefix=='profile'){
+            array_push($summary_profile_list, $postfix);
+          }
+        }
+      }
+    }
+    //echo $block['name'].PHP_EOL;
+  }
+}
+
+print_r($summary_profile_list);
+
+
+foreach($summary_profile_list as $profile){
+    $uFJoins = civicrm_api4('UFJoin', 'get', [
+      'select' => [
+        'id',
+      ],
+      'where' => [
+        ['uf_group_id:name', '=', $profile],
+        ['module', '=', 'Contact Summary'],
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+
+
+
+  if(!isset($uFJoins[0]['id'])){
+    $results = civicrm_api4('UFJoin', 'create', [
+      'values' => [
+        'module' => 'Contact Summary',
+        'uf_group_id.name' => $profile,
+      ],
+      'checkPermissions' => FALSE,
+  ]);
+  }else{
+    $results = civicrm_api4('UFJoin', 'update', [
+    'values' => [
+      'uf_group_id.name' => $profile,
+    ],
+    'where' => [
+      ['id', '=', $uFJoins[0]['id']],
+    ],
+    'checkPermissions' => FALSE,
+  ]);
+}
+
+
+
+
+
+
+}
+
+
+
+
 
