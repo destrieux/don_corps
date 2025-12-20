@@ -78,7 +78,7 @@ return [
               'label' => E::ts('Donneur'),
               'sortable' => TRUE,
               'tally' => [
-                'fn' => NULL,
+                'fn' => 'COUNT',
               ],
             ],
             [

@@ -16,7 +16,6 @@ $custom_orig = $custom."/custom_orig/";                                         
 $check_custom_field = 0;
 $check_option_values =0 ;
 $import_organisations =0;
-$import_FinancialType =0;
 $import_individus =0 ;
 $import_groups = 0 ;
 $import_adresses = 0 ;
@@ -25,15 +24,16 @@ $import_email = 0 ;
 $import_relationships = 0 ;
 $import_utilisations =0;
 $import_protinvivo =0 ;
-$import_contributions =0 ;
+$import_FinancialType =0;
+$import_contributions =1 ;
 $import_events =0 ;
 $import_participants =0;
 $import_activites =0 ;
 $import_notes =0 ;
-$import_documents =1 ;   // a faire avant files
-$import_files =1 ;
-$mv_files = 1 ;
-$import_tags = 1 ;
+$import_documents =0 ;   // a faire avant files
+$import_files =0 ;
+$mv_files = 0 ;
+$import_tags = 0 ;
 
 
 function check_custom(){
@@ -442,13 +442,13 @@ function import_stuff(){
             $value['gender_id']=NULL;
             //echo "unset gender et prefix".PHP_EOL;
         }
-//print_r($value);
+  //print_r($value);
 
         $contacts = civicrm_api4('Contact', 'get', [
-//            'select' => [
-//              'id',
+  //            'select' => [
+  //              'id',
 
- //           ],
+  //           ],
             'where' => [
               ['external_identifier', '=', $value['external_identifier']],
             ],
@@ -459,7 +459,7 @@ function import_stuff(){
       //print_r($contacts);
 
 
-$value['addressee_id']=1;
+ $value['addressee_id']=1;
 
         if (!isset($contacts[0]['id'])){             // si le contact n'existe pas on le crée
             $results = civicrm_api4('Contact', 'create', [
@@ -494,8 +494,8 @@ $value['addressee_id']=1;
 
 
   }
-  //print_r($check);
-  echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+    //print_r($check);
+    echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
 
     if (count($check)==count($values)) {// le bon nombre de lignes a été importées
         echo " ---> OK".PHP_EOL;
@@ -1313,13 +1313,12 @@ function import_contribution(){
           ],
           'where' => [
             ['contact_id', '=', $contact_id],
-            ['OR', [['receive_date', '=', $value['receive_date']],['total_amount', '=', $value['total_amount']]]],
+            ['receive_date', '=', $value['receive_date']],
+            ['total_amount', '=', $value['total_amount']],
           ],
           'checkPermissions' => FALSE,
 
         ]);
-
-
 
         $value['contact_id']=$contact_id;                         // on remplace le contact_id de l'anceinne base par celle dans la nouvelle
   //print_r($value);
@@ -1994,7 +1993,7 @@ function import_notes(){
     switch ($value['entity_table']){   // on détermine ($target) sur quoi porte la note (contact, relation...)
       case 'civicrm_contact':
         $target = 'Contact';
-        $contacts = civicrm_api4('Contact', 'get', [          // On vérifie que le contact qui a créé la note (contact_id) existe
+        $contacts = civicrm_api4('Contact', 'get', [          // On vérifie que le contact  existe
           'select' => [
             'id',
           ],
@@ -2765,9 +2764,6 @@ function import_tags(){
     }
 
 
-
-
-
 // importe individus
   if($import_individus == 1){
       $contact_file = $exp_dir."10_individuals.txt";
@@ -2787,11 +2783,6 @@ function import_tags(){
         exit;
       }
     }
-
-
-
-
-
 
 
 // importe adresses

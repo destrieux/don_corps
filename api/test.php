@@ -9,67 +9,60 @@ echo "Modification des profils personnalisés".PHP_EOL;
 # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
 # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
 # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
- $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
- $json = file_get_contents($toimport_file);
- $convert = json_decode($json, true);
+$toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
+$json = file_get_contents($toimport_file);
+$convert = json_decode($json, true);
 
+### Modification des UF Fields pour corrier les custom_id
 
- $new = [];
+$new = [];
 $new[0]['id']=NULL;
 $new[0]['field_name']=NULL;
 $new[0]['field_name:name']=NULL;
 $new[0]['label']=NULL;
 
- foreach ($convert as $k => $v) {
+foreach ($convert as $k => $v) {
     $new[$k + 1] = $v;
- }
+}
 
- $convert=$new;
+$convert=$new;
 
 
- print_r ($convert);
+//print_r ($convert);
 
-  $labels_table = array_column($convert, 'label');
-  $names_table = array_column($convert, 'field_name:name');
-  $customs_table = array_column($convert, 'field_name');
-
+$labels_table = array_column($convert, 'label');
+$names_table = array_column($convert, 'field_name:name');
+$customs_table = array_column($convert, 'field_name');
 
 print_r ($labels_table);
 
-
 $uFFields = civicrm_api4('UFField', 'get', [
-  'select' => [
-    'field_name',
-    'field_name:name',
-    'label',
-  ],
-  'where' => [
-    ['field_name', 'CONTAINS', 'custom_'],
-  ],
-  'orderBy' => [
-    'uf_group_id:name' => 'ASC',
-  ],
-  'checkPermissions' => FALSE,
-]);
-
-
+    'select' => [
+      'field_name',
+      'field_name:name',
+      'label',
+    ],
+    'where' => [
+      ['field_name', 'CONTAINS', 'custom_'],
+    ],
+    'orderBy' => [
+      'uf_group_id:name' => 'ASC',
+    ],
+    'checkPermissions' => FALSE,
+  ]);
 
 if (isset($uFFields[0])){
 
-  echo "il y a des uffields ".PHP_EOL;
+  //echo "il y a des uffields ".PHP_EOL;
   
   foreach ($uFFields as $uFField){
-    echo PHP_EOL.PHP_EOL;
-    print_r($uFField);
+    //echo PHP_EOL.PHP_EOL;
+    //print_r($uFField);
     if (isset($uFField['label'])) {           // si un label existe, on récupère la valeur de field_name_name 
       //echo 'un label existe'.PHP_EOL;         // depuis la table de conversion en utilisant le label comme critere de concordance
-      
       $label=$uFField['label'];
-
       $key = array_search($label, $labels_table); 
-
       //var_dump($key);
-      
       if ($key){
             $name=$convert[$key]['field_name:name'];
       //echo "on recupere dans convert la valeur field_name : ".$name.' pour label :'.$label.PHP_EOL;
@@ -77,23 +70,17 @@ if (isset($uFFields[0])){
         echo "ERREUR : pas de label ".$label.' dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
         exit;
       }
-
-
-
     }  else { // si ce label n'existe pas 
         //echo 'pas de label'.PHP_EOL;
-
         if (isset($uFField['field_name:name'])){    // si un field_name:name de type customgroup.customfield existe
           $name=$uFField['field_name:name'];          // on la conserve
           $key = array_search($name, $names_table);   
-
           if ($key){
                 $label=$convert[$key]['field_name:label'];  // on récupère label depuis la table de correspondance en utilisant le field_name:name comme critere de concordance
           } else {
             echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
             exit;
           }
-
         } else {                                          // pas de field _name:name de type customgroup.customfield 
           $key = array_search($name, $customs_table);
 
@@ -104,19 +91,14 @@ if (isset($uFFields[0])){
             echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
             exit;
           }
-
         }
-         
     }
-
 
     $position = strpos($name, '.');             // retrouve la position du point dans le nom
     if ($position !== false) {
       $group = substr($name, 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
       $custom = substr($name, $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
-
       //echo 'group : '.$group.'        custom field :'.$custom.PHP_EOL;
-
         $customFields = civicrm_api4('CustomField', 'get', [
           'select' => [
             'id',
@@ -130,16 +112,13 @@ if (isset($uFFields[0])){
 
         if(isset($customFields[0])){
           $field_name='custom_'.$customFields[0]['id'];
-          
         }
 
-
-
-      echo "name : ".$name."    ////   label : ".$label."    ////    field name : ".$field_name."\n";
+      echo "UFFIELF name : ".$name." | label : ".$label." | field name : ".$field_name;
 
       if($field_name!=$uFField['field_name']){
-        echo "MAJ UF Field";
-         $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
+        echo " - MAJ";         
+        $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
           'values' => [
             'label' => $label,
             'field_name' => $field_name,
@@ -150,16 +129,17 @@ if (isset($uFFields[0])){
           ],
 
           'checkPermissions' => FALSE,
-        ]);  
+        ]); 
 
         }else {
-          echo "UF Field inchangé".PHP_EOL;
+          echo " - Inchangé".PHP_EOL;
         }
-
-
     }
   }
 }
+
+#### Creation / MAJ des UFJOINS
+# Les UFjoins mettren en relation un profil avec les contacts layous ; sinon ils ne s'affichent pas 
 
 $contactLayouts = civicrm_api4('ContactLayout', 'get', [
   'select' => [
@@ -177,13 +157,13 @@ foreach($contactLayouts as $contactLayout){
     foreach($blocks as $block){
       $profiles=$block;
       foreach ($profiles as $profile){
-      echo $profile['name'].PHP_EOL;
+      //echo $profile['name'].PHP_EOL;
 
         $position = strpos($profile['name'], '.');             // retrouve la position du point dans le nom
         if ($position !== false) {
           $prefix = substr($profile['name'], 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
           $postfix = substr($profile['name'], $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
-          print_r($profile).PHP_EOL;
+          //print_r($profile).PHP_EOL;
           if ($prefix=='profile'){
             array_push($summary_profile_list, $postfix);
           }
@@ -194,7 +174,7 @@ foreach($contactLayouts as $contactLayout){
   }
 }
 
-print_r($summary_profile_list);
+//print_r($summary_profile_list);
 
 
 foreach($summary_profile_list as $profile){
@@ -209,32 +189,29 @@ foreach($summary_profile_list as $profile){
       'checkPermissions' => FALSE,
     ]);
 
-
+    echo "UFJoin pour Contact Summary et profil : ".$profile;
 
   if(!isset($uFJoins[0]['id'])){
-    $results = civicrm_api4('UFJoin', 'create', [
+      $results = civicrm_api4('UFJoin', 'create', [
+        'values' => [
+          'module' => 'Contact Summary',
+          'uf_group_id.name' => $profile,
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      echo " - Créé".PHP_EOL;
+  }else{
+      $results = civicrm_api4('UFJoin', 'update', [
       'values' => [
-        'module' => 'Contact Summary',
         'uf_group_id.name' => $profile,
       ],
+      'where' => [
+        ['id', '=', $uFJoins[0]['id']],
+      ],
       'checkPermissions' => FALSE,
-  ]);
-  }else{
-    $results = civicrm_api4('UFJoin', 'update', [
-    'values' => [
-      'uf_group_id.name' => $profile,
-    ],
-    'where' => [
-      ['id', '=', $uFJoins[0]['id']],
-    ],
-    'checkPermissions' => FALSE,
-  ]);
-}
-
-
-
-
-
+    ]);
+          echo " - MAJ".PHP_EOL;
+  }
 
 }
 

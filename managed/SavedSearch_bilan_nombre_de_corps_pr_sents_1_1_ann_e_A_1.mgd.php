@@ -60,8 +60,9 @@ return [
               'previous.year',
             ],
             [
-              'OR',
-              [],
+              'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
+              '!=',
+              TRUE,
             ],
           ],
           'groupBy' => ['contact_type'],

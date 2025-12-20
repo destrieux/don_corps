@@ -17,10 +17,8 @@ return [
           'version' => 4,
           'select' => [
             'start_date',
-            'Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.street_address',
-            'Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.supplemental_address_1',
-            'Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.postal_code',
-            'Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.city',
+            'loc_block_id.address_id.street_address',
+            'loc_block_id.address_id.city',
           ],
           'orderBy' => [],
           'where' => [
@@ -89,11 +87,15 @@ return [
             ],
             [
               'type' => 'field',
-              'key' => 'Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.street_address',
-              'dataType' => 'String',
+              'key' => 'loc_block_id.address_id.street_address',
               'label' => E::ts('Lieu'),
-              'sortable' => FALSE,
-              'rewrite' => '[Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.street_address] - [Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.postal_code] - [Event_LocBlock_loc_block_id_01_LocBlock_Address_address_id_01.city]',
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'loc_block_id.address_id.city',
+              'label' => E::ts(''),
+              'sortable' => TRUE,
             ],
           ],
           'actions' => FALSE,

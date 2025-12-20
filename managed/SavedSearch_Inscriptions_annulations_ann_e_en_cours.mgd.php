@@ -36,9 +36,7 @@ return [
               ],
             ],
           ],
-          'groupBy' => [
-            'Promesse_de_don.N_de_don',
-          ],
+          'groupBy' => ['contact_type'],
           'join' => [],
           'having' => [],
         ],

@@ -48,6 +48,11 @@ return [
                 ],
               ],
             ],
+            ['employer_id', '=', '1'],
+            [
+              'infos_personnel.Date_debut_fonctions',
+              'IS NOT EMPTY',
+            ],
           ],
           'groupBy' => [],
           'join' => [],
