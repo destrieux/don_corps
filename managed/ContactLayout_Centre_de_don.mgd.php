@@ -3,7 +3,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
 return [
   [
-    'name' => 'ContactLayout_Centre_de_don',
+    'name' => 'ContactLayout_1',
     'entity' => 'ContactLayout',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -12,7 +12,7 @@ return [
       'values' => [
         'label' => E::ts('Centre de don'),
         'contact_type' => 'Organization',
-        'contact_sub_type' => ['CDC'],
+        'contact_sub_type' => ['CDC', 'Emprunteur'],
         'weight' => 7,
         'blocks' => [
           [

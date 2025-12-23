@@ -40,7 +40,12 @@ class CRM_DonCorps_CivirulesConditions_Contact_Demandercrema extends CRM_Civirul
 			'checkPermissions' => FALSE,
 			]);
 
-		$status = $utilisationDuCorpses[0]['Mode_limination_hors_corps_2:name'];
+		if(isset($utilisationDuCorpses[0]['Mode_limination_hors_corps_2:name'])){
+			$status = $utilisationDuCorpses[0]['Mode_limination_hors_corps_2:name'];
+		}else{
+			return FALSE;
+		}
+		
 
 		if ($status=='Demander_cr_mation'){
 			#echo "envoyer le mail"."\n";
