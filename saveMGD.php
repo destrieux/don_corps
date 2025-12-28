@@ -23,6 +23,8 @@ function replaceInfile($file, $find, $replace) {
         return true;
     }
 
+/* la requete suivante ne retourne pas les field_name:name en scrip tmais cela fonctionne en ligne de commande
+Il faut lancer cette requete dans l'api et récupérer le résultat en php pour le coller ici
 
 $uFFields = civicrm_api4('UFField', 'get', [
   'select' => [
@@ -39,171 +41,172 @@ $uFFields = civicrm_api4('UFField', 'get', [
   'checkPermissions' => FALSE,
 ]);
 
+ */
 
 
-$uFFields= 
-   [
+$uFFields=
+ [
   [
-    'id' => 147,
-    'field_name' => 'custom_37',
-    'field_name:name' => 'Devenir_du_corps.CESP',
-    'label' => E::ts('Avis du Comité éthique'),
-  ],
-  [
-    'id' => 148,
-    'field_name' => 'custom_38',
-    'field_name:name' => 'Devenir_du_corps.ref_avis_CESP',
-    'label' => E::ts('ref avis Comité éthique'),
-  ],
-  [
-    'id' => 152,
-    'field_name' => 'custom_34',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-    'label' => E::ts('Heure du décès'),
-  ],
-  [
-    'id' => 154,
-    'field_name' => 'custom_31',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Ville_de_naissance',
-    'label' => E::ts('Ville de naissance'),
-  ],
-  [
-    'id' => 155,
-    'field_name' => 'custom_32',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_naissance',
-    'label' => E::ts('Année naissance (auto)'),
-  ],
-  [
-    'id' => 158,
-    'field_name' => 'custom_34',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-    'label' => E::ts('Heure du décès'),
-  ],
-  [
-    'id' => 159,
-    'field_name' => 'custom_35',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_de_d_c_s_auto_',
-    'label' => E::ts('Année de décès (auto)'),
-  ],
-  [
-    'id' => 160,
-    'field_name' => 'custom_29',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-    'label' => E::ts('Civilité'),
-  ],
-  [
-    'id' => 163,
-    'field_name' => 'custom_36',
-    'field_name:name' => 'Demandeur_information.Date_d_envoi_d_informations',
-    'label' => E::ts('Date envoi informations'),
+    'id' => 168,
+    'field_name' => 'custom_114',
+    'label' => E::ts('Provenance'),
+    'field_name:name' => 'animal.Provenance',
   ],
   [
     'id' => 167,
     'field_name' => 'custom_115',
-    'field_name:name' => 'animal.Esp_ce',
     'label' => E::ts('Espèce'),
+    'field_name:name' => 'animal.Esp_ce',
   ],
   [
-    'id' => 168,
-    'field_name' => 'custom_114',
-    'field_name:name' => 'animal.Provenance',
-    'label' => E::ts('Provenance'),
-  ],
-  [
-    'id' => 171,
-    'field_name' => 'custom_34',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-    'label' => E::ts('Heure du décès'),
+    'id' => 160,
+    'field_name' => 'custom_29',
+    'label' => E::ts('Civilité'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
   ],
   [
     'id' => 172,
     'field_name' => 'custom_29',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
     'label' => E::ts('Civilité'),
-  ],
-  [
-    'id' => 178,
-    'field_name' => 'custom_41',
-    'field_name:name' => 'Devenir_du_corps.Date_de_sortie_d_finitive',
-    'label' => E::ts('Date de sortie définitive'),
-  ],
-  [
-    'id' => 179,
-    'field_name' => 'custom_40',
-    'field_name:name' => 'Devenir_du_corps.devenir_effectif_du_corps',
-    'label' => E::ts("Type d'opération funéraire réalisée"),
-  ],
-  [
-    'id' => 180,
-    'field_name' => 'custom_42',
-    'field_name:name' => 'Devenir_du_corps.Date_op_rations_fun_raires',
-    'label' => E::ts('Date opérations funéraires'),
-  ],
-  [
-    'id' => 181,
-    'field_name' => 'custom_43',
-    'field_name:name' => 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
-    'label' => E::ts('Date approximative de réalisation des opérations funéraires'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
   ],
   [
     'id' => 182,
     'field_name' => 'custom_29',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
     'label' => E::ts('Civilité'),
-  ],
-  [
-    'id' => 185,
-    'field_name' => 'custom_33',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Adresse_incorrecte',
-    'label' => E::ts('Adresse incorrecte'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
   ],
   [
     'id' => 190,
     'field_name' => 'custom_29',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
     'label' => E::ts('Civilité'),
-  ],
-  [
-    'id' => 195,
-    'field_name' => 'custom_54',
-    'field_name:name' => 'Promesse_de_don.Centre_de_don',
-    'label' => E::ts('Centre de don'),
-  ],
-  [
-    'id' => 196,
-    'field_name' => 'custom_55',
-    'field_name:name' => 'Promesse_de_don.N_de_don',
-    'label' => E::ts('N° de don'),
-  ],
-  [
-    'id' => 197,
-    'field_name' => 'custom_56',
-    'field_name:name' => 'Promesse_de_don.Date_du_don',
-    'label' => E::ts('Date du don'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
   ],
   [
     'id' => 198,
     'field_name' => 'custom_29',
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
     'label' => E::ts('Civilité'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
   ],
   [
-    'id' => 205,
-    'field_name' => 'custom_46',
-    'field_name:name' => 'Devenir_du_corps.Souhait_funeraire_personne_ref_rente',
-    'label' => E::ts('Souhait funeraire personne reférente'),
+    'id' => 154,
+    'field_name' => 'custom_31',
+    'label' => E::ts('Ville de naissance'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Ville_de_naissance',
+  ],
+  [
+    'id' => 155,
+    'field_name' => 'custom_32',
+    'label' => E::ts('Année naissance (auto)'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_naissance',
+  ],
+  [
+    'id' => 185,
+    'field_name' => 'custom_33',
+    'label' => E::ts('Adresse incorrecte'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Adresse_incorrecte',
+  ],
+  [
+    'id' => 152,
+    'field_name' => 'custom_34',
+    'label' => E::ts('Heure du décès'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+  ],
+  [
+    'id' => 158,
+    'field_name' => 'custom_34',
+    'label' => E::ts('Heure du décès'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+  ],
+  [
+    'id' => 171,
+    'field_name' => 'custom_34',
+    'label' => E::ts('Heure du décès'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+  ],
+  [
+    'id' => 159,
+    'field_name' => 'custom_35',
+    'label' => E::ts('Année de décès (auto)'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_de_d_c_s_auto_',
+  ],
+  [
+    'id' => 163,
+    'field_name' => 'custom_36',
+    'label' => E::ts('Date envoi informations'),
+    'field_name:name' => 'Demandeur_information.Date_d_envoi_d_informations',
+  ],
+  [
+    'id' => 147,
+    'field_name' => 'custom_37',
+    'label' => E::ts('Avis du Comité éthique'),
+    'field_name:name' => 'Devenir_du_corps.CESP',
+  ],
+  [
+    'id' => 148,
+    'field_name' => 'custom_38',
+    'label' => E::ts('ref avis Comité éthique'),
+    'field_name:name' => 'Devenir_du_corps.ref_avis_CESP',
+  ],
+  [
+    'id' => 179,
+    'field_name' => 'custom_40',
+    'label' => E::ts("Type d'opération funéraire réalisée"),
+    'field_name:name' => 'Devenir_du_corps.devenir_effectif_du_corps',
+  ],
+  [
+    'id' => 178,
+    'field_name' => 'custom_41',
+    'label' => E::ts('Date de sortie définitive'),
+    'field_name:name' => 'Devenir_du_corps.Date_de_sortie_d_finitive',
+  ],
+  [
+    'id' => 180,
+    'field_name' => 'custom_42',
+    'label' => E::ts('Date opérations funéraires'),
+    'field_name:name' => 'Devenir_du_corps.Date_op_rations_fun_raires',
+  ],
+  [
+    'id' => 181,
+    'field_name' => 'custom_43',
+    'label' => E::ts('Date approximative de réalisation des opérations funéraires'),
+    'field_name:name' => 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
   ],
   [
     'id' => 206,
     'field_name' => 'custom_44',
-    'field_name:name' => 'Devenir_du_corps.Date_de_restitution',
     'label' => E::ts('Date de restitution'),
+    'field_name:name' => 'Devenir_du_corps.Date_de_restitution',
   ],
   [
     'id' => 207,
     'field_name' => 'custom_45',
-    'field_name:name' => 'Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches',
     'label' => E::ts('Pompes funèbres mandatées par personne référente'),
+    'field_name:name' => 'Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches',
+  ],
+  [
+    'id' => 205,
+    'field_name' => 'custom_46',
+    'label' => E::ts('Souhait funeraire personne reférente'),
+    'field_name:name' => 'Devenir_du_corps.Souhait_funeraire_personne_ref_rente',
+  ],
+  [
+    'id' => 195,
+    'field_name' => 'custom_54',
+    'label' => E::ts('Centre de don'),
+    'field_name:name' => 'Promesse_de_don.Centre_de_don',
+  ],
+  [
+    'id' => 196,
+    'field_name' => 'custom_55',
+    'label' => E::ts('N° de don'),
+    'field_name:name' => 'Promesse_de_don.N_de_don',
+  ],
+  [
+    'id' => 197,
+    'field_name' => 'custom_56',
+    'label' => E::ts('Date du don'),
+    'field_name:name' => 'Promesse_de_don.Date_du_don',
   ],
 ];
 
@@ -218,7 +221,7 @@ foreach ($uFFields as $uFField){
     exit;
   }
 }
-  
+
 $convert=$uFFields;
 
 
@@ -339,7 +342,7 @@ if(isset ($savedSearches[0])){
     print_r($output);
     unset ($output);
   }
-} 
+}
 
 // Groupe archives
 $groups = civicrm_api4('Group', 'get', [
@@ -365,7 +368,7 @@ $groups = civicrm_api4('Group', 'get', [
       print_r($output);
       unset ($output);
     }
-  } 
+  }
 
 
 
@@ -398,7 +401,7 @@ $customGroups = civicrm_api4('CustomGroup', 'get', [
       unset ($output);
     }
   }
-  
+
 /// Option groups
 
 
@@ -430,30 +433,7 @@ $optionGroups = civicrm_api4('OptionGroup', 'get', [
 
 
 
-  // dedupe rules
-
-  $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
-    'select' => [
-      'id',
-      'name',
-    ],
-    'where' => [
-      ['base_module', '=', 'don_corps'],
-    ],
-    'checkPermissions' => FALSE,
-  ]);
-
-  if(isset ($dedupeRuleGroups[0])){
-    foreach ($dedupeRuleGroups as $dedupeRuleGroup){
-      echo "exporting DedupeRuleGroup ".$dedupeRuleGroup['name']." (".$dedupeRuleGroup['id'].")".PHP_EOL;
-      $cmd = "civix export DedupeRuleGroup ".$dedupeRuleGroup['id'];
-      echo $cmd.PHP_EOL;
-      exec($cmd, $output, $retval);
-      echo "Returned with status $retval and output:\n";
-      print_r($output);
-      unset ($output);
-    }
-  }
+  // afforms
 
 $afforms = civicrm_api4('Afform', 'get', [
   'where' => [
@@ -519,14 +499,3 @@ if(isset ($navigations[0])){
     unset ($output);
   }
 }
-
-
-
-
-
-
-
-
-//exec('civix export SavedSearch 55', $output, $retval);
-//echo "Returned with status $retval and output:\n";
-//print_r($output);

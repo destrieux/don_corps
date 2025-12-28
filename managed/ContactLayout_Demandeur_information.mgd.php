@@ -33,8 +33,6 @@ return [
                 'collapsed' => FALSE,
                 'showTitle' => TRUE,
               ],
-            ],
-            [
               [
                 'name' => 'core.Address',
                 'title' => E::ts('Adresse'),

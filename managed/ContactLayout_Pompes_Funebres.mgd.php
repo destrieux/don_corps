@@ -31,8 +31,6 @@ return [
                 'collapsed' => FALSE,
                 'showTitle' => TRUE,
               ],
-            ],
-            [
               [
                 'name' => 'core.Phone',
                 'title' => E::ts('Téléphone'),

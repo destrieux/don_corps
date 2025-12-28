@@ -1286,7 +1286,7 @@ use CRM_DonCorps_ExtensionUtil as E;
       ];
     //fin de la modifiacaiotn des tags
 
-    echo "Modification des profils personnalisés".PHP_EOL;
+    /* echo "Modification des profils personnalisés".PHP_EOL;
     #####
     # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
     # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
@@ -1535,7 +1535,7 @@ use CRM_DonCorps_ExtensionUtil as E;
               echo " - MAJ".PHP_EOL;
       }
 
-    }
+    } */
 
    
   }
@@ -3237,20 +3237,205 @@ use CRM_DonCorps_ExtensionUtil as E;
       deactivate_menu('Reports');
       deactivate_menu('Support');
 
-    // modification de l'usage des regles de dédoublonage : ne garde que les numeros_don_annulation_dc_2 et num_don_annulation_deces en non géneral (supervise et auto)
-    echo "  -modification des regles de déboublonage".PHP_EOL;
-      $results = civicrm_api4('DedupeRuleGroup', 'update', [
-        'values' => [
-          'used' => 'General',
-        ],
-        'where' => [
-          ['name', '<>', 'numeros_don_annulation_dc_2'],
-          ['name', '<>', 'num_don_annulation_deces'],
-          ['contact_type', '=', 'Individual']
-        ],
-        'checkPermissions' => FALSE,
+    echo "- Reglage des règles de dédoublonage".PHP_EOL;
+      #####
+      # Lors de l acréation des dedupe rules en utilisant les fichier mgd, les champs sont mal mappés
+      # en raison d'une référence non au nom des champs mais de la tabloe et de la colonne dans la bdd, variabl ed'une installaiton ) l'autre
+      # ici, on récupère les valeurs de table et de colonne dans la nouvelle bdd à parir du nom du champ
+      # et on modifie la regle de dédoublonage
+      #
+      # dans $custom_dedupes lister le name des custom fields utilisés dans les regles de dédoublonage
+      #####
+
+      ### Passage des regles existantes à l'utilisation "general"
+          # "Supervised" : lancée si création depuis l'interface utilisateur
+          # "Unsupervised" : lancée si creation online ou import de contact
+          echo '  - Passage des usages de tous les groupes de règles de dédoublonage à General'.PHP_EOL;
+          $results = civicrm_api4('DedupeRuleGroup', 'update', [
+          'values' => [
+              'used' => 'General',
+          ],
+          'where' => [
+              ['id', '<>', 0],
+          ],
+          'checkPermissions' => FALSE,
       ]);
-    // fin de la modification de l'usage des regles de dédoublonage
+
+      ### création de la table $custom_dedupes qui contient les valeurs de table et de colonne pour chque champ
+
+          $custom_dedupes = ['N_annulation', 'N_de_don', 'N_de_d_c_s'];
+          $custom_table=array();
+
+          foreach($custom_dedupes as $custom_dedupe){
+              //echo $custom_dedupe.PHP_EOL;
+              $customFields = civicrm_api4('CustomField', 'get', [
+                  'select' => [
+                      'column_name',
+                      'custom_group_id.table_name',
+                  ],
+                  'where' => [
+                      ['name', '=', $custom_dedupe],
+                  ],
+                  'checkPermissions' => FALSE,
+              ]);
+
+              if(isset($customFields[0])){
+                  $custom_table[$custom_dedupe]['table']=$customFields[0]['custom_group_id.table_name'];
+                  $custom_table[$custom_dedupe]['column']=$customFields[0]['column_name'];
+              }
+          }
+
+      ### création règle supervisée de dédoublonage utilisant les n° de don d'annulation et de deces
+          $rule_name = 'num_don_annulation_deces';
+          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
+              'select' => [
+                  'id',
+              ],
+              'where' => [
+                  ['name', '=', $rule_name],
+              ],
+              'checkPermissions' => FALSE,
+          ]);
+
+          if(isset($dedupeRuleGroups[0])){
+              $results = civicrm_api4('DedupeRuleGroup', 'update', [
+                  'values' => [
+                      'contact_type' => 'Individual',
+                      'threshold' => 10,
+                      'used' => 'Supervised',
+                      'title' => E::ts('num don annulation deces (supervisée)'),
+                  ],
+                  'where' => [
+                      ['id', '=', $dedupeRuleGroups[0]['id']],
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+                  echo '  - MAJ groupe de règles de dédoublonage';
+
+                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+
+                  if(isset($dedupeRules[0])){
+                      $results = civicrm_api4('DedupeRule', 'delete', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+                      echo ' et suppression des règles attachées';
+                  }
+
+          } else {
+              $results = civicrm_api4('DedupeRuleGroup', 'create', [
+                  'values' => [
+                      'contact_type' => 'Individual',
+                      'threshold' => 10,
+                      'used' => 'Supervised',
+                      'title' => E::ts('num don annulation deces supervisée'),
+                      'name' => $rule_name,
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+
+              echo '  - Création groupe de règles de dédoublonage';
+          }
+          echo " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          
+          foreach($custom_dedupes as $custom_dedupe){
+              $results = civicrm_api4('DedupeRule', 'create', [
+              'values' => [
+                  'dedupe_rule_group_id.name' => $rule_name,
+                  'rule_table' => $custom_table[$custom_dedupe]['table'],
+                  'rule_field' => $custom_table[$custom_dedupe]['column'],
+                  'rule_weight' => '10',
+              ],
+              'checkPermissions' => FALSE,
+              ]);
+              echo "      --> rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+          }
+
+
+
+      ### création règle automatique de dédoublonage utilisant les n° de don d'annulation et de deces
+          $rule_name = 'numeros_don_annulation_dc_2';
+          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
+              'select' => [
+                  'id',
+              ],
+              'where' => [
+                  ['name', '=', $rule_name],
+              ],
+              'checkPermissions' => FALSE,
+          ]);
+
+          if(isset($dedupeRuleGroups[0])){
+              $results = civicrm_api4('DedupeRuleGroup', 'update', [
+                  'values' => [
+                      'contact_type' => 'Individual',
+                      'threshold' => 10,
+                      'used' => 'Unsupervised',
+                      'title' => E::ts('num don annulation deces (automatique)'),
+                  ],
+                  'where' => [
+                      ['id', '=', $dedupeRuleGroups[0]['id']],
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+                  echo '  - MAJ groupe de règles de dédoublonage';
+
+                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+
+                  if(isset($dedupeRules[0])){
+                      $results = civicrm_api4('DedupeRule', 'delete', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+                      echo ' et suppression des règles attachées';
+                  }
+
+          } else {
+              $results = civicrm_api4('DedupeRuleGroup', 'create', [
+                  'values' => [
+                      'contact_type' => 'Individual',
+                      'threshold' => 10,
+                      'used' => 'Supervised',
+                      'title' => E::ts('num don annulation deces supervisée'),
+                      'name' => $rule_name,
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+
+              echo '  - Création groupe de règles de dédoublonage';
+          }
+          echo " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          
+          foreach($custom_dedupes as $custom_dedupe){
+              $results = civicrm_api4('DedupeRule', 'create', [
+              'values' => [
+                  'dedupe_rule_group_id.name' => $rule_name,
+                  'rule_table' => $custom_table[$custom_dedupe]['table'],
+                  'rule_field' => $custom_table[$custom_dedupe]['column'],
+                  'rule_weight' => '10',
+              ],
+              'checkPermissions' => FALSE,
+              ]);
+              echo "      --> rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+          }
+
+
+
+    /// Fin de Reglage des règles de dédoublonage
 
     // modification du filtre du champ perso Preparé par pour ne garder que les contacts du groupe personnel des cdc
       echo "  - Modification du filtre du champ perso Preparé par".PHP_EOL;
@@ -3261,13 +3446,8 @@ use CRM_DonCorps_ExtensionUtil as E;
 
     // fin de modification du filtre du champ perso Preparé par 
 
-
-
     // création des rules
     echo "  -Création des Rules".PHP_EOL;
-
-
-
 
     echo PHP_EOL."   - Civirule : Déplace lot de pièces ".PHP_EOL;
      
@@ -5418,7 +5598,7 @@ use CRM_DonCorps_ExtensionUtil as E;
     // Fin du Changement des icones de menus
 
 
-    // Modifie l'utilisation des profils créées par le mgd files et de menus qui permettent d'y accéder
+    // Modifie l'utilisation des profils pour la creation de contacts créés par mgd files et de menus qui permettent d'y accéder
       echo "  -modification de l'utilisation des profils".PHP_EOL;
       $uFGroups = civicrm_api4('UFGroup', 'get', [   // récupère la liste des profils
         'select' => [
@@ -5432,9 +5612,11 @@ use CRM_DonCorps_ExtensionUtil as E;
         foreach ($uFGroups as $uFGroup){                        // crée un tableau avec [id_UFGroup][name_UFGroup]
             $profile_names[$uFGroup['id']]=$uFGroup['name'];
         }
-        
+        $cancel_url = admin_url("admin.php?page=CiviCRM");  // url à charger si annulation 
         $url = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";  // url à charger apres creation du contact utilisant le profil 
-        $profiles_to_update = ['Mairie','Lieu_de_stockage','Centre_d_accueil_des_corps','Personnel_de_centre_de_don_de_corps','Inscription_proche_donateur_27', 'Demandeur_information_22', 'Inscription_proche_donateur_14', 'name_and_address','Inscription_anat_compar_e'];
+        
+        $profiles_to_update = ['Mairie','Lieu_de_stockage','Centre_d_accueil_des_corps','Personnel_de_centre_de_don_de_corps','Inscription_proche_donateur_14', 'Demandeur_information_22', 'inscription_pompes', 'Inscription_donateur','Inscription_anat_compar_e'];
+  
         // Liste de profils à associer à un role (ceux utilisés pour creation contacts) name_and_address = ionscription donneur ; Inscription_proche_donateur_27 : pompes
         
         foreach ($profiles_to_update as $profile_to_update) {
@@ -5446,6 +5628,7 @@ use CRM_DonCorps_ExtensionUtil as E;
                     'entity' => 'UFGroup',
                     'values' => [
                         'post_url' => $url,
+                        'cancel_url' => $cancel_url,
                         'name' => $profile_to_update,
                     ],
                   ];
@@ -5463,7 +5646,7 @@ use CRM_DonCorps_ExtensionUtil as E;
                 create_entity($to_create);  // create ou update UFJOIN
               
               } else {
-                  echo $profile_to_update." : Profil non trouvé non trouvé ////////.".PHP_EOL;
+                  echo $profile_to_update." : Profil non trouvé ////////.".PHP_EOL;
               }
         }
     // fin de Modifie l'utilisation des profils créées par le mgd files
@@ -5471,10 +5654,10 @@ use CRM_DonCorps_ExtensionUtil as E;
     /// Modification des menus de navigation liés aux profil de création de contacts
       echo "  -modification des rmenus de navigation liés aux proils".PHP_EOL;
       $url_menus_to_change =[                             // Profil name, parent_id:name, name du menu navigation
-        ['name_and_address', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
+        ['Inscription_donateur', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
         ['Inscription_proche_donateur_14', 'ContactsDDC','Ajouter proche donateurDDC'],///MODIFIE
         ['Demandeur_information_22', 'ContactsDDC','New Demandeur_d_informationDDC'],///MODIFIE
-        ['Inscription_proche_donateur_27', 'Pompes funebresDDC','New Pompes'],  // 'Inscription_proche_donateur_27' correpond au profil pompes
+        ['inscription_pompes', 'Pompes funebresDDC','New Pompes'],  // 'Inscription_proche_donateur_27' correpond au profil pompes
         ['Mairie', 'MairiesDDC','New Mairies'],
         ['Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'],
         ['Centre_d_accueil_des_corps', 'Centres de don du corpsDDC','New CDC'],

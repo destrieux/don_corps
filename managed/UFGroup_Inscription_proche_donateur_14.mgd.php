@@ -15,6 +15,7 @@ return [
         'title' => E::ts('Inscription proche donateur'),
         'frontend_title' => E::ts('Inscription proche donateur'),
         'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
+        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm%2Ftous_contacts',
         'created_date' => '2021-04-17 22:21:39',
       ],
       'match' => ['name'],

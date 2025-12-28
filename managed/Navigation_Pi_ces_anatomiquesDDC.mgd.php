@@ -47,7 +47,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Créer Localisation pièces'),
+        'label' => E::ts('Créer Local de conservation'),
         'name' => 'New Emprunteur',
         'url' => 'civicrm/profile/create/?gid=23&reset=1',
         'icon' => 'crm-i fa-rectangle-list',

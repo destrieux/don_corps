@@ -3,7 +3,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
 return [
   [
-    'name' => 'ContactLayout_1',
+    'name' => 'ContactLayout_Centre_de_don',
     'entity' => 'ContactLayout',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -18,21 +18,6 @@ return [
           [
             [
               [
-                'name' => 'custom.CDC_admin',
-                'title' => E::ts('CDC admin'),
-                'collapsible' => TRUE,
-                'collapsed' => FALSE,
-              ],
-            ],
-            [
-              [
-                'name' => 'core.Phone',
-                'title' => E::ts('Téléphone'),
-                'collapsible' => FALSE,
-                'collapsed' => FALSE,
-                'showTitle' => TRUE,
-              ],
-              [
                 'name' => 'core.Address',
                 'title' => E::ts('Adresse'),
                 'collapsible' => FALSE,
@@ -42,6 +27,13 @@ return [
               [
                 'name' => 'core.Email',
                 'title' => E::ts('Courriel'),
+                'collapsible' => FALSE,
+                'collapsed' => FALSE,
+                'showTitle' => TRUE,
+              ],
+              [
+                'name' => 'core.Phone',
+                'title' => E::ts('Téléphone'),
                 'collapsible' => FALSE,
                 'collapsed' => FALSE,
                 'showTitle' => TRUE,

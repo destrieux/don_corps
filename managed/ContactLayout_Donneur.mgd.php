@@ -13,7 +13,7 @@ return [
         'label' => E::ts('Donneur'),
         'contact_type' => 'Individual',
         'contact_sub_type' => ['Donateur'],
-        'weight' => 1,
+        'weight' => 2,
         'blocks' => [
           [
             [

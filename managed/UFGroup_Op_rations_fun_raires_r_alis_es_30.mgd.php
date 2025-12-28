@@ -11,7 +11,7 @@ return [
       'version' => 4,
       'values' => [
         'name' => 'Op_rations_fun_raires_r_alis_es_30',
-        'group_type' => ['Donateur'],
+        'group_type' => ['Contact'],
         'title' => E::ts('Opérations funéraires réalisées'),
         'frontend_title' => E::ts('Opérations funéraires réalisées'),
         'is_update_dupe' => TRUE,

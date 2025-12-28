@@ -18,6 +18,7 @@ return [
         'title' => E::ts('Demandeur information'),
         'frontend_title' => E::ts('Demandeur d\'information'),
         'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
+        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm%2Ftous_contacts',
         'created_date' => '2023-04-29 05:51:58',
       ],
       'match' => ['name'],
@@ -33,7 +34,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Demandeur_information_22',
         'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-        'visibility' => 'Public Pages and Listings',
+        'is_required' => TRUE,
         'in_selector' => TRUE,
         'label' => E::ts('Civilité'),
         'field_type' => 'Contact',
@@ -69,7 +70,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Demandeur_information_22',
         'field_name' => 'first_name',
-        'visibility' => 'Public Pages and Listings',
+        'is_required' => TRUE,
         'in_selector' => TRUE,
         'is_searchable' => TRUE,
         'label' => E::ts('Prénom'),

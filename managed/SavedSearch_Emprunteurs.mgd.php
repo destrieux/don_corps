@@ -66,7 +66,7 @@ return [
           ],
           'having' => [],
         ],
-        'description' => E::ts('Organismes emprunteurs : emprunteurs et lieux stockage'),
+        'description' => E::ts('Lieux de conservation des corps et des pièces : CDC, locaux des CDC et emprunteurs'),
       ],
       'match' => ['name'],
     ],
@@ -103,7 +103,7 @@ return [
         'saved_search_id.name' => 'Emprunteurs',
         'type' => 'table',
         'settings' => [
-          'description' => E::ts('Organismes emprunteurs et CDC'),
+          'description' => E::ts('Lieux de conservation des corps et des pièces : CDC, locaux des CDC et emprunteurs'),
           'sort' => [
             ['sort_name', 'ASC'],
           ],

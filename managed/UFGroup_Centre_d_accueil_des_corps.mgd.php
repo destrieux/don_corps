@@ -15,6 +15,7 @@ return [
         'title' => E::ts('Centre d\'accueil des corps'),
         'frontend_title' => E::ts('Centre d\'accueil des corps'),
         'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
+        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm%2FCDC',
         'created_date' => '2025-02-15 19:25:41',
       ],
       'match' => ['name'],

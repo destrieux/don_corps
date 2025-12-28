@@ -24,8 +24,6 @@ return [
                 'collapsed' => FALSE,
                 'showTitle' => FALSE,
               ],
-            ],
-            [
               [
                 'name' => 'core.Address',
                 'title' => E::ts('Adresse'),

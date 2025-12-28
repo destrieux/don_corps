@@ -16,6 +16,7 @@ return [
         'frontend_title' => E::ts('Inscription anat comparée'),
         'description' => E::ts('Inscription pièce anatomie comparée'),
         'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
+        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm%2Ftous_contacts',
         'created_date' => '2025-10-06 16:02:42',
       ],
       'match' => ['name'],
@@ -31,6 +32,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Inscription_anat_compar_e',
         'field_name' => 'first_name',
+        'is_required' => TRUE,
         'label' => E::ts('Identifiant alpha (rappel espèce..)'),
         'field_type' => 'Animal',
       ],
@@ -46,6 +48,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Inscription_anat_compar_e',
         'field_name' => 'last_name',
+        'is_required' => TRUE,
         'label' => E::ts('Identifiant numérique'),
         'field_type' => 'Animal',
       ],
@@ -61,6 +64,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Inscription_anat_compar_e',
         'field_name' => 'gender_id',
+        'is_required' => TRUE,
         'label' => E::ts('Genre'),
         'field_type' => 'Animal',
       ],
@@ -76,6 +80,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Inscription_anat_compar_e',
         'field_name' => 'custom_115',
+        'is_required' => TRUE,
         'label' => E::ts('Espèce'),
         'field_type' => 'Animal',
       ],
@@ -91,6 +96,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Inscription_anat_compar_e',
         'field_name' => 'custom_114',
+        'is_required' => TRUE,
         'label' => E::ts('Provenance'),
         'field_type' => 'Animal',
       ],
