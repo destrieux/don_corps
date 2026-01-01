@@ -2,7 +2,7 @@
 eval(`cv php:boot`);
 use CRM_DonCorps_ExtensionUtil as E;
 
-$exp_dir = './managed/';    // racine du répertoire d'import export
+$exp_dir = '../managed/';    // racine du répertoire d'import export
 $contact_default = 2;       // id du contact par defaut lorsque le contact origine a disparu
 
 ## Définition des fonctions

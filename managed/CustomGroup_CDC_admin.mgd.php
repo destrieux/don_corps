@@ -37,6 +37,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'directeur_du_centre_d_accueil_122',
+        'weight' => 2,
       ],
       'match' => [
         'name',
@@ -60,6 +61,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'gestionnaire_du_centre_d_accueil_123',
+        'weight' => 4,
       ],
       'match' => [
         'name',
@@ -83,6 +85,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'pr_sident_du_cesp_120',
+        'weight' => 6,
       ],
       'match' => [
         'name',
@@ -106,6 +109,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'qualit_du_pr_sident_du_cesp_121',
+        'weight' => 8,
       ],
       'match' => [
         'name',
@@ -129,6 +133,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'dpo_109',
+        'weight' => 10,
       ],
       'match' => [
         'name',
@@ -153,6 +158,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'column_name' => 'site_web_125',
+        'weight' => 12,
       ],
       'match' => [
         'name',
