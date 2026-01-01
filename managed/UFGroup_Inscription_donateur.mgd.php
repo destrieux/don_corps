@@ -11,7 +11,7 @@ return [
       'version' => 4,
       'values' => [
         'name' => 'Inscription_donateur',
-        'group_type' => ['Donateur', 'Contact'],
+        'group_type' => ['Contact', 'Donateur'],
         'title' => E::ts('Inscription donateur'),
         'frontend_title' => E::ts('Inscription donateur'),
         'post_url' => '/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1',

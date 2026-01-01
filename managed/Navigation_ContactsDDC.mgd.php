@@ -184,7 +184,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Centres de don du corps'),
+        'label' => E::ts('Centres d\'accueil des corps'),
         'name' => 'Centres de don du corpsDDC',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',

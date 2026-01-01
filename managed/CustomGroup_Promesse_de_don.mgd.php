@@ -622,6 +622,7 @@ return [
 DD : département du centre d\'accueil des corps
 AAAA: année
 NNNNN: numéro (5 chiffres)'),
+        'help_post' => E::ts('DOIT ETRE UNIQUE !'),
         'text_length' => 20,
         'note_columns' => 60,
         'note_rows' => 4,

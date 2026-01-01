@@ -18,6 +18,13 @@ return [
           [
             [
               [
+                'name' => 'custom.CDC_admin',
+                'title' => E::ts('CDC admin'),
+                'collapsible' => FALSE,
+                'collapsed' => FALSE,
+                'showTitle' => FALSE,
+              ],
+              [
                 'name' => 'core.Address',
                 'title' => E::ts('Adresse'),
                 'collapsible' => FALSE,

@@ -438,7 +438,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
   }// Fin de la définition de la fonction : install_layouts() */
 
-/*   function change_tabs(){
+ /*   function change_tabs(){
     ##### Recuperation de la liste actuelle des tabs pour ce layout
       $icons_default= func_get_arg(0);         // array contenant les icones par defaut
       $inactive_tabs= func_get_arg(1);         // array contenant les tabs à inactiver par profil
@@ -1286,261 +1286,267 @@ use CRM_DonCorps_ExtensionUtil as E;
       ];
     //fin de la modifiacaiotn des tags
 
-    /* echo "Modification des profils personnalisés".PHP_EOL;
-    #####
-    # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
-    # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
-    # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
-    # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
-    # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
-    $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
-    $json = file_get_contents($toimport_file);
-    $convert = json_decode($json, true);
+   /* echo "Modification des profils personnalisés".PHP_EOL;
+      #####
+      # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
+      # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
+      # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
+      # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
+      # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
+      $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
+      $json = file_get_contents($toimport_file);
+      $convert = json_decode($json, true);
 
-    ### Modification des UF Fields pour corrier les custom_id
+      ### Modification des UF Fields pour corrier les custom_id
 
-    $new = [];
-    $new[0]['id']=NULL;
-    $new[0]['field_name']=NULL;
-    $new[0]['field_name:name']=NULL;
-    $new[0]['label']=NULL;
+      $new = [];
+      $new[0]['id']=NULL;
+      $new[0]['field_name']=NULL;
+      $new[0]['field_name:name']=NULL;
+      $new[0]['label']=NULL;
 
-    foreach ($convert as $k => $v) {
-        $new[$k + 1] = $v;
-    }
+      foreach ($convert as $k => $v) {
+          $new[$k + 1] = $v;
+      }
 
-    $convert=$new;
-    //print_r ($convert);
+      $convert=$new;
+      //print_r ($convert);
 
-    $labels_table = array_column($convert, 'label');
-    $names_table = array_column($convert, 'field_name:name');
-    $customs_table = array_column($convert, 'field_name');
+      $labels_table = array_column($convert, 'label');
+      $names_table = array_column($convert, 'field_name:name');
+      $customs_table = array_column($convert, 'field_name');
 
-    print_r ($labels_table);
+      print_r ($labels_table);
 
-    $uFFields = civicrm_api4('UFField', 'get', [
+      $uFFields = civicrm_api4('UFField', 'get', [
+          'select' => [
+            'field_name',
+            'field_name:name',
+            'label',
+          ],
+          'where' => [
+            ['field_name', 'CONTAINS', 'custom_'],
+          ],
+          'orderBy' => [
+            'uf_group_id:name' => 'ASC',
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+      if (isset($uFFields[0])){
+
+        //echo "il y a des uffields ".PHP_EOL;
+        
+        foreach ($uFFields as $uFField){
+          //echo PHP_EOL.PHP_EOL;
+          //print_r($uFField);
+          if (isset($uFField['label'])) {           // si un label existe, on récupère la valeur de field_name_name 
+            //echo 'un label existe'.PHP_EOL;         // depuis la table de conversion en utilisant le label comme critere de concordance
+            $label=$uFField['label'];
+            $key = array_search($label, $labels_table); 
+            //var_dump($key);
+            if ($key){
+                  $name=$convert[$key]['field_name:name'];
+            //echo "on recupere dans convert la valeur field_name : ".$name.' pour label :'.$label.PHP_EOL;
+            } else {
+              echo "ERREUR : pas de label ".$label.' dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+              exit;
+            }
+          }  else { // si ce label n'existe pas 
+              //echo 'pas de label'.PHP_EOL;
+              if (isset($uFField['field_name:name'])){    // si un field_name:name de type customgroup.customfield existe
+                $name=$uFField['field_name:name'];          // on la conserve
+                $key = array_search($name, $names_table);   
+                if ($key){
+                      $label=$convert[$key]['field_name:label'];  // on récupère label depuis la table de correspondance en utilisant le field_name:name comme critere de concordance
+                } else {
+                  echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+                  exit;
+                }
+              } else {                                          // pas de field _name:name de type customgroup.customfield 
+                $key = array_search($name, $customs_table);
+
+                if ($key){
+                  $label=$convert[$key]['field_name:label'];      // on récupère label et name depuis table correspondance
+                  $name=$convert[$key]['field_name:name'];        // en utilisant le custom_name comme critere de concordance
+                } else {
+                  echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+                  exit;
+                }
+              }
+          }
+
+          $position = strpos($name, '.');             // retrouve la position du point dans le nom
+          if ($position !== false) {
+            $group = substr($name, 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+            $custom = substr($name, $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+            //echo 'group : '.$group.'        custom field :'.$custom.PHP_EOL;
+              $customFields = civicrm_api4('CustomField', 'get', [
+                'select' => [
+                  'id',
+                ],
+                'where' => [
+                  ['custom_group_id:name', '=', $group],
+                  ['name', '=', $custom],
+                ],
+                'checkPermissions' => FALSE,
+              ]);
+
+              if(isset($customFields[0])){
+                $field_name='custom_'.$customFields[0]['id'];
+              }
+
+            echo "UFFIELF name : ".$name." | label : ".$label." | field name : ".$field_name;
+
+            if($field_name!=$uFField['field_name']){
+              echo " - MAJ";         
+              $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
+                'values' => [
+                  'label' => $label,
+                  'field_name' => $field_name,
+                ],
+
+                'where' => [
+                  ['field_name', '=', $uFField['field_name']],
+                ],
+
+                'checkPermissions' => FALSE,
+              ]); 
+
+              }else {
+                echo " - Inchangé".PHP_EOL;
+              }
+          }
+        }
+      }
+
+      #### Creation / MAJ des UFJOINS
+      # Les UFjoins mettren en relation un profil avec les contacts layous ; sinon ils ne s'affichent pas 
+      # Il faut un UFjoin pour les modeles CustomSummary et un pour Profile par groupe de profil
+
+      $contactLayouts = civicrm_api4('ContactLayout', 'get', [
         'select' => [
-          'field_name',
-          'field_name:name',
-          'label',
-        ],
-        'where' => [
-          ['field_name', 'CONTAINS', 'custom_'],
-        ],
-        'orderBy' => [
-          'uf_group_id:name' => 'ASC',
+          'blocks',
         ],
         'checkPermissions' => FALSE,
       ]);
 
-    if (isset($uFFields[0])){
+      $summary_profile_list=array();
 
-      //echo "il y a des uffields ".PHP_EOL;
-      
-      foreach ($uFFields as $uFField){
-        //echo PHP_EOL.PHP_EOL;
-        //print_r($uFField);
-        if (isset($uFField['label'])) {           // si un label existe, on récupère la valeur de field_name_name 
-          //echo 'un label existe'.PHP_EOL;         // depuis la table de conversion en utilisant le label comme critere de concordance
-          $label=$uFField['label'];
-          $key = array_search($label, $labels_table); 
-          //var_dump($key);
-          if ($key){
-                $name=$convert[$key]['field_name:name'];
-          //echo "on recupere dans convert la valeur field_name : ".$name.' pour label :'.$label.PHP_EOL;
-          } else {
-            echo "ERREUR : pas de label ".$label.' dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
-            exit;
-          }
-        }  else { // si ce label n'existe pas 
-            //echo 'pas de label'.PHP_EOL;
-            if (isset($uFField['field_name:name'])){    // si un field_name:name de type customgroup.customfield existe
-              $name=$uFField['field_name:name'];          // on la conserve
-              $key = array_search($name, $names_table);   
-              if ($key){
-                    $label=$convert[$key]['field_name:label'];  // on récupère label depuis la table de correspondance en utilisant le field_name:name comme critere de concordance
-              } else {
-                echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
-                exit;
-              }
-            } else {                                          // pas de field _name:name de type customgroup.customfield 
-              $key = array_search($name, $customs_table);
+      foreach($contactLayouts as $contactLayout){
+        $block_cols=$contactLayout['blocks'];
+        foreach($block_cols as $block_col){
+          $blocks=$block_col;
+          foreach($blocks as $block){
+            $profiles=$block;
+            foreach ($profiles as $profile){
+            //echo $profile['name'].PHP_EOL;
 
-              if ($key){
-                $label=$convert[$key]['field_name:label'];      // on récupère label et name depuis table correspondance
-                $name=$convert[$key]['field_name:name'];        // en utilisant le custom_name comme critere de concordance
-              } else {
-                echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
-                exit;
+              $position = strpos($profile['name'], '.');             // retrouve la position du point dans le nom
+              if ($position !== false) {
+                $prefix = substr($profile['name'], 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+                $postfix = substr($profile['name'], $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+                //print_r($profile).PHP_EOL;
+                if ($prefix=='profile'){
+                  array_push($summary_profile_list, $postfix);
+                }
               }
             }
+          }
+          //echo $block['name'].PHP_EOL;
         }
+      }
 
-        $position = strpos($name, '.');             // retrouve la position du point dans le nom
-        if ($position !== false) {
-          $group = substr($name, 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
-          $custom = substr($name, $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
-          //echo 'group : '.$group.'        custom field :'.$custom.PHP_EOL;
-            $customFields = civicrm_api4('CustomField', 'get', [
-              'select' => [
-                'id',
-              ],
-              'where' => [
-                ['custom_group_id:name', '=', $group],
-                ['name', '=', $custom],
+      //print_r($summary_profile_list);
+
+
+      foreach($summary_profile_list as $profile){
+          $uFJoins = civicrm_api4('UFJoin', 'get', [
+            'select' => [
+              'id',
+            ],
+            'where' => [
+              ['uf_group_id:name', '=', $profile],
+              ['module', '=', 'Contact Summary'],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          echo "UFJoin pour Contact Summary et profil : ".$profile;
+
+        if(!isset($uFJoins[0]['id'])){
+            $results = civicrm_api4('UFJoin', 'create', [
+              'values' => [
+                'module' => 'Contact Summary',
+                'uf_group_id.name' => $profile,
               ],
               'checkPermissions' => FALSE,
             ]);
+            echo " - Créé".PHP_EOL;
+        }else{
+            $results = civicrm_api4('UFJoin', 'update', [
+            'values' => [
+              'uf_group_id.name' => $profile,
+            ],
+            'where' => [
+              ['id', '=', $uFJoins[0]['id']],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+                echo " - MAJ".PHP_EOL;
+        }
 
-            if(isset($customFields[0])){
-              $field_name='custom_'.$customFields[0]['id'];
-            }
+      }
 
-          echo "UFFIELF name : ".$name." | label : ".$label." | field name : ".$field_name;
 
-          if($field_name!=$uFField['field_name']){
-            echo " - MAJ";         
-            $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
+      foreach($summary_profile_list as $profile){
+          $uFJoins = civicrm_api4('UFJoin', 'get', [
+            'select' => [
+              'id',
+            ],
+            'where' => [
+              ['uf_group_id:name', '=', $profile],
+              ['module', '=', 'Profile'],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          echo "UFJoin pour Profile (standalone form) et profil : ".$profile;
+
+        if(!isset($uFJoins[0]['id'])){
+            $results = civicrm_api4('UFJoin', 'create', [
               'values' => [
-                'label' => $label,
-                'field_name' => $field_name,
+                'module' => 'Profile',
+                'uf_group_id.name' => $profile,
               ],
-
-              'where' => [
-                ['field_name', '=', $uFField['field_name']],
-              ],
-
               'checkPermissions' => FALSE,
-            ]); 
-
-            }else {
-              echo " - Inchangé".PHP_EOL;
-            }
-        }
-      }
-    }
-
-    #### Creation / MAJ des UFJOINS
-    # Les UFjoins mettren en relation un profil avec les contacts layous ; sinon ils ne s'affichent pas 
-    # Il faut un UFjoin pour les modeles CustomSummary et un pour Profile par groupe de profil
-
-    $contactLayouts = civicrm_api4('ContactLayout', 'get', [
-      'select' => [
-        'blocks',
-      ],
-      'checkPermissions' => FALSE,
-    ]);
-
-    $summary_profile_list=array();
-
-    foreach($contactLayouts as $contactLayout){
-      $block_cols=$contactLayout['blocks'];
-      foreach($block_cols as $block_col){
-        $blocks=$block_col;
-        foreach($blocks as $block){
-          $profiles=$block;
-          foreach ($profiles as $profile){
-          //echo $profile['name'].PHP_EOL;
-
-            $position = strpos($profile['name'], '.');             // retrouve la position du point dans le nom
-            if ($position !== false) {
-              $prefix = substr($profile['name'], 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
-              $postfix = substr($profile['name'], $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
-              //print_r($profile).PHP_EOL;
-              if ($prefix=='profile'){
-                array_push($summary_profile_list, $postfix);
-              }
-            }
-          }
-        }
-        //echo $block['name'].PHP_EOL;
-      }
-    }
-
-    //print_r($summary_profile_list);
-
-
-    foreach($summary_profile_list as $profile){
-        $uFJoins = civicrm_api4('UFJoin', 'get', [
-          'select' => [
-            'id',
-          ],
-          'where' => [
-            ['uf_group_id:name', '=', $profile],
-            ['module', '=', 'Contact Summary'],
-          ],
-          'checkPermissions' => FALSE,
-        ]);
-
-        echo "UFJoin pour Contact Summary et profil : ".$profile;
-
-      if(!isset($uFJoins[0]['id'])){
-          $results = civicrm_api4('UFJoin', 'create', [
+            ]);
+            echo " - Créé".PHP_EOL;
+        }else{
+            $results = civicrm_api4('UFJoin', 'update', [
             'values' => [
-              'module' => 'Contact Summary',
               'uf_group_id.name' => $profile,
+            ],
+            'where' => [
+              ['id', '=', $uFJoins[0]['id']],
             ],
             'checkPermissions' => FALSE,
           ]);
-          echo " - Créé".PHP_EOL;
-      }else{
-          $results = civicrm_api4('UFJoin', 'update', [
-          'values' => [
-            'uf_group_id.name' => $profile,
-          ],
-          'where' => [
-            ['id', '=', $uFJoins[0]['id']],
-          ],
-          'checkPermissions' => FALSE,
-        ]);
-              echo " - MAJ".PHP_EOL;
-      }
+                echo " - MAJ".PHP_EOL;
+        }
 
-    }
-
-
-    foreach($summary_profile_list as $profile){
-        $uFJoins = civicrm_api4('UFJoin', 'get', [
-          'select' => [
-            'id',
-          ],
-          'where' => [
-            ['uf_group_id:name', '=', $profile],
-            ['module', '=', 'Profile'],
-          ],
-          'checkPermissions' => FALSE,
-        ]);
-
-        echo "UFJoin pour Profile (standalone form) et profil : ".$profile;
-
-      if(!isset($uFJoins[0]['id'])){
-          $results = civicrm_api4('UFJoin', 'create', [
-            'values' => [
-              'module' => 'Profile',
-              'uf_group_id.name' => $profile,
-            ],
-            'checkPermissions' => FALSE,
-          ]);
-          echo " - Créé".PHP_EOL;
-      }else{
-          $results = civicrm_api4('UFJoin', 'update', [
-          'values' => [
-            'uf_group_id.name' => $profile,
-          ],
-          'where' => [
-            ['id', '=', $uFJoins[0]['id']],
-          ],
-          'checkPermissions' => FALSE,
-        ]);
-              echo " - MAJ".PHP_EOL;
-      }
-
-    } */
+      } */
 
    
   }
 
- 
+
+     
+
+
+
+
+
 
   /**
    * Function to check whether civirules is installed.
@@ -3237,7 +3243,7 @@ use CRM_DonCorps_ExtensionUtil as E;
       deactivate_menu('Reports');
       deactivate_menu('Support');
 
-    echo "- Reglage des règles de dédoublonage".PHP_EOL;
+  echo "- Reglage des règles de dédoublonage".PHP_EOL;
       #####
       # Lors de l acréation des dedupe rules en utilisant les fichier mgd, les champs sont mal mappés
       # en raison d'une référence non au nom des champs mais de la tabloe et de la colonne dans la bdd, variabl ed'une installaiton ) l'autre
@@ -3247,21 +3253,21 @@ use CRM_DonCorps_ExtensionUtil as E;
       # dans $custom_dedupes lister le name des custom fields utilisés dans les regles de dédoublonage
       #####
 
-      ### Passage des regles existantes à l'utilisation "general"
+      ### Passage des regles existantes pour les individus et organizations à l'utilisation "general"
           # "Supervised" : lancée si création depuis l'interface utilisateur
           # "Unsupervised" : lancée si creation online ou import de contact
-          echo '  - Passage des usages de tous les groupes de règles de dédoublonage à General'.PHP_EOL;
+          echo '  - Passage des usages de tous les groupes de règles de dédoublonage pour les individus à General'.PHP_EOL;
           $results = civicrm_api4('DedupeRuleGroup', 'update', [
           'values' => [
               'used' => 'General',
           ],
           'where' => [
-              ['id', '<>', 0],
+              ['OR', [['contact_type', '=', 'Organization'], ['contact_type', '=', 'Individual']]],
           ],
           'checkPermissions' => FALSE,
       ]);
 
-      ### création de la table $custom_dedupes qui contient les valeurs de table et de colonne pour chque champ
+      ### individuals : création de la table $custom_dedupes qui contient les valeurs de table et de colonne pour chque champ
 
           $custom_dedupes = ['N_annulation', 'N_de_don', 'N_de_d_c_s'];
           $custom_table=array();
@@ -3285,7 +3291,7 @@ use CRM_DonCorps_ExtensionUtil as E;
               }
           }
 
-      ### création règle supervisée de dédoublonage utilisant les n° de don d'annulation et de deces
+      ### individuals : création règle supervisée de dédoublonage utilisant les n° de don d'annulation et de deces
           $rule_name = 'num_don_annulation_deces';
           $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
               'select' => [
@@ -3303,7 +3309,7 @@ use CRM_DonCorps_ExtensionUtil as E;
                       'contact_type' => 'Individual',
                       'threshold' => 10,
                       'used' => 'Supervised',
-                      'title' => E::ts('num don annulation deces (supervisée)'),
+                      'title' => E::ts('num don ou annulation ou deces (supervisée)'),
                   ],
                   'where' => [
                       ['id', '=', $dedupeRuleGroups[0]['id']],
@@ -3335,7 +3341,7 @@ use CRM_DonCorps_ExtensionUtil as E;
                       'contact_type' => 'Individual',
                       'threshold' => 10,
                       'used' => 'Supervised',
-                      'title' => E::ts('num don annulation deces supervisée'),
+                      'title' => E::ts('num don ou annulation ou deces (supervisée)'),
                       'name' => $rule_name,
                   ],
                   'checkPermissions' => FALSE,
@@ -3360,7 +3366,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
 
 
-      ### création règle automatique de dédoublonage utilisant les n° de don d'annulation et de deces
+      ### individuals : création règle automatique de dédoublonage utilisant les n° de don d'annulation et de deces
           $rule_name = 'numeros_don_annulation_dc_2';
           $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
               'select' => [
@@ -3378,7 +3384,7 @@ use CRM_DonCorps_ExtensionUtil as E;
                       'contact_type' => 'Individual',
                       'threshold' => 10,
                       'used' => 'Unsupervised',
-                      'title' => E::ts('num don annulation deces (automatique)'),
+                      'title' => E::ts('num don ou annulation ou deces (automatique)'),
                   ],
                   'where' => [
                       ['id', '=', $dedupeRuleGroups[0]['id']],
@@ -3410,7 +3416,7 @@ use CRM_DonCorps_ExtensionUtil as E;
                       'contact_type' => 'Individual',
                       'threshold' => 10,
                       'used' => 'Supervised',
-                      'title' => E::ts('num don annulation deces supervisée'),
+                      'title' => E::ts('num don ou annulation ou deces (automatique)'),
                       'name' => $rule_name,
                   ],
                   'checkPermissions' => FALSE,
@@ -3435,7 +3441,168 @@ use CRM_DonCorps_ExtensionUtil as E;
 
 
 
-    /// Fin de Reglage des règles de dédoublonage
+      ### Organisation : création de la table $custom_dedupes qui contient les valeurs de table et de colonne pour chque champ
+
+              $custom_dedupes = ['name', 'email'];
+              $custom_table=array();
+
+              $custom_table['name']['table']='civicrm_contact';
+              $custom_table['name']['column']='organization_name';
+              $custom_table['email']['table']='civicrm_email';
+              $custom_table['email']['column']='email';
+              
+
+      ### Organisation : création règle supervisée de dédoublonage utilisant le nom ou courriel
+          $rule_name = 'OrganizationSupervised';
+          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
+              'select' => [
+                  'id',
+              ],
+              'where' => [
+                  ['name', '=', $rule_name],
+              ],
+              'checkPermissions' => FALSE,
+          ]); 
+
+          if(isset($dedupeRuleGroups[0])){
+              $results = civicrm_api4('DedupeRuleGroup', 'update', [
+                  'values' => [
+                      'contact_type' => 'Organization',
+                      'threshold' => 20,
+                      'used' => 'Supervised',
+                      'title' => E::ts('Nom ou courriel (supervisée)'),
+                  ],
+                  'where' => [
+                      ['id', '=', $dedupeRuleGroups[0]['id']],
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+                  echo '  - MAJ groupe de règles de dédoublonage';
+
+                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+
+                  if(isset($dedupeRules[0])){
+                      $results = civicrm_api4('DedupeRule', 'delete', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+                      echo ' et suppression des règles attachées';
+                  }
+
+          } else {
+              $results = civicrm_api4('DedupeRuleGroup', 'create', [
+                  'values' => [
+                      'contact_type' => 'Organization',
+                      'threshold' => 20,
+                      'used' => 'Supervised',
+                      'title' => E::ts('Nom ou courriel (supervisée)'),
+                      'name' => $rule_name,
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+
+              echo '  - Création groupe de règles de dédoublonage';
+          }
+          echo " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          
+          foreach($custom_dedupes as $custom_dedupe){
+              $results = civicrm_api4('DedupeRule', 'create', [
+              'values' => [
+                  'dedupe_rule_group_id.name' => $rule_name,
+                  'rule_table' => $custom_table[$custom_dedupe]['table'],
+                  'rule_field' => $custom_table[$custom_dedupe]['column'],
+                  'rule_weight' => '10',
+              ],
+              'checkPermissions' => FALSE,
+              ]);
+              echo "      --> rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+          }
+
+
+
+      ### Organization : création règle automatique de dédoublonage utilisant le nom ou courriel
+          $rule_name = 'OrganizationUnsupervised';
+          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
+              'select' => [
+                  'id',
+              ],
+              'where' => [
+                  ['name', '=', $rule_name],
+              ],
+              'checkPermissions' => FALSE,
+          ]);
+
+          if(isset($dedupeRuleGroups[0])){
+              $results = civicrm_api4('DedupeRuleGroup', 'update', [
+                  'values' => [
+                      'contact_type' => 'Organization',
+                      'threshold' => 20,
+                      'used' => 'Unsupervised',
+                      'title' => E::ts('Nom ou courriel (automatique)'),
+                  ],
+                  'where' => [
+                      ['id', '=', $dedupeRuleGroups[0]['id']],
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+                  echo '  - MAJ groupe de règles de dédoublonage';
+
+                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+
+                  if(isset($dedupeRules[0])){
+                      $results = civicrm_api4('DedupeRule', 'delete', [
+                      'where' => [
+                          ['dedupe_rule_group_id.name', '=', $rule_name],
+                      ],
+                      'checkPermissions' => FALSE,
+                      ]);
+                      echo ' et suppression des règles attachées';
+                  }
+
+          } else {
+              $results = civicrm_api4('DedupeRuleGroup', 'create', [
+                  'values' => [
+                      'contact_type' => 'Organization',
+                      'threshold' => 10,
+                      'used' => 'Supervised',
+                      'title' => E::ts('Nom ou courriel (automatique)'),
+                      'name' => $rule_name,
+                  ],
+                  'checkPermissions' => FALSE,
+                  ]);
+
+              echo '  - Création groupe de règles de dédoublonage';
+          }
+          echo " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          
+          foreach($custom_dedupes as $custom_dedupe){
+              $results = civicrm_api4('DedupeRule', 'create', [
+              'values' => [
+                  'dedupe_rule_group_id.name' => $rule_name,
+                  'rule_table' => $custom_table[$custom_dedupe]['table'],
+                  'rule_field' => $custom_table[$custom_dedupe]['column'],
+                  'rule_weight' => '10',
+              ],
+              'checkPermissions' => FALSE,
+              ]);
+              echo "      --> rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+          }
+
+
+
+  /// Fin de Reglage des règles de dédoublonage
 
     // modification du filtre du champ perso Preparé par pour ne garder que les contacts du groupe personnel des cdc
       echo "  - Modification du filtre du champ perso Preparé par".PHP_EOL;
@@ -3514,7 +3681,6 @@ use CRM_DonCorps_ExtensionUtil as E;
   create_entity($to_create);
 
 
-#####################
 
       echo PHP_EOL."   - Civirule : Supprime lot de pièces ".PHP_EOL;
      
@@ -4456,7 +4622,7 @@ use CRM_DonCorps_ExtensionUtil as E;
 
       
       // fin de Modifie les requetes qui ne sont pas correctement importées
-/* 
+ /* 
     // création des layouts
 
         /// DEFINITION DE LA VARIABLE $layout QUI COMPREND LES PARAMETRES DE TOUS LES LAYOUTS
