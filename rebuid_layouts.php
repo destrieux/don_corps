@@ -10,7 +10,7 @@ echo "Modification des profils personnalisés".PHP_EOL;
     # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
     # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
     # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
-    $toimport_file = '../managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
+    $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
     $json = file_get_contents($toimport_file);
     $convert = json_decode($json, true);
 
@@ -113,7 +113,7 @@ echo "Modification des profils personnalisés".PHP_EOL;
               $field_name='custom_'.$customFields[0]['id'];
             }
 
-          echo "UFFIELF name : ".$name." | label : ".$label." | field name : ".$field_name;
+          echo "UFFIELF id : ".$uFField['id']." name : ".$name." | label : ".$label." | field name : ".$field_name;
 
           if($field_name!=$uFField['field_name']){
             echo " - MAJ";         
@@ -124,11 +124,14 @@ echo "Modification des profils personnalisés".PHP_EOL;
               ],
 
               'where' => [
-                ['field_name', '=', $uFField['field_name']],
+                //['field_name', '=', $uFField['field_name']],
+                
+                ['id', '=', $uFField['id']],
               ],
 
               'checkPermissions' => FALSE,
             ]); 
+            print_r($results);
 
             }else {
               echo " - Inchangé".PHP_EOL;

@@ -8,12 +8,12 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
 
   function export_stuffCDC(){
       $entity = func_get_arg(0);      // nom de l'entité à créer (optionvalue, contact.....)
-      $subtype = func_get_arg(1);     
+      $subtype = func_get_arg(1);
       $name = func_get_arg(2);        // prefixe du fichier d'export
       $exp_file = $name.".txt";
 
     switch ($entity) {
-      
+
       case 'Organization':                                                // Contacts : individuals, organization
         $exports = civicrm_api4('Contact', 'get', [
             'select' => [
@@ -54,7 +54,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
           $exports=array();
           $error_log=array();                   // chaine contenant les messages d'erreur à loguer
           foreach ($adresses as $adresse){
-              
+
               $contacts = civicrm_api4('Contact', 'get', [
                   'select' => [
                       'id',
@@ -68,15 +68,15 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
                 ]);
 
 
-                if (isset($contacts[0])){// il existe un contact avec cette adresse 
-                  //echo ".";   
-                  unset ($adresse['id']);    
-                  unset ($adresse['country_id']);  
+                if (isset($contacts[0])){// il existe un contact avec cette adresse
+                  //echo ".";
+                  unset ($adresse['id']);
+                  unset ($adresse['country_id']);
                   unset ($adresse['master_id']) ;
 
-                  array_push($exports, $adresse);   
+                  array_push($exports, $adresse);
                   } else {
-                  
+
                   $error = "Contact id ".$adresse['contact_id']."lié à l'adresse ".$adresse['id']." n'existe pas  - Ignorée";
                   echo PHP_EOL.$error.PHP_EOL;
                   array_push($error_log,$error);
@@ -105,7 +105,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
           $exports=array();
           $error_log=array();                   // chaine contenant les messages d'erreur à loguer
           foreach ($phones as $phone){                       // pour chaque telephone de la base originale
-              
+
               //echo $phone[id].PHP_EOL;
               $contacts = civicrm_api4('Contact', 'get', [    // liste les contacts correpondant au contact_id du telephone, non anonymisé et non supprimés
                   'select' => [
@@ -120,14 +120,14 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
                 ]);
 
 
-                if (isset($contacts[0])){// il existe un contact avec ce téléphone 
-                  //echo $phone['contact_id']." ".$contacts[0]['display_name'].PHP_EOL;     
-                  //echo ".";   
-                  unset ($phone['id']);    
-                  unset ($phone['location_type_id']);  
+                if (isset($contacts[0])){// il existe un contact avec ce téléphone
+                  //echo $phone['contact_id']." ".$contacts[0]['display_name'].PHP_EOL;
+                  //echo ".";
+                  unset ($phone['id']);
+                  unset ($phone['location_type_id']);
                   unset ($phone['phone_type_id']) ;
 
-                  array_push($exports, $phone);   
+                  array_push($exports, $phone);
                   } else {
                   $error = "Contact id ".$phone['contact_id']."lié au téléphone ".$phone['id']." n'existe pas  - Ignorée";
                   echo PHP_EOL.$error.PHP_EOL;
@@ -155,7 +155,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
         $exports=array();
         $error_log=array();                   // chaine contenant les messages d'erreur à loguer
         foreach ($emails as $email){                       // pour chaque telephone de la base originale
-            
+
             //echo $phone[id].PHP_EOL;
             $contacts = civicrm_api4('Contact', 'get', [    // liste les contacts correpondant au contact_id du telephone, non anonymisé et non supprimés
                 'select' => [
@@ -170,13 +170,13 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
               ]);
 
 
-              if (isset($contacts[0])){// il existe un contact avec ce téléphone 
-                //echo $phone['contact_id']." ".$contacts[0]['display_name'].PHP_EOL;     
-                //echo ".";   
-                unset ($email['id']);    
-                unset ($email['location_type_id']);  
-                
-                array_push($exports, $email);   
+              if (isset($contacts[0])){// il existe un contact avec ce téléphone
+                //echo $phone['contact_id']." ".$contacts[0]['display_name'].PHP_EOL;
+                //echo ".";
+                unset ($email['id']);
+                unset ($email['location_type_id']);
+
+                array_push($exports, $email);
                 } else {
                 $error = "Contact id ".$email['contact_id']."lié au téléphone ".$email['id']." n'existe pas  - Ignorée";
                 echo PHP_EOL.$error.PHP_EOL;
@@ -185,14 +185,14 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
         }
           echo PHP_EOL.count($exports)." ".$entity." / ".$subtype." exportés into ".$exp_file.PHP_EOL;
         break;
-        
-    }   // fin du switch 
+
+    }   // fin du switch
 
     if (isset($error_log[0])){
       echo PHP_EOL."Erreurs :".PHP_EOL;
       print_r($error_log).PHP_EOL;
     }
-    
+
     file_put_contents($exp_file, json_encode($exports, JSON_PRETTY_PRINT));
   } // fin de la définition de la fonction export_stuffCDC
 
@@ -216,7 +216,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
 
 ### Fin de la définition des fonctions
 
-### Export des Contact Layouts : 
+### Export des Contact Layouts :
  #  civix exports crée tous les layouts avec le même nom qu'il faut modifier
  #  Il faut aussi modifier le nom dans le fichier mgd
  #  Contact layout utilise les profiles (UFgroups) spécifiques qui sont gérés avec les fichiers MGD
@@ -226,11 +226,11 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
  #    - le label (valeur affichée)
  #    - le nom du custom field associé (field_name:name).
  #
- #  ATTENTION : la MAJ des custom fields de cette table n'est pas automatique : 
+ #  ATTENTION : la MAJ des custom fields de cette table n'est pas automatique :
  #  La requete suivante retourne les field_name:name en API mais PAS en script
  #  Avant un export, des managed files, il faut lancer cette requete dans l'api,
  #  en récupérer le résultat en php et le coller en dessous, dans $uFFields
-  /* 
+  /*
 
   $uFFields = civicrm_api4('UFField', 'get', [
     'select' => [
@@ -252,169 +252,169 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
   # Création de la table de correspondance
     $uFFields=
     [
-      [
-        'id' => 168,
-        'field_name' => 'custom_114',
-        'label' => E::ts('Provenance'),
-        'field_name:name' => 'animal.Provenance',
-      ],
-      [
-        'id' => 167,
-        'field_name' => 'custom_115',
-        'label' => E::ts('Espèce'),
-        'field_name:name' => 'animal.Esp_ce',
-      ],
-      [
-        'id' => 160,
-        'field_name' => 'custom_29',
-        'label' => E::ts('Civilité'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-      ],
-      [
-        'id' => 172,
-        'field_name' => 'custom_29',
-        'label' => E::ts('Civilité'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-      ],
-      [
-        'id' => 182,
-        'field_name' => 'custom_29',
-        'label' => E::ts('Civilité'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-      ],
-      [
-        'id' => 190,
-        'field_name' => 'custom_29',
-        'label' => E::ts('Civilité'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-      ],
-      [
-        'id' => 198,
-        'field_name' => 'custom_29',
-        'label' => E::ts('Civilité'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-      ],
-      [
-        'id' => 154,
-        'field_name' => 'custom_31',
-        'label' => E::ts('Ville de naissance'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Ville_de_naissance',
-      ],
-      [
-        'id' => 155,
-        'field_name' => 'custom_32',
-        'label' => E::ts('Année naissance (auto)'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_naissance',
-      ],
-      [
-        'id' => 185,
-        'field_name' => 'custom_33',
-        'label' => E::ts('Adresse incorrecte'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Adresse_incorrecte',
-      ],
-      [
-        'id' => 152,
-        'field_name' => 'custom_34',
-        'label' => E::ts('Heure du décès'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-      ],
-      [
-        'id' => 158,
-        'field_name' => 'custom_34',
-        'label' => E::ts('Heure du décès'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-      ],
-      [
-        'id' => 171,
-        'field_name' => 'custom_34',
-        'label' => E::ts('Heure du décès'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-      ],
-      [
-        'id' => 159,
-        'field_name' => 'custom_35',
-        'label' => E::ts('Année de décès (auto)'),
-        'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_de_d_c_s_auto_',
-      ],
-      [
-        'id' => 163,
-        'field_name' => 'custom_36',
-        'label' => E::ts('Date envoi informations'),
-        'field_name:name' => 'Demandeur_information.Date_d_envoi_d_informations',
-      ],
-      [
-        'id' => 147,
-        'field_name' => 'custom_37',
-        'label' => E::ts('Avis du Comité éthique'),
-        'field_name:name' => 'Devenir_du_corps.CESP',
-      ],
-      [
-        'id' => 148,
-        'field_name' => 'custom_38',
-        'label' => E::ts('ref avis Comité éthique'),
-        'field_name:name' => 'Devenir_du_corps.ref_avis_CESP',
-      ],
-      [
-        'id' => 179,
-        'field_name' => 'custom_40',
-        'label' => E::ts("Type d'opération funéraire réalisée"),
-        'field_name:name' => 'Devenir_du_corps.devenir_effectif_du_corps',
-      ],
-      [
-        'id' => 178,
-        'field_name' => 'custom_41',
-        'label' => E::ts('Date de sortie définitive'),
-        'field_name:name' => 'Devenir_du_corps.Date_de_sortie_d_finitive',
-      ],
-      [
-        'id' => 180,
-        'field_name' => 'custom_42',
-        'label' => E::ts('Date opérations funéraires'),
-        'field_name:name' => 'Devenir_du_corps.Date_op_rations_fun_raires',
-      ],
-      [
-        'id' => 181,
-        'field_name' => 'custom_43',
-        'label' => E::ts('Date approximative de réalisation des opérations funéraires'),
-        'field_name:name' => 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
-      ],
-      [
-        'id' => 206,
-        'field_name' => 'custom_44',
-        'label' => E::ts('Date de restitution'),
-        'field_name:name' => 'Devenir_du_corps.Date_de_restitution',
-      ],
-      [
-        'id' => 207,
-        'field_name' => 'custom_45',
-        'label' => E::ts('Pompes funèbres mandatées par personne référente'),
-        'field_name:name' => 'Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches',
-      ],
-      [
-        'id' => 205,
-        'field_name' => 'custom_46',
-        'label' => E::ts('Souhait funeraire personne reférente'),
-        'field_name:name' => 'Devenir_du_corps.Souhait_funeraire_personne_ref_rente',
-      ],
-      [
-        'id' => 195,
-        'field_name' => 'custom_54',
-        'label' => E::ts('Centre de don'),
-        'field_name:name' => 'Promesse_de_don.Centre_de_don',
-      ],
-      [
-        'id' => 196,
-        'field_name' => 'custom_55',
-        'label' => E::ts('N° de don'),
-        'field_name:name' => 'Promesse_de_don.N_de_don',
-      ],
-      [
-        'id' => 197,
-        'field_name' => 'custom_56',
-        'label' => E::ts('Date du don'),
-        'field_name:name' => 'Promesse_de_don.Date_du_don',
-      ],
-    ];
+  [
+    'id' => 168,
+    'field_name' => 'custom_114',
+    'label' => E::ts('Provenance'),
+    'field_name:name' => 'animal.Provenance',
+  ],
+  [
+    'id' => 167,
+    'field_name' => 'custom_115',
+    'label' => E::ts('Espèce'),
+    'field_name:name' => 'animal.Esp_ce',
+  ],
+  [
+    'id' => 160,
+    'field_name' => 'custom_29',
+    'label' => E::ts('Civilité'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+  ],
+  [
+    'id' => 172,
+    'field_name' => 'custom_29',
+    'label' => E::ts('Civilité'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+  ],
+  [
+    'id' => 182,
+    'field_name' => 'custom_29',
+    'label' => E::ts('Civilité'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+  ],
+  [
+    'id' => 190,
+    'field_name' => 'custom_29',
+    'label' => E::ts('Civilité'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+  ],
+  [
+    'id' => 208,
+    'field_name' => 'custom_29',
+    'label' => E::ts('Civilité'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+  ],
+  [
+    'id' => 154,
+    'field_name' => 'custom_31',
+    'label' => E::ts('Ville de naissance'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Ville_de_naissance',
+  ],
+  [
+    'id' => 155,
+    'field_name' => 'custom_32',
+    'label' => E::ts('Année naissance (auto)'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_naissance',
+  ],
+  [
+    'id' => 185,
+    'field_name' => 'custom_33',
+    'label' => E::ts('Adresse incorrecte'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Adresse_incorrecte',
+  ],
+  [
+    'id' => 152,
+    'field_name' => 'custom_34',
+    'label' => E::ts('Heure du décès'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+  ],
+  [
+    'id' => 158,
+    'field_name' => 'custom_34',
+    'label' => E::ts('Heure du décès'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+  ],
+  [
+    'id' => 171,
+    'field_name' => 'custom_34',
+    'label' => E::ts('Heure du décès'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+  ],
+  [
+    'id' => 159,
+    'field_name' => 'custom_35',
+    'label' => E::ts('Année de décès (auto)'),
+    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_de_d_c_s_auto_',
+  ],
+  [
+    'id' => 163,
+    'field_name' => 'custom_36',
+    'label' => E::ts('Date envoi informations'),
+    'field_name:name' => 'Demandeur_information.Date_d_envoi_d_informations',
+  ],
+  [
+    'id' => 147,
+    'field_name' => 'custom_37',
+    'label' => E::ts('Avis du Comité éthique'),
+    'field_name:name' => 'Devenir_du_corps.CESP',
+  ],
+  [
+    'id' => 148,
+    'field_name' => 'custom_38',
+    'label' => E::ts('ref avis Comité éthique'),
+    'field_name:name' => 'Devenir_du_corps.ref_avis_CESP',
+  ],
+  [
+    'id' => 179,
+    'field_name' => 'custom_40',
+    'label' => E::ts("Type d'opération funéraire réalisée"),
+    'field_name:name' => 'Devenir_du_corps.devenir_effectif_du_corps',
+  ],
+  [
+    'id' => 178,
+    'field_name' => 'custom_41',
+    'label' => E::ts('Date de sortie définitive'),
+    'field_name:name' => 'Devenir_du_corps.Date_de_sortie_d_finitive',
+  ],
+  [
+    'id' => 180,
+    'field_name' => 'custom_42',
+    'label' => E::ts('Date opérations funéraires'),
+    'field_name:name' => 'Devenir_du_corps.Date_op_rations_fun_raires',
+  ],
+  [
+    'id' => 181,
+    'field_name' => 'custom_43',
+    'label' => E::ts('Date approximative de réalisation des opérations funéraires'),
+    'field_name:name' => 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
+  ],
+  [
+    'id' => 206,
+    'field_name' => 'custom_44',
+    'label' => E::ts('Date de restitution'),
+    'field_name:name' => 'Devenir_du_corps.Date_de_restitution',
+  ],
+  [
+    'id' => 207,
+    'field_name' => 'custom_45',
+    'label' => E::ts('Pompes funèbres mandatées par personne référente'),
+    'field_name:name' => 'Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches',
+  ],
+  [
+    'id' => 205,
+    'field_name' => 'custom_46',
+    'label' => E::ts('Souhait funeraire personne reférente'),
+    'field_name:name' => 'Devenir_du_corps.Souhait_funeraire_personne_ref_rente',
+  ],
+  [
+    'id' => 213,
+    'field_name' => 'custom_54',
+    'label' => E::ts('Centre de don'),
+    'field_name:name' => 'Promesse_de_don.Centre_de_don',
+  ],
+  [
+    'id' => 215,
+    'field_name' => 'custom_55',
+    'label' => E::ts('N° de don'),
+    'field_name:name' => 'Promesse_de_don.N_de_don',
+  ],
+  [
+    'id' => 214,
+    'field_name' => 'custom_56',
+    'label' => E::ts('Date du don'),
+    'field_name:name' => 'Promesse_de_don.Date_du_don',
+  ],
+];
 
     # On vérifie que pour chaque UF field il y a bien un label, field_name:name et field_name
 
@@ -460,7 +460,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
         }
       }
   # Fin export des UF Groups avec civix export
-  
+
   # Export des ContactLayouts avec civix export
     $contactLayouts = civicrm_api4('ContactLayout', 'get', [
       'select' => [
@@ -698,13 +698,13 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
 
 ### Exporte les CDC dans le repertoire managed/
 
-  
+
 
 
   // export organisations
         $exp_file = $exp_dir."05_organisations";
         export_stuffCDC('Organization','CDC', $exp_file);
-  
+
   // export adresses
         $exp_file = $exp_dir."15_adresses";
         export_stuffCDC('Address','CDC', $exp_file);
@@ -716,7 +716,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
   // export Email
         $exp_file = $exp_dir."25_Email";
         export_stuffCDC('Email','CDC', $exp_file);
-      
+
 ### Fin de l'export des CDC dans le repertoire managed/
 
 

@@ -12,6 +12,7 @@ return [
       'values' => [
         'label' => E::ts('Donneur'),
         'contact_type' => 'Individual',
+        'contact_sub_type' => ['Donateur'],
         'weight' => 2,
         'blocks' => [
           [

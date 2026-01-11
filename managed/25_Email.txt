@@ -1,7 +1,7 @@
 [
     {
         "contact_id": 1,
-        "email": "dons.corps@univ-tours.fr",
+        "email": "dons.corps@med.univ-tours.fr",
         "is_primary": true,
         "is_billing": false,
         "on_hold": 0,
