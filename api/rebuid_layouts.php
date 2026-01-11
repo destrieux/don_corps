@@ -10,7 +10,7 @@ echo "Modification des profils personnalisés".PHP_EOL;
     # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
     # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
     # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
-    $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
+    $toimport_file = '../managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
     $json = file_get_contents($toimport_file);
     $convert = json_decode($json, true);
 
