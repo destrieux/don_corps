@@ -11,7 +11,6 @@ civirules inventaires
 que les formules de politess par courrier et par mail suivantes sont actives
 madame; monsieur; madamoiselle; MadameMonsieur, nom prénom
 
-creer une routine 
 */
 
 require_once 'don_corps.civix.php';
