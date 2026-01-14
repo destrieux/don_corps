@@ -2,15 +2,16 @@
 
 eval(`cv php:boot`);
 
-
-echo "Modification des profils personnalisés".PHP_EOL;
+  echo "Modification des profils personnalisés".PHP_EOL;
     #####
     # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
     # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
     # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
     # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
     # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
-    $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
+    $toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed"); // remonte le chemin des logs par défaut
+    
+    # $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
     $json = file_get_contents($toimport_file);
     $convert = json_decode($json, true);
 
@@ -307,9 +308,9 @@ echo "Modification des profils personnalisés".PHP_EOL;
                   echo $profile_to_update." : Profil non trouvé ////////.".PHP_EOL;
               }
         }
-    // fin de Modifie l'utilisation des profils créées par le mgd files
+  // fin de Modifie l'utilisation des profils créées par le mgd files
 
-    /// Modification des menus de navigation liés aux profil de création de contacts
+  /// Modification des menus de navigation liés aux profil de création de contacts
       echo "  -modification des rmenus de navigation liés aux proils".PHP_EOL;
       $url_menus_to_change =[                             // Profil name, parent_id:name, name du menu navigation
         ['Inscription_donateur', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
@@ -352,4 +353,4 @@ echo "Modification des profils personnalisés".PHP_EOL;
             echo "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
         }
       }
-    /// Fin de Modification des menus de navigation liés aux profil de création de contacts
+  /// Fin de Modification des menus de navigation liés aux profil de création de contacts

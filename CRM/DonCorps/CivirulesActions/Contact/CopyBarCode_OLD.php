@@ -15,10 +15,11 @@ class CRM_DonCorps_CivirulesActions_Contact_CopyBarCode extends CRM_Civirules_Ac
    *
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $contactId = $triggerData->getContactId();  // id du contact passé par le trigger 
+    $contactId = $triggerData->getContactId();
 
-   
-   // Liste les contacts ayant une utilisation avec une piece de type corps
+   // liste les numeros de pieces qd type de piece = corps entier/tronc
+
+
     $contacts = civicrm_api4('Contact', 'get', [
       'select' => [
         'contact_type:name',
@@ -29,36 +30,41 @@ class CRM_DonCorps_CivirulesActions_Contact_CopyBarCode extends CRM_Civirules_Ac
         ['Custom_Utilisation_du_corps AS custom_utilisation_du_corps', 'LEFT', ['custom_utilisation_du_corps.entity_id', '=', 'id']],
       ],
       'where' => [
+        //['custom_utilisation_du_corps.Type_de_poi_ce_3', '=', 1],
         ['custom_utilisation_du_corps.Type_de_poi_ce_3:name', '=', 'Corps_entier_tronc'],
         ['id', '=', $contactId],
       ],
       'checkPermissions' => FALSE,
     ]);
 
-    //print_r($contacts);
-
-
-    if (isset($contacts[0])){     // si ce contact a une pièce de type corps, $piece_ple prend la valeur du code barre de cette piece
-      //echo "il y a une piece de type corps".PHP_EOL;
-      $piece_ple = $contacts[0]['custom_utilisation_du_corps.N_de_pi_ce_ou_de_corps'];
-
-    } else {                      // Si ce contact n'a pas de piece de type corps on met $piece_ple à NULL
-      //echo "Pas de piece de type corps".PHP_EOL;             
-      $piece_ple = NULL;
+    if (isset($contacts[0]['champs_caches.piece_prinicpale'])){
+      $piece_ple = $contacts[0]['champs_caches.piece_prinicpale'];
+      $num_corps = $contacts[0]['custom_utilisation_du_corps.N_de_pi_ce_ou_de_corps'];
+    }else{
+      $num_corps = NULL;
+      $piece_ple = 1;
     }
 
     //echo "piece ppale : ".$piece_ple."\n" ;
+    //echo "code barres : ".$num_corps."\n";
 
-    //on met à jour le champ cache piece_prinicpale à jour pour ce contact
+    //CRM_Core_Session::setStatus('ppale : '.$piece_ple.' CB : '.$num_corps, 'Succès', 'success');
+
+    if ($piece_ple != $num_corps)
+      {
+
         $results = civicrm_api4('Contact', 'update', [
           'values' => [
-            'champs_caches.piece_prinicpale' => $piece_ple,
+            'champs_caches.piece_prinicpale' => $num_corps,
           ],
           'where' => [
             ['id', '=', $contactId],
           ],
           'checkPermissions' => FALSE,
         ]);
+      }
+
+
    }
   /**
    * Method to return the url for additional form processing for action
