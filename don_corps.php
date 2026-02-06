@@ -787,7 +787,7 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
     $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
 
     if(isset($check_entity[0])){            // si l'entité existe on l'update
-      $msg= "entité ".$entity." ".$descr." existe - update (".$check_entity[0]['id'].")".PHP_EOL;
+      $msg= "         entité ".$entity." ".$descr." existe - update (".$check_entity[0]['id'].")".PHP_EOL;
       
       $results = civicrm_api4($entity, 'update', [
         'values' => $values,
@@ -799,13 +799,13 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
 
     }else{                                  // si l'entité n'existe pas, on la crée
       if($values['is_active']==TRUE){       // on verifie qu'elle est bien active sinon pas de création
-        $msg= "entité ".$entity." ".$descr." n'existe pas - creation".PHP_EOL;
+        $msg= "         entité ".$entity." ".$descr." n'existe pas - creation".PHP_EOL;
         $results = civicrm_api4($entity, 'create', [
           'values' => $values,
           'checkPermissions' => FALSE,
         ]);
       } else {
-        $msg=  "entité ".$entity." ".$descr." n'existe pas mais inactive - ignorée".PHP_EOL;
+        $msg=  "         entité ".$entity." ".$descr." n'existe pas mais inactive - ignorée".PHP_EOL;
         return;
       }
     }
@@ -1454,11 +1454,6 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
       foreach ($profiles_to_update as $profile_to_update) {
           $position = array_search($profile_to_update, $profile_names);
           if ($position !== false) {                                          // Si le profil est déja créé 
-              $msg="         ".$profile_to_update." : ";
-              fwrite($fp, $msg);
-              if (VERBOSE==1){
-                echo $msg;
-              }
               $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
                   'entity' => 'UFGroup',
                   'values' => [
@@ -1468,12 +1463,6 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
                   ],
                 ];
                 create_entity($to_create);  // create ou update UFGROUP
-              
-              $msg="         ".$profile_to_update." : ";
-              fwrite($fp, $msg);
-              if (VERBOSE==1){
-                echo $msg;
-              }
 
               $to_create =  [                                                 // ajoute à chacun de ces profils l'utilisaiton "Profile" = "Formulaire ou Liste à afficher"
                 'entity' => 'UFJoin',
@@ -1495,7 +1484,8 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
     fclose($fp);
   }    // Fin de la définition de la fonction : modif_profils_utilisation
 
-  function modif_profils_navigation(){
+  function modif_profils_navigation(){ // LOG OK
+    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
     /// Modifie les menus de navigation liés aux profil de création de contacts
     $url_menus_to_change = func_get_arg(0); // liste des menus à modifier
                                             // Profil name, parent_id:name, name du menu navigation
@@ -1513,7 +1503,8 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
 
       if (isset($uFGroups[0]['id'])){                                       // si le profil existe
 
-          echo $url_menu_to_change[1]." / ".$url_menu_to_change[2]." / ".$url_menu_to_change[0]." : ";
+          $msg= "         ".$url_menu_to_change[1]." / ".$url_menu_to_change[2]." / ".$url_menu_to_change[0]." : ".PHP_EOL;
+
           $to_create =  [                                                 // modifie l'URL pour le menu
               'entity' => 'Navigation',
               'values' => [
@@ -1527,10 +1518,14 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
 
       }else {
 
-          echo "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
+          $msg= "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
+      }
+      fwrite($fp, $msg);
+      if (VERBOSE==1){
+        echo $msg;
       }
     }
-
+    fclose($fp);
   }    // Fin de la définition de la fonction : modif_profils_navigation
 
   function ajoute_CDC(){ // LOG OK
@@ -1791,7 +1786,7 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
       modif_profils_navigation($url_menus_to_change);
 
       
-    $msg="  - Ajout des centres de don du corps".PHP_EOL;
+    $msg="  - Ajout des centres de don du corps".PHP_EOL;// LOG OK
       echo $msg;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
@@ -2811,17 +2806,17 @@ if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
 
     echo "  -Désactivation des Statuts de participants".PHP_EOL;
 
-    $results = civicrm_api4('ParticipantStatusType', 'update', [
-      'values' => [
-        'is_active' => FALSE,
-      ],
-      'where' => [
-        ['base_module', 'NOT CONTAINS ONE OF', 'don_corps'],
-      ],
-      'checkPermissions' => FALSE,
-    ]);
+      $results = civicrm_api4('ParticipantStatusType', 'update', [
+        'values' => [
+          'is_active' => FALSE,
+        ],
+        'where' => [
+          ['base_module', 'NOT CONTAINS ONE OF', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
 
-    echo "  -Aactivation des Statuts de participants".PHP_EOL;
+      echo "  -Aactivation des Statuts de participants".PHP_EOL;
 
        $to_create =  [   // On waitlist / invité
         'entity' => 'ParticipantStatusType',
