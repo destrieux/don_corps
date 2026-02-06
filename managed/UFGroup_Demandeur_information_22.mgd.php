@@ -18,7 +18,7 @@ return [
         'title' => E::ts('Demandeur information'),
         'frontend_title' => E::ts('Demandeur d\'information'),
         'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
-        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm%2Ftous_contacts',
+        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM',
         'created_date' => '2023-04-29 05:51:58',
       ],
       'match' => ['name'],

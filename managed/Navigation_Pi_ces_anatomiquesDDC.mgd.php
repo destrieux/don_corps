@@ -47,14 +47,15 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Créer Local de conservation'),
+        'label' => E::ts('Créer Lieu de conservation'),
         'name' => 'New Emprunteur',
         'url' => 'civicrm/profile/create/?gid=23&reset=1',
         'icon' => 'crm-i fa-rectangle-list',
         'permission' => [
           'Ajouter des contacts',
+          'access CiviCRM',
         ],
-        'permission_operator' => 'AND',
+        'permission_operator' => 'OR',
         'parent_id.name' => 'Pièces anatomiquesDDC',
       ],
       'match' => ['name', 'domain_id'],

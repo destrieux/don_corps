@@ -17,6 +17,26 @@ require_once 'don_corps.civix.php';
 
 use CRM_DonCorps_ExtensionUtil as E;
 
+define("VERBOSE","0"); // mettre à 1 pour afficher les messages lors de l'installation en plus des logs
+define("LOGFILE", CRM_Core_Config::singleton()->configAndLogDir."/civicrm_ddc_installation.log"); // définition du ficher de log dans wp-content/uploads/civicrm/ConfigAndLogs
+
+
+if (is_writable($logfile)) {  // le ficher log existe ; on l'ouvre
+
+      // Dans notre exemple, nous ouvrons le fichier $logfile en mode d'ajout
+      // Le pointeur de fichier est placé à la fin du fichier
+      // c'est là que $logtext sera placé
+      if (!$fp = fopen(LOGFIL, 'a')) {
+          echo "Impossible d'ouvrir le fichier (".LOGFILE.")"."\n";
+          exit;
+      }
+
+  } else {  // le fichier log n'existe pas  ; le créer
+      $fp = fopen(LOGFILE, 'c+b');
+      echo "Création nouveau log : ".LOGFILE."\n";
+  }
+
+
 # DEFINITION DES FONCTIONS
   
   function don_corps_civicrm_pageRun($page) {
@@ -30,7 +50,7 @@ use CRM_DonCorps_ExtensionUtil as E;
     }
   }   // fin de définition de fonction don_corps_civicrm_pageRun
 
-  function _don_corps_is_civirules_installed() {   //  checks whether civirules is installed.
+  function _don_corps_is_civirules_installed() {   //  LOG OK checks whether civirules is installed.
       if (civicrm_api3('Extension', 'get', ['key' => 'civirules', 'status' => 'installed'])['count']) {
         return true;
       } elseif (civicrm_api3('Extension', 'get', ['key' => 'org.civicoop.civirules', 'status' => 'installed'])['count']) {
@@ -39,11 +59,13 @@ use CRM_DonCorps_ExtensionUtil as E;
       return false;
   }   // fin de définition de fonction _don_corps_is_civirules_installed(
 
-  function import_stuffCDC(){     // utilisée pour importer les CDC
+  function import_stuffCDC(){     // LOG OK utilisée pour importer les CDC
         $count=1;
         $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
         $values = func_get_arg(1);     // parametres de cette entité
         $check=array();
+        
+        $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
 
         foreach ($values as $value) {
             unset ($value['external_identifier']);   
@@ -64,7 +86,14 @@ use CRM_DonCorps_ExtensionUtil as E;
             $value['gender_id']=NULL;
 
             if (isset($value['employer_id'])){                     // si le contact a un champ employer_id non null
-            echo "employer_id : ".$value['employer_id'].PHP_EOL;   // on en modifie la valeur par l'id de l'institution crée au préalable
+            
+            $msg="employer_id : ".$value['employer_id'].PHP_EOL;   // on en modifie la valeur par l'id de l'institution crée au préalable
+            fwrite($fp, $msg);
+
+            if (VERBOSE==1){
+              echo $msg;
+            }
+
             $employeur = civicrm_api4('Contact', 'get', [
                     'select' => [
                     'id',
@@ -78,10 +107,18 @@ use CRM_DonCorps_ExtensionUtil as E;
 
                 if (isset($employeur)){
                     $value['employer_id']=$employeur[0]['id'];
-                    echo "employer_id new: ".$value['employer_id'].PHP_EOL;
+                    $msg="employer_id new: ".$value['employer_id'].PHP_EOL;
+                    fwrite($fp, $msg);
+                    if (VERBOSE==1){
+                      echo $msg;
+                    }
                 } else {
-                    echo "employer_id  externeal identifier n'existe pas : ".$value['employer_id '].PHP_EOL;
-                }
+                    $msg = "employer_id  extereal identifier n'existe pas : ".$value['employer_id '].PHP_EOL;
+                    fwrite($fp, $msg);
+                    if (VERBOSE==1){
+                      echo $msg;
+                    }
+                 }
             }
 
             $contacts = civicrm_api4('Contact', 'get', [  // on recheche contacts avec le meme siret
@@ -99,7 +136,11 @@ use CRM_DonCorps_ExtensionUtil as E;
                 'values' => $value,
                 'checkPermissions' => FALSE,
                 ]);
-                echo "         ".$count." CREATION : ".$value['sort_name'].PHP_EOL;
+                $msg = "         ".$count." CREATION : ".$value['sort_name'].PHP_EOL;
+                fwrite($fp, $msg);
+                if (VERBOSE==1){
+                  echo $msg;
+                }
                 ++$count;
 
             } else {                                    // si le contact exite on l'update
@@ -113,29 +154,45 @@ use CRM_DonCorps_ExtensionUtil as E;
                 ],
                 'checkPermissions' => FALSE,
                 ]);
-                echo "         ".$count." MAJ : ".$value['sort_name']." | id : ".$id_to_update.PHP_EOL;
-
+                $msg= "         ".$count." MAJ : ".$value['sort_name']." | id : ".$id_to_update.PHP_EOL;
+                fwrite($fp, $msg);
+                if (VERBOSE==1){
+                  echo $msg;
+                }
                 ++$count;
             }
 
             array_push($check, $results[0]['id']);
         }
         
-        echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+        $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
 
         if (count($check)==count($values)) {    // le bon nombre de lignes a été importées
-            echo " ---> OK".PHP_EOL;
+            $msg= " ---> OK".PHP_EOL.PHP_EOL;
+            fwrite($fp, $msg);
+            if (VERBOSE==1){
+              echo $msg;
+            }
         }else {
-        echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+        $msg ="---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+        fwrite($fp, $msg);
+        echo $msg;
         }
         return ($check);
+
+      fclose($fp); // ferme le fichier de log
   }   // fin de définition de fonction import_stuffCDC
 
-  function import_addressCDC(){   // utilisée pour importer les adresses des CDC
+  function import_addressCDC(){   // LOG OK utilisée pour importer les adresses des CDC
       $count=1;
       $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
       $values = func_get_arg(1);     // parametres de cette entité
       $check=array();
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
 
       foreach ($values as $value) {
           // on verifie que le CDC rattaché à l'adresse a bien été crée,
@@ -179,7 +236,11 @@ use CRM_DonCorps_ExtensionUtil as E;
               'values' => $value,
                   'checkPermissions' => FALSE,
               ]);
-              echo "         ".$count." CREATION adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg= "         ".$count." CREATION adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
               ++$count;
 
               }  else {                                // cette adresse existe pour ce contact ; on la cmodifie
@@ -191,29 +252,45 @@ use CRM_DonCorps_ExtensionUtil as E;
                   ],
                   'checkPermissions' => FALSE,
               ]);
-              echo "         ".$count." MAJ adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
-
+              $msg= "         ".$count." MAJ adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
               ++$count;
           }
           }
           array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
                                               // à utiliser avec check_address.php
       }
-      echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+      $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+      fwrite($fp, $msg);
+      if (VERBOSE==1){
+        echo $msg;
+      }
 
           if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-              echo " ---> OK".PHP_EOL;
+              $msg= " ---> OK".PHP_EOL.PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
           }else {
-          echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+          fwrite($fp, $msg);
+          echo $msg;
           }
           return ($check);
+
+      fclose($fp); // ferme le fichier de log
   }   // fin de définition de fonction import_addressCDC
 
-  function import_phoneCDC(){     // utilisée pour importer les telephones des CDC
+  function import_phoneCDC(){     // LOG OK utilisée pour importer les telephones des CDC
       $count=1;
       $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
       $values = func_get_arg(1);     // parametres de cette entité
       $check=array();
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
 
       foreach ($values as $value) {
           // on verifie que le CDC rattaché au téléphone existe bien 
@@ -252,7 +329,11 @@ use CRM_DonCorps_ExtensionUtil as E;
               'values' => $value,
                   'checkPermissions' => FALSE,
               ]);
-              echo "         ".$count." CREATION téléphone: ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg = "         ".$count." CREATION téléphone: ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
               ++$count;
 
               }  else {                                // ce tel existe pour ce CDC ; on la cmodifie
@@ -264,8 +345,12 @@ use CRM_DonCorps_ExtensionUtil as E;
                   ],
                   'checkPermissions' => FALSE,
               ]);
-              echo "         ".$count." MAJ téléphone : ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
-
+              $msg= "         ".$count." MAJ téléphone : ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
+              ++$count;
               ++$count;
           }
           }
@@ -273,21 +358,35 @@ use CRM_DonCorps_ExtensionUtil as E;
                                               // à utiliser avec check_address.php
       }
 
-      echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+      $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
 
           if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-              echo " ---> OK".PHP_EOL;
+              $msg= " ---> OK".PHP_EOL.PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
           }else {
-          echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+          fwrite($fp, $msg);
+          echo $msg;
           }
           return ($check);
+
+      fclose($fp); // ferme le fichier de log
   }   // fin de définition de fonction import_phoneCDC
 
-  function import_emailCDC(){     // utilisée pour importer les mails des CDC
+  function import_emailCDC(){     // LOG OK utilisée pour importer les mails des CDC
       $count=1;
       $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
       $values = func_get_arg(1);     // parametres de cette entité
       $check=array();
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+
       foreach ($values as $value) {
           // on verifie que le contact rattaché au mail existe bien 
           // CAD avec le meme SIRET (legal-identifier)
@@ -329,7 +428,12 @@ use CRM_DonCorps_ExtensionUtil as E;
               'values' => $value,
                   'checkPermissions' => FALSE,
               ]);
-              echo "         ".$count." CREATION email: ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg= "         ".$count." CREATION email: ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
+
               ++$count;
 
               }  else {                                // ce tel existe pour ce contact ; on la cmodifie
@@ -341,8 +445,11 @@ use CRM_DonCorps_ExtensionUtil as E;
                   ],
                   'checkPermissions' => FALSE,
               ]);
-              echo "         ".$count." MAJ email : ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
-
+              $msg= "         ".$count." MAJ email : ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
               ++$count;
 
           }
@@ -353,14 +460,30 @@ use CRM_DonCorps_ExtensionUtil as E;
       }
 
 
-      echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+      $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+      fwrite($fp, $msg);
+      if (VERBOSE==1){
+        echo $msg;
+      }
 
-          if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-              echo " ---> OK".PHP_EOL;
-          }else {
-          echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
-          }
-          return ($check);
+      if (count($check)==count($values)) {// le bon nombre de lignes a été importées
+        $msg=" ---> OK".PHP_EOL.PHP_EOL;
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
+      }else {
+      $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      }
+    
+
+
+
+
+
+      fclose($fp); // ferme le fichier de log
   }   // fin de définition de fonction import_emailCDC
 
     ############
@@ -660,9 +783,11 @@ use CRM_DonCorps_ExtensionUtil as E;
         break;
     }
 
+
+    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+
     if(isset($check_entity[0])){            // si l'entité existe on l'update
-      echo "entité ".$entity." ".$descr." existe - update (".$check_entity[0]['id'].")".PHP_EOL;
-      #print_r($check_entity[0]);
+      $msg= "entité ".$entity." ".$descr." existe - update (".$check_entity[0]['id'].")".PHP_EOL;
       
       $results = civicrm_api4($entity, 'update', [
         'values' => $values,
@@ -674,16 +799,22 @@ use CRM_DonCorps_ExtensionUtil as E;
 
     }else{                                  // si l'entité n'existe pas, on la crée
       if($values['is_active']==TRUE){       // on verifie qu'elle est bien active sinon pas de création
-        echo "entité ".$entity." ".$descr." n'existe pas - creation".PHP_EOL;
+        $msg= "entité ".$entity." ".$descr." n'existe pas - creation".PHP_EOL;
         $results = civicrm_api4($entity, 'create', [
           'values' => $values,
           'checkPermissions' => FALSE,
         ]);
       } else {
-        echo "entité ".$entity." ".$descr." n'existe pas mais inactive - ignorée".PHP_EOL;
+        $msg=  "entité ".$entity." ".$descr." n'existe pas mais inactive - ignorée".PHP_EOL;
         return;
       }
     }
+
+      fwrite($fp, $msg);
+      if (VERBOSE==1){
+        echo $msg;
+      }
+
     return $results[0]['id']; // retourne l'id de l'entité créée
   }   // Fin de la définition de la fonction : create entity()
 
@@ -1017,6 +1148,497 @@ use CRM_DonCorps_ExtensionUtil as E;
       }
   }   // Fin de la définition de la fonction : update_search() 
 
+  function modif_profils_perso(){ // LOG OK
+    #####
+    # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
+    # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
+    # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
+    # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
+    # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
+    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    $toimport_file = func_get_arg(0); // nom du fichier à importer
+
+    $json = file_get_contents($toimport_file);
+    $convert = json_decode($json, true);
+
+    $msg="         Table de conversion : ".$toimport_file.PHP_EOL;
+
+    ### Modification des UF Fields pour corrier les custom_id
+
+    $new = [];
+    $new[0]['id']=NULL;
+    $new[0]['field_name']=NULL;
+    $new[0]['field_name:name']=NULL;
+    $new[0]['label']=NULL;
+
+    foreach ($convert as $k => $v) {
+        $new[$k + 1] = $v;
+    }
+
+    $convert=$new;
+
+    $labels_table = array_column($convert, 'label');
+    $names_table = array_column($convert, 'field_name:name');
+    $customs_table = array_column($convert, 'field_name');
+
+    $uFFields = civicrm_api4('UFField', 'get', [
+        'select' => [
+          'field_name',
+          'field_name:name',
+          'label',
+        ],
+        'where' => [
+          ['field_name', 'CONTAINS', 'custom_'],
+        ],
+        'orderBy' => [
+          'uf_group_id:name' => 'ASC',
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+    if (isset($uFFields[0])){      
+      foreach ($uFFields as $uFField){
+
+        if (isset($uFField['label'])) {           // si un label existe, on récupère la valeur de field_name_name 
+          $label=$uFField['label'];
+          $key = array_search($label, $labels_table); 
+          if ($key){
+                $name=$convert[$key]['field_name:name'];
+          } else {
+            $msg="ERREUR : pas de label ".$label.' dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+            fwrite($fp, $msg);
+            echo $msg;
+            fclose($fp);
+            exit;
+          }
+        }  else { // si ce label n'existe pas 
+            //echo 'pas de label'.PHP_EOL;
+            if (isset($uFField['field_name:name'])){    // si un field_name:name de type customgroup.customfield existe
+              $name=$uFField['field_name:name'];          // on la conserve
+              $key = array_search($name, $names_table);   
+              if ($key){
+                    $label=$convert[$key]['field_name:label'];  // on récupère label depuis la table de correspondance en utilisant le field_name:name comme critere de concordance
+              } else {
+                $msg= "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+                fwrite($fp, $msg);
+                echo $msg;
+                fclose($fp);
+                exit;
+              }
+            } else {                                          // pas de field _name:name de type customgroup.customfield 
+              $key = array_search($name, $customs_table);
+
+              if ($key){
+                $label=$convert[$key]['field_name:label'];      // on récupère label et name depuis table correspondance
+                $name=$convert[$key]['field_name:name'];        // en utilisant le custom_name comme critere de concordance
+              } else {
+                $msg ="ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+                fwrite($fp, $msg);
+                echo $msg;
+                fclose($fp);
+                exit;
+              }
+            }
+        }
+
+        $position = strpos($name, '.');             // retrouve la position du point dans le nom
+        if ($position !== false) {
+          $group = substr($name, 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+          $custom = substr($name, $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+          //echo 'group : '.$group.'        custom field :'.$custom.PHP_EOL;
+            $customFields = civicrm_api4('CustomField', 'get', [
+              'select' => [
+                'id',
+              ],
+              'where' => [
+                ['custom_group_id:name', '=', $group],
+                ['name', '=', $custom],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+
+            if(isset($customFields[0])){
+              $field_name='custom_'.$customFields[0]['id'];
+            }
+
+          $msg= "         UFFIELF id : ".$uFField['id']." name : ".$name." | label : ".$label." | field name : ".$field_name;
+          fwrite($fp, $msg);
+          if (VERBOSE==1){
+            echo $msg;
+          }
+
+          if($field_name!=$uFField['field_name']){
+            $msg= " - MAJ".PHP_EOL;  
+            fwrite($fp, $msg);
+            if (VERBOSE==1){
+              echo $msg;
+            }
+            
+
+            $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
+              'values' => [
+                'label' => $label,
+                'field_name' => $field_name,
+              ],
+
+              'where' => [
+                //['field_name', '=', $uFField['field_name']],
+                
+                ['id', '=', $uFField['id']],
+              ],
+
+              'checkPermissions' => FALSE,
+            ]); 
+            //print_r($results);
+
+            }else {
+              $msg= " - Inchangé".PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+              echo $msg;
+            }
+            }
+        }
+      }
+    }
+
+    #### Creation / MAJ des UFJOINS
+    # Les UFjoins mettren en relation un profil avec les contacts layous ; sinon ils ne s'affichent pas 
+    # Il faut un UFjoin pour les modeles CustomSummary et un pour Profile par groupe de profil
+
+    $contactLayouts = civicrm_api4('ContactLayout', 'get', [
+      'select' => [
+        'blocks',
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+
+    $summary_profile_list=array();
+
+    foreach($contactLayouts as $contactLayout){
+      $block_cols=$contactLayout['blocks'];
+      foreach($block_cols as $block_col){
+        $blocks=$block_col;
+        foreach($blocks as $block){
+          $profiles=$block;
+          foreach ($profiles as $profile){
+            $position = strpos($profile['name'], '.');             // retrouve la position du point dans le nom
+            if ($position !== false) {
+              $prefix = substr($profile['name'], 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+              $postfix = substr($profile['name'], $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+              if ($prefix=='profile'){
+                array_push($summary_profile_list, $postfix);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    foreach($summary_profile_list as $profile){
+        $uFJoins = civicrm_api4('UFJoin', 'get', [
+          'select' => [
+            'id',
+          ],
+          'where' => [
+            ['uf_group_id:name', '=', $profile],
+            ['module', '=', 'Contact Summary'],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        $msg= "         UFJoin pour Contact Summary et profil : ".$profile;
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
+
+      if(!isset($uFJoins[0]['id'])){
+          $results = civicrm_api4('UFJoin', 'create', [
+            'values' => [
+              'module' => 'Contact Summary',
+              'uf_group_id.name' => $profile,
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+          $msg=" - Créé".PHP_EOL;
+      }else{
+          $results = civicrm_api4('UFJoin', 'update', [
+          'values' => [
+            'uf_group_id.name' => $profile,
+          ],
+          'where' => [
+            ['id', '=', $uFJoins[0]['id']],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+              $msg=" - MAJ".PHP_EOL;
+      }
+      fwrite($fp, $msg);
+      if (VERBOSE==1){
+        echo $msg;
+      }
+
+    }
+
+
+    foreach($summary_profile_list as $profile){
+        $uFJoins = civicrm_api4('UFJoin', 'get', [
+          'select' => [
+            'id',
+          ],
+          'where' => [
+            ['uf_group_id:name', '=', $profile],
+            ['module', '=', 'Profile'],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        $msg="         UFJoin pour Profile (standalone form) et profil : ".$profile;
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
+
+      if(!isset($uFJoins[0]['id'])){
+          $results = civicrm_api4('UFJoin', 'create', [
+            'values' => [
+              'module' => 'Profile',
+              'uf_group_id.name' => $profile,
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+          $msg= " - Créé".PHP_EOL;
+      }else{
+          $results = civicrm_api4('UFJoin', 'update', [
+          'values' => [
+            'uf_group_id.name' => $profile,
+          ],
+          'where' => [
+            ['id', '=', $uFJoins[0]['id']],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+              $msg= " - MAJ".PHP_EOL;
+      }
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
+
+    }
+    fclose($fp);
+  }    // Fin de la définition de la fonction : modif_profils_perso
+
+  function modif_profils_utilisation(){ // LOG OK
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      $uFGroups = civicrm_api4('UFGroup', 'get', [   // récupère la liste des profils
+      'select' => [
+          'name',
+          'id',
+      ],
+      'checkPermissions' => FALSE,
+      ]);
+          
+          
+      foreach ($uFGroups as $uFGroup){                        // crée un tableau avec [id_UFGroup][name_UFGroup]
+          $profile_names[$uFGroup['id']]=$uFGroup['name'];
+      }
+      $cancel_url = admin_url("admin.php?page=CiviCRM");  // url à charger si annulation 
+      $url = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";  // url à charger apres creation du contact utilisant le profil 
+      
+      $profiles_to_update = ['Mairie','Lieu_de_stockage','Centre_d_accueil_des_corps','Personnel_de_centre_de_don_de_corps','Inscription_proche_donateur_14', 'Demandeur_information_22', 'inscription_pompes', 'Inscription_donateur','Inscription_anat_compar_e'];
+
+      // Liste de profils à associer à un role (ceux utilisés pour creation contacts) name_and_address = ionscription donneur ; Inscription_proche_donateur_27 : pompes
+      
+      foreach ($profiles_to_update as $profile_to_update) {
+          $position = array_search($profile_to_update, $profile_names);
+          if ($position !== false) {                                          // Si le profil est déja créé 
+              $msg="         ".$profile_to_update." : ";
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
+              $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
+                  'entity' => 'UFGroup',
+                  'values' => [
+                      'post_url' => $url,
+                      'cancel_url' => $cancel_url,
+                      'name' => $profile_to_update,
+                  ],
+                ];
+                create_entity($to_create);  // create ou update UFGROUP
+              
+              $msg="         ".$profile_to_update." : ";
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+                echo $msg;
+              }
+
+              $to_create =  [                                                 // ajoute à chacun de ces profils l'utilisaiton "Profile" = "Formulaire ou Liste à afficher"
+                'entity' => 'UFJoin',
+                'values' => [
+                    'uf_group_id:name' => $profile_to_update,
+                    'module' => 'Profile',
+                    'is_active' => TRUE,
+                    'module_data' => NULL,
+                ],
+              ];
+              create_entity($to_create);  // create ou update UFJOIN
+            
+            } else {
+                $msg= $profile_to_update." : Profil non trouvé ////////.".PHP_EOL;
+                fwrite($fp, $msg);
+                echo $msg;
+            }
+      }
+    fclose($fp);
+  }    // Fin de la définition de la fonction : modif_profils_utilisation
+
+  function modif_profils_navigation(){
+    /// Modifie les menus de navigation liés aux profil de création de contacts
+    $url_menus_to_change = func_get_arg(0); // liste des menus à modifier
+                                            // Profil name, parent_id:name, name du menu navigation
+
+    foreach ($url_menus_to_change as $url_menu_to_change){
+      $uFGroups = civicrm_api4('UFGroup', 'get', [                        // récupere l'id du profil
+          'select' => [
+          'id',
+          ],
+          'where' => [
+          ['name', '=', $url_menu_to_change[0]],
+          ],
+          'checkPermissions' => FALSE,
+      ]);
+
+      if (isset($uFGroups[0]['id'])){                                       // si le profil existe
+
+          echo $url_menu_to_change[1]." / ".$url_menu_to_change[2]." / ".$url_menu_to_change[0]." : ";
+          $to_create =  [                                                 // modifie l'URL pour le menu
+              'entity' => 'Navigation',
+              'values' => [
+                  'parent_id:name' => $url_menu_to_change[1],
+                  'name' => $url_menu_to_change[2],
+                  'url' => 'civicrm/profile/create/?gid='.$uFGroups[0]['id'].'&reset=1',
+                  'permission' => 'add contacts',
+                  ],
+              ];
+          create_entity($to_create);                                     // create ou update navigation menu  
+
+      }else {
+
+          echo "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
+      }
+    }
+
+  }    // Fin de la définition de la fonction : modif_profils_navigation
+
+  function ajoute_CDC(){ // LOG OK
+       $exp_dir = func_get_arg(0); // liste des menus à modifier
+       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    ## On vérifie qu'il existe bien une location_type pour le cesp - Sinon on la crée
+
+        $locationTypes = civicrm_api4('LocationType', 'get', [
+            'where' => [
+            ['name', '=', 'CESP'],
+            ],
+            'checkPermissions' => FALSE,
+        ]);
+
+        if(isset($locationTypes[0])){
+            $results = civicrm_api4('LocationType', 'update', [
+            'values' => [
+                'name' => 'CESP',
+                'display_name' => 'CESP',
+            ],
+            'where' => [
+                ['id', '=', $locationTypes[0]['id']],
+            ],
+            'checkPermissions' => FALSE,
+            ]);
+
+            $msg= "      -> MAJ ";
+
+        }else{
+            $results = civicrm_api4('LocationType', 'create', [
+            'values' => [
+            'name' => 'CESP',
+            'display_name' => 'CESP',
+            'is_active' => TRUE,
+            ],
+            'checkPermissions' => FALSE,
+            ]);
+            
+            $msg= "      -> Création ";
+        }
+            fwrite($fp, $msg);
+            echo $msg;
+
+
+        $msg= "de la location type : ".$results[0]['name']." (".$results[0]['id'].")".PHP_EOL;
+
+        fwrite($fp, $msg);
+        echo $msg;
+
+    ## Fin verification location_type pour CESP
+
+      // import organisations
+          $name =  "05_organisations";
+          $toimport_file = $exp_dir.$name.".txt";
+          $json = file_get_contents($toimport_file);
+          $toimport = json_decode($json, true);
+          $msg= "      -> ".count($toimport)." Organisations à importer".PHP_EOL;
+          fwrite($fp, $msg);
+          echo $msg;
+          $check=import_stuffCDC('Contact',$toimport);
+          $chk_file = $exp_dir."check_".$name.".txt";
+          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
+          //echo $chk_file." écrit".PHP_EOL;
+
+      // import adresses
+          $name =  "15_adresses";
+          $toimport_file = $exp_dir.$name.".txt";
+          $json = file_get_contents($toimport_file);
+          $toimport = json_decode($json, true);
+          $msg= "      -> ".count($toimport)." Adresses à importer".PHP_EOL;
+          fwrite($fp, $msg);
+          echo $msg;
+          $check=import_addressCDC('Address',$toimport); // appelle la fonction import  et assigne à check la liste des anciennes id de contact
+          $chk_file = $exp_dir."check_".$name.".txt";
+          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
+          //echo $chk_file." écrit".PHP_EOL;
+
+      // import telephones
+          $name = '20_telephone';                     // nom du fichier à importer sans le suffixe
+          $toimport_file = $exp_dir.$name.".txt";
+          $json = file_get_contents($toimport_file);
+          $toimport = json_decode($json, true);
+          $msg = "      -> ".count($toimport)." Téléphones à importer".PHP_EOL;
+          fwrite($fp, $msg);
+          echo $msg;
+          $check=import_phoneCDC('Phone',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
+          $chk_file = $exp_dir."check_".$name.".txt";
+          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
+          //echo $chk_file." écrit".PHP_EOL;
+
+      // import email
+          $name = '25_Email';                     // nom du fichier à importer sans le suffixe
+          $toimport_file = $exp_dir.$name.".txt";
+          $json = file_get_contents($toimport_file);
+          $toimport = json_decode($json, true);
+
+          $msg= "      -> ".count($toimport)." Emails à importer".PHP_EOL;
+          fwrite($fp, $msg);
+          echo $msg;
+          $check=import_emailCDC('Email',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
+          $chk_file = $exp_dir."check_".$name.".txt";
+          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
+          //echo $chk_file." écrit".PHP_EOL;
+          fclose($fp);
+       # fin de Ajout des centres de don du corps
+
+
+  }    // Fin de la définition de la fonction ajoute_CDC
 # FIN DE LA DECLARATION DES FONCTIONS
 
 # IMPLEMENTS hook_civicrm_managed().
@@ -1034,7 +1656,11 @@ use CRM_DonCorps_ExtensionUtil as E;
       // utilise apiv3 car non porté en V4 pour le moment
     echo PHP_EOL."@@@  hook_civicrm_managed ".PHP_EOL;
 
-    echo "  - Modification des parametres de localisation, date...".PHP_EOL;
+    $msg="  - Modification des parametres de localisation, date...".PHP_EOL; //LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
       $result = civicrm_api3('Setting', 'create', [
         'dateformatDatetime'=> "%e %B %Y",
         // 'dateformatDatetime'=> "%e %B %Y %H:%M",
@@ -1096,10 +1722,13 @@ use CRM_DonCorps_ExtensionUtil as E;
           "CiviReport"
         ],
       ]);
-    // fin de la modification des parametres de localisation, date.... 
+   
 
-    echo PHP_EOL."   - Tags".PHP_EOL;
-
+    $msg="  - Modification des tags".PHP_EOL; // LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
       $entities[] = 
       [
         'module' => 'don_corps',
@@ -1120,452 +1749,56 @@ use CRM_DonCorps_ExtensionUtil as E;
           'match' => [E::ts('name')],
         ],
       ];
-    //fin de la modifiacaiotn des tags
+    
 
-    echo "Modification des profils personnalisés".PHP_EOL;
-        #####
-        # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
-        # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
-        # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
-        # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
-        # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
-        $toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
-
-        # $toimport_file = 'managed/ufnameconversion.txt';                     // nom du fichier à importer sans le suffixe
-        $json = file_get_contents($toimport_file);
-        $convert = json_decode($json, true);
-
-        echo $toimport_file.PHP_EOL;
-
-        ### Modification des UF Fields pour corrier les custom_id
-
-        $new = [];
-        $new[0]['id']=NULL;
-        $new[0]['field_name']=NULL;
-        $new[0]['field_name:name']=NULL;
-        $new[0]['label']=NULL;
-
-        foreach ($convert as $k => $v) {
-            $new[$k + 1] = $v;
-        }
-
-        $convert=$new;
-        //print_r ($convert);
-
-        $labels_table = array_column($convert, 'label');
-        $names_table = array_column($convert, 'field_name:name');
-        $customs_table = array_column($convert, 'field_name');
-
-        //print_r ($labels_table);
-
-        $uFFields = civicrm_api4('UFField', 'get', [
-            'select' => [
-              'field_name',
-              'field_name:name',
-              'label',
-            ],
-            'where' => [
-              ['field_name', 'CONTAINS', 'custom_'],
-            ],
-            'orderBy' => [
-              'uf_group_id:name' => 'ASC',
-            ],
-            'checkPermissions' => FALSE,
-          ]);
-
-        if (isset($uFFields[0])){
-
-          //echo "il y a des uffields ".PHP_EOL;
-          
-          foreach ($uFFields as $uFField){
-            //echo PHP_EOL.PHP_EOL;
-            //print_r($uFField);
-            if (isset($uFField['label'])) {           // si un label existe, on récupère la valeur de field_name_name 
-              //echo 'un label existe'.PHP_EOL;         // depuis la table de conversion en utilisant le label comme critere de concordance
-              $label=$uFField['label'];
-              $key = array_search($label, $labels_table); 
-              //var_dump($key);
-              if ($key){
-                    $name=$convert[$key]['field_name:name'];
-              //echo "on recupere dans convert la valeur field_name : ".$name.' pour label :'.$label.PHP_EOL;
-              } else {
-                echo "ERREUR : pas de label ".$label.' dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
-                exit;
-              }
-            }  else { // si ce label n'existe pas 
-                //echo 'pas de label'.PHP_EOL;
-                if (isset($uFField['field_name:name'])){    // si un field_name:name de type customgroup.customfield existe
-                  $name=$uFField['field_name:name'];          // on la conserve
-                  $key = array_search($name, $names_table);   
-                  if ($key){
-                        $label=$convert[$key]['field_name:label'];  // on récupère label depuis la table de correspondance en utilisant le field_name:name comme critere de concordance
-                  } else {
-                    echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
-                    exit;
-                  }
-                } else {                                          // pas de field _name:name de type customgroup.customfield 
-                  $key = array_search($name, $customs_table);
-
-                  if ($key){
-                    $label=$convert[$key]['field_name:label'];      // on récupère label et name depuis table correspondance
-                    $name=$convert[$key]['field_name:name'];        // en utilisant le custom_name comme critere de concordance
-                  } else {
-                    echo "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
-                    exit;
-                  }
-                }
-            }
-
-            $position = strpos($name, '.');             // retrouve la position du point dans le nom
-            if ($position !== false) {
-              $group = substr($name, 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
-              $custom = substr($name, $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
-              //echo 'group : '.$group.'        custom field :'.$custom.PHP_EOL;
-                $customFields = civicrm_api4('CustomField', 'get', [
-                  'select' => [
-                    'id',
-                  ],
-                  'where' => [
-                    ['custom_group_id:name', '=', $group],
-                    ['name', '=', $custom],
-                  ],
-                  'checkPermissions' => FALSE,
-                ]);
-
-                if(isset($customFields[0])){
-                  $field_name='custom_'.$customFields[0]['id'];
-                }
-
-              echo "UFFIELF id : ".$uFField['id']." name : ".$name." | label : ".$label." | field name : ".$field_name;
-
-              if($field_name!=$uFField['field_name']){
-                echo " - MAJ".PHP_EOL;         
-                $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
-                  'values' => [
-                    'label' => $label,
-                    'field_name' => $field_name,
-                  ],
-
-                  'where' => [
-                    //['field_name', '=', $uFField['field_name']],
-                    
-                    ['id', '=', $uFField['id']],
-                  ],
-
-                  'checkPermissions' => FALSE,
-                ]); 
-                //print_r($results);
-
-                }else {
-                  echo " - Inchangé".PHP_EOL;
-                }
-            }
-          }
-        }
-
-        #### Creation / MAJ des UFJOINS
-        # Les UFjoins mettren en relation un profil avec les contacts layous ; sinon ils ne s'affichent pas 
-        # Il faut un UFjoin pour les modeles CustomSummary et un pour Profile par groupe de profil
-
-        $contactLayouts = civicrm_api4('ContactLayout', 'get', [
-          'select' => [
-            'blocks',
-          ],
-          'checkPermissions' => FALSE,
-        ]);
-
-        $summary_profile_list=array();
-
-        foreach($contactLayouts as $contactLayout){
-          $block_cols=$contactLayout['blocks'];
-          foreach($block_cols as $block_col){
-            $blocks=$block_col;
-            foreach($blocks as $block){
-              $profiles=$block;
-              foreach ($profiles as $profile){
-              //echo $profile['name'].PHP_EOL;
-
-                $position = strpos($profile['name'], '.');             // retrouve la position du point dans le nom
-                if ($position !== false) {
-                  $prefix = substr($profile['name'], 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
-                  $postfix = substr($profile['name'], $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
-                  //print_r($profile).PHP_EOL;
-                  if ($prefix=='profile'){
-                    array_push($summary_profile_list, $postfix);
-                  }
-                }
-              }
-            }
-            //echo $block['name'].PHP_EOL;
-          }
-        }
-
-        //print_r($summary_profile_list);
-
-
-        foreach($summary_profile_list as $profile){
-            $uFJoins = civicrm_api4('UFJoin', 'get', [
-              'select' => [
-                'id',
-              ],
-              'where' => [
-                ['uf_group_id:name', '=', $profile],
-                ['module', '=', 'Contact Summary'],
-              ],
-              'checkPermissions' => FALSE,
-            ]);
-
-            echo "UFJoin pour Contact Summary et profil : ".$profile;
-
-          if(!isset($uFJoins[0]['id'])){
-              $results = civicrm_api4('UFJoin', 'create', [
-                'values' => [
-                  'module' => 'Contact Summary',
-                  'uf_group_id.name' => $profile,
-                ],
-                'checkPermissions' => FALSE,
-              ]);
-              echo " - Créé".PHP_EOL;
-          }else{
-              $results = civicrm_api4('UFJoin', 'update', [
-              'values' => [
-                'uf_group_id.name' => $profile,
-              ],
-              'where' => [
-                ['id', '=', $uFJoins[0]['id']],
-              ],
-              'checkPermissions' => FALSE,
-            ]);
-                  echo " - MAJ".PHP_EOL;
-          }
-
-        }
-
-
-        foreach($summary_profile_list as $profile){
-            $uFJoins = civicrm_api4('UFJoin', 'get', [
-              'select' => [
-                'id',
-              ],
-              'where' => [
-                ['uf_group_id:name', '=', $profile],
-                ['module', '=', 'Profile'],
-              ],
-              'checkPermissions' => FALSE,
-            ]);
-
-            echo "UFJoin pour Profile (standalone form) et profil : ".$profile;
-
-          if(!isset($uFJoins[0]['id'])){
-              $results = civicrm_api4('UFJoin', 'create', [
-                'values' => [
-                  'module' => 'Profile',
-                  'uf_group_id.name' => $profile,
-                ],
-                'checkPermissions' => FALSE,
-              ]);
-              echo " - Créé".PHP_EOL;
-          }else{
-              $results = civicrm_api4('UFJoin', 'update', [
-              'values' => [
-                'uf_group_id.name' => $profile,
-              ],
-              'where' => [
-                ['id', '=', $uFJoins[0]['id']],
-              ],
-              'checkPermissions' => FALSE,
-            ]);
-                  echo " - MAJ".PHP_EOL;
-          }
-
-        }
-
-        echo "  -modification de l'utilisation des profils".PHP_EOL;
-          $uFGroups = civicrm_api4('UFGroup', 'get', [   // récupère la liste des profils
-            'select' => [
-                'name',
-                'id',
-            ],
-            'checkPermissions' => FALSE,
-            ]);
-                
-                
-            foreach ($uFGroups as $uFGroup){                        // crée un tableau avec [id_UFGroup][name_UFGroup]
-                $profile_names[$uFGroup['id']]=$uFGroup['name'];
-            }
-            $cancel_url = admin_url("admin.php?page=CiviCRM");  // url à charger si annulation 
-            $url = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";  // url à charger apres creation du contact utilisant le profil 
-            
-            $profiles_to_update = ['Mairie','Lieu_de_stockage','Centre_d_accueil_des_corps','Personnel_de_centre_de_don_de_corps','Inscription_proche_donateur_14', 'Demandeur_information_22', 'inscription_pompes', 'Inscription_donateur','Inscription_anat_compar_e'];
+    $msg="  - Modification des profils personnalisés".PHP_EOL;// LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
+      # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
+      # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
+      # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
+      # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
+      # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
       
-            // Liste de profils à associer à un role (ceux utilisés pour creation contacts) name_and_address = ionscription donneur ; Inscription_proche_donateur_27 : pompes
-            
-            foreach ($profiles_to_update as $profile_to_update) {
-                $position = array_search($profile_to_update, $profile_names);
-                if ($position !== false) {                                          // Si le profil est déja créé 
-                    echo $profile_to_update." : ";
-            
-                    $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
-                        'entity' => 'UFGroup',
-                        'values' => [
-                            'post_url' => $url,
-                            'cancel_url' => $cancel_url,
-                            'name' => $profile_to_update,
-                        ],
-                      ];
-                      create_entity($to_create);  // create ou update UFJOIN
-            
-                    $to_create =  [                                                 // ajoute à chacun de ces profils l'utilisaiton "Profile" = "Formulaire ou Liste à afficher"
-                      'entity' => 'UFJoin',
-                      'values' => [
-                          'uf_group_id:name' => $profile_to_update,
-                          'module' => 'Profile',
-                          'is_active' => TRUE,
-                          'module_data' => NULL,
-                      ],
-                    ];
-                    create_entity($to_create);  // create ou update UFJOIN
-                  
-                  } else {
-                      echo $profile_to_update." : Profil non trouvé ////////.".PHP_EOL;
-                  }
-            }
-      // fin de Modifie l'utilisation des profils créées par le mgd files
+      $toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
+      modif_profils_perso($toimport_file);
 
-      /// Modification des menus de navigation liés aux profil de création de contacts
-          echo "  -modification des rmenus de navigation liés aux proils".PHP_EOL;
-          $url_menus_to_change =[                             // Profil name, parent_id:name, name du menu navigation
-            ['Inscription_donateur', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
-            ['Inscription_proche_donateur_14', 'ContactsDDC','Ajouter proche donateurDDC'],///MODIFIE
-            ['Demandeur_information_22', 'ContactsDDC','New Demandeur_d_informationDDC'],///MODIFIE
-            ['inscription_pompes', 'Pompes funebresDDC','New Pompes'],  // 'Inscription_proche_donateur_27' correpond au profil pompes
-            ['Mairie', 'MairiesDDC','New Mairies'],
-            ['Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'],
-            ['Centre_d_accueil_des_corps', 'Centres de don du corpsDDC','New CDC'],
-            ['Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'],
-            ['Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'],
-          ];
-
-          foreach ($url_menus_to_change as $url_menu_to_change){
-            $uFGroups = civicrm_api4('UFGroup', 'get', [                        // récupere l'id du profil
-                'select' => [
-                'id',
-                ],
-                'where' => [
-                ['name', '=', $url_menu_to_change[0]],
-                ],
-                'checkPermissions' => FALSE,
-            ]);
-
-            if (isset($uFGroups[0]['id'])){                                       // si le profil existe
-
-                echo $url_menu_to_change[1]." / ".$url_menu_to_change[2]." / ".$url_menu_to_change[0]." : ";
-                $to_create =  [                                                 // modifie l'URL pour le menu
-                    'entity' => 'Navigation',
-                    'values' => [
-                        'parent_id:name' => $url_menu_to_change[1],
-                        'name' => $url_menu_to_change[2],
-                        'url' => 'civicrm/profile/create/?gid='.$uFGroups[0]['id'].'&reset=1',
-                        ],
-                    ];
-                create_entity($to_create);                                     // create ou update navigation menu  
-
-            }else {
-
-                echo "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
-            }
-          }
-      /// Fin de Modification des menus de navigation liés aux profil de création de contacts
+    $msg="  - Modification de l'utilisation des profils".PHP_EOL;// LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
+      modif_profils_utilisation();
+  
+    $msg="  - Modification des menus de navigation liés aux profils".PHP_EOL;// LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
+      $url_menus_to_change =[           // Profil name, parent_id:name, name du menu navigation
+        ['Inscription_donateur', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
+        ['Inscription_proche_donateur_14', 'ContactsDDC','Ajouter proche donateurDDC'],///MODIFIE
+        ['Demandeur_information_22', 'ContactsDDC','New Demandeur_d_informationDDC'],///MODIFIE
+        ['inscription_pompes', 'Pompes funebresDDC','New Pompes'],  // 'Inscription_proche_donateur_27' correpond au profil pompes
+        ['Mairie', 'MairiesDDC','New Mairies'],
+        ['Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'],
+        ['Centre_d_accueil_des_corps', 'Centres de don du corpsDDC','New CDC'],
+        ['Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'],
+        ['Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'],
+      ];
+      modif_profils_navigation($url_menus_to_change);
 
       
-    echo "  - Ajout des centres de don du corps".PHP_EOL;
-
+    $msg="  - Ajout des centres de don du corps".PHP_EOL;
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
       $exp_dir = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/");;    // racine du répertoire d'import export
-
-      ## On vérifie qu'il existe bien une location_type pour le cesp - Sinon on la crée
-
-              $locationTypes = civicrm_api4('LocationType', 'get', [
-                  'where' => [
-                  ['name', '=', 'CESP'],
-                  ],
-                  'checkPermissions' => FALSE,
-              ]);
-
-              if(isset($locationTypes[0])){
-                  $results = civicrm_api4('LocationType', 'update', [
-                  'values' => [
-                      'name' => 'CESP',
-                      'display_name' => 'CESP',
-                  ],
-                  'where' => [
-                      ['id', '=', $locationTypes[0]['id']],
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-
-                  echo "      -> MAJ ";
-
-              }else{
-                  $results = civicrm_api4('LocationType', 'create', [
-                  'values' => [
-                  'name' => 'CESP',
-                  'display_name' => 'CESP',
-                  'is_active' => TRUE,
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-                  
-                  echo "      -> Création ";
-              }
-              echo "de la location type : ".$results[0]['name']." (".$results[0]['id'].")".PHP_EOL;
-
-        ## Fin verification location_type pour CESP
-
-      // importe organisations
-          $name =  "05_organisations";
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-          echo "      -> ".count($toimport)." Organisations à importer".PHP_EOL;
-          $check=import_stuffCDC('Contact',$toimport);
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          echo $chk_file." écrit".PHP_EOL;
-
-      // importe adresses
-          $name =  "15_adresses";
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-          echo "      -> ".count($toimport)." Adresses à importer".PHP_EOL;
-          $check=import_addressCDC('Address',$toimport); // appelle la fonction import  et assigne à check la liste des anciennes id de contact
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          echo $chk_file." écrit".PHP_EOL;
-
-      // importe telephones
-          $name = '20_telephone';                     // nom du fichier à importer sans le suffixe
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-          echo "      -> ".count($toimport)." Téléphones à importer".PHP_EOL;
-          $check=import_phoneCDC('Phone',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          echo $chk_file." écrit".PHP_EOL;
-
-      // importe email
-          $name = '25_Email';                     // nom du fichier à importer sans le suffixe
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-
-          echo "      -> ".count($toimport)." Emails à importer".PHP_EOL;
-              $check=import_emailCDC('Email',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          echo $chk_file." écrit".PHP_EOL;
-       # fin de Ajout des centres de don du corps
+      ajoute_CDC($exp_dir);
+      
   
   
       } # fin de la définition de don_corps_civicrm_managed
@@ -6288,7 +6521,5 @@ use CRM_DonCorps_ExtensionUtil as E;
   
   }
 
-
-
-
+fclose($fp);
 

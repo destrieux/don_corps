@@ -15,6 +15,7 @@ return [
         'title' => E::ts('Personnel de centre de don de corps'),
         'frontend_title' => E::ts('Personnel de centre de don de corps'),
         'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
+        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM',
         'created_date' => '2025-02-15 19:13:21',
       ],
       'match' => ['name'],

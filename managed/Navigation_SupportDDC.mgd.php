@@ -46,12 +46,11 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('User Guide'),
+        'label' => E::ts('Guide CiviCRM'),
         'name' => 'User Guide',
         'url' => 'https://docs.civicrm.org/user/?src=iam',
         'permission_operator' => 'AND',
         'parent_id.name' => 'SupportDDC',
-        'has_separator' => NULL,
       ],
       'match' => ['name', 'domain_id'],
     ],

@@ -36,8 +36,9 @@ return [
         'icon' => 'crm-i fa-square-poll-horizontal',
         'permission' => [
           'accéder à CiviContribute',
+          'access CiviCRM',
         ],
-        'permission_operator' => 'AND',
+        'permission_operator' => 'OR',
         'parent_id.name' => 'ContributionsDDC',
       ],
       'match' => ['name', 'domain_id'],
@@ -56,9 +57,9 @@ return [
         'url' => 'civicrm/contribute/add?reset=1&action=add&context=standalone',
         'permission' => [
           'accéder à CiviContribute',
-          'edit contributions',
+          'access CiviCRM',
         ],
-        'permission_operator' => 'AND',
+        'permission_operator' => 'OR',
         'parent_id.name' => 'ContributionsDDC',
       ],
       'match' => ['name', 'domain_id'],

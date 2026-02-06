@@ -16,7 +16,7 @@ return [
         'frontend_title' => E::ts('Inscription anat comparée'),
         'description' => E::ts('Inscription pièce anatomie comparée'),
         'post_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
-        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM&q=civicrm%2Ftous_contacts',
+        'cancel_url' => 'http://localhost:8888/37_test/wp-admin/admin.php?page=CiviCRM',
         'created_date' => '2025-10-06 16:02:42',
       ],
       'match' => ['name'],
