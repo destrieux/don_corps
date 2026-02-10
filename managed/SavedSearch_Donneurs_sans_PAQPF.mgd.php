@@ -63,7 +63,7 @@ return [
             [
               'groups:name',
               'NOT IN',
-              ['A_P_25'],
+              ['Archives_61'],
             ],
             [
               'Contact_RelationshipCache_Contact_01.far_relation:name',

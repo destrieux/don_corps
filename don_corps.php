@@ -642,7 +642,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
     $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
     fwrite($fp, $msg);
     echo $msg;
-    close($fp);
+    fclose($fp);
 
     }   // Fin de définition de la fonction : change_icon()
 
@@ -3980,7 +3980,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      close($fp);
+      fclose($fp);
 
       modif_filtre('Pr_par_par','Personnel_centre_de_don_77');
       modif_filtre('Lacalisation','Emprunteurs_44');
@@ -4752,7 +4752,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      close($fp);
+      fclose($fp);
       // Modifie les requetes qui ne sont pas correctement importées
       //  sur le serveur maitre,
       //  - dans Searchkit retrouver l'id de la requete en posant la souris sur modifier, l'adresse se modifie ds la basse du bas et donne l'id
@@ -6106,7 +6106,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      close($fp);
+      fclose($fp);
 
       change_icon('Contributions','crm-i fa-money-bill-1');
       change_icon('Events','crm-i fa-users');
@@ -6116,7 +6116,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      close($fp);
+      fclose($fp);
 
       $uFGroups = civicrm_api4('UFGroup', 'get', [   // récupère la liste des profils
         'select' => [
@@ -6177,7 +6177,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      close($fp);
+      fclose($fp);
 
       $url_menus_to_change =[                             // Profil name, parent_id:name, name du menu navigation
         ['Inscription_donateur', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
@@ -6232,7 +6232,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      close($fp);
+      fclose($fp);
 
       $to_create =  [       
         'entity' => 'MessageTemplate',
@@ -6333,7 +6333,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      close($fp);   
+      fclose($fp);   
       
       $to_create =  [        
           'entity' => 'Event',
@@ -6423,7 +6423,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
         if (VERBOSE==1){
           echo $msg;
         }
-        close($fp);
+        fclose($fp);
 
         $to_create =  [       
             'entity' => 'MessageTemplate',
