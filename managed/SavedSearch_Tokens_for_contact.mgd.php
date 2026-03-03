@@ -38,12 +38,23 @@ return [
             'champs_caches.piece_prinicpale',
             'postal_greeting_id:label',
             'Demandeur_information.Date_d_envoi_d_informations',
+            'GROUP_CONCAT(DISTINCT Contact_Custom_Protocoles_in_vivo_entity_id_01.Intitul_du_protocole:label) AS GROUP_CONCAT_Contact_Custom_Protocoles_in_vivo_entity_id_01_Intitul_du_protocole_label',
             'id',
           ],
           'orderBy' => [],
           'where' => [],
-          'groupBy' => [],
-          'join' => [],
+          'groupBy' => ['id'],
+          'join' => [
+            [
+              'Custom_Protocoles_in_vivo AS Contact_Custom_Protocoles_in_vivo_entity_id_01',
+              'LEFT',
+              [
+                'id',
+                '=',
+                'Contact_Custom_Protocoles_in_vivo_entity_id_01.entity_id',
+              ],
+            ],
+          ],
           'having' => [],
         ],
       ],
@@ -204,15 +215,8 @@ return [
             ],
             [
               'type' => 'field',
-              'key' => 'Contact_Contact_centre_gestion_corps_01.CDC_Administration.Directeur',
-            ],
-            [
-              'type' => 'field',
-              'key' => 'Contact_Contact_centre_gestion_corps_01.CDC_Administration.DPO',
-            ],
-            [
-              'type' => 'field',
-              'key' => 'Contact_Contact_centre_gestion_corps_01.CDC_Administration.Gestionnaire',
+              'key' => 'GROUP_CONCAT_Contact_Custom_Protocoles_in_vivo_entity_id_01_Intitul_du_protocole_label',
+              'label' => E::ts('prot_invivo'),
             ],
           ],
         ],

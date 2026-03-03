@@ -375,4 +375,166 @@ return [
       ],
     ],
   ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Protection_juridique',
+    'entity' => 'OptionGroup',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+        'title' => E::ts('Antécédents médicaux :: Protection juridique'),
+        'data_type' => 'Int',
+        'is_reserved' => FALSE,
+        'option_value_fields' => ['name', 'label'],
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Protection_juridique_OptionValue_Inconnue',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+        'label' => E::ts('Inconnue'),
+        'value' => '1',
+        'name' => 'Inconnue',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Protection_juridique_OptionValue_Aucune',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+        'label' => E::ts('Aucune'),
+        'value' => '2',
+        'name' => 'Aucune',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Protection_juridique_OptionValue_Sauvegarde_de_justice',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+        'label' => E::ts('Sauvegarde de justice'),
+        'value' => '3',
+        'name' => 'Sauvegarde_de_justice',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Protection_juridique_OptionValue_Habilitation_familiale',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+        'label' => E::ts('Habilitation familiale'),
+        'value' => '4',
+        'name' => 'Habilitation_familiale',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Protection_juridique_OptionValue_Curatelle',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+        'label' => E::ts('Curatelle'),
+        'value' => '5',
+        'name' => 'Curatelle',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Protection_juridique_OptionValue_Tutelle',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+        'label' => E::ts('Tutelle'),
+        'value' => '6',
+        'name' => 'Tutelle',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'CustomGroup_Ant_c_dents_m_dicaux_CustomField_Protection_juridique',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'Ant_c_dents_m_dicaux',
+        'name' => 'Protection_juridique',
+        'label' => E::ts('Protection juridique'),
+        'data_type' => 'Int',
+        'html_type' => 'Select',
+        'text_length' => 255,
+        'note_columns' => 60,
+        'note_rows' => 4,
+        'column_name' => 'protection_juridique_112',
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
 ];
