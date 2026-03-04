@@ -12,7 +12,7 @@ return [
       'values' => [
         'name' => 'champs_caches',
         'title' => E::ts('champs caches'),
-        'weight' => 15,
+        'weight' => 16,
         'collapse_adv_display' => TRUE,
         'created_date' => '2024-05-27 13:45:04',
       ],

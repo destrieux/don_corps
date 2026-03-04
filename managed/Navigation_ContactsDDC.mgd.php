@@ -14,7 +14,7 @@ return [
         'name' => 'ContactsDDC',
         'icon' => 'crm-i fa-address-book-o',
         'has_separator' => NULL,
-        'weight' => 26,
+        'weight' => 27,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -29,7 +29,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau Donneur'),
         'name' => 'New DonateurDDC',
-        'url' => 'civicrm/profile/create/?gid=1&reset=1',
+        'url' => 'civicrm/profile/create/?gid=21&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'ContactsDDC',
       ],
@@ -46,7 +46,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau proche de donneur'),
         'name' => 'Ajouter proche donateurDDC',
-        'url' => 'civicrm/profile/create/?gid=21&reset=1',
+        'url' => 'civicrm/profile/create/?gid=22&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'ContactsDDC',
       ],
@@ -64,10 +64,7 @@ return [
         'label' => E::ts('Nouveau Demandeur d\'information'),
         'name' => 'New Demandeur_d_informationDDC',
         'url' => 'civicrm/profile/create/?gid=18&reset=1',
-        'permission' => [
-          'add contacts',
-          'access CiviCRM',
-        ],
+        'permission' => ['add contacts'],
         'permission_operator' => 'OR',
         'parent_id.name' => 'ContactsDDC',
       ],
@@ -260,7 +257,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle entreprise de Pompes Funèbres'),
         'name' => 'New Pompes',
-        'url' => 'civicrm/profile/create/?gid=22&reset=1',
+        'url' => 'civicrm/profile/create/?gid=30&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'Pompes funebresDDC',
       ],

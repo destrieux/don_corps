@@ -14,7 +14,7 @@ return [
         'title' => E::ts('CDC admin'),
         'extends' => 'Organization',
         'extends_entity_column_value' => ['CDC'],
-        'weight' => 17,
+        'weight' => 8,
         'collapse_adv_display' => TRUE,
         'created_date' => '2025-11-06 09:38:17',
       ],

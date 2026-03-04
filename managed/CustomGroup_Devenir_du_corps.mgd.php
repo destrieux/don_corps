@@ -14,7 +14,7 @@ return [
         'title' => E::ts('Devenir du corps'),
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
-        'weight' => 8,
+        'weight' => 9,
         'created_date' => '2022-05-02 18:27:48',
       ],
       'match' => ['name'],

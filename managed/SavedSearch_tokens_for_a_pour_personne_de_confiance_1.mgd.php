@@ -28,6 +28,7 @@ return [
             'Contact_RelationshipCache_Contact_01.email_greeting_id:label',
             'Contact_RelationshipCache_Contact_01.postal_greeting_id:label',
             'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [

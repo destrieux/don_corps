@@ -1,8 +1,22 @@
 [
     {
         "contact_id": 1,
-        "email": "dons.corps@med.univ-tours.fr",
+        "email": "fixme.domainemail@example.org",
         "is_primary": true,
+        "is_billing": false,
+        "on_hold": 0,
+        "is_bulkmail": false,
+        "hold_date": null,
+        "reset_date": null,
+        "signature_text": null,
+        "signature_html": null,
+        "location_type_id:name": "Home",
+        "contact_id.legal_identifier": "19370800500478"
+    },
+    {
+        "contact_id": 1,
+        "email": "dons.corps@med.univ-tours.fr",
+        "is_primary": false,
         "is_billing": false,
         "on_hold": 0,
         "is_bulkmail": false,
@@ -14,7 +28,7 @@
         "contact_id.legal_identifier": "19370800500478"
     },
     {
-        "contact_id": 86,
+        "contact_id": 3,
         "email": "laboratoire.anatomie@u-picardie.fr",
         "is_primary": true,
         "is_billing": false,
@@ -28,7 +42,7 @@
         "contact_id.legal_identifier": "19801344300017"
     },
     {
-        "contact_id": 87,
+        "contact_id": 4,
         "email": "don-du-corps@univ-angers.fr",
         "is_primary": true,
         "is_billing": false,
@@ -42,7 +56,7 @@
         "contact_id.legal_identifier": "19490970100303"
     },
     {
-        "contact_id": 88,
+        "contact_id": 5,
         "email": "anatomie@univ-fcomte.fr",
         "is_primary": true,
         "is_billing": false,
@@ -56,7 +70,7 @@
         "contact_id.legal_identifier": "93810656400017"
     },
     {
-        "contact_id": 89,
+        "contact_id": 6,
         "email": "donducorps@univ-brest.fr",
         "is_primary": true,
         "is_billing": false,
@@ -70,7 +84,7 @@
         "contact_id.legal_identifier": "94129831700012"
     },
     {
-        "contact_id": 90,
+        "contact_id": 7,
         "email": "donducorps@unicaen.fr",
         "is_primary": true,
         "is_billing": false,
@@ -84,7 +98,7 @@
         "contact_id.legal_identifier": "19141408500016"
     },
     {
-        "contact_id": 91,
+        "contact_id": 8,
         "email": "centre-de-don-du-corps.medecine@uca.fr",
         "is_primary": true,
         "is_billing": false,
@@ -98,7 +112,7 @@
         "contact_id.legal_identifier": "13002806100013"
     },
     {
-        "contact_id": 92,
+        "contact_id": 9,
         "email": "ufrsante-don-du-corps@ube.fr",
         "is_primary": true,
         "is_billing": false,
@@ -112,7 +126,7 @@
         "contact_id.legal_identifier": "93823061200013"
     },
     {
-        "contact_id": 93,
+        "contact_id": 10,
         "email": "ladaf@univ-grenoble-alpes.fr",
         "is_primary": true,
         "is_billing": false,
@@ -126,7 +140,7 @@
         "contact_id.legal_identifier": "13002608100013"
     },
     {
-        "contact_id": 94,
+        "contact_id": 11,
         "email": "lab.anat@unilim.fr",
         "is_primary": true,
         "is_billing": false,
@@ -140,7 +154,7 @@
         "contact_id.legal_identifier": "19870669900321"
     },
     {
-        "contact_id": 95,
+        "contact_id": 12,
         "email": "med-cdc-montpellier@umontpellier.fr",
         "is_primary": true,
         "is_billing": false,
@@ -154,7 +168,7 @@
         "contact_id.legal_identifier": "13002979600013"
     },
     {
-        "contact_id": 96,
+        "contact_id": 13,
         "email": "medecine-anatomie@univ-lorraine.fr",
         "is_primary": true,
         "is_billing": false,
@@ -168,7 +182,7 @@
         "contact_id.legal_identifier": "13001550600012"
     },
     {
-        "contact_id": 97,
+        "contact_id": 14,
         "email": "cdcnantes@univ-nantes.fr",
         "is_primary": true,
         "is_billing": false,
@@ -182,7 +196,7 @@
         "contact_id.legal_identifier": "13002974700016"
     },
     {
-        "contact_id": 98,
+        "contact_id": 15,
         "email": "luisa.nogueira@univ-cotedazur.fr",
         "is_primary": true,
         "is_billing": false,
@@ -196,7 +210,7 @@
         "contact_id.legal_identifier": "13002566100013"
     },
     {
-        "contact_id": 99,
+        "contact_id": 16,
         "email": "mednimes-cdc@umontpellier.fr",
         "is_primary": true,
         "is_billing": false,
@@ -210,7 +224,7 @@
         "contact_id.legal_identifier": "13002979600336"
     },
     {
-        "contact_id": 100,
+        "contact_id": 17,
         "email": "ecole.chirurgie.eps@aphp.fr",
         "is_primary": true,
         "is_billing": false,
@@ -224,7 +238,7 @@
         "contact_id.legal_identifier": "26750045201928"
     },
     {
-        "contact_id": 101,
+        "contact_id": 18,
         "email": "cdc@univ-poitiers.fr",
         "is_primary": true,
         "is_billing": false,
@@ -238,7 +252,7 @@
         "contact_id.legal_identifier": "19860856400375"
     },
     {
-        "contact_id": 102,
+        "contact_id": 19,
         "email": "cdc-reims@univ-reims.fr",
         "is_primary": true,
         "is_billing": false,
@@ -252,7 +266,7 @@
         "contact_id.legal_identifier": "19511296600799"
     },
     {
-        "contact_id": 103,
+        "contact_id": 20,
         "email": "fanny.antois@univ-rennes.fr",
         "is_primary": true,
         "is_billing": false,
@@ -266,7 +280,7 @@
         "contact_id.legal_identifier": "13003051300019"
     },
     {
-        "contact_id": 104,
+        "contact_id": 21,
         "email": "labo-anatomie@univ-rouen.fr",
         "is_primary": true,
         "is_billing": false,
@@ -280,7 +294,7 @@
         "contact_id.legal_identifier": "19761904200017"
     },
     {
-        "contact_id": 105,
+        "contact_id": 22,
         "email": "donsdecorps@univ-st-etienne.fr",
         "is_primary": true,
         "is_billing": false,
@@ -294,7 +308,7 @@
         "contact_id.legal_identifier": "93850168100010"
     },
     {
-        "contact_id": 106,
+        "contact_id": 23,
         "email": "med-don-du-corps@unistra.fr",
         "is_primary": true,
         "is_billing": false,
@@ -308,7 +322,7 @@
         "contact_id.legal_identifier": "13000545700010"
     },
     {
-        "contact_id": 107,
+        "contact_id": 24,
         "email": "centre.donducorps@utoulouse.fr",
         "is_primary": true,
         "is_billing": false,
@@ -322,7 +336,7 @@
         "contact_id.legal_identifier": "93827139200012"
     },
     {
-        "contact_id": 108,
+        "contact_id": 26,
         "email": "anatomie@univ-catholille.fr",
         "is_primary": true,
         "is_billing": false,
@@ -336,7 +350,7 @@
         "contact_id.legal_identifier": "77562424000013"
     },
     {
-        "contact_id": 109,
+        "contact_id": 27,
         "email": "sccds-contact@univ-amu.fr",
         "is_primary": true,
         "is_billing": false,
@@ -350,7 +364,7 @@
         "contact_id.legal_identifier": "13001533200013"
     },
     {
-        "contact_id": 110,
+        "contact_id": 28,
         "email": "donsdecorps@univ-lyon1.fr",
         "is_primary": true,
         "is_billing": false,
@@ -364,7 +378,7 @@
         "contact_id.legal_identifier": "19691774400019"
     },
     {
-        "contact_id": 111,
+        "contact_id": 29,
         "email": "ecole.de.chirurgie@u-bordeaux.fr",
         "is_primary": true,
         "is_billing": false,
@@ -378,7 +392,7 @@
         "contact_id.legal_identifier": "13001835100010"
     },
     {
-        "contact_id": 112,
+        "contact_id": 30,
         "email": "anatomie@univ-lille.fr",
         "is_primary": true,
         "is_billing": false,

@@ -29,7 +29,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Restitution_28',
-        'field_name' => 'custom_46',
+        'field_name' => 'custom_48',
         'label' => E::ts('Souhait funeraire personne reférente'),
         'field_type' => 'Donateur',
       ],
@@ -44,7 +44,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Restitution_28',
-        'field_name' => 'custom_44',
+        'field_name' => 'custom_46',
         'label' => E::ts('Date de restitution'),
         'field_type' => 'Donateur',
       ],
@@ -59,7 +59,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Restitution_28',
-        'field_name' => 'custom_45',
+        'field_name' => 'custom_47',
         'label' => E::ts('Pompes funèbres mandatées par personne référente'),
         'field_type' => 'Donateur',
       ],

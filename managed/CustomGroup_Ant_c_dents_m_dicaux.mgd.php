@@ -404,6 +404,7 @@ return [
         'label' => E::ts('Inconnue'),
         'value' => '1',
         'name' => 'Inconnue',
+        'description' => E::ts(''),
       ],
       'match' => [
         'option_group_id',
@@ -501,9 +502,10 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
-        'label' => E::ts('Tutelle'),
+        'label' => E::ts('Tutelle postérieure à l\'inscription'),
         'value' => '6',
         'name' => 'Tutelle',
+        'description' => E::ts(''),
       ],
       'match' => [
         'option_group_id',
@@ -525,6 +527,7 @@ return [
         'label' => E::ts('Protection juridique'),
         'data_type' => 'Int',
         'html_type' => 'Select',
+        'default_value' => '1',
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,

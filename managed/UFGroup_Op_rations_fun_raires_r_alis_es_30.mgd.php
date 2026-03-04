@@ -11,7 +11,7 @@ return [
       'version' => 4,
       'values' => [
         'name' => 'Op_rations_fun_raires_r_alis_es_30',
-        'group_type' => ['Contact'],
+        'group_type' => ['Donateur'],
         'title' => E::ts('Opérations funéraires réalisées'),
         'frontend_title' => E::ts('Opérations funéraires réalisées'),
         'is_update_dupe' => TRUE,
@@ -29,7 +29,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Op_rations_fun_raires_r_alis_es_30',
-        'field_name' => 'custom_41',
+        'field_name' => 'custom_43',
         'label' => E::ts('Date de sortie définitive'),
         'field_type' => 'Donateur',
       ],
@@ -44,7 +44,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Op_rations_fun_raires_r_alis_es_30',
-        'field_name' => 'custom_40',
+        'field_name' => 'custom_42',
         'label' => E::ts('Type d\'opération funéraire réalisée'),
         'field_type' => 'Donateur',
       ],
@@ -59,7 +59,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Op_rations_fun_raires_r_alis_es_30',
-        'field_name' => 'custom_42',
+        'field_name' => 'custom_44',
         'label' => E::ts('Date opérations funéraires'),
         'field_type' => 'Donateur',
       ],
@@ -74,7 +74,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Op_rations_fun_raires_r_alis_es_30',
-        'field_name' => 'custom_43',
+        'field_name' => 'custom_45',
         'label' => E::ts('Date approximative de réalisation des opérations funéraires'),
         'field_type' => 'Donateur',
       ],
