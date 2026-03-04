@@ -21,7 +21,7 @@ define("VERBOSE","1"); // mettre à 1 pour afficher les messages lors de l'insta
 define("LOGFILE", CRM_Core_Config::singleton()->configAndLogDir."/civicrm_ddc_installation.log"); // définition du ficher de log dans wp-content/uploads/civicrm/ConfigAndLogs
 
 
-if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
+if (is_writable(LOGFILE)) {  // le ficher log existe 
 
       // Dans notre exemple, nous ouvrons le fichier $logfile en mode d'ajout
       // Le pointeur de fichier est placé à la fin du fichier
@@ -34,7 +34,11 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
   } else {  // le fichier log n'existe pas  ; le créer
       $fp = fopen(LOGFILE, 'c+b');
       echo "Création nouveau log : ".LOGFILE."\n";
+      fclose($fp);
   }
+
+  chown(LOGFILE, 'www-data');
+  chgrp(LOGFILE, 'www-data');
 
 
 # DEFINITION DES FONCTIONS
@@ -1709,7 +1713,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
   # @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed*/
 
   function don_corps_civicrm_managed(&$entities) {
-    //_don_corps_civix_civicrm_managed($entities);
+   // _don_corps_civix_civicrm_managed($entities);
 
     // Load the triggers when civirules is installed.
     if (_don_corps_is_civirules_installed()) {
@@ -3022,7 +3026,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
  
 
   function don_corps_civicrm_enable(): void {   // pas d'affcicahge des messages consoles lors installation
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    /* $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
     $msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_enable ".PHP_EOL;
     fwrite($fp, $msg);
     echo $msg;
@@ -3072,7 +3076,8 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       ]);
       /// FIN Activation des groupes de contacts personalisés crées par l'extension
 
-    $msg= "  - Activation des relations personnalisés crées par l'extension".PHP_EOL;
+    
+      $msg= "  - Activation des relations personnalisés crées par l'extension".PHP_EOL;
       fwrite($fp, $msg);
       echo $msg;
       $results = civicrm_api4('RelationshipType', 'update', [
@@ -3358,7 +3363,8 @@ if (is_writable(LOGFILE)) {  // le ficher log existe ; on l'ouvre
       } 
       // Fin de Création des correspondances de mots
   fclose($fp);
-  }
+ */  }
+
 
 # IMPLEMENTS hook_civicrm_postInstall().
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
