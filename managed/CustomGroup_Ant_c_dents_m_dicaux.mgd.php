@@ -404,7 +404,6 @@ return [
         'label' => E::ts('Inconnue'),
         'value' => '1',
         'name' => 'Inconnue',
-        'description' => E::ts(''),
       ],
       'match' => [
         'option_group_id',
@@ -505,7 +504,6 @@ return [
         'label' => E::ts('Tutelle postérieure à l\'inscription'),
         'value' => '6',
         'name' => 'Tutelle',
-        'description' => E::ts(''),
       ],
       'match' => [
         'option_group_id',

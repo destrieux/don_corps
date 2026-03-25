@@ -37,8 +37,8 @@ if (is_writable(LOGFILE)) {  // le ficher log existe
       fclose($fp);
   }
 
-  chown(LOGFILE, 'www-data');
-  chgrp(LOGFILE, 'www-data');
+  //chown(LOGFILE, 'www-data');  // si les droits ne sont pas bons ici les menus ne s'affichent plus !!
+  //chgrp(LOGFILE, 'www-data');
 
 
 # DEFINITION DES FONCTIONS
@@ -2940,8 +2940,8 @@ if (is_writable(LOGFILE)) {  // le ficher log existe
             'name_b_a' => 'en attente',
             'label_b_a' => E::ts('en attente'),
             'description' => E::ts('en attente de creation'),
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Individual',
+            'contact_type_a' => NULL,
+            'contact_type_b' => NULL,
             'contact_sub_type_a' => NULL,
             'contact_sub_type_b' => NULL,
             'is_reserved' => FALSE,
@@ -3383,6 +3383,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe
         'dateformatDatetime'=> "%e %B %Y",
         // 'dateformatDatetime'=> "%e %B %Y %H:%M",
         'theme_backend'  => "greenwich",
+        'smartGroupCacheTimeout' => 0,
         'dateformatFull' => "%e %B %Y",
         'dateformatTime' => "%H:%M",
         'dateformatFinancialBatch' => "dd-mm-yyyy",
@@ -6247,6 +6248,25 @@ if (is_writable(LOGFILE)) {  // le ficher log existe
           'msg_subject' => "Envoi d'informations d'inscription",
           'msg_text' => NULL,
           'msg_html' => "<p>{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label},</p>\r\n\r\n<p>Je vous remercie de votre volonté de donner votre corps à des fins d’enseignement et de recherche et vous engage à consulter notre site web : <strong><a href=\"https://dons-corps.univ-tours.fr\">{domain.description}</a>.</strong></p>\r\n\r\n<p>Vous y trouverez de nombreuses informations et des réponses aux principales questions que vous pourriez vous poser.</p>\r\n\r\n<p>Vous pourrez télécharger les documents nécessaires à votre inscription :<br />\r\n<strong>1) le guide d’information officiel : <a href=\"https://dons-corps.univ-tours.fr/medias/fichier/guide-information-juil2024-avectours_1733124203133-pdf?ID_FICHE=402072&amp;INLINE=FALSE\">Téléchargez le guide</a></strong></p>\r\n\r\n<p><strong>2)&nbsp; le formulaire de promesse de don à nous retourner par courrier si vous poursuivez votre démarche : <a href=\"https://dons-corps.univ-tours.fr/medias/fichier/declaration-consentement-don-corps-avecrgpd-2023-09-22_1759243997537-pdf?ID_FICHE=402072&amp;INLINE=FALSE\">Téléchargez le dossier d'inscription</a></strong></p>\r\n\r\n<p>N’hésitez pas à nous contacter si vous avez besoin d’information complémentaire</p>\r\n\r\n<p>Je vous remercie à nouveau de votre intérêt pour le don du corps et vous prie d'agréer, {Tokens_for_contact_Champs_de_fu.postal_greeting_id:label}, l'expression de ma parfaite considération.</p>\r\n\r\n<p>{domain.supplemental_address_3}<br />\r\nCentre d'accueil des corps de {domain.city}</p>",
+          'is_active' => TRUE,
+          'workflow_id' => NULL,
+          'workflow_name' => NULL,
+          'is_default' => TRUE,
+          'is_reserved' => FALSE,
+          'is_sms' => FALSE,
+          'pdf_format_id' => 0,
+        ],
+      ];
+      create_entity($to_create);
+
+
+      $to_create =  [       
+        'entity' => 'MessageTemplate',
+        'values' => [
+          'msg_title' => '002 - Préinscription: envoi informations POSTALE',
+          'msg_subject' => "Envoi d'informations d'inscription",
+          'msg_text' => NULL,
+          'msg_html' => "<p>{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label},</p>\r\n\r\n<p>Je vous remercie de votre volonté de donner votre corps à des fins d’enseignement et de recherche.</p>\r\n\r\n<p>Nous allons vous adresser très prochainement votre dossier d'inscription par voie postale.</p>\r\n\r\n<p>Vous pouvez consulter notre site web : <strong><a href=\"https://dons-corps.univ-tours.fr\">{domain.description}</a>&nbsp;</strong>où vous<strong>&nbsp;</strong>trouverez de nombreuses informations et des réponses aux questions que vous pourriez vous poser.</p>\r\n\r\n<p>Je vous remercie à nouveau de votre intérêt pour le don du corps et vous prie d'agréer, {Tokens_for_contact_Champs_de_fu.postal_greeting_id:label}, l'expression de ma parfaite considération.</p>\r\n\r\n<p>{domain.supplemental_address_3}<br />\r\nCentre d'accueil des corps de {domain.city}</p>",
           'is_active' => TRUE,
           'workflow_id' => NULL,
           'workflow_name' => NULL,

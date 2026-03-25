@@ -427,7 +427,7 @@ switch ($entity) {
         'select' => [
             'id',
             'N_de_pi_ce_ou_de_corps',
-            'Compl_ment' => '',
+            'Compl_ment',
             'D_lai_en_heure_entre_d_c_s_h_0_et_injection',
             'D_lai_en_heure_entre_d_c_s_h_0_et_pr_l_vement_ventuel',
             'Date_de_retour',
@@ -448,6 +448,7 @@ switch ($entity) {
             'Inventaires:name',
 
             'Lacalisation',
+            'Complement_location',
             'Pr_par_par',
             'entity_id',
 
@@ -1446,6 +1447,8 @@ switch ($entity) {
         'activity_status',
         'document_status',
         'document_type',
+
+        'Protocoles_in_vivo.intitul_du_protocole',
 
 
         //'contribution_status',  

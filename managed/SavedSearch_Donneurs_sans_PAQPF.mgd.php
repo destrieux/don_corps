@@ -26,6 +26,13 @@ return [
           'orderBy' => [],
           'where' => [
             [
+              'groups:name',
+              'NOT IN',
+              [
+                'donneur_avec_P_27',
+              ],
+            ],
+            [
               'contact_sub_type:name',
               'CONTAINS ONE OF',
               ['Donateur'],
@@ -84,6 +91,11 @@ return [
                 'id',
                 '=',
                 'Contact_RelationshipCache_Contact_01.far_contact_id',
+              ],
+              [
+                'Contact_RelationshipCache_Contact_01.is_active',
+                '=',
+                TRUE,
               ],
             ],
           ],
