@@ -30,7 +30,7 @@ function permute_names () {
   echo "Dans le cas ou nick_name n'est pas connu inialement, rien n'est modifié".PHP_EOL;
   echo "##############".PHP_EOL;
 
-  ## On récupère les contacts ayant un nom de naissance (nick_name) dans l'installation initiale
+  ## On récupère les contacts ayant un nom de naissance (nick_name) dans l'installation initiale et non anonymisés
     $contacts = civicrm_api4('Contact', 'get', [
       'select' => [
         'id',
@@ -40,6 +40,7 @@ function permute_names () {
       'where' => [
         ['contact_type', '=', 'Individual'],
         ['nick_name', '!=', null],
+        ['last_name', '!=', 'ANONYMISE'],
       ],
       'checkPermissions' => FALSE,
     ]);
