@@ -16,7 +16,7 @@ return [
         'api_params' => [
           'version' => 4,
           'select' => [
-            'sort_name',
+            'last_name',
             'nick_name',
             'first_name',
             'organization_name',
@@ -56,10 +56,7 @@ return [
         'settings' => [
           'description' => E::ts(''),
           'sort' => [
-            [
-              'CONCAT_WS_last_name_nick_name',
-              'ASC',
-            ],
+            ['last_name', 'ASC'],
             ['first_name', 'ASC'],
           ],
           'limit' => 50,
@@ -68,7 +65,7 @@ return [
           'columns' => [
             [
               'type' => 'field',
-              'key' => 'sort_name',
+              'key' => 'last_name',
               'label' => E::ts('Nom patronymique'),
               'sortable' => TRUE,
               'link' => [
@@ -107,6 +104,15 @@ return [
               'key' => 'organization_name',
               'label' => E::ts('Nom de l\'organisation'),
               'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
             ],
             [
               'type' => 'field',
@@ -150,6 +156,15 @@ return [
               'dataType' => 'String',
               'label' => E::ts('N° de don'),
               'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
             ],
             [
               'type' => 'field',
@@ -157,6 +172,15 @@ return [
               'dataType' => 'String',
               'label' => E::ts('N° annulation'),
               'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
             ],
             [
               'type' => 'field',
@@ -164,6 +188,15 @@ return [
               'dataType' => 'String',
               'label' => E::ts('N° de décès'),
               'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
             ],
             [
               'type' => 'field',
