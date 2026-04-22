@@ -18,6 +18,7 @@ return [
           'select' => [
             'Promesse_de_don.N_de_don',
             'display_name',
+            'nick_name',
             'birth_date',
             'age_years',
             'Annulation.N_annulation',
@@ -97,6 +98,12 @@ return [
             ],
             [
               'type' => 'field',
+              'key' => 'nick_name',
+              'label' => E::ts('Nom d\'usage'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
               'key' => 'display_name',
               'dataType' => 'String',
               'label' => E::ts('Nom'),
@@ -138,6 +145,7 @@ return [
           'actions' => TRUE,
           'classes' => ['table', 'table-striped'],
           'headerCount' => TRUE,
+          'actions_display_mode' => 'menu',
         ],
       ],
       'match' => [

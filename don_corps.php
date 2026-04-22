@@ -37,8 +37,13 @@ if (is_writable(LOGFILE)) {  // le ficher log existe
       fclose($fp);
   }
 
-  //chown(LOGFILE, 'www-data');  // si les droits ne sont pas bons ici les menus ne s'affichent plus !!
-  //chgrp(LOGFILE, 'www-data');
+// change le propriétaire et le groupe du fichier de log identique au repertoire de log principal
+// dans le cas contraire, les menus ne s'affichent pas 
+$own= fileowner(CRM_Core_Config::singleton()->configAndLogDir);
+$grp= filegroup(CRM_Core_Config::singleton()->configAndLogDir);
+chown(LOGFILE, $own);
+chgrp(LOGFILE, $grp);
+
 
 
 # DEFINITION DES FONCTIONS

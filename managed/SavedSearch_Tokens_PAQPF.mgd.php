@@ -17,19 +17,17 @@ return [
           'version' => 4,
           'select' => [
             'display_name',
-            'Contact_RelationshipCache_Contact_01.near_contact_id.display_name',
+            'Contact_RelationshipCache_Contact_01.far_relation:label',
+            'CONCAT_WS(" / ", Contact_RelationshipCache_Contact_01.last_name, Contact_RelationshipCache_Contact_01.nick_name) AS CONCAT_WS_Contact_RelationshipCache_Contact_01_last_name_Contact_RelationshipCache_Contact_01_nick_name',
+            'Contact_RelationshipCache_Contact_01.first_name',
             'id',
             'Contact_RelationshipCache_Contact_01.address_primary.supplemental_address_1',
             'Contact_RelationshipCache_Contact_01.address_primary.postal_code',
             'Contact_RelationshipCache_Contact_01.address_primary.city',
-            'Contact_RelationshipCache_Contact_01_Contact_Email_contact_id_01.email',
             'Contact_RelationshipCache_Contact_01.phone_primary.phone',
             'Contact_RelationshipCache_Contact_01.address_primary.street_address',
             'Contact_RelationshipCache_Contact_01.email_greeting_display',
             'Contact_RelationshipCache_Contact_01.postal_greeting_display',
-            'id',
-            'id',
-            'id',
             'id',
           ],
           'orderBy' => [],
@@ -40,8 +38,28 @@ return [
               'Donateur',
             ],
             [
-              'Contact_RelationshipCache_Contact_01.far_contact_id.display_name',
-              'IS NOT EMPTY',
+              'OR',
+              [
+                [
+                  'Contact_RelationshipCache_Contact_01.far_relation:name',
+                  'IS EMPTY',
+                ],
+                [
+                  'AND',
+                  [
+                    [
+                      'Contact_RelationshipCache_Contact_01.far_relation:name',
+                      '=',
+                      'a pour PAQPF',
+                    ],
+                    [
+                      'Contact_RelationshipCache_Contact_01.is_active',
+                      '=',
+                      TRUE,
+                    ],
+                  ],
+                ],
+              ],
             ],
           ],
           'groupBy' => [],
@@ -54,25 +72,6 @@ return [
                 'id',
                 '=',
                 'Contact_RelationshipCache_Contact_01.far_contact_id',
-              ],
-              [
-                'Contact_RelationshipCache_Contact_01.far_relation:name',
-                '=',
-                '"a pour PAQPF"',
-              ],
-              [
-                'Contact_RelationshipCache_Contact_01.is_active',
-                '=',
-                TRUE,
-              ],
-            ],
-            [
-              'Email AS Contact_RelationshipCache_Contact_01_Contact_Email_contact_id_01',
-              'LEFT',
-              [
-                'Contact_RelationshipCache_Contact_01.id',
-                '=',
-                'Contact_RelationshipCache_Contact_01_Contact_Email_contact_id_01.contact_id',
               ],
             ],
           ],
@@ -98,9 +97,13 @@ return [
           'columns' => [
             [
               'type' => 'field',
-              'key' => 'Contact_RelationshipCache_Contact_01.near_contact_id.display_name',
-              'dataType' => 'String',
-              'label' => E::ts('PAQPF_nomAffiche'),
+              'key' => 'CONCAT_WS_Contact_RelationshipCache_Contact_01_last_name_Contact_RelationshipCache_Contact_01_nick_name',
+              'label' => E::ts('PAQPF_noms'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Contact_RelationshipCache_Contact_01.first_name',
+              'label' => E::ts('PAQPF_prénom'),
             ],
             [
               'type' => 'field',
@@ -119,12 +122,6 @@ return [
               'key' => 'Contact_RelationshipCache_Contact_01.address_primary.city',
               'dataType' => 'String',
               'label' => E::ts('PAQPF_Ville'),
-            ],
-            [
-              'type' => 'field',
-              'key' => 'Contact_RelationshipCache_Contact_01_Contact_Email_contact_id_01.email',
-              'dataType' => 'String',
-              'label' => E::ts('PAQPF_Courriel'),
             ],
             [
               'type' => 'field',

@@ -65,7 +65,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Type_de_contact_23',
         'field_name' => 'last_name',
-        'label' => E::ts('Nom de famille'),
+        'label' => E::ts('Nom patonymique (naissance)'),
         'field_type' => 'Individual',
       ],
     ],
@@ -80,7 +80,7 @@ return [
       'values' => [
         'uf_group_id.name' => 'Type_de_contact_23',
         'field_name' => 'nick_name',
-        'label' => E::ts('Nom de naissance'),
+        'label' => E::ts('Nom d\'usage'),
         'field_type' => 'Contact',
       ],
     ],

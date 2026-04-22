@@ -18,6 +18,7 @@ return [
           'select' => [
             'Promesse_de_don.N_de_don',
             'display_name',
+            'nick_name',
             'birth_date',
             'age_years',
             'deceased_date',
@@ -109,6 +110,12 @@ return [
             ],
             [
               'type' => 'field',
+              'key' => 'nick_name',
+              'label' => E::ts('Nom d\'usage'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
               'key' => 'birth_date',
               'dataType' => 'Date',
               'label' => E::ts('Date de naissance'),
@@ -162,6 +169,7 @@ return [
           'actions' => TRUE,
           'classes' => ['table', 'table-striped'],
           'headerCount' => TRUE,
+          'actions_display_mode' => 'menu',
         ],
       ],
       'match' => [

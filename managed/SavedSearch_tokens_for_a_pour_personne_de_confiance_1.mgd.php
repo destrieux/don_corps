@@ -18,6 +18,8 @@ return [
           'select' => [
             'display_name',
             'Contact_RelationshipCache_Contact_01.near_contact_id.display_name',
+            'CONCAT_WS(" / ", Contact_RelationshipCache_Contact_01.last_name, Contact_RelationshipCache_Contact_01.nick_name) AS CONCAT_WS_Contact_RelationshipCache_Contact_01_last_name_Contact_RelationshipCache_Contact_01_nick_name',
+            'Contact_RelationshipCache_Contact_01.first_name',
             'id',
             'Contact_RelationshipCache_Contact_01.address_primary.supplemental_address_1',
             'Contact_RelationshipCache_Contact_01.address_primary.postal_code',
@@ -27,7 +29,6 @@ return [
             'Contact_RelationshipCache_Contact_01.address_primary.street_address',
             'Contact_RelationshipCache_Contact_01.email_greeting_id:label',
             'Contact_RelationshipCache_Contact_01.postal_greeting_id:label',
-            'id',
             'id',
           ],
           'orderBy' => [],
@@ -96,9 +97,14 @@ return [
           'columns' => [
             [
               'type' => 'field',
-              'key' => 'Contact_RelationshipCache_Contact_01.near_contact_id.display_name',
-              'dataType' => 'String',
-              'label' => E::ts('nom'),
+              'key' => 'CONCAT_WS_Contact_RelationshipCache_Contact_01_last_name_Contact_RelationshipCache_Contact_01_nick_name',
+              'rewrite' => '',
+              'label' => E::ts('Nom'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Contact_RelationshipCache_Contact_01.first_name',
+              'label' => E::ts('Prenom'),
             ],
             [
               'type' => 'field',

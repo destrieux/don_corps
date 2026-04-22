@@ -19,8 +19,7 @@ return [
             'id',
             'contact_sub_type:label',
             'display_name',
-            'Contact_RelationshipCache_Contact_01.far_relation:label',
-            'Contact_RelationshipCache_Contact_01.near_relation:label',
+            'GROUP_CONCAT(DISTINCT Contact_RelationshipCache_Contact_01.near_contact_id.display_name) AS GROUP_CONCAT_Contact_RelationshipCache_Contact_01_near_contact_id_display_name',
           ],
           'orderBy' => [],
           'where' => [
@@ -28,11 +27,6 @@ return [
               'contact_sub_type:name',
               'CONTAINS',
               'Proches',
-            ],
-            [
-              'Contact_RelationshipCache_Contact_01.is_current',
-              '=',
-              FALSE,
             ],
             [
               'contact_sub_type:name',
@@ -45,11 +39,11 @@ return [
               'Donateur',
             ],
           ],
-          'groupBy' => [],
+          'groupBy' => ['id'],
           'join' => [
             [
               'Contact AS Contact_RelationshipCache_Contact_01',
-              'LEFT',
+              'EXCLUDE',
               'RelationshipCache',
               [
                 'id',

@@ -16,8 +16,10 @@ return [
         'api_params' => [
           'version' => 4,
           'select' => [
-            'last_name',
+            'sort_name',
+            'nick_name',
             'first_name',
+            'organization_name',
             'contact_sub_type:label',
             'birth_date',
             'deceased_date',
@@ -26,8 +28,6 @@ return [
             'Annulation.N_annulation',
             'Prise_en_charge_au_d_c_s.N_de_d_c_s',
             'Devenir_du_corps.Date_op_rations_fun_raires',
-            'display_name',
-            'sort_name',
             'id',
           ],
           'orderBy' => [],
@@ -56,7 +56,10 @@ return [
         'settings' => [
           'description' => E::ts(''),
           'sort' => [
-            ['last_name', 'ASC'],
+            [
+              'CONCAT_WS_last_name_nick_name',
+              'ASC',
+            ],
             ['first_name', 'ASC'],
           ],
           'limit' => 50,
@@ -66,8 +69,7 @@ return [
             [
               'type' => 'field',
               'key' => 'sort_name',
-              'dataType' => 'String',
-              'label' => E::ts('Nom'),
+              'label' => E::ts('Nom patronymique'),
               'sortable' => TRUE,
               'link' => [
                 'path' => '',
@@ -75,8 +77,36 @@ return [
                 'action' => 'view',
                 'join' => '',
                 'target' => '',
+                'task' => '',
               ],
               'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'nick_name',
+              'label' => E::ts('Nom d\'usage'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'first_name',
+              'label' => E::ts('Prénom'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'organization_name',
+              'label' => E::ts('Nom de l\'organisation'),
+              'sortable' => TRUE,
             ],
             [
               'type' => 'field',
