@@ -1140,7 +1140,7 @@
         "user_unique_id": null,
         "is_deleted": false,
         "created_date": null,
-        "modified_date": "2026-04-20 17:16:39",
+        "modified_date": "2026-04-23 09:19:52",
         "preferred_mail_format": "Both",
         "CDC_admin.Directeur_du_Centre_d_accueil": "Christophe Destrieux",
         "CDC_admin.Gestionnaire_du_centre_d_accueil": null,
