@@ -17,7 +17,9 @@ return [
           'version' => 4,
           'select' => [
             'id',
-            'display_name',
+            'prefix_id:label',
+            'first_name',
+            'CONCAT_WS(" / ", last_name, nick_name) AS CONCAT_WS_last_name_nick_name',
             'employer_id.display_name',
             'infos_personnel.Date_debut_fonctions',
             'infos_personnel.Date_fin_fonctions',
@@ -86,9 +88,30 @@ return [
           'columns' => [
             [
               'type' => 'field',
-              'key' => 'display_name',
+              'key' => 'prefix_id:label',
+              'label' => E::ts('Civilité'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'first_name',
+              'label' => E::ts('Prénom'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'CONCAT_WS_last_name_nick_name',
               'label' => E::ts('Nom'),
               'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
             ],
             [
               'type' => 'field',
