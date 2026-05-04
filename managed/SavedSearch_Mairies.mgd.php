@@ -102,7 +102,7 @@ return [
                 'entity' => 'Contact',
                 'action' => 'view',
                 'join' => '',
-                'target' => '',
+                'target' => '_blank',
               ],
               'title' => E::ts('Voir Contact'),
             ],
@@ -144,6 +144,7 @@ return [
           ],
           'actions' => TRUE,
           'classes' => ['table', 'table-striped'],
+          'actions_display_mode' => 'menu',
         ],
       ],
       'match' => [

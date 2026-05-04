@@ -196,6 +196,15 @@ return [
               'label' => E::ts('N° de décès'),
               'sortable' => TRUE,
               'alignment' => 'text-center',
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => 'Contact_RelationshipCache_Contact_01',
+                'target' => '_blank',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact Contacts liés'),
             ],
             [
               'type' => 'field',

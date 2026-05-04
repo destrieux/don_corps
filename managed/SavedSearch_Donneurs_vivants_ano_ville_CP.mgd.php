@@ -124,6 +124,15 @@ return [
               'dataType' => 'String',
               'label' => E::ts('N° de don'),
               'sortable' => TRUE,
+              'link' => [
+                'path' => '',
+                'entity' => 'Contact',
+                'action' => 'view',
+                'join' => '',
+                'target' => '_blank',
+                'task' => '',
+              ],
+              'title' => E::ts('Voir Contact'),
             ],
             [
               'type' => 'field',

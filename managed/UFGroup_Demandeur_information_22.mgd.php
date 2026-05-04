@@ -83,8 +83,27 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Demandeur_information_22',
+        'field_name' => 'nick_name',
+        'is_required' => TRUE,
+        'in_selector' => TRUE,
+        'is_searchable' => TRUE,
+        'label' => E::ts('Nom d\'usage'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Demandeur_information_22_UFField_5',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Demandeur_information_22',
         'field_name' => 'first_name',
         'is_required' => TRUE,
+        'visibility' => 'Public Pages and Listings',
         'in_selector' => TRUE,
         'is_searchable' => TRUE,
         'label' => E::ts('Prénom'),
@@ -93,7 +112,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_Demandeur_information_22_UFField_5',
+    'name' => 'UFGroup_Demandeur_information_22_UFField_6',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
