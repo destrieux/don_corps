@@ -18,6 +18,28 @@ return [
     ],
   ],
   [
+    'name' => 'OptionGroup_postal_greeting_OptionValue_Customized',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'postal_greeting',
+        'label' => E::ts('Madame, Monsieur,'),
+        'value' => '4',
+        'name' => 'Customized',
+        'is_default' => TRUE,
+        'is_reserved' => TRUE,
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
     'name' => 'OptionGroup_postal_greeting_OptionValue_Dear_contact_first_name_',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
@@ -73,28 +95,6 @@ return [
         'value' => '3',
         'name' => 'Dear {contact.prefix_id:label} {contact.last_name}',
         'filter' => 1,
-      ],
-      'match' => [
-        'option_group_id',
-        'name',
-        'value',
-      ],
-    ],
-  ],
-  [
-    'name' => 'OptionGroup_postal_greeting_OptionValue_Customized',
-    'entity' => 'OptionValue',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'option_group_id.name' => 'postal_greeting',
-        'label' => E::ts('Madame, Monsieur,'),
-        'value' => '4',
-        'name' => 'Customized',
-        'is_default' => TRUE,
-        'is_reserved' => TRUE,
       ],
       'match' => [
         'option_group_id',
