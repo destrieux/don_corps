@@ -3006,7 +3006,7 @@ chgrp(LOGFILE, $grp);
       // Fin de la Déactivation des types de relation par défaut  
 
       
-  /*     $msg= "  - Déactivation des champs du profil par defaut ".PHP_EOL; // sans cela le profil contient de champs suppléntaiers
+   /*     $msg= "  - Déactivation des champs du profil par defaut ".PHP_EOL; // sans cela le profil contient de champs suppléntaiers
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
@@ -4436,14 +4436,13 @@ chgrp(LOGFILE, $grp);
             'msg_subject' => 'Merci de demander crémation pour : {contact.display_name}',
             'msg_text' => NULL,
             'msg_html' => '<p>Bonjour</p>
-        <p>Merci de prévoir le transfert et de nous communiquer la date de crémation de :</p>
-        <p>{contact.display_name}</p>
-        <p>né(e)&nbsp;{contact.nick_name} le {contact.birth_date} à </p>
-        <p>décédé(e) le {contact.deceased_date} à </p>
-        <p><br />
-        Nous restons à votre disposition pour tout renseignement complémentaire</p>
-        <p>Les techniciens du laboratoire de {domain.city}</p>
-        <p>&nbsp;</p>',
+              <p>Merci de prévoir le transfert et de nous communiquer la date de crémation de :</p>
+              <p>{Tokens_for_contact_Champs_de_fu.postal_greeting_id:label} {contact.first_name} {Tokens_for_contact_Champs_de_fu.CONCAT_WS_last_name_nick_name}</p>
+              <p>né(e)&nbsp; le {contact.birth_date} à {Tokens_for_contact_Champs_de_fu.Compl_m_nt_tat_civil.Ville_de_naissance}</p>
+              <p>décédé(e) le {contact.deceased_date} à {Tokens_for_contact_Champs_de_fu.Prise_en_charge_au_d_c_s.Ville_de_d_c_s}</p>
+              <p><br />
+              Nous restons à votre disposition pour tout renseignement complémentaire</p>
+              <p>Les techniciens du laboratoire de {domain.city}</p>',
             'is_active' => TRUE,
             'workflow_id' => NULL,
             'workflow_name' => NULL,
