@@ -43,6 +43,11 @@ return [
               'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
               'IS NOT EMPTY',
             ],
+            [
+              'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
+              '!=',
+              'Pièce anatomique isolée',
+            ],
           ],
           'groupBy' => [],
           'join' => [],

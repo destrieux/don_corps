@@ -1440,4 +1440,24 @@ return [
       ],
     ],
   ],
+  [
+    'name' => 'OptionGroup_activity_type_OptionValue_event_message_sent',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'activity_type',
+        'label' => E::ts('Event Message sent'),
+        'value' => '63',
+        'name' => 'event_message_sent',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
 ];
