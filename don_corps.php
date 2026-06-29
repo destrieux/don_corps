@@ -1766,6 +1766,7 @@ chgrp(LOGFILE, $grp);
           ['full_name', '=', 'org.civicoop.civirules'],
         ],
         'select' => ['version'],
+        'checkPermissions' => FALSE,
       ]);
 
       if (empty($ext[0]['version']) || version_compare($ext[0]['version'], '3.36.0', '<')) {
