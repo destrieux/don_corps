@@ -437,6 +437,74 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
     echo "Fichier de conversion sauvegardé : ".$exp_file.PHP_EOL;
   ## Fin de l'écriture de la table de correspondance
 
+
+### Export des CiviRulesRules
+
+$civiRulesRules = civicrm_api4('CiviRulesRule', 'get', [
+  'select' => [
+    'id',
+    'label',
+  ],
+  'where' => [
+    ['base_module', '=', 'don_corps'],
+  ], 
+      'orderBy' => [
+        'name' => 'ASC',
+  ],
+  'checkPermissions' => FALSE,
+]);
+
+
+
+  if(isset ($civiRulesRules[0])){
+    foreach ($civiRulesRules as $civiRulesRule){
+      echo "exporting CiviRulesRules ".$civiRulesRule['label']." (".$civiRulesRule['id'].")".PHP_EOL;
+      $cmd = "civix export CiviRulesRule ".$civiRulesRule['id'];
+      echo $cmd.PHP_EOL;
+      exec($cmd, $output, $retval);
+      echo "Returned with status $retval and output:\n";
+      print_r($output);
+      unset ($output);
+    }
+  }
+
+### Fin de l'export des CiviRulesRules
+
+### Export des CiviRulesAction
+
+$CiviRulesActions = civicrm_api4('CiviRulesAction', 'get', [
+  'select' => [
+    'id',
+    'label',
+  ],
+  'where' => [
+    ['base_module', '=', 'don_corps'],
+  ], 
+      'orderBy' => [
+        'name' => 'ASC',
+  ],
+  'checkPermissions' => FALSE,
+]);
+
+
+  if(isset ($CiviRulesActions[0])){
+    foreach ($CiviRulesActions as $CiviRulesAction){
+      echo "exporting CiviRulesAction ".$CiviRulesAction['label']." (".$CiviRulesAction['id'].")".PHP_EOL;
+      $cmd = "civix export CiviRulesAction ".$CiviRulesAction['id'];
+      echo $cmd.PHP_EOL;
+      exec($cmd, $output, $retval);
+      echo "Returned with status $retval and output:\n";
+      print_r($output);
+      unset ($output);
+    }
+  }
+
+### Fin de l'export des CiviRulesAction
+
+
+
+
+
   # Export des UF Groups avec civix export
     $uFGroups = civicrm_api4('UFGroup', 'get', [
         'select' => [
@@ -520,6 +588,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
       }
     }
 ### Fin de l'export des Tags
+
 
 ### Export des Saved searches non crées avec civix export afform (pour tokens et purges)
   $savedSearches = civicrm_api4('SavedSearch', 'get', [
