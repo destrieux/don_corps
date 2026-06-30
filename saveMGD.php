@@ -438,9 +438,9 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
   ## Fin de l'écriture de la table de correspondance
 
 
-### Export des CiviRulesRules
+### Export des CiviRulesRules ne fonctione pas bien 
 
-$civiRulesRules = civicrm_api4('CiviRulesRule', 'get', [
+/* $civiRulesRules = civicrm_api4('CiviRulesRule', 'get', [
   'select' => [
     'id',
     'label',
@@ -498,7 +498,7 @@ $CiviRulesActions = civicrm_api4('CiviRulesAction', 'get', [
       unset ($output);
     }
   }
-
+ */
 ### Fin de l'export des CiviRulesAction
 
 

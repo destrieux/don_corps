@@ -29,7 +29,6 @@ return [
             'id',
             'Annulation.Date_d_annulation',
             'Annulation.N_annulation',
-            'Arriv_e_du_corps_new.Effets_personnels_retir_s',
             'Prise_en_charge_au_d_c_s.Ville_de_d_c_s',
             'Devenir_du_corps.Date_de_sortie_d_finitive',
             'Devenir_du_corps.Date_op_rations_fun_raires',
@@ -158,12 +157,6 @@ return [
               'key' => 'Annulation.N_annulation',
               'dataType' => 'String',
               'label' => E::ts('AnnulationNum'),
-            ],
-            [
-              'type' => 'field',
-              'key' => 'Arriv_e_du_corps_new.Effets_personnels_retir_s',
-              'dataType' => 'Text',
-              'label' => E::ts('EffetsPerso'),
             ],
             [
               'type' => 'field',
