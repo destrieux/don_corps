@@ -1726,7 +1726,36 @@ chgrp(LOGFILE, $grp);
 
    }    // Fin de la définition de la fonction ajoute_CDC
 
-  function create_rules(){
+  function supprime_rules()
+   {
+    $civiRulesRules = civicrm_api4('CiviRulesRule', 'get', [
+      'select' => [
+        'id',
+      ],
+      'where' => [
+        ['OR', [['name', '=', 'déplace_un_lot_de_pièces_anatomiques_'], ['name', '=', 'supprime_lot_de_pièces'], ['name', '=', "création_d'inventaire"], ['name', '=', 'maj_genre_'], ['name', '=', 'update_pieces_et_utilisations'], ['name', '=', 'copie_code_barre_corps'], ['name', '=', 'envoyer_mail_si_demande_cremation'], ['name', '=', 'neutralise_adresse_postale']]],
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+
+    if (!empty($civiRulesRules[0]['id']))
+      {
+      foreach ($civiRulesRules as $civiRulesRule)
+
+        {
+          $results = civicrm_api4('CiviRulesRule', 'delete', [
+          'where' => [
+            ['id', '=', $civiRulesRule['id']],
+          ],
+          'checkPermissions' => FALSE,
+          ]);
+        }
+      }
+  }
+  
+  
+  
+   function create_rules(){
     ## les mgd files ne fonctionnent pas correctement car font référence aux id des activités, culstom fields...
     ## qui varient d'une installation à l'autre
     $msg="  - Création/MAJ des Rules".PHP_EOL;

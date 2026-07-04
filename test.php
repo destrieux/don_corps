@@ -943,6 +943,9 @@ if (empty($ext[0]['version']) || version_compare($ext[0]['version'], '3.36.0', '
 
 echo "OK".PHP_EOL;
 //require_once __DIR__ . '/don_corps.php';
+
+supprime_rules();
+
 create_rules();
 
 }
