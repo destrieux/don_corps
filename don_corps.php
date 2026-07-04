@@ -16,6 +16,20 @@ require_once 'don_corps.civix.php';
 use CRM_DonCorps_ExtensionUtil as E;
 use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouvelles actions pour utilation des corps
 
+/* function don_corps_civicrm_container(ContainerBuilder $container): void {
+$container
+  ->autowire(\Civi\EventSubscriber\CiviOfficeSearchKitTaskSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+
+$container
+  ->autowire(\Civi\EventSubscriber\CiviOfficeTokenContextSubscriber::class)
+  ->addTag('kernel.event_subscriber');
+} */
+
+
+
+
+
 define("VERBOSE","1"); // mettre à 1 pour afficher les messages lors de l'installation en plus des logs
 define("LOGFILE", CRM_Core_Config::singleton()->configAndLogDir."/civicrm_ddc_installation.log"); // définition du ficher de log dans wp-content/uploads/civicrm/ConfigAndLogs
 
@@ -6822,14 +6836,18 @@ chgrp(LOGFILE, $grp);
   }   // fin Implements hook_civicrm_postInstall().
 
 #IMPLEMENTS hook_civicrm_container().
-/* function don_corps_civicrm_container(ContainerBuilder $container): void {
+  function don_corps_civicrm_container(ContainerBuilder $container): void {
   ## Ajoute l'action imprimer document civioffice dans les utilisations du corps
   $container->autowire(\Civi\EventSubscriber\CiviOfficeSearchKitTaskSubscriber::class)->addTag('kernel.event_subscriber');
 
   ## Remonte tous les tokens d'utilisation du corps pour les rendre disponibles
   $container->autowire(\Civi\EventSubscriber\CiviOfficeTokenSubscriber::class)->addTag('kernel.event_subscriber');
+ 
+} 
 
-} */
+
+
+
 
 
 

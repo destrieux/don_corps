@@ -115,7 +115,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_donateur',
-        'field_name' => 'custom_56',
+        'field_name:name' => 'Promesse_de_don.Centre_de_don',
         'is_required' => TRUE,
         'in_selector' => TRUE,
         'label' => E::ts('Centre de don'),
@@ -132,7 +132,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_donateur',
-        'field_name' => 'custom_58',
+        'field_name:name' => 'Promesse_de_don.Date_du_don',
         'is_required' => TRUE,
         'visibility' => 'Public Pages and Listings',
         'in_selector' => TRUE,
@@ -150,7 +150,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_donateur',
-        'field_name' => 'custom_57',
+        'field_name:name' => 'Promesse_de_don.N_de_don',
         'is_required' => TRUE,
         'help_post' => E::ts('37#AAAA-NNNNN
 AAAA: année

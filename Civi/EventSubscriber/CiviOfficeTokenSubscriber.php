@@ -46,12 +46,10 @@ final class CiviOfficeTokenSubscriber extends AbstractTokenSubscriber {
     'cote2',
     'Utilisation2',
     'Protocole_de_recherche_ex_vivo2',
-    'Compl_ment',
     'M_dium_inject_',
+    'Bain_de_conservation',
     'Imagerie2',
     'Klingler2',
-    'Lacalisation',
-    'Complement_location',
   ];
 
   public static function getSubscribedEvents(): array {
@@ -65,6 +63,8 @@ final class CiviOfficeTokenSubscriber extends AbstractTokenSubscriber {
     parent::__construct('utilisationducorps', [
 
       'N_de_pi_ce_ou_de_corps' => 'N° de pièce',
+
+      'N_de_pi_ce_ou_de_corps_barcode' => 'N° de pièce (code-barres)',
 
       'Type_de_poi_ce_3' => 'Type de pièce',
 
@@ -82,9 +82,7 @@ final class CiviOfficeTokenSubscriber extends AbstractTokenSubscriber {
 
       'Klingler2' => 'Klingler',
 
-      'Lacalisation' => 'Localisation',
-
-      'Complement_location' => 'Complément localisation',
+      'Bain_de_conservation' => 'Bain de conservation',
 
     ]);
   }
@@ -106,45 +104,52 @@ final class CiviOfficeTokenSubscriber extends AbstractTokenSubscriber {
   }
 
   public function evaluateToken(
-    TokenRow $row,
+  TokenRow $row,
+  $entityName,
+  $field,
+  $prefetch = NULL
+): void {
+
+  $entityId = $row->context['utilisationId'];
+
+  // Le token "barcode" dépend du champ N_de_pi_ce_ou_de_corps
+  $select = ($field === 'N_de_pi_ce_ou_de_corps_barcode')
+    ? 'N_de_pi_ce_ou_de_corps'
+    : $field;
+
+  if (in_array($select, $this->optionFields, TRUE)) {
+    $select .= ':label';
+  }
+
+  $result = civicrm_api4(
+    'Custom_Utilisation_du_corps',
+    'get',
+    [
+      'select' => [$select],
+      'where' => [
+        ['id', '=', $entityId],
+      ],
+      'limit' => 1,
+    ],
+    FALSE
+  );
+
+  $value = $result[0][$select] ?? '';
+
+  if (is_array($value)) {
+    $value = implode(', ', $value);
+  }
+
+  // Calcul du token dérivé
+  if ($field === 'N_de_pi_ce_ou_de_corps_barcode') {
+    $value = '*' . $value . '*';
+  }
+
+  $row->tokens(
     $entityName,
     $field,
-    $prefetch = NULL
-  ): void {
-
-    $entityId = $row->context['utilisationId'];
-
-    $select = $field;
-
-    if (in_array($field, $this->optionFields, TRUE)) {
-      $select .= ':label';
-    }
-
-    $result = civicrm_api4(
-      'Custom_Utilisation_du_corps',
-      'get',
-      [
-        'select' => [$select],
-        'where' => [
-          ['id', '=', $entityId],
-        ],
-        'limit' => 1,
-      ],
-      FALSE
-    );
-
-    $value = $result[0][$select] ?? '';
-
-    if (is_array($value)) {
-      $value = implode(', ', $value);
-    }
-
-    $row->tokens(
-      $entityName,
-      $field,
-      (string) $value
-    );
-
-  }
+    (string) $value
+  );
+}
 
 }

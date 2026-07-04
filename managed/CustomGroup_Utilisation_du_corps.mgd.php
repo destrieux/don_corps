@@ -1779,16 +1779,16 @@ return [
     ],
   ],
   [
-    'name' => 'OptionGroup_Utilisation_du_corps_M_dium_de_conservation',
+    'name' => 'OptionGroup_Utilisation_du_corps_Bain_de_conservation',
     'entity' => 'OptionGroup',
     'cleanup' => 'unused',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
-        'name' => 'Utilisation_du_corps_M_dium_de_conservation',
-        'title' => E::ts('Utilisation du corps :: Médium de conservation'),
-        'data_type' => 'Int',
+        'name' => 'Utilisation_du_corps_Bain_de_conservation',
+        'title' => E::ts('Utilisation du corps :: Bain de conservation'),
+        'data_type' => 'String',
         'is_reserved' => FALSE,
         'option_value_fields' => ['name', 'label'],
       ],
@@ -1796,17 +1796,17 @@ return [
     ],
   ],
   [
-    'name' => 'OptionGroup_Utilisation_du_corps_M_dium_de_conservation_OptionValue_Formol_tamponn_4_',
+    'name' => 'OptionGroup_Utilisation_du_corps_Bain_de_conservation_OptionValue_Formol_4_tamponn_',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
-        'option_group_id.name' => 'Utilisation_du_corps_M_dium_de_conservation',
-        'label' => E::ts('Formol tamponné 4%'),
+        'option_group_id.name' => 'Utilisation_du_corps_Bain_de_conservation',
+        'label' => E::ts('Formol 4% tamponné'),
         'value' => '1',
-        'name' => 'Formol_tamponn_4_',
+        'name' => 'Formol_4_tamponn_',
       ],
       'match' => [
         'option_group_id',
@@ -1816,15 +1816,15 @@ return [
     ],
   ],
   [
-    'name' => 'OptionGroup_Utilisation_du_corps_M_dium_de_conservation_OptionValue_Formol_37_dilu_10_',
+    'name' => 'OptionGroup_Utilisation_du_corps_Bain_de_conservation_OptionValue_Formol_37_dilu_10_',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
-        'option_group_id.name' => 'Utilisation_du_corps_M_dium_de_conservation',
-        'label' => E::ts('Formol 37% dilué à 10%'),
+        'option_group_id.name' => 'Utilisation_du_corps_Bain_de_conservation',
+        'label' => E::ts('Formol 37% dilué 10%'),
         'value' => '2',
         'name' => 'Formol_37_dilu_10_',
       ],
@@ -1836,17 +1836,17 @@ return [
     ],
   ],
   [
-    'name' => 'OptionGroup_Utilisation_du_corps_M_dium_de_conservation_OptionValue_PBS_Azide_de_Sodium',
+    'name' => 'OptionGroup_Utilisation_du_corps_Bain_de_conservation_OptionValue_PBS_azide_de_Sodium',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
-        'option_group_id.name' => 'Utilisation_du_corps_M_dium_de_conservation',
-        'label' => E::ts('PBS Azide de Sodium'),
+        'option_group_id.name' => 'Utilisation_du_corps_Bain_de_conservation',
+        'label' => E::ts('PBS + azide de Sodium'),
         'value' => '3',
-        'name' => 'PBS_Azide_de_Sodium',
+        'name' => 'PBS_azide_de_Sodium',
       ],
       'match' => [
         'option_group_id',
@@ -1856,7 +1856,7 @@ return [
     ],
   ],
   [
-    'name' => 'CustomGroup_Utilisation_du_corps_CustomField_M_dium_de_conservation',
+    'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Bain_de_conservation',
     'entity' => 'CustomField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -1864,17 +1864,14 @@ return [
       'version' => 4,
       'values' => [
         'custom_group_id.name' => 'Utilisation_du_corps',
-        'name' => 'M_dium_de_conservation',
-        'label' => E::ts('Médium de conservation'),
-        'data_type' => 'Int',
+        'name' => 'Bain_de_conservation',
+        'label' => E::ts('Bain de conservation'),
         'html_type' => 'Select',
-        'is_searchable' => TRUE,
-        'help_pre' => E::ts('Liquide contenu dans le seau'),
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'm_dium_de_conservation_113',
-        'option_group_id.name' => 'Utilisation_du_corps_M_dium_de_conservation',
+        'column_name' => 'bain_de_conservation_115',
+        'option_group_id.name' => 'Utilisation_du_corps_Bain_de_conservation',
         'in_selector' => TRUE,
       ],
       'match' => [

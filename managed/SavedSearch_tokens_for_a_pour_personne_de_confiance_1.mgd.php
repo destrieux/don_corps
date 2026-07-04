@@ -17,6 +17,7 @@ return [
           'version' => 4,
           'select' => [
             'display_name',
+            'Contact_RelationshipCache_Contact_01.far_relation:label',
             'Contact_RelationshipCache_Contact_01.near_contact_id.display_name',
             'CONCAT_WS(" / ", Contact_RelationshipCache_Contact_01.last_name, Contact_RelationshipCache_Contact_01.nick_name) AS CONCAT_WS_Contact_RelationshipCache_Contact_01_last_name_Contact_RelationshipCache_Contact_01_nick_name',
             'Contact_RelationshipCache_Contact_01.first_name',
@@ -38,10 +39,6 @@ return [
               'CONTAINS',
               'Donateur',
             ],
-            [
-              'Contact_RelationshipCache_Contact_01.far_contact_id.display_name',
-              'IS NOT EMPTY',
-            ],
           ],
           'groupBy' => [],
           'join' => [
@@ -55,14 +52,18 @@ return [
                 'Contact_RelationshipCache_Contact_01.far_contact_id',
               ],
               [
-                'Contact_RelationshipCache_Contact_01.far_relation:name',
-                '=',
-                '"a pour personne de confiance 2"',
-              ],
-              [
-                'Contact_RelationshipCache_Contact_01.is_active',
-                '=',
-                TRUE,
+                'OR',
+                [
+                  [
+                    'Contact_RelationshipCache_Contact_01.relationship_id',
+                    'IS EMPTY',
+                  ],
+                  [
+                    'Contact_RelationshipCache_Contact_01.far_relation:name',
+                    '=',
+                    '"a pour personne de confiance 2"',
+                  ],
+                ],
               ],
             ],
             [
@@ -98,7 +99,7 @@ return [
             [
               'type' => 'field',
               'key' => 'CONCAT_WS_Contact_RelationshipCache_Contact_01_last_name_Contact_RelationshipCache_Contact_01_nick_name',
-              'rewrite' => '',
+              'rewrite' => '[CONCAT_WS_Contact_RelationshipCache_Contact_01_last_name_Contact_RelationshipCache_Contact_01_nick_name]',
               'label' => E::ts('Nom'),
             ],
             [

@@ -39,30 +39,6 @@ return [
               'CONTAINS',
               'Donateur',
             ],
-            [
-              'OR',
-              [
-                [
-                  'Contact_RelationshipCache_Contact_01.far_relation:name',
-                  'IS EMPTY',
-                ],
-                [
-                  'AND',
-                  [
-                    [
-                      'Contact_RelationshipCache_Contact_01.far_relation:name',
-                      '=',
-                      'a pour PAQPF',
-                    ],
-                    [
-                      'Contact_RelationshipCache_Contact_01.is_active',
-                      '=',
-                      TRUE,
-                    ],
-                  ],
-                ],
-              ],
-            ],
           ],
           'groupBy' => [],
           'join' => [
@@ -74,6 +50,20 @@ return [
                 'id',
                 '=',
                 'Contact_RelationshipCache_Contact_01.far_contact_id',
+              ],
+              [
+                'OR',
+                [
+                  [
+                    'Contact_RelationshipCache_Contact_01.relationship_id',
+                    'IS EMPTY',
+                  ],
+                  [
+                    'Contact_RelationshipCache_Contact_01.far_relation:name',
+                    '=',
+                    '"a pour PAQPF"',
+                  ],
+                ],
               ],
             ],
           ],
