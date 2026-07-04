@@ -155,6 +155,7 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
     } else {
       echo '- Mise à jour des rules'.PHP_EOL;
       \Civi::log('don_corps')->info('- Mise à jour des rules');
+      supprime_rules();
       create_rules();
 
     echo"- Mise à jour du cache".PHP_EOL;
