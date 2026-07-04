@@ -113,6 +113,10 @@ final class CiviOfficeTokenSubscriber extends AbstractTokenSubscriber {
   $entityId = $row->context['utilisationId'];
 
   // Le token "barcode" dépend du champ N_de_pi_ce_ou_de_corps
+  // Civioffice gère mal les polices : si deux instances du meme token apparaissent
+  // sule la police de la premiere est considéree
+  // ici on crée un second token pour les codes barres
+  
   $select = ($field === 'N_de_pi_ce_ou_de_corps_barcode')
     ? 'N_de_pi_ce_ou_de_corps'
     : $field;
