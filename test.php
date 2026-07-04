@@ -2,7 +2,7 @@
 eval(`cv php:boot`);
 use CRM_DonCorps_ExtensionUtil as E;
 
-
+/* 
 function create_rules(){
     ## les mgd files ne fonctionnent pas correctement car font référence aux id des activités, culstom fields...
     ## qui varient d'une installation à l'autre
@@ -921,7 +921,7 @@ function create_rules(){
       create_entity($to_create);
     }     // fin de la focntion create_rules
 
-
+ */
 
     #$this->ctx->log->info('- Vérification de la version CiviRules');
     $ext = civicrm_api4('Extension', 'get', [
