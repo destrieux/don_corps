@@ -1752,10 +1752,7 @@ chgrp(LOGFILE, $grp);
         }
       }
   }
-  
-  
-  
-   function create_rules(){
+  function create_rules(){
     ## les mgd files ne fonctionnent pas correctement car font référence aux id des activités, culstom fields...
     ## qui varient d'une installation à l'autre
     $msg="  - Création/MAJ des Rules".PHP_EOL;
@@ -4463,7 +4460,10 @@ chgrp(LOGFILE, $grp);
       # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
       # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
       
-      $toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
+      ##$toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
+     
+      $toimport_file = __DIR__.'/managed/ufnameconversion.txt';
+     
       modif_profils_perso($toimport_file);
 
     $msg="  - Modification de l'utilisation des profils".PHP_EOL;// LOG OK
