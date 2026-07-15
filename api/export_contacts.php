@@ -1,29 +1,690 @@
 <?php
 eval(`cv php:boot`);
+use CRM_CiviDdc_ExtensionUtil as E;
+$exp_dir = '/Users/destri_c/Desktop/importLyon/';       // racine du répertoire d'import export
 
-$exp_dir = '/Users/destri_c/Desktop/import/';       // racine du répertoire d'import export
 
-$check_custom_field = 1 ;
-$check_option_values =1 ;
-$import_organisations =1 ;
-$import_FinancialType = 1 ;
-$import_individus =1 ;
-$import_groups =1 ;
-$import_adresses = 1 ;
-$import_telephones = 1 ;
-$import_email =1 ;
-$import_relationships =1 ;
-$import_utilisations =1 ;
-$import_protinvivo = 1;
-$import_contributions =1;
-$import_events =1 ;
-$import_participants =1 ;
-$import_activites =1 ;
-$import_notes =1 ;
-$import_documentsContact =1 ;
-$import_documentsVersion =1 ;
-$import_files =1 ;
-$import_tags =1 ;
+$ville = 'lyon';
+## pasd d'export des precisions metiers des personnels
+## pas d'export utilsaiton des corps techniques specifiques
+
+$check_custom_field = 0 ;
+$check_option_values = 0 ;
+$import_organisations = 0 ;
+$import_FinancialType = 0 ;
+$import_individus = 0 ;
+$import_groups = 0 ;
+$import_adresses = 0 ;
+$import_telephones = 0 ;
+$import_email = 0 ;
+$import_relationships = 0 ;
+$import_utilisations = 0;
+$import_arrivee = 0 ;
+$import_protinvivo = 0 ;
+$import_contributions = 0;
+$import_events = 0 ;
+$import_participants = 0 ;
+$import_activites = 0 ;
+$import_notes = 0 ;
+$import_documentsContact = 0 ;
+$import_documentsVersion = 0 ;
+$import_files = 0 ;
+$import_tags = 1 ;
+
+
+
+function export_lyon(){
+  #importer mananged intities
+  # CustomGroup_Arriv_e_du_corps_new.mgd.php
+  # CustomGroup_infos_personnel.mgd
+
+  # modifier la ligne 2 de chaque fichier 
+  # CRM_DonCorps_ExtensionUtil -> CRM_CiviDdc_ExtensionUtil
+
+  $opts=func_get_arg(0);
+
+  print_r($opts);   
+
+  # change le titre de l'ancien groupe arrivée du corps en Arrivée du corps OLD
+    $results = civicrm_api4('CustomGroup', 'update', [
+      'values' => [
+        'title' => 'Arrivée du corps OLD',
+      ],
+      'where' => [
+        ['name', '=', 'S_rologies'],
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+
+    # cahnge le titre de l'ancien groupe Informations Personnel en Informations Personnel OLD
+    $results = civicrm_api4('CustomGroup', 'update', [
+      'values' => [
+        'title' => 'Informations Personnel',
+      ],
+      'where' => [
+        ['name', '=', 'infos_personnel'],
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+
+  # Custom group Promesse de don
+    if($opts['migrate_Custom_Promesse_don'] == 1)
+      {
+        ## Template, option group et option values pour : Pr_venir_personne_r_f_rence_de_la_c_r_monie 
+        #   $original_custom_name = 'Promesse_de_don.Pr_venir_la_perosnne_r_f_rente';         // nom du champ dans la base originale
+            
+        #   $new_custom_name = 'Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie'; // nom du champ conforme à la nouvelle base 
+              ## NOTEZ LES . au lieu de _ dans les variables
+
+        #   $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                      // ajouter indice [0] si valeur unique
+        #  [
+        #   ];
+
+          #  create_stuff($tocreate_things, $original_custom_name, $new_custom_name);
+
+
+
+
+
+        # Custom field, option group et option values pour : Pr_venir_personne_r_f_rence_de_la_c_r_monie 
+          $original_custom_name = 'Promesse_de_don.Pr_venir_la_perosnne_r_f_rente';         // nom du champ dans la base originale
+          $new_custom_name = 'Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie'; // nom du champ conforme à la nouvelle base 
+            ## NOTEZ LES . au lieu de _ dans les variables
+
+          $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+          [
+            [ 'name' => 'OptionGroup_Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+              'entity' => 'OptionGroup',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'name' => 'Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+                  'title' => E::ts('Promesse de don :: Prévenir personne référence de la cérémonie'),
+                  'data_type' => 'Int',
+                  'is_reserved' => FALSE,
+                  'option_value_fields' => ['name', 'label', 'description'],
+                  ],
+                'match' => ['name'],
+                ],
+            ],
+
+            [ 'name' => 'OptionGroup_Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie_OptionValue_Volont_inconnue',
+              'entity' => 'OptionValue',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'option_group_id.name' => 'Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+                  'label' => E::ts('Volonté inconnue'),
+                  'value' => '0',
+                  'name' => 'Volont_inconnue',
+                ],
+                'match' => [
+                  'option_group_id',
+                  'name',
+                  'value',
+                ],
+              ],
+            ],
+
+            ['name' => 'OptionGroup_Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie_OptionValue_Oui',
+              'entity' => 'OptionValue',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'option_group_id.name' => 'Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+                  'label' => E::ts('Oui'),
+                  'value' => '1',
+                  'name' => 'Oui',
+                ],
+                'match' => [
+                  'option_group_id',
+                  'name',
+                  'value',
+                ],
+              ],
+            ],
+
+            [ 'name' => 'OptionGroup_Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie_OptionValue_Non',
+              'entity' => 'OptionValue',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'option_group_id.name' => 'Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+                  'label' => E::ts('Non'),
+                  'value' => '2',
+                  'name' => 'Non',
+                ],
+                'match' => [
+                  'option_group_id',
+                  'name',
+                  'value',
+                ],
+              ],
+            ],
+
+            [ 'name' => 'CustomGroup_Promesse_de_don_CustomField_Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+              'entity' => 'CustomField',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'custom_group_id.name' => 'Promesse_de_don',
+                  'name' => 'Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+                  'label' => E::ts('Prévenir référent de cérémonie'),
+                  'data_type' => 'Int',
+                  'html_type' => 'Select',
+                  'default_value' => '0',
+                  'text_length' => 255,
+                  'note_columns' => 60,
+                  'note_rows' => 4,
+                  //'column_name' => 'pr_venir_personne_r_f_rence_de_l_69',
+                  'option_group_id.name' => 'Promesse_de_don_Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+                ],
+                'match' => [
+                  'name',
+                  'custom_group_id',
+                ],
+              ],
+            ]
+          ];
+
+        create_stuff($tocreate_things, $original_custom_name, $new_custom_name);
+
+        # Custom group, option group et option values pour :  Souait_affichage_sur_st_le
+          $original_custom_name = 'Promesse_de_don.Souait_affichage_sur_st_le';         // nom du champ dans la base originale
+              
+          $new_custom_name = 'Promesse_de_don.Souhiat_affichage_st_le'; // nom du champ conforme à la nouvelle base 
+                ## NOTEZ LES . au lieu de _ dans les variables
+
+          unset($tocreate_things);
+          $tocreate_things[0] =   /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                  // ajouter indice [0] si valeur unique
+          [ 'name' => 'CustomGroup_Promesse_de_don_CustomField_Souhiat_affichage_st_le',
+            'entity' => 'CustomField',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'custom_group_id.name' => 'Promesse_de_don',
+                'name' => 'Souhiat_affichage_st_le',
+                'label' => E::ts('Souhait affichage stèle'),
+                'data_type' => 'Int',
+                'html_type' => 'Select',
+                'default_value' => '0',
+                'text_length' => 255,
+                'note_columns' => 60,
+                'note_rows' => 4,
+                'column_name' => 'souhiat_affichage_st_le_68',
+                'option_group_id.name' => 'Promesse_de_don_Souhait_lecture_nom',
+              ],
+              'match' => [
+                'name',
+                'custom_group_id',
+              ],
+            ],
+          ];
+
+          create_stuff($tocreate_things, $original_custom_name, $new_custom_name);
+
+          ## Custom group, option group et option values pour : Promesse_de_don.Souhait_lecture_nom
+          $original_custom_name = 'Promesse_de_don.Souhait_lecture_nom';         // nom du champ dans la base originale
+              
+          $new_custom_name = 'Promesse_de_don.Souhait_lecture_nom'; // nom du champ conforme à la nouvelle base 
+                ## NOTEZ LES . au lieu de _ dans les variables
+
+          $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+              [[
+            'name' => 'OptionGroup_Promesse_de_don_Souhait_lecture_nom',
+            'entity' => 'OptionGroup',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'name' => 'Promesse_de_don_Souhait_lecture_nom',
+                'title' => E::ts('Promesse de don :: Souhait lecture nom'),
+                'data_type' => 'Int',
+                'is_reserved' => FALSE,
+                'option_value_fields' => ['name', 'label', 'description'],
+              ],
+              'match' => ['name'],
+            ],
+          ],
+
+          [
+            'name' => 'OptionGroup_Promesse_de_don_Souhait_lecture_nom_OptionValue_Volont_inconnue',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Promesse_de_don_Souhait_lecture_nom',
+                'label' => E::ts('Volonté inconnue'),
+                'value' => '0',
+                'name' => 'Volont_inconnue',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+          [
+            'name' => 'OptionGroup_Promesse_de_don_Souhait_lecture_nom_OptionValue_Oui',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Promesse_de_don_Souhait_lecture_nom',
+                'label' => E::ts('Oui'),
+                'value' => '1',
+                'name' => 'Oui',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+          [
+            'name' => 'OptionGroup_Promesse_de_don_Souhait_lecture_nom_OptionValue_Non',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Promesse_de_don_Souhait_lecture_nom',
+                'label' => E::ts('Non'),
+                'value' => '2',
+                'name' => 'Non',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+          [
+            'name' => 'CustomGroup_Promesse_de_don_CustomField_Souhait_lecture_nom',
+            'entity' => 'CustomField',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'custom_group_id.name' => 'Promesse_de_don',
+                'name' => 'Souhait_lecture_nom',
+                'label' => E::ts('Souhait lecture nom'),
+                'data_type' => 'Int',
+                'html_type' => 'Select',
+                'default_value' => '0',
+                'is_searchable' => TRUE,
+                'text_length' => 255,
+                'note_columns' => 60,
+                'note_rows' => 4,
+                'column_name' => 'souhait_lecture_nom_67',
+                'option_group_id.name' => 'Promesse_de_don_Souhait_lecture_nom',
+              ],
+              'match' => [
+                'name',
+                'custom_group_id',
+              ],
+            ],
+          ],
+              ];
+
+          create_stuff($tocreate_things, $original_custom_name, $new_custom_name);
+      } # FIN CUSTOM GROUP PROMESSE DE DONS
+
+
+  # Custom group ARRIVEE DU CORPS
+    #   a recuperer directement avec managed file qui doit etre copie 
+    #   dans le dossier managed de l'extension depuis une version cible de l'installation
+    #   CustomGroup_Arriv_e_du_corps_new.mgd
+
+    if($opts['migrate_Arrivee_corps'] == 1)
+      echo "totot";
+        {
+          $customGroups = civicrm_api4('CustomGroup', 'get', [
+          'select' => [
+            'id',
+          ],
+          'where' => [
+            ['name', '=', 'Arriv_e_du_corps_new'],
+          ],
+          'limit' => 25,
+          'checkPermissions' => FALSE,
+          ]);
+
+          $serologies = civicrm_api4('Custom_S_rologies', 'get', [
+            'where' => [
+              // ['entity_id', '=', 2898],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          $originals = array_keys($serologies[0]);
+          unset($originals[0]);
+
+          ## détruit toutes les Arrivées du corps new s'il en existe 
+          $results = civicrm_api4('Custom_Arriv_e_du_corps_new', 'delete', [
+            'where' => [
+              ['id', '>', 0],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          foreach ($serologies as $serologie)
+            {
+            # verifie que le contact lié existe
+            echo "Arrivée du corps id : ".$serologie['id']." pour contact id : ".$serologie['entity_id']."   ";
+            $contacts = civicrm_api4('Contact', 'get', [
+              'select' => [
+                'id',
+                'display_name',
+              ],
+              'where' => [
+                ['id', '=', $serologie['entity_id']],
+              ],
+              'limit' => 1,
+              'checkPermissions' => FALSE,
+            ]);
+
+
+            if(isset($contacts[0]['id'])) // le contact existe
+              {
+                unset ($values);
+                echo $contacts[0]['display_name'].PHP_EOL;
+                echo "Valeurs de Arrivée du corps OLD".PHP_EOL;
+                print_r($serologie);
+                $values['Signataire_certificat_de_d_c_s']=$serologie['Signataire_certificat_de_d_c_s'];
+                $values['entity_id']=$serologie['entity_id'];
+                foreach($originals as $original)
+                  
+                  {
+                  # echo $original.PHP_EOL;
+
+                    if ($original=='Retrait_Stimulateur_piles')
+                      {
+                          #OLD                          --> NEW
+                          # 1 Pas de pace               --> 1 Pas de pace
+                          # 2 Retrait au labo           --> 2 Retrait au labo
+                          # 3 Retrait avant le labo     --> 3 Retrait avant le labo
+                          # 4 A faire au labo           --> 4 A vérifier
+                          # 5 aucune case cochée        --> 4 A vérifier
+
+                          unset($new);
+                          $old = $serologie[$original];
+                          
+
+                          if ($old == 5)
+                            {
+                              $new=4;
+                            }else{
+                              $new=$old;
+                              
+                            }
+                            $values[$original]=$new;
+
+                            #echo "NEW : ".$new.PHP_EOL;
+                            #echo "OLD : ".$old.PHP_EOL;
+                            #echo "values original : ".$values[$original].PHP_EOL;
+                            #print_r($values);
+                      }
+
+                    if ($original=='S_rologie_HBV' || $original=='S_rologie_VIH' || $original=='S_rologie_COVID' || $original=='PCR_COVID')
+                      {
+                        #OLD                 --> NEW
+                        # 1 non realisée     --> 1 non realisée 
+                        # 2 Négative         --> 3 Négative
+                        # 3 Positive         --> 2 Positive
+                        switch ($serologie[$original])
+                          {
+                            case 1:
+                              $values[$original]=1;
+                              break;
+
+                            case 2:
+                              $values[$original]=3;
+                              break;
+
+                            case 3:
+                              $values[$original]=2;
+                              break;
+                          }
+                        
+
+                      }
+                      #echo "toto".PHP_EOL;
+                      #print_r($values);
+                  }
+                $values['PCR_COVID_nasopharyng_e']=$values['PCR_COVID'];
+                $values['PCR_COVID']=1; //rectale
+                echo "Valeurs de Arrivée du corps NEW".PHP_EOL;
+                print_r($values);
+                $results = civicrm_api4('Custom_Arriv_e_du_corps_new', 'create', [
+                  'values' => $values,
+                  'checkPermissions' => FALSE,
+                ]);
+
+              }else{
+                echo "Contact inexistant : arrivee corps non crée".PHP_EOL;
+              }
+            
+          }
+        }
+  # Custom group utilisation
+
+    if ($opts['migrate_utilisation_corps'] == 1)
+      {
+      $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'name' => 'Type_de_poi_ce_3',
+        ],
+        'where' => [
+          ['name', '=', 'type_de_pi_ce'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+      $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'name' => 'cote2',
+        ],
+        'where' => [
+          ['name', '=', 'C_t_'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      
+      $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'name' => 'Utilisation2',
+        ],
+        'where' => [
+          ['name', '=', 'Utilisation'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      
+      $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'name' => 'Protocole_de_recherche_ex_vivo2',
+        ],
+        'where' => [
+          ['name', '=', 'Protocole'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+      $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'name' => 'Site_inject_',
+        ],
+        'where' => [
+          ['name', '=', 'Site_d_injection'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+      $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'name' => 'Imagerie2',
+        ],
+        'where' => [
+          ['name', '=', 'Imagerie'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+          $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'name' => 'Mode_limination_hors_corps_2',
+        ],
+        'where' => [
+          ['name', '=', 'Devenir_des_pi_ces'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+
+      } #fin Custom group infos personnel
+    
+}
+
+function create_stuff()     ## cette fonction crée dans la bdd originale des champs requis
+                            ## et y recopie la valeur originale 
+                            ## Arguments : 
+                            ##   $tocreate_things : sortie des managed files
+                            ##   $original_custom_name : nom du custom name dans la base originale
+                            ##   $new_custom_name : nom du custom name dans la nouvelle base
+  {
+    $tocreate_things=func_get_arg(0);
+    $original_custom_name=func_get_arg(1);
+    $new_custom_name=func_get_arg(2);
+
+    #print_r($tocreate_things);
+    echo PHP_EOL;
+    foreach ($tocreate_things as $tocreate_thing)
+      {
+        switch ($tocreate_thing['entity']){
+          case 'OptionValue' :
+            $entities = civicrm_api4($tocreate_thing['entity'], 'get', [
+              'where' => [
+                ['option_group_id:name', '=', $tocreate_thing['params']['values']['option_group_id.name']],
+                ['name', '=', $tocreate_thing['params']['values']['name']],
+                ],
+              'checkPermissions' => FALSE,
+            ]);
+
+            break;
+
+          default:
+            $entities = civicrm_api4($tocreate_thing['entity'], 'get', [
+              'where' => [
+                ['name', '=', $tocreate_thing['params']['values']['name']],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+            break;
+
+        }
+
+        if (isset($entities[0]))
+          {
+            echo "MAJ ".$tocreate_thing['entity']." : ".$tocreate_thing['params']['values']['name'].PHP_EOL;
+            //print_r($tocreate_thing['params']['values']);
+            $results = civicrm_api4($tocreate_thing['entity'], 'update', [
+              'values' => $tocreate_thing['params']['values'],
+              'where' => [
+                ['id', '=', $entities[0]['id']],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+
+          } else {
+            echo "Création ".$tocreate_thing['entity']." : ".$tocreate_thing['params']['values']['name'].PHP_EOL;
+            $results = civicrm_api4($tocreate_thing['entity'], 'create', [
+              'values' => $tocreate_thing['params']['values'],
+              'checkPermissions' => FALSE,
+            ]);
+          }
+      }
+
+        ##copie les veleurs des champs originaux vers les nouveaux
+        $list_contacts = civicrm_api4('Contact', 'get', [       // récupère la liste des contacts à mettre à jour
+          'select' => [
+            'id',
+            $original_custom_name,
+            $original_custom_name.':label',
+          ],
+          'where' => [
+            ['contact_sub_type', '=', 'Donateur'],
+          ],
+          'checkPermissions' => FALSE,
+          //'limit' => 5,
+        ]);
+
+
+        foreach ($list_contacts as $list_contact)
+          {  
+            $id = $list_contact['id'];      // id du contact à modifier
+            $old=$list_contact[$original_custom_name];
+            $old_label=$list_contact[$original_custom_name.':label'];
+
+            echo "contact id : ".$id."  -  ".$original_custom_name." : ".$old.' ('.$old_label.') --> ';
+            
+            if($old==NULL)    // si la valeur n'est pas définie : passe à 0
+              {
+                $old = 0;
+              }
+
+
+            $results = civicrm_api4('Contact', 'update', [    // mise à jour de chaque contact
+              'values' => [
+                $new_custom_name => $old,
+              ],
+              'where' => [
+                ['id', '=', $id],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+
+            $results = civicrm_api4('Contact', 'get', [     // vérification de la bonne MAJ
+                  'select' => [
+                    $new_custom_name,
+                    $new_custom_name.':label',
+                  ],
+                  'where' => [
+                  ['id', '=', $id],
+                  ],
+                  'checkPermissions' => FALSE,
+
+                ]); 
+            
+              echo $results[0][$new_custom_name].' ('.$results[0][$new_custom_name.':label'].')'.PHP_EOL;
+          }
+
+
+  } # FIN DE FONCTION CREATE STUFF
 
 
 function export_stuff(){
@@ -33,7 +694,7 @@ function export_stuff(){
     $exp_file = $name.".txt";
     echo "Preparation export ".$entity." into ".$exp_file.PHP_EOL;
 
-switch ($entity) {
+  switch ($entity) {
     case 'OptionValue':
 
         $exports=array();
@@ -44,8 +705,7 @@ switch ($entity) {
                 if (count($option_val_tocheck)==2){
                   $custom_group = $option_val_tocheck[0];
                   $custom_field = $option_val_tocheck[1];
-                  //echo "gr:".$custom_group.PHP_EOL;
-                  //echo "fi:".$custom_field.PHP_EOL;
+                  echo "custom_group:".$custom_group."     custom_field :".$custom_field.PHP_EOL;
 
                   //echo "il y en a 2".PHP_EOL;
                   $customFields = civicrm_api4('CustomField', 'get', [
@@ -213,6 +873,8 @@ switch ($entity) {
             ],
       ]);
       //print_r($exports);
+      echo PHP_EOL.count($exports)." Organisations exportées ".PHP_EOL;
+
       break;
 
     case 'CustomField':
@@ -363,7 +1025,7 @@ switch ($entity) {
               
               array_push($exports, $email);   
               } else {
-              $error = "Contact id ".$email['contact_id']."lié au téléphone ".$email['id']." n'existe pas  - Ignorée";
+              $error = "Contact id ".$email['contact_id']."lié au courriel ".$email['id']." n'existe pas  - Ignorée";
               echo PHP_EOL.$error.PHP_EOL;
               array_push($error_log,$error);
               }
@@ -494,6 +1156,49 @@ switch ($entity) {
       echo PHP_EOL.count($exports)." Utilisation du corps exportées ".PHP_EOL;
       break;
 
+    case 'Custom_Arriv_e_du_corps_new':
+          $arrivees = civicrm_api4($entity, 'get', [
+            'select' => ['*'],
+            'checkPermissions' => FALSE,
+            //'limit' => 15,
+          ]);
+
+
+          // verifie que le contacts associé (entity id) existe bien
+          $exports=array();
+          $error_log=array();                   // chaine contenant les messages d'erreur à loguer
+
+          foreach ($arrivees as $arrivee){     // pour chaque arrivée de la base originale
+              
+              $contacts = civicrm_api4('Contact', 'get', [    // liste les contacts correpondant entity id, prepare par, localisation
+                  'select' => [
+                      'id',
+                      'display_name',
+                    ],
+                  'where' => [
+                    ['id', '=', $arrivee['entity_id']],
+                    ['is_deleted', '=', FALSE],
+                  ],
+                  'checkPermissions' => FALSE,
+                ]);
+
+                //echo "compte : ".count($contacts).PHP_EOL;
+
+                if (isset($contacts[0])){// le contact existe 
+                  //echo "Contact : ".$contacts[0]['display_name']." impliqué dans l'utlisation :".$utilisation['id'].PHP_EOL;     
+                  echo ".";   
+                  unset ($arrivee['id']);    
+                  
+                  array_push($exports, $arrivee);   
+
+                  } else {
+                  $error = "Pas de contact lié à l'arrivee ".$arrivee['id'].PHP_EOL;
+                  array_push($error_log,$error);  
+                
+                } 
+          }
+          echo PHP_EOL.count($exports)." Arrivées du corps exportées ".PHP_EOL;
+          break;
     case 'Contribution':
       $total =0;
       $contributions = civicrm_api4($entity, 'get', [
@@ -590,6 +1295,8 @@ switch ($entity) {
                 array_push($exports, $event);   
               
         }
+        echo PHP_EOL.count($exports)." Events exportées ".PHP_EOL;
+
         break;
 
     case 'Participant':
@@ -1272,7 +1979,7 @@ switch ($entity) {
         }
 
       }
-
+      echo PHP_EOL.count($exports)." Protocoles in vivo exportées ".PHP_EOL;
       break;
 
     case 'Tag':
@@ -1380,9 +2087,6 @@ switch ($entity) {
 }
 
 
-
-
-
 // export de custom fields
   if ($check_custom_field == 1){
       $exp_file = $exp_dir."02_CustomField";  
@@ -1391,6 +2095,18 @@ switch ($entity) {
 
 // export des OptionValues
   if ($check_option_values == 1){
+    if ($ville=='lyon')
+      {
+      $opts =[
+        'migrate_Custom_Promesse_don' => 1,
+        'migrate_Arrivee_corps' => 1,
+        'migrate_utilisation_corps' => 1,
+      ];
+  
+      export_lyon($opts);
+      }
+
+
     $exp_file = $exp_dir."03_option_values";
     $subtype  =[                       // tableau des valeurs d'option (choix multiples...) pour verifier correspondance entre Source et Cibles
         //'Compl_m_nt_tat_civil.Civilit_user',
@@ -1456,6 +2172,63 @@ switch ($entity) {
         // 'financial_type',  
 
         ];
+
+        if ($ville=='lyon')
+          {
+            $subtype  =[                       // tableau des valeurs d'option (choix multiples...) pour verifier correspondance entre Source et Cibles            
+            'Ant_c_dents_m_dicaux.Stimulateur_pile',
+            'Ant_c_dents_m_dicaux.Pathologie_cible',
+            
+            'Promesse_de_don.Centre_de_don',
+            'Promesse_de_don.Pr_venir_personne_r_f_rence_de_la_c_r_monie',
+            'Promesse_de_don.Souhait_lecture_nom',
+            'Promesse_de_don.Souhiat_affichage_st_le',
+            'Promesse_de_don.Devenir_souhait_',
+            
+            'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps',
+            'Prise_en_charge_au_d_c_s.Lieu_de_d_c_s',
+            
+            'Devenir_du_corps.CESP',
+            'Devenir_du_corps.devenir_effectif_du_corps',
+            'Devenir_du_corps.Souhait_funeraire_personne_ref_rente',
+            
+            'Transfert_vers_autre_centre.CDC_de_transfert',
+            
+            'Arriv_e_du_corps_new.Retrait_Stimulateur_piles',
+            'Arriv_e_du_corps_new.S_rologie_VIH',
+            'Arriv_e_du_corps_new.S_rologie_HBV',
+            'Arriv_e_du_corps_new.S_rologie_COVID',
+            'Arriv_e_du_corps_new.PCR_COVID',
+            'Arriv_e_du_corps_new.PCR_COVID_nasopharyng_e',
+
+            'Utilisation_du_corps.Type_de_poi_ce_3',
+            'Utilisation_du_corps.cote2',
+            'Utilisation_du_corps.Utilisation2',
+            
+            'Utilisation_du_corps.Protocole_de_recherche_ex_vivo2',
+            'Utilisation_du_corps.Site_inject_',
+            'Utilisation_du_corps.M_dium_inject_',
+            'Utilisation_du_corps.Imagerie2',    
+            'Utilisation_du_corps.Mode_limination_hors_corps_2',
+            'Utilisation_du_corps.Inventaires',
+            'event_type',
+            'participant_role',
+            'activity_type',
+            'activity_contacts',
+            'activity_status',
+            'document_status',
+            'document_type',
+
+            'Protocoles_in_vivo.intitul_du_protocole',
+
+
+            //'contribution_status',  
+            //'payment_instrument',   
+            // 'financial_type',  
+
+            ];
+          }
+
        //echo "Exporting ".$subtype." into ".$exp_file.PHP_EOL;
        export_stuff('OptionValue',$subtype, $exp_file);
       }
@@ -1529,6 +2302,15 @@ switch ($entity) {
   if ($import_utilisations ==1){
       $exp_file = $exp_dir."40_Custom_Utilisation_du_corps";
       $subtype =  'Custom_Utilisation_du_corps';
+      //echo "Exporting ".$subtype." into ".$exp_file.PHP_EOL;
+      export_stuff($subtype,$subtype, $exp_file);
+  }
+
+
+// export Custom_arrivée_du_corps
+  if ($import_arrivee ==1){
+      $exp_file = $exp_dir."42_Custom_Arrivee_du_corps";
+      $subtype =  'Custom_Arriv_e_du_corps_new';
       //echo "Exporting ".$subtype." into ".$exp_file.PHP_EOL;
       export_stuff($subtype,$subtype, $exp_file);
   }
