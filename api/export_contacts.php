@@ -5,11 +5,13 @@ $exp_dir = '/Users/destri_c/Desktop/importLyon/';       // racine du répertoire
 
 
 $ville = 'lyon';
-## pasd d'export des precisions metiers des personnels
+## Pour Lyon
+## pas d'export des precisions metiers des personnels
 ## pas d'export utilsaiton des corps techniques specifiques
 
-$check_custom_field = 0 ;
-$check_option_values = 0 ;
+
+$check_option_values = 1 ;
+$check_custom_field = 1 ;
 $import_organisations = 0 ;
 $import_FinancialType = 0 ;
 $import_individus = 0 ;
@@ -29,32 +31,25 @@ $import_notes = 0 ;
 $import_documentsContact = 0 ;
 $import_documentsVersion = 0 ;
 $import_files = 0 ;
-$import_tags = 1 ;
+$import_tags = 0 ;
+
+function after ($thisv, $inthatv)
+{
+    if (!is_bool(strpos($inthatv, $thisv)))
+    return substr($inthatv, strpos($inthatv,$thisv)+strlen($thisv));
+};
+
+function before ($thisv, $inthatv)
+  {
+      return substr($inthatv, 0, strpos($inthatv, $thisv));
+  };
 
 
 
 function export_lyon(){
-  #importer mananged intities
-  # CustomGroup_Arriv_e_du_corps_new.mgd.php
-  # CustomGroup_infos_personnel.mgd
-
-  # modifier la ligne 2 de chaque fichier 
-  # CRM_DonCorps_ExtensionUtil -> CRM_CiviDdc_ExtensionUtil
-
   $opts=func_get_arg(0);
 
   print_r($opts);   
-
-  # change le titre de l'ancien groupe arrivée du corps en Arrivée du corps OLD
-    $results = civicrm_api4('CustomGroup', 'update', [
-      'values' => [
-        'title' => 'Arrivée du corps OLD',
-      ],
-      'where' => [
-        ['name', '=', 'S_rologies'],
-      ],
-      'checkPermissions' => FALSE,
-    ]);
 
     # cahnge le titre de l'ancien groupe Informations Personnel en Informations Personnel OLD
     $results = civicrm_api4('CustomGroup', 'update', [
@@ -70,6 +65,10 @@ function export_lyon(){
   # Custom group Promesse de don
     if($opts['migrate_Custom_Promesse_don'] == 1)
       {
+
+        $stuff_to_update=array();    // remet à zero le tableau des choses à modifier
+
+
         ## Template, option group et option values pour : Pr_venir_personne_r_f_rence_de_la_c_r_monie 
         #   $original_custom_name = 'Promesse_de_don.Pr_venir_la_perosnne_r_f_rente';         // nom du champ dans la base originale
             
@@ -198,8 +197,8 @@ function export_lyon(){
             ]
           ];
 
-        create_stuff($tocreate_things, $original_custom_name, $new_custom_name);
-
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+          
         # Custom group, option group et option values pour :  Souait_affichage_sur_st_le
           $original_custom_name = 'Promesse_de_don.Souait_affichage_sur_st_le';         // nom du champ dans la base originale
               
@@ -235,9 +234,9 @@ function export_lyon(){
             ],
           ];
 
-          create_stuff($tocreate_things, $original_custom_name, $new_custom_name);
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
 
-          ## Custom group, option group et option values pour : Promesse_de_don.Souhait_lecture_nom
+        # Custom group, option group et option values pour : Promesse_de_don.Souhait_lecture_nom
           $original_custom_name = 'Promesse_de_don.Souhait_lecture_nom';         // nom du champ dans la base originale
               
           $new_custom_name = 'Promesse_de_don.Souhait_lecture_nom'; // nom du champ conforme à la nouvelle base 
@@ -351,224 +350,2338 @@ function export_lyon(){
           ],
               ];
 
-          create_stuff($tocreate_things, $original_custom_name, $new_custom_name);
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+        update_stuff('Contact', $stuff_to_update);
       } # FIN CUSTOM GROUP PROMESSE DE DONS
 
 
   # Custom group ARRIVEE DU CORPS
-    #   a recuperer directement avec managed file qui doit etre copie 
-    #   dans le dossier managed de l'extension depuis une version cible de l'installation
-    #   CustomGroup_Arriv_e_du_corps_new.mgd
-
     if($opts['migrate_Arrivee_corps'] == 1)
-      echo "totot";
-        {
-          $customGroups = civicrm_api4('CustomGroup', 'get', [
+      {
+
+        $stuff_to_update=array();    // remet à zero le tableau des choses à modifier
+
+      ## dans les anciennes versions ce group et nomé Sérologies
+    ## change le titre de l'ancien groupe arrivée du corps en Arrivée du corps OLD
+        $results = civicrm_api4('CustomGroup', 'update', [
+          'values' => [
+            'title' => 'Arrivée du corps OLD',
+          ],
+          'where' => [
+            ['name', '=', 'S_rologies'],
+          ],
+          'checkPermissions' => FALSE,
+        ]); 
+
+    ## crée le custom group Arriv_e_du_corps_new s'il n'existe pas 
+        $customGroups = civicrm_api4('CustomGroup', 'get', [
           'select' => [
             'id',
           ],
           'where' => [
             ['name', '=', 'Arriv_e_du_corps_new'],
           ],
-          'limit' => 25,
           'checkPermissions' => FALSE,
-          ]);
+        ]);
 
-          $serologies = civicrm_api4('Custom_S_rologies', 'get', [
-            'where' => [
-              // ['entity_id', '=', 2898],
-            ],
-            'checkPermissions' => FALSE,
-          ]);
+        #print_r($customGroups);
 
-          $originals = array_keys($serologies[0]);
-          unset($originals[0]);
+    
+         if (!isset($customGroups[0]))  
 
-          ## détruit toutes les Arrivées du corps new s'il en existe 
-          $results = civicrm_api4('Custom_Arriv_e_du_corps_new', 'delete', [
-            'where' => [
-              ['id', '>', 0],
-            ],
-            'checkPermissions' => FALSE,
-          ]);
-
-          foreach ($serologies as $serologie)
-            {
-            # verifie que le contact lié existe
-            echo "Arrivée du corps id : ".$serologie['id']." pour contact id : ".$serologie['entity_id']."   ";
-            $contacts = civicrm_api4('Contact', 'get', [
-              'select' => [
-                'id',
-                'display_name',
+          {             ## sile groupe n'existe pas, on le crée
+          
+          echo "CREATION Custom group Arriv_e_du_corps_new".PHP_EOL;
+          $results = civicrm_api4('CustomGroup', 'create', [
+              'values' => [
+                'name' => 'Arriv_e_du_corps_new',
+                'title' => E::ts('Arrivée du corps'),
+                'extends' => 'Individual',
+                //'extends_entity_column_value' => ['Donateur'],
+                'style' => 'Tab with table',
+                'weight' => 4,
+                'is_multiple' => TRUE,
+                'max_multiple' => 1,
+                'collapse_adv_display' => TRUE,
               ],
-              'where' => [
-                ['id', '=', $serologie['entity_id']],
-              ],
-              'limit' => 1,
               'checkPermissions' => FALSE,
             ]);
 
 
-            if(isset($contacts[0]['id'])) // le contact existe
+          } else {      ## si le groupe existe on le MAJ
+                    echo "Suppression de toutes les entrées Custom group Arriv_e_du_corps_new".PHP_EOL;
+              $results = civicrm_api4('Custom_Arriv_e_du_corps_new', 'delete', [
+              'where' => [
+                ['id', '>', 0],
+              ],
+              'checkPermissions' => FALSE,
+            ]); 
+          } 
+
+    ## custom field, option group et option values pour : Arriv_e_du_corps_new_CustomField_Signataire_certificat_de_d_c_s'
+       $original_custom_group = 'S_rologies';
+       $original_custom_field = 'Signataire_certificat_de_d_c_s';
+
+       $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+        
+       $new_custom_name = 'Arriv_e_du_corps_new.Signataire_certificat_de_d_c_s'; // nom du champ conforme à la nouvelle base 
+          ## NOTEZ LES . au lieu de _ dans les variables
+
+          $tocreate_things[0]=        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+            [
+              'name' => 'CustomGroup_Arriv_e_du_corps_new_CustomField_Signataire_certificat_de_d_c_s',
+              'entity' => 'CustomField',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'custom_group_id.name' => 'Arriv_e_du_corps_new',
+                  'name' => 'Signataire_certificat_de_d_c_s',
+                  'label' => E::ts('Signataire certificat de décès (nom, tel, ville)'),
+                  'html_type' => 'Text',
+                  'is_required' => TRUE,
+                  'text_length' => 255,
+                  'note_columns' => 60,
+                  'note_rows' => 4,
+                ],
+                'match' => [
+                  'name',
+                  'custom_group_id',
+                ],
+              ],  
+            ];
+
+
+             ## change le label du custom field sinon creation impossible
+          $customFields = civicrm_api4('CustomField', 'get', [
+            'select' => [
+              'id',
+              'label',
+            ],  
+            'where' => [
+              ['name', '=', $original_custom_field],
+              ['custom_group_id:name', '=', $original_custom_group],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+
+
+          if (isset($customFields[0]))
+            {
+              $results = civicrm_api4('CustomField', 'update', [
+                'values' => [
+                  'label' => $customFields[0]['label'].'_OLD',
+                ],
+                'where' => [
+                  ['id', '=', $customFields[0]['id']],
+                ],
+                'checkPermissions' => FALSE,
+              ]);
+            }
+          echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD'.PHP_EOL;
+
+
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+      # fin custom groupe ARRIVEE DU CORPS : signateire certificat
+
+    ## custom field, option group et option values pour : Arriv_e_du_corps_new pace
+       $original_custom_group = 'S_rologies';
+       $original_custom_field = 'Retrait_Stimulateur_piles';
+
+       $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+        
+       $new_custom_name = 'Arriv_e_du_corps_new.Retrait_Stimulateur_piles'; // nom du champ conforme à la nouvelle base 
+          ## NOTEZ LES . au lieu de _ dans les variables
+
+          $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+            [
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+                'entity' => 'OptionGroup',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+                    'title' => E::ts('Arrivée du corps new :: Retrait Stimulateur à piles'),
+                    'data_type' => 'String',
+                    'is_reserved' => FALSE,
+                    'option_value_fields' => ['name', 'label', 'description'],
+                  ],
+                  'match' => ['name'],
+                ],
+              ],
+
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_pas_de_pacemaker',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+                    'label' => E::ts('pas de pacemaker'),
+                    'value' => '1',
+                    'name' => 'pas_de_pacemaker',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_retrait_du_pacemaker_au_labo',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+                    'label' => E::ts('retrait du pacemaker au labo'),
+                    'value' => '2',
+                    'name' => 'retrait_du_pacemaker_au_labo',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_retrait_du_pacemaker_avant_labo',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+                    'label' => E::ts('retrait du pacemaker avant labo'),
+                    'value' => '3',
+                    'name' => 'retrait_du_pacemaker_avant_labo',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_A_v_rifier',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+                    'label' => E::ts('a vérifier'),
+                    'value' => '4',
+                    'name' => 'A vérifier',
+                    'is_default' => TRUE,
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'CustomGroup_Arriv_e_du_corps_new_CustomField_Retrait_Stimulateur_piles',
+                'entity' => 'CustomField',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'custom_group_id.name' => 'Arriv_e_du_corps_new',
+                    'name' => 'Retrait_Stimulateur_piles',
+                    'label' => E::ts('Retrait Stimulateur à piles'),
+                    'html_type' => 'Select',
+                    'default_value' => '4',
+                    'text_length' => 255,
+                    'note_columns' => 60,
+                    'note_rows' => 4,
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+                    'in_selector' => TRUE,
+                  ],
+                  'match' => [
+                    'name',
+                    'custom_group_id',
+                  ],
+                ],
+              ],  
+            ];
+
+
+             ## change le label du custom field sinon creation impossible
+          $customFields = civicrm_api4('CustomField', 'get', [
+            'select' => [
+              'id',
+              'label',
+            ],  
+            'where' => [
+              ['name', '=', $original_custom_field],
+              ['custom_group_id:name', '=', $original_custom_group],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          if (isset($customFields[0]))
+            {
+              $results = civicrm_api4('CustomField', 'update', [
+                'values' => [
+                  'label' => $customFields[0]['label'].'_OLD',
+                ],
+                'where' => [
+                  ['id', '=', $customFields[0]['id']],
+                ],
+                'checkPermissions' => FALSE,
+              ]);
+            }
+          echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD'.PHP_EOL;
+
+
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+          ## remplace la valeur 5 ('pas de case cochée' par 4 'a verifier')
+
+          foreach ($stuff_to_update as $id => $stuff_to_updat)
+            if ($stuff_to_updat['Retrait_Stimulateur_piles']==5)
               {
-                unset ($values);
-                echo $contacts[0]['display_name'].PHP_EOL;
-                echo "Valeurs de Arrivée du corps OLD".PHP_EOL;
-                print_r($serologie);
-                $values['Signataire_certificat_de_d_c_s']=$serologie['Signataire_certificat_de_d_c_s'];
-                $values['entity_id']=$serologie['entity_id'];
-                foreach($originals as $original)
-                  
-                  {
-                  # echo $original.PHP_EOL;
+                $stuff_to_update[$id]['Retrait_Stimulateur_piles']='4';
+              }
+     # fin custom groupe ARRIVEE DU CORPS : pace
 
-                    if ($original=='Retrait_Stimulateur_piles')
-                      {
-                          #OLD                          --> NEW
-                          # 1 Pas de pace               --> 1 Pas de pace
-                          # 2 Retrait au labo           --> 2 Retrait au labo
-                          # 3 Retrait avant le labo     --> 3 Retrait avant le labo
-                          # 4 A faire au labo           --> 4 A vérifier
-                          # 5 aucune case cochée        --> 4 A vérifier
+    ## custom field, option group et option values pour : Arriv_e_du_corps_new sero VIH
+       $original_custom_group = 'S_rologies';
+       $original_custom_field = 'S_rologie_VIH';
 
-                          unset($new);
-                          $old = $serologie[$original];
-                          
+       $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+        
+       $new_custom_name = 'Arriv_e_du_corps_new.S_rologie_VIH'; // nom du champ conforme à la nouvelle base 
+          ## NOTEZ LES . au lieu de _ dans les variables
 
-                          if ($old == 5)
-                            {
-                              $new=4;
-                            }else{
-                              $new=$old;
-                              
-                            }
-                            $values[$original]=$new;
+          $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+            [
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_VIH',
+                'entity' => 'OptionGroup',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'name' => 'Arriv_e_du_corps_new_S_rologie_VIH',
+                    'title' => E::ts('Arrivée du corps new :: Sérologie VIH'),
+                    'data_type' => 'String',
+                    'is_reserved' => FALSE,
+                    'option_value_fields' => ['name', 'label', 'description'],
+                  ],
+                  'match' => ['name'],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_VIH_OptionValue_Non_realis_es',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_VIH',
+                    'label' => E::ts('non realisée'),
+                    'value' => '1',
+                    'name' => 'Non_realis_es',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_VIH_OptionValue_Positive',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_VIH',
+                    'label' => E::ts('positive'),
+                    'value' => '3',
+                    'name' => 'Positive',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_VIH_OptionValue_n_gative',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_VIH',
+                    'label' => E::ts('négative'),
+                    'value' => '2',
+                    'name' => 'n_gative',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'CustomGroup_Arriv_e_du_corps_new_CustomField_S_rologie_VIH',
+                'entity' => 'CustomField',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'custom_group_id.name' => 'Arriv_e_du_corps_new',
+                    'name' => 'S_rologie_VIH',
+                    'label' => E::ts('Sérologie VIH'),
+                    'html_type' => 'Select',
+                    'default_value' => '1',
+                    'text_length' => 255,
+                    'note_columns' => 60,
+                    'note_rows' => 4,
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_VIH',
+                    'in_selector' => TRUE,
+                  ],
+                  'match' => [
+                    'name',
+                    'custom_group_id',
+                  ],
+                ],
+              ],
+            ];
 
-                            #echo "NEW : ".$new.PHP_EOL;
-                            #echo "OLD : ".$old.PHP_EOL;
-                            #echo "values original : ".$values[$original].PHP_EOL;
-                            #print_r($values);
-                      }
 
-                    if ($original=='S_rologie_HBV' || $original=='S_rologie_VIH' || $original=='S_rologie_COVID' || $original=='PCR_COVID')
-                      {
-                        #OLD                 --> NEW
-                        # 1 non realisée     --> 1 non realisée 
-                        # 2 Négative         --> 3 Négative
-                        # 3 Positive         --> 2 Positive
-                        switch ($serologie[$original])
-                          {
-                            case 1:
-                              $values[$original]=1;
-                              break;
+             ## change le label du custom field sinon creation impossible
+          $customFields = civicrm_api4('CustomField', 'get', [
+            'select' => [
+              'id',
+              'label',
+            ],  
+            'where' => [
+              ['name', '=', $original_custom_field],
+              ['custom_group_id:name', '=', $original_custom_group],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
 
-                            case 2:
-                              $values[$original]=3;
-                              break;
+          if (isset($customFields[0]))
+            {
+              $results = civicrm_api4('CustomField', 'update', [
+                'values' => [
+                  'label' => $customFields[0]['label'].'_OLD',
+                ],
+                'where' => [
+                  ['id', '=', $customFields[0]['id']],
+                ],
+                'checkPermissions' => FALSE,
+              ]);
+            }
+          echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD'.PHP_EOL;
 
-                            case 3:
-                              $values[$original]=2;
-                              break;
-                          }
-                        
 
-                      }
-                      #echo "toto".PHP_EOL;
-                      #print_r($values);
-                  }
-                $values['PCR_COVID_nasopharyng_e']=$values['PCR_COVID'];
-                $values['PCR_COVID']=1; //rectale
-                echo "Valeurs de Arrivée du corps NEW".PHP_EOL;
-                print_r($values);
-                $results = civicrm_api4('Custom_Arriv_e_du_corps_new', 'create', [
-                  'values' => $values,
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+     # fin custom groupe ARRIVEE DU CORPS : sero VIH
+
+    ## custom field, option group et option values pour : Arriv_e_du_corps_new sero HBV
+       $original_custom_group = 'S_rologies';
+       $original_custom_field = 'S_rologie_HBV';
+
+       $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+        
+       $new_custom_name = 'Arriv_e_du_corps_new.S_rologie_HBV'; // nom du champ conforme à la nouvelle base 
+          ## NOTEZ LES . au lieu de _ dans les variables
+
+          $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+            [
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_HBV',
+                'entity' => 'OptionGroup',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'name' => 'Arriv_e_du_corps_new_S_rologie_HBV',
+                    'title' => E::ts('Arrivée du corps new :: Sérologie HBV'),
+                    'data_type' => 'String',
+                    'is_reserved' => FALSE,
+                    'option_value_fields' => ['name', 'label', 'description'],
+                  ],
+                  'match' => ['name'],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_HBV_OptionValue_non_r_alis_e',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_HBV',
+                    'label' => E::ts('non réalisée'),
+                    'value' => '1',
+                    'name' => 'non_r_alis_e',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_HBV_OptionValue_positive',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_HBV',
+                    'label' => E::ts('positive'),
+                    'value' => '3',
+                    'name' => 'positive',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_HBV_OptionValue_n_gative',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_HBV',
+                    'label' => E::ts('négative'),
+                    'value' => '2',
+                    'name' => 'n_gative',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'CustomGroup_Arriv_e_du_corps_new_CustomField_S_rologie_HBV',
+                'entity' => 'CustomField',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'custom_group_id.name' => 'Arriv_e_du_corps_new',
+                    'name' => 'S_rologie_HBV',
+                    'label' => E::ts('Sérologie HBV'),
+                    'html_type' => 'Select',
+                    'default_value' => '1',
+                    'text_length' => 255,
+                    'note_columns' => 60,
+                    'note_rows' => 4,
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_HBV',
+                    'in_selector' => TRUE,
+                  ],
+                  'match' => [
+                    'name',
+                    'custom_group_id',
+                  ],
+                ],
+              ],
+              
+            ];
+
+
+             ## change le label du custom field sinon creation impossible
+          $customFields = civicrm_api4('CustomField', 'get', [
+            'select' => [
+              'id',
+              'label',
+            ],  
+            'where' => [
+              ['name', '=', $original_custom_field],
+              ['custom_group_id:name', '=', $original_custom_group],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          if (isset($customFields[0]))
+            {
+              $results = civicrm_api4('CustomField', 'update', [
+                'values' => [
+                  'label' => $customFields[0]['label'].'_OLD',
+                ],
+                'where' => [
+                  ['id', '=', $customFields[0]['id']],
+                ],
+                'checkPermissions' => FALSE,
+              ]);
+            }
+          echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD'.PHP_EOL;
+
+
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+     # fin custom groupe ARRIVEE DU CORPS : sero HBV
+
+    ## custom field, option group et option values pour : Arriv_e_du_corps_new sero COVID
+       $original_custom_group = 'S_rologies';
+       $original_custom_field = 'S_rologie_COVID';
+
+       $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+        
+       $new_custom_name = 'Arriv_e_du_corps_new.S_rologie_COVID'; // nom du champ conforme à la nouvelle base 
+          ## NOTEZ LES . au lieu de _ dans les variables
+
+          $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+            [
+             [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_COVID',
+                'entity' => 'OptionGroup',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'name' => 'Arriv_e_du_corps_new_S_rologie_COVID',
+                    'title' => E::ts('Arrivée du corps new :: Sérologie COVID'),
+                    'data_type' => 'String',
+                    'is_reserved' => FALSE,
+                    'option_value_fields' => ['name', 'label', 'description'],
+                  ],
+                  'match' => ['name'],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_COVID_OptionValue_non_r_alis_e',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_COVID',
+                    'label' => E::ts('non réalisée'),
+                    'value' => '1',
+                    'name' => 'non_r_alis_e',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_COVID_OptionValue_positive',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_COVID',
+                    'label' => E::ts('positive'),
+                    'value' => '3',
+                    'name' => 'positive',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Arriv_e_du_corps_new_S_rologie_COVID_OptionValue_n_gative',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_COVID',
+                    'label' => E::ts('négative'),
+                    'value' => '2',
+                    'name' => 'n_gative',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'CustomGroup_Arriv_e_du_corps_new_CustomField_S_rologie_COVID',
+                'entity' => 'CustomField',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'custom_group_id.name' => 'Arriv_e_du_corps_new',
+                    'name' => 'S_rologie_COVID',
+                    'label' => E::ts('Sérologie COVID'),
+                    'html_type' => 'Select',
+                    'default_value' => '1',
+                    'text_length' => 255,
+                    'note_columns' => 60,
+                    'note_rows' => 4,
+                    'option_group_id.name' => 'Arriv_e_du_corps_new_S_rologie_COVID',
+                  ],
+                  'match' => [
+                    'name',
+                    'custom_group_id',
+                  ],
+                ],
+              ],
+              
+            ];
+
+
+             ## change le label du custom field sinon creation impossible
+          $customFields = civicrm_api4('CustomField', 'get', [
+            'select' => [
+              'id',
+              'label',
+            ],  
+            'where' => [
+              ['name', '=', $original_custom_field],
+              ['custom_group_id:name', '=', $original_custom_group],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          if (isset($customFields[0]))
+            {
+              $results = civicrm_api4('CustomField', 'update', [
+                'values' => [
+                  'label' => $customFields[0]['label'].'_OLD',
+                ],
+                'where' => [
+                  ['id', '=', $customFields[0]['id']],
+                ],
+                'checkPermissions' => FALSE,
+              ]);
+            }
+          echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD'.PHP_EOL;
+
+
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+     # fin custom groupe ARRIVEE DU CORPS : sero COVID
+
+    ## custom field, option group et option values pour : Arriv_e_du_corps_new PCR COVID
+      $original_custom_group = 'S_rologies';
+      $original_custom_field = 'S_rologie_VIH';
+
+      $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+      
+      $new_custom_name = 'Arriv_e_du_corps_new.PCR_COVID_nasopharyng_e'; // nom du champ conforme à la nouvelle base 
+        ## NOTEZ LES . au lieu de _ dans les variables
+
+        $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+          [
+             [
+              'name' => 'OptionGroup_Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e',
+              'entity' => 'OptionGroup',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'name' => 'Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e',
+                  'title' => E::ts('Arrivée du corps :: PCR COVID nasopharyngée'),
+                  'data_type' => 'String',
+                  'is_reserved' => FALSE,
+                  'option_value_fields' => ['name', 'label', 'description'],
+                ],
+                'match' => ['name'],
+              ],
+            ],
+            [
+              'name' => 'OptionGroup_Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e_OptionValue_non_r_alis_e',
+              'entity' => 'OptionValue',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'option_group_id.name' => 'Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e',
+                  'label' => E::ts('non réalisée'),
+                  'value' => '1',
+                  'name' => 'non_r_alis_e',
+                ],
+                'match' => [
+                  'option_group_id',
+                  'name',
+                  'value',
+                ],
+              ],
+            ],
+            [
+              'name' => 'OptionGroup_Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e_OptionValue_positive',
+              'entity' => 'OptionValue',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'option_group_id.name' => 'Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e',
+                  'label' => E::ts('positive'),
+                  'value' => '3',
+                  'name' => 'positive',
+                ],
+                'match' => [
+                  'option_group_id',
+                  'name',
+                  'value',
+                ],
+              ],
+            ],
+            [
+              'name' => 'OptionGroup_Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e_OptionValue_n_gative',
+              'entity' => 'OptionValue',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'option_group_id.name' => 'Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e',
+                  'label' => E::ts('négative'),
+                  'value' => '2',
+                  'name' => 'n_gative',
+                ],
+                'match' => [
+                  'option_group_id',
+                  'name',
+                  'value',
+                ],
+              ],
+            ],
+            [
+              'name' => 'CustomGroup_Arriv_e_du_corps_new_CustomField_PCR_COVID_nasopharyng_e',
+              'entity' => 'CustomField',
+              'cleanup' => 'unused',
+              'update' => 'unmodified',
+              'params' => [
+                'version' => 4,
+                'values' => [
+                  'custom_group_id.name' => 'Arriv_e_du_corps_new',
+                  'name' => 'PCR_COVID_nasopharyng_e',
+                  'label' => E::ts('PCR COVID nasopharyngée'),
+                  'html_type' => 'Select',
+                  'default_value' => '1',
+                  'text_length' => 255,
+                  'note_columns' => 60,
+                  'note_rows' => 4,
+                  'option_group_id.name' => 'Arriv_e_du_corps_new_PCR_COVID_nasopharyng_e',
+                ],
+                'match' => [
+                  'name',
+                  'custom_group_id',
+                ],
+              ],
+            ],
+          ];
+
+
+            ## change le label du custom field sinon creation impossible
+        $customFields = civicrm_api4('CustomField', 'get', [
+          'select' => [
+            'id',
+            'label',
+          ],  
+          'where' => [
+            ['name', '=', $original_custom_field],
+            ['custom_group_id:name', '=', $original_custom_group],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        if (isset($customFields[0]))
+          {
+            $results = civicrm_api4('CustomField', 'update', [
+              'values' => [
+                'label' => $customFields[0]['label'].'_OLD',
+              ],
+              'where' => [
+                ['id', '=', $customFields[0]['id']],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+          }
+        echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD'.PHP_EOL;
+
+
+        $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+        ## Correction du champ PCR COVID nasopharyngée qui utilise la meme liste de valeurs que sero VIH
+
+        $serologies = civicrm_api4('Custom_S_rologies', 'get', [
+          'select' => [
+            'PCR_COVID',
+          ],
+
+          'orderBy' => [
+              'id' => 'ASC',
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        foreach ($serologies as $serologie)
+          {
+              $stuff_to_update[$serologie['id']]['PCR_COVID_nasopharyng_e']=$serologie['PCR_COVID'];
+          }
+     # fin custom groupe ARRIVEE DU CORPS : PCR COVID
+
+
+   
+
+
+      $entity='Custom_Arriv_e_du_corps_new';
+
+
+      
+      echo PHP_EOL."MAJ des champs créés pour ".count($stuff_to_update)." ".$entity."(s)".PHP_EOL;
+
+      foreach ($stuff_to_update as $id => $stuff_to_updat)
+        {
+          echo '.';
+
+          
+          $contact_id=$stuff_to_updat['entity_id'];
+          //echo $contact_id.PHP_EOL;
+
+          $arriveCorps = civicrm_api4('Custom_Arriv_e_du_corps_new', 'get', [ // on récupère les arrivées du corps new
+                                                                              // pour le contact entity.id
+              'select' => [
+                'id',
+              ],
+                'where' => [
+                ['entity_id.id', '=', $contact_id],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+
+            if(count($arriveCorps)==0)
+              {             ## il n'existe aucune entréee arrivée du corps : on la crée
+
+            
+            $results = civicrm_api4('Custom_Arriv_e_du_corps_new', 'create', [
+              'values' => $stuff_to_updat,
+              'checkPermissions' => FALSE,
+            ]);
+
+
+
+              } else {      ## il existe une entréee arrivée du corps : on la MAJ
+                $results = civicrm_api4($entity, 'update', [    // mise à jour de chaque occurence de l'entité
+                  'values' => $stuff_to_update,
+                  'where' => [
+                    ['id', '=', $arrivees[0][$id],
+                    ],
+                  ],
+                  'checkPermissions' => FALSE,
+                ]);
+              }
+      }
+      echo PHP_EOL;
+
+   } # fin custom groupe ARRIVEE DU CORPS
+
+  # Custom group utilisation
+    if ($opts['migrate_utilisation_corps'] == 1)
+      {
+        $stuff_to_update=array();    // remet à zero le tableau des choses à modifier
+
+      ## custom field, option group et option values pour : utilisation du corps / type de pièce 
+       $original_custom_group = 'Utilisation_du_corps';
+       $original_custom_field = 'type_de_pi_ce';
+
+       $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+        
+       $new_custom_name = 'Utilisation_du_corps.Type_de_poi_ce_3'; // nom du champ conforme à la nouvelle base 
+          ## NOTEZ LES . au lieu de _ dans les variables
+
+       $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                  // ajouter indice [0] si valeur unique
+        [        
+          [ 'name' => 'OptionGroup_Utilisation_du_corps_Type_de_poi_ce_3',
+            'entity' => 'OptionGroup',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
+                'title' => E::ts('Utilisation du corps :: Type de poièce 3'),
+                'data_type' => 'String',
+                'is_reserved' => FALSE,
+                'option_value_fields' => ['name', 'label', 'description'],
+              ],
+              'match' => ['name'],
+            ],
+          ],
+
+          [ 'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Type_de_poi_ce_3',
+            'entity' => 'CustomField',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'custom_group_id.name' => 'Utilisation_du_corps',
+                'name' => 'Type_de_poi_ce_3',
+                'label' => E::ts('Type de pièce'),
+                'html_type' => 'Select',
+                'default_value' => '1',
+                'text_length' => 255,
+                'note_columns' => 60,
+                'note_rows' => 4,
+                'option_group_id.name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
+                'serialize' => 1,
+                'in_selector' => TRUE,
+              ],
+              'match' => [
+                'name',
+                'custom_group_id',
+              ],
+            ],
+          ],
+        
+          [ 'name' => 'OptionGroup_Utilisation_du_corps_Type_de_poi_ce_3_OptionValue_Corps_entier',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
+                'label' => E::ts('Corps entier'),
+                'value' => '1',
+                'name' => 'Corps_entier',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+
+          [ 'name' => 'OptionGroup_Utilisation_du_corps_Type_de_poi_ce_3_OptionValue_Membre_sup_rieur',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
+            'label' => E::ts('Membre supérieur'),
+            'value' => '2',
+            'name' => 'Membre_sup_rieur',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+
+          [ 'name' => 'OptionGroup_Utilisation_du_corps_Type_de_poi_ce_3_OptionValue_Membre_inf_rieur',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
+            'label' => E::ts('Membre inférieur'),
+            'value' => '3',
+            'name' => 'Membre_inf_rieur',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+
+          [ 'name' => 'OptionGroup_Utilisation_du_corps_Type_de_poi_ce_3_OptionValue_Extr_mit_c_phalique',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
+            'label' => E::ts('Face'),
+            'value' => '4',
+            'name' => 'Extr_mit_c_phalique',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+  
+          [ 'name' => 'OptionGroup_Utilisation_du_corps_Type_de_poi_ce_3_OptionValue_Enc_phale',
+            'entity' => 'OptionValue',
+            'cleanup' => 'unused',
+            'update' => 'unmodified',
+            'params' => [
+              'version' => 4,
+              'values' => [
+                'option_group_id.name' => 'Utilisation_du_corps_Type_de_poi_ce_3',
+            'label' => E::ts('Encéphale'),
+            'value' => '5',
+            'name' => 'Enc_phale',
+              ],
+              'match' => [
+                'option_group_id',
+                'name',
+                'value',
+              ],
+            ],
+          ],
+        ];
+
+          ## change le label du custom field sinon creation impossible
+          $customFields = civicrm_api4('CustomField', 'get', [
+            'select' => [
+              'id',
+              'label',
+            ],  
+            'where' => [
+              ['name', '=', $original_custom_field],
+              ['custom_group_id:name', '=', $original_custom_group],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+          if (isset($customFields[0]))
+            {
+              $results = civicrm_api4('CustomField', 'update', [
+                'values' => [
+                  'label' => $customFields[0]['label'].'_OLD',
+                ],
+                'where' => [
+                  ['id', '=', $customFields[0]['id']],
+                ],
+                'checkPermissions' => FALSE,
+              ]);
+            }
+          echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD';
+          //print_r($customFields[0]);
+
+
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+          
+
+      ## FIN DE custom field, option group et option values pour : utilisation du corps / type de pièce 
+
+      ## custom field, option group et option values pour : utilisation du corps / côte 
+            $original_custom_group = 'Utilisation_du_corps';
+            $original_custom_field = 'C_t_';
+
+            $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+              
+            $new_custom_name = 'Utilisation_du_corps.cote2'; // nom du champ conforme à la nouvelle base 
+                ## NOTEZ LES . au lieu de _ dans les variables
+
+            $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                        // ajouter indice [0] si valeur unique
+              [
+ 
+
+
+                [ 'name' => 'OptionGroup_Utilisation_du_corps_cote2',
+                  'entity' => 'OptionGroup',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'name' => 'Utilisation_du_corps_cote2',
+                      'title' => E::ts('Utilisation du corps :: cote2'),
+                      'data_type' => 'String',
+                      'is_reserved' => FALSE,
+                      'option_value_fields' => ['name', 'label', 'description'],
+                    ],
+                    'match' => ['name'],
+                  ],
+                ],
+               [
+                  'name' => 'CustomGroup_Utilisation_du_corps_CustomField_cote2',
+                  'entity' => 'CustomField',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'custom_group_id.name' => 'Utilisation_du_corps',
+                      'name' => 'cote2',
+                      'label' => E::ts('Côté'),
+                      'html_type' => 'Select',
+                      'default_value' => '3',
+                      'is_required' => TRUE,
+                      'is_searchable' => TRUE,
+                      'text_length' => 255,
+                      'note_columns' => 60,
+                      'note_rows' => 4,
+                      'option_group_id.name' => 'Utilisation_du_corps_cote2',
+                      'serialize' => 1,
+                      'in_selector' => TRUE,
+                    ],
+                    'match' => [
+                      'name',
+                      'custom_group_id',
+                    ],
+                  ],
+                ],
+
+                [
+                  'name' => 'OptionGroup_Utilisation_du_corps_cote2_OptionValue_Droit',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_cote2',
+                      'label' => E::ts('Droit'),
+                      'value' => '1',
+                      'name' => 'Droit',
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+                [
+                  'name' => 'OptionGroup_Utilisation_du_corps_cote2_OptionValue_Gauche',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_cote2',
+                      'label' => E::ts('Gauche'),
+                      'value' => '2',
+                      'name' => 'Gauche',
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+                [
+                  'name' => 'OptionGroup_Utilisation_du_corps_cote2_OptionValue_Non_applicable',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_cote2',
+                      'label' => E::ts('Non applicable'),
+                      'value' => '3',
+                      'name' => 'Non_applicable',
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+              ];
+
+                ## change le label du custom field sinon creation impossible
+                $customFields = civicrm_api4('CustomField', 'get', [
+                  'select' => [
+                    'id',
+                    'label',
+                  ],  
+                  'where' => [
+                    ['name', '=', $original_custom_field],
+                    ['custom_group_id:name', '=', $original_custom_group],
+                  ],
                   'checkPermissions' => FALSE,
                 ]);
 
-              }else{
-                echo "Contact inexistant : arrivee corps non crée".PHP_EOL;
+                if (isset($customFields[0]))
+                  {
+                    $results = civicrm_api4('CustomField', 'update', [
+                      'values' => [
+                        'label' => $customFields[0]['label'].'_OLD',
+                      ],
+                      'where' => [
+                        ['id', '=', $customFields[0]['id']],
+                      ],
+                      'checkPermissions' => FALSE,
+                    ]);
+                  }
+                echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD';
+                //print_r($customFields[0]);
+
+
+          $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+      ## FIN DE custom field, option group et option values pour : utilisation du corps / côté 
+
+      ## custom field, option group et option values pour : utilisation du corps / utilisation 2 
+            $original_custom_group = 'Utilisation_du_corps';
+            $original_custom_field = 'Utilisation';
+
+            $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+              
+            $new_custom_name = 'Utilisation_du_corps.Utilisation2'; // nom du champ conforme à la nouvelle base 
+                ## NOTEZ LES . au lieu de _ dans les variables
+
+            $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                        // ajouter indice [0] si valeur unique
+              [
+
+   
+
+                [ 'name' => 'OptionGroup_Utilisation_du_corps_Utilisation2',
+                  'entity' => 'OptionGroup',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'name' => 'Utilisation_du_corps_Utilisation2',
+                      'title' => E::ts('Utilisation du corps :: Utilisation2'),
+                      'data_type' => 'String',
+                      'is_reserved' => FALSE,
+                      'option_value_fields' => ['name', 'label', 'description'],
+                    ],
+                    'match' => ['name'],
+                  ],
+                ],
+                             [
+                  'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Utilisation2',
+                  'entity' => 'CustomField',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'custom_group_id.name' => 'Utilisation_du_corps',
+                      'name' => 'Utilisation2',
+                      'label' => E::ts('Utilisation'),
+                      'html_type' => 'Select',
+                      'default_value' => '8',
+                      'text_length' => 255,
+                      'note_columns' => 60,
+                      'note_rows' => 4,
+                      'option_group_id.name' => 'Utilisation_du_corps_Utilisation2',
+                      'serialize' => 1,
+                      'in_selector' => TRUE,
+                    ],
+                    'match' => [
+                      'name',
+                      'custom_group_id',
+                    ],
+                  ],
+                ],
+                [ 'name' => 'OptionGroup_Utilisation_du_corps_Utilisation2_OptionValue_Enseignement_C1',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_Utilisation2',
+                      'label' => E::ts('Enseignement'),
+                      'value' => '1',
+                      'name' => 'Enseignement_C1',
+                      'description' => NULL,
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+                [ 'name' => 'OptionGroup_Utilisation_du_corps_Utilisation2_OptionValue_Enseignement_C2',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_Utilisation2',
+                      'label' => E::ts('Enseignement C2'),
+                      'value' => '2',
+                      'name' => 'Enseignement_C2',
+                      'description' => NULL,
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+                [ 'name' => 'OptionGroup_Utilisation_du_corps_Utilisation2_OptionValue_Enseignement_C3',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_Utilisation2',
+                      'label' => E::ts('Enseignement C3'),
+                      'value' => '3',
+                      'name' => 'Enseignement_C3',
+                      'description' => NULL,
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+                [ 'name' => 'OptionGroup_Utilisation_du_corps_Utilisation2_OptionValue_Recherche',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_Utilisation2',
+                      'label' => E::ts('Recherche'),
+                      'value' => '5',
+                      'name' => 'Recherche',
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+                [ 'name' => 'OptionGroup_Utilisation_du_corps_Utilisation2_OptionValue_Workshop',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_Utilisation2',
+                      'label' => E::ts('Workshop'),
+                      'value' => '4',
+                      'name' => 'Workshop',
+                      'description' => NULL,
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+                [
+                  'name' => 'OptionGroup_Utilisation_du_corps_Utilisation2_OptionValue_Ind_termin_',
+                  'entity' => 'OptionValue',
+                  'cleanup' => 'unused',
+                  'update' => 'unmodified',
+                  'params' => [
+                    'version' => 4,
+                    'values' => [
+                      'option_group_id.name' => 'Utilisation_du_corps_Utilisation2',
+                      'label' => E::ts('En attente utilisation'),
+                      'value' => '8',
+                      'name' => 'Ind_termin_',
+                    ],
+                    'match' => [
+                      'option_group_id',
+                      'name',
+                      'value',
+                    ],
+                  ],
+                ],
+              ];
+
+                ## change le label du custom field sinon creation impossible
+                $customFields = civicrm_api4('CustomField', 'get', [
+                  'select' => [
+                    'id',
+                    'label',
+                  ],  
+                  'where' => [
+                    ['name', '=', $original_custom_field],
+                    ['custom_group_id:name', '=', $original_custom_group],
+                  ],
+                  'checkPermissions' => FALSE,
+                ]);
+
+                if (isset($customFields[0]))
+                  {
+                    $results = civicrm_api4('CustomField', 'update', [
+                      'values' => [
+                        'label' => $customFields[0]['label'].'_OLD',
+                      ],
+                      'where' => [
+                        ['id', '=', $customFields[0]['id']],
+                      ],
+                      'checkPermissions' => FALSE,
+                    ]);
+                  }
+                echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD';
+                //print_r($customFields[0]);
+
+            $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+      ## FIN DE custom field, option group et option values pour : utilisation du corps / Utlisation 2
+
+      ## custom field, option group et option values pour : utilisation du corps / Protocole_de_recherche_ex_vivo2 
+            $original_custom_group = 'Utilisation_du_corps';
+            $original_custom_field = 'Protocole';
+
+            $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+              
+            $new_custom_name = 'Utilisation_du_corps.Protocole_de_recherche_ex_vivo2'; // nom du champ conforme à la nouvelle base 
+                ## NOTEZ LES . au lieu de _ dans les variables
+
+            $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                        // ajouter indice [0] si valeur unique
+              [
+
+
+                  [
+                      'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+                      'entity' => 'OptionGroup',
+                      'cleanup' => 'unused',
+                      'update' => 'unmodified',
+                      'params' => [
+                        'version' => 4,
+                        'values' => [
+                          'name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+                          'title' => E::ts('Utilisation du corps :: Protocole de recherche ex vivo2'),
+                          'data_type' => 'String',
+                          'is_reserved' => FALSE,
+                          'option_value_fields' => ['name', 'label', 'description'],
+                        ],
+                        'match' => ['name'],
+                      ],
+                    ],
+                                      [
+                    'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Protocole_de_recherche_ex_vivo2',
+                    'entity' => 'CustomField',
+                    'cleanup' => 'unused',
+                    'update' => 'unmodified',
+                    'params' => [
+                      'version' => 4,
+                      'values' => [
+                        'custom_group_id.name' => 'Utilisation_du_corps',
+                        'name' => 'Protocole_de_recherche_ex_vivo2',
+                        'label' => E::ts('Protocole de recherche ex vivo'),
+                        'html_type' => 'Select',
+                        'default_value' => '11',
+                        'text_length' => 255,
+                        'note_columns' => 60,
+                        'note_rows' => 4,
+                        'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+                        'serialize' => 1,
+                        'in_selector' => TRUE,
+                      ],
+                      'match' => [
+                        'name',
+                        'custom_group_id',
+                      ],
+                    ],
+                  ],
+  
+                    [
+                      'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Fibratlas',
+                      'entity' => 'OptionValue',
+                      'cleanup' => 'unused',
+                      'update' => 'unmodified',
+                      'params' => [
+                        'version' => 4,
+                        'values' => [
+                          'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+                          'label' => E::ts('Fibratlas'),
+                          'value' => '1',
+                          'name' => 'Fibratlas',
+                        ],
+                        'match' => [
+                          'option_group_id',
+                          'name',
+                          'value',
+                        ],
+                      ],
+                    ],
+ 
+                    [
+                      'name' => 'OptionGroup_Utilisation_du_corps_Protocole_de_recherche_ex_vivo2_OptionValue_Pas_de_protocole',
+                      'entity' => 'OptionValue',
+                      'cleanup' => 'unused',
+                      'update' => 'unmodified',
+                      'params' => [
+                        'version' => 4,
+                        'values' => [
+                          'option_group_id.name' => 'Utilisation_du_corps_Protocole_de_recherche_ex_vivo2',
+                          'label' => E::ts('Pas de protocole'),
+                          'value' => '11',
+                          'name' => 'Pas_de_protocole',
+                        ],
+                        'match' => [
+                          'option_group_id',
+                          'name',
+                          'value',
+                        ],
+                      ],
+                    ],
+              ];
+
+                ## change le label du custom field sinon creation impossible
+                $customFields = civicrm_api4('CustomField', 'get', [
+                  'select' => [
+                    'id',
+                    'label',
+                  ],  
+                  'where' => [
+                    ['name', '=', $original_custom_field],
+                    ['custom_group_id:name', '=', $original_custom_group],
+                  ],
+                  'checkPermissions' => FALSE,
+                ]);
+
+                if (isset($customFields[0]))
+                  {
+                    $results = civicrm_api4('CustomField', 'update', [
+                      'values' => [
+                        'label' => $customFields[0]['label'].'_OLD',
+                      ],
+                      'where' => [
+                        ['id', '=', $customFields[0]['id']],
+                      ],
+                      'checkPermissions' => FALSE,
+                    ]);
+                  }
+                echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD';
+                //print_r($customFields[0]);
+
+
+                  $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+
+      ## FIN DE custom field, option group et option values pour : Protocole_de_recherche_ex_vivo2
+
+      ## custom field, option group et option values pour : utilisation du corps / Site_inject_ 
+            $original_custom_group = 'Utilisation_du_corps';
+            $original_custom_field = 'Site_d_injection';
+
+            $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+              
+            $new_custom_name = 'Utilisation_du_corps.Site_inject_'; // nom du champ conforme à la nouvelle base 
+                ## NOTEZ LES . au lieu de _ dans les variables
+
+            $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                        // ajouter indice [0] si valeur unique
+              [
+
+
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_',
+                'entity' => 'OptionGroup',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'name' => 'Utilisation_du_corps_Site_inject_',
+                    'title' => E::ts('Utilisation du corps :: Site injecté'),
+                    'data_type' => 'String',
+                    'is_reserved' => FALSE,
+                    'option_value_fields' => ['name', 'label', 'description'],
+                  ],
+                  'match' => ['name'],
+                ],
+              ],
+               [
+                'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Site_inject_',
+                'entity' => 'CustomField',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'custom_group_id.name' => 'Utilisation_du_corps',
+                    'name' => 'Site_inject_',
+                    'label' => E::ts('Site injecté'),
+                    'html_type' => 'Select',
+                    'text_length' => 255,
+                    'note_columns' => 60,
+                    'note_rows' => 4,
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'serialize' => 1,
+                  ],
+                  'match' => [
+                    'name',
+                    'custom_group_id',
+                  ],
+                ],
+              ],
+
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_A_Basilaire',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('A. Basilaire'),
+                    'value' => '1',
+                    'name' => 'A_Basilaire',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_A_Carotide_interne_droite',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('A. carotide interne D'),
+                    'value' => '2',
+                    'name' => 'A_Carotide_interne_droite',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_A_Carotide_interne_gauche',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('A. carotide interne G'),
+                    'value' => '3',
+                    'name' => 'A_Carotide_interne_gauche',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_A_F_morale_droite',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('A. Fémorale D'),
+                    'value' => '6',
+                    'name' => 'A_F_morale_droite',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_A_F_morale_gauche',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('A. Fémorale G'),
+                    'value' => '7',
+                    'name' => 'A_F_morale_gauche',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_A_Vert_brale_droite',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('A. vertébrale D'),
+                    'value' => '4',
+                    'name' => 'A_Vert_brale_droite',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_A_Vert_brale_gauche',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('A. vertébrale G'),
+                    'value' => '5',
+                    'name' => 'A_Vert_brale_gauche',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_V_Jugulaire_interne_droite',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('V. jugulaire interne D'),
+                    'value' => '8',
+                    'name' => 'V_Jugulaire_interne_droite',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Site_inject_OptionValue_V_Jugulaire_interne_gauche',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Site_inject_',
+                    'label' => E::ts('V. jugulaire interne G'),
+                    'value' => '9',
+                    'name' => 'V_Jugulaire_interne_gauche',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+
+              ];
+
+                ## change le label du custom field sinon creation impossible
+                $customFields = civicrm_api4('CustomField', 'get', [
+                  'select' => [
+                    'id',
+                    'label',
+                  ],  
+                  'where' => [
+                    ['name', '=', $original_custom_field],
+                    ['custom_group_id:name', '=', $original_custom_group],
+                  ],
+                  'checkPermissions' => FALSE,
+                ]);
+
+                if (isset($customFields[0]))
+                  {
+                    $results = civicrm_api4('CustomField', 'update', [
+                      'values' => [
+                        'label' => $customFields[0]['label'].'_OLD',
+                      ],
+                      'where' => [
+                        ['id', '=', $customFields[0]['id']],
+                      ],
+                      'checkPermissions' => FALSE,
+                    ]);
+                  }
+                echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD';
+                //print_r($customFields[0]);
+
+
+                $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+      ## FIN DE custom field, option group et option values pour : Site_inject_
+
+      ## custom field, option group et option values pour : utilisation du corps / Imagerie2
+            $original_custom_group = 'Utilisation_du_corps';
+            $original_custom_field = 'Imagerie';
+
+            $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+              
+            $new_custom_name = 'Utilisation_du_corps.Imagerie2'; // nom du champ conforme à la nouvelle base 
+                ## NOTEZ LES . au lieu de _ dans les variables
+
+            $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                        // ajouter indice [0] si valeur unique
+              [
+
+                [
+                    'name' => 'OptionGroup_Utilisation_du_corps_Imagerie2',
+                    'entity' => 'OptionGroup',
+                    'cleanup' => 'unused',
+                    'update' => 'unmodified',
+                    'params' => [
+                      'version' => 4,
+                      'values' => [
+                        'name' => 'Utilisation_du_corps_Imagerie2',
+                        'title' => E::ts('Utilisation du corps :: Imagerie2'),
+                        'data_type' => 'String',
+                        'is_reserved' => FALSE,
+                        'option_value_fields' => ['name', 'label', 'description'],
+                      ],
+                      'match' => ['name'],
+                    ],
+                  ],
+    
+
+
+                  [
+                    'name' => 'OptionGroup_Utilisation_du_corps_Imagerie2_OptionValue_IRM_ex_vivo_3T',
+                    'entity' => 'OptionValue',
+                    'cleanup' => 'unused',
+                    'update' => 'unmodified',
+                    'params' => [
+                      'version' => 4,
+                      'values' => [
+                        'option_group_id.name' => 'Utilisation_du_corps_Imagerie2',
+                        'label' => E::ts('IRM ex vivo 3T'),
+                        'value' => '3',
+                        'name' => 'IRM_ex_vivo_3T',
+                      ],
+                      'match' => [
+                        'option_group_id',
+                        'name',
+                        'value',
+                      ],
+                    ],
+                  ],
+                  [
+                    'name' => 'OptionGroup_Utilisation_du_corps_Imagerie2_OptionValue_IRM_ex_vivo_7T',
+                    'entity' => 'OptionValue',
+                    'cleanup' => 'unused',
+                    'update' => 'unmodified',
+                    'params' => [
+                      'version' => 4,
+                      'values' => [
+                        'option_group_id.name' => 'Utilisation_du_corps_Imagerie2',
+                        'label' => E::ts('IRM ex vivo 7T'),
+                        'value' => '4',
+                        'name' => 'IRM_ex_vivo_7T',
+                      ],
+                      'match' => [
+                        'option_group_id',
+                        'name',
+                        'value',
+                      ],
+                    ],
+                  ],
+
+                  [
+                    'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Imagerie2',
+                    'entity' => 'CustomField',
+                    'cleanup' => 'unused',
+                    'update' => 'unmodified',
+                    'params' => [
+                      'version' => 4,
+                      'values' => [
+                        'custom_group_id.name' => 'Utilisation_du_corps',
+                        'name' => 'Imagerie2',
+                        'label' => E::ts('Imagerie'),
+                        'html_type' => 'Select',
+                        'text_length' => 255,
+                        'note_columns' => 60,
+                        'note_rows' => 4,
+                        'option_group_id.name' => 'Utilisation_du_corps_Imagerie2',
+                        'serialize' => 1,
+                      ],
+                      'match' => [
+                        'name',
+                        'custom_group_id',
+                      ],
+                    ],
+                  ],
+             
+
+              ];
+
+                ## change le label du custom field sinon creation impossible
+                $customFields = civicrm_api4('CustomField', 'get', [
+                  'select' => [
+                    'id',
+                    'label',
+                  ],  
+                  'where' => [
+                    ['name', '=', $original_custom_field],
+                    ['custom_group_id:name', '=', $original_custom_group],
+                  ],
+                  'checkPermissions' => FALSE,
+                ]);
+
+                if (isset($customFields[0]))
+                  {
+                    $results = civicrm_api4('CustomField', 'update', [
+                      'values' => [
+                        'label' => $customFields[0]['label'].'_OLD',
+                      ],
+                      'where' => [
+                        ['id', '=', $customFields[0]['id']],
+                      ],
+                      'checkPermissions' => FALSE,
+                    ]);
+                  }
+                echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD';
+                //print_r($customFields[0]);
+
+
+                $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+      ## FIN DE custom field, option group et option values pour : Imagerie2
+
+      ## custom field, option group et option values pour : utilisation du corps / Mode_limination_hors_corps_2
+        $original_custom_group = 'Utilisation_du_corps';
+        $original_custom_field = 'Devenir_des_pi_ces';
+
+        $original_custom_name = $original_custom_group.'.'.$original_custom_field;         // nom du champ dans la base originale
+          
+        $new_custom_name = 'Utilisation_du_corps.Mode_limination_hors_corps_2'; // nom du champ conforme à la nouvelle base 
+            ## NOTEZ LES . au lieu de _ dans les variables
+
+
+        $tocreate_things =        /// définition du custom field, option group, option values (a recuperer depuis manages files)
+                                    // ajouter indice [0] si valeur unique
+          [
+            [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2',
+                'entity' => 'OptionGroup',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'title' => E::ts('Utilisation du corps :: Mode élimination (hors corps)2'),
+                    'data_type' => 'String',
+                    'is_reserved' => FALSE,
+                    'option_value_fields' => ['name', 'label', 'description'],
+                  ],
+                  'match' => ['name'],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2_OptionValue_Non_limin_e',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'label' => E::ts('Non éliminée'),
+                    'value' => '5',
+                    'name' => 'Non_limin_e',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2_OptionValue_Conservation_illimit_e',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'label' => E::ts('Conservation illimitée'),
+                    'value' => '4',
+                    'name' => 'Conservation_illimit_e',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2_OptionValue_Cr_mation_comme_pi_ce_anatomiqu',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'label' => E::ts('Crémation / Op funéraires'),
+                    'value' => '1',
+                    'name' => 'Cr_mation_comme_pi_ce_anatomiqu',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2_OptionValue_Demander_cr_mation',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'label' => E::ts('Demander crémation'),
+                    'value' => '7',
+                    'name' => 'Demander_cr_mation',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2_OptionValue_Cr_mation_demand_e',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'label' => E::ts('Crémation demandée'),
+                    'value' => '8',
+                    'name' => 'Cr_mation_demand_e',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2_OptionValue_Destruction_par_la_m_thode_util',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'label' => E::ts('Destruction par la méthode utilisée'),
+                    'value' => '3',
+                    'name' => 'Destruction_par_la_m_thode_util',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'OptionGroup_Utilisation_du_corps_Mode_limination_hors_corps_2_OptionValue_Manquante',
+                'entity' => 'OptionValue',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'label' => E::ts('Manquante'),
+                    'value' => '6',
+                    'name' => 'Manquante',
+                  ],
+                  'match' => [
+                    'option_group_id',
+                    'name',
+                    'value',
+                  ],
+                ],
+              ],
+              [
+                'name' => 'CustomGroup_Utilisation_du_corps_CustomField_Mode_limination_hors_corps_2',
+                'entity' => 'CustomField',
+                'cleanup' => 'unused',
+                'update' => 'unmodified',
+                'params' => [
+                  'version' => 4,
+                  'values' => [
+                    'custom_group_id.name' => 'Utilisation_du_corps',
+                    'name' => 'Mode_limination_hors_corps_2',
+                    'label' => E::ts('Mode élimination'),
+                    'html_type' => 'Select',
+                    'default_value' => '5',
+                    'is_required' => TRUE,
+                    'text_length' => 255,
+                    'note_columns' => 60,
+                    'note_rows' => 4,
+                    'option_group_id.name' => 'Utilisation_du_corps_Mode_limination_hors_corps_2',
+                    'in_selector' => TRUE,
+                  ],
+                  'match' => [
+                    'name',
+                    'custom_group_id',
+                  ],
+                ],
+              ],
+          ];
+
+            ## change le label du custom field sinon creation impossible
+            $customFields = civicrm_api4('CustomField', 'get', [
+              'select' => [
+                'id',
+                'label',
+              ],  
+              'where' => [
+                ['name', '=', $original_custom_field],
+                ['custom_group_id:name', '=', $original_custom_group],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+
+            if (isset($customFields[0]))
+              {
+                $results = civicrm_api4('CustomField', 'update', [
+                  'values' => [
+                    'label' => $customFields[0]['label'].'_OLD',
+                  ],
+                  'where' => [
+                    ['id', '=', $customFields[0]['id']],
+                  ],
+                  'checkPermissions' => FALSE,
+                ]);
               }
-            
-          }
-        }
-  # Custom group utilisation
-
-    if ($opts['migrate_utilisation_corps'] == 1)
-      {
-      $results = civicrm_api4('CustomField', 'update', [
-        'values' => [
-          'name' => 'Type_de_poi_ce_3',
-        ],
-        'where' => [
-          ['name', '=', 'type_de_pi_ce'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-      $results = civicrm_api4('CustomField', 'update', [
-        'values' => [
-          'name' => 'cote2',
-        ],
-        'where' => [
-          ['name', '=', 'C_t_'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-      
-      $results = civicrm_api4('CustomField', 'update', [
-        'values' => [
-          'name' => 'Utilisation2',
-        ],
-        'where' => [
-          ['name', '=', 'Utilisation'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-      
-      $results = civicrm_api4('CustomField', 'update', [
-        'values' => [
-          'name' => 'Protocole_de_recherche_ex_vivo2',
-        ],
-        'where' => [
-          ['name', '=', 'Protocole'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-      $results = civicrm_api4('CustomField', 'update', [
-        'values' => [
-          'name' => 'Site_inject_',
-        ],
-        'where' => [
-          ['name', '=', 'Site_d_injection'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-      $results = civicrm_api4('CustomField', 'update', [
-        'values' => [
-          'name' => 'Imagerie2',
-        ],
-        'where' => [
-          ['name', '=', 'Imagerie'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-          $results = civicrm_api4('CustomField', 'update', [
-        'values' => [
-          'name' => 'Mode_limination_hors_corps_2',
-        ],
-        'where' => [
-          ['name', '=', 'Devenir_des_pi_ces'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
+            echo "Modification Custom field label --> ".$customFields[0]['label'].'_OLD';
+            //print_r($customFields[0]);
 
 
-      } #fin Custom group infos personnel
+            $stuff_to_update=create_stuff($tocreate_things, $original_custom_name, $new_custom_name, $stuff_to_update);
+      ## FIN DE custom field, option group et option values pour : Mode_limination_hors_corps_2
+
+      update_stuff('Custom_Utilisation_du_corps', $stuff_to_update);
+
+      } #fin if migrate_utilisation_corps == 1)
     
 }
+
+function update_stuff()
+  {
+    $entity=func_get_arg(0);
+    $stuff_to_updates=func_get_arg(1);
+
+    echo PHP_EOL."MAJ des champs créés pour ".count($stuff_to_updates)." ".$entity."(s)".PHP_EOL;
+
+    foreach ($stuff_to_updates as $id => $stuff_to_update)
+      {
+        echo '.';
+        $results = civicrm_api4($entity, 'update', [    // mise à jour de chaque occurence de l'entité
+          'values' => $stuff_to_update,
+          'where' => [
+            ['id', '=', $id],
+          ],
+          'checkPermissions' => FALSE,
+        ]); 
+      }
+      echo PHP_EOL;
+  }
 
 function create_stuff()     ## cette fonction crée dans la bdd originale des champs requis
                             ## et y recopie la valeur originale 
@@ -577,13 +2690,25 @@ function create_stuff()     ## cette fonction crée dans la bdd originale des ch
                             ##   $original_custom_name : nom du custom name dans la base originale
                             ##   $new_custom_name : nom du custom name dans la nouvelle base
   {
+    $stuff_to_update_partial=array();
+
     $tocreate_things=func_get_arg(0);
     $original_custom_name=func_get_arg(1);
     $new_custom_name=func_get_arg(2);
+    $stuff_to_update=func_get_arg(3);
 
-    #print_r($tocreate_things);
+    $new_postfix = after ('.', $new_custom_name);   
+    $new_prefix = before ('.', $new_custom_name);  
+
+
+
+    $original_postfix = after ('.', $original_custom_name);   
+    $original_prefix = before ('.', $original_custom_name);  
+ 
     echo PHP_EOL;
+
     foreach ($tocreate_things as $tocreate_thing)
+
       {
         switch ($tocreate_thing['entity']){
           case 'OptionValue' :
@@ -596,6 +2721,17 @@ function create_stuff()     ## cette fonction crée dans la bdd originale des ch
             ]);
 
             break;
+
+          case 'CustomField' :
+            $entities = civicrm_api4($tocreate_thing['entity'], 'get', [
+              'where' => [
+                ['custom_group_id:name', '=', $tocreate_thing['params']['values']['custom_group_id.name']],
+                ['name', '=', $tocreate_thing['params']['values']['name']],
+                ],
+              'checkPermissions' => FALSE,
+            ]);
+
+            break;   
 
           default:
             $entities = civicrm_api4($tocreate_thing['entity'], 'get', [
@@ -612,6 +2748,7 @@ function create_stuff()     ## cette fonction crée dans la bdd originale des ch
           {
             echo "MAJ ".$tocreate_thing['entity']." : ".$tocreate_thing['params']['values']['name'].PHP_EOL;
             //print_r($tocreate_thing['params']['values']);
+
             $results = civicrm_api4($tocreate_thing['entity'], 'update', [
               'values' => $tocreate_thing['params']['values'],
               'where' => [
@@ -619,6 +2756,7 @@ function create_stuff()     ## cette fonction crée dans la bdd originale des ch
               ],
               'checkPermissions' => FALSE,
             ]);
+
 
           } else {
             echo "Création ".$tocreate_thing['entity']." : ".$tocreate_thing['params']['values']['name'].PHP_EOL;
@@ -629,59 +2767,104 @@ function create_stuff()     ## cette fonction crée dans la bdd originale des ch
           }
       }
 
-        ##copie les veleurs des champs originaux vers les nouveaux
-        $list_contacts = civicrm_api4('Contact', 'get', [       // récupère la liste des contacts à mettre à jour
-          'select' => [
-            'id',
-            $original_custom_name,
-            $original_custom_name.':label',
-          ],
-          'where' => [
-            ['contact_sub_type', '=', 'Donateur'],
-          ],
-          'checkPermissions' => FALSE,
-          //'limit' => 5,
-        ]);
+      switch ($new_prefix){
+        case 'Utilisation_du_corps':
+          
+          $list_utilisations = civicrm_api4('Custom_Utilisation_du_corps', 'get', [       // récupère la liste des utilisations à mettre à jour
+            'select' => [
+              'id',
+              $original_postfix.':name',
+              $original_postfix,
+            ],
+
+            'orderBy' => [
+              'id' => 'ASC',
+            ],
+
+            'checkPermissions' => FALSE,
+            //'limit' => 5,
+          ]);
+
+           foreach ($list_utilisations as $list_utilisation)
+            {  
+              $utilisation_id=$list_utilisation['id'];
+              $stuff_to_update[$utilisation_id][$new_postfix]=$list_utilisation[$original_postfix];
+            }
+
+          return($stuff_to_update);
+          break;
+
+        case 'Arriv_e_du_corps_new':
+          
+          $list_arrivees = civicrm_api4('Custom_S_rologies', 'get', [       // récupère la liste des utilisations à mettre à jour
+            'select' => [
+              'id',
+              $original_postfix,
+              'entity_id',
+            ],
+
+            'orderBy' => [
+              'id' => 'ASC',
+            ],
+
+            'checkPermissions' => FALSE,
+
+          ]);
+
+            foreach ($list_arrivees as $list_arrivee)
+              //print_r($list_arrivee);
+            {  
+              $arrivee_id=$list_arrivee['id'];
+              $stuff_to_update[$arrivee_id][$new_postfix]=$list_arrivee[$original_postfix];
+              $stuff_to_update[$arrivee_id]['entity_id']=$list_arrivee['entity_id'];
+            }
+
+          return($stuff_to_update);
+          break;  
+
+        default : // cas des contacts
+          $list_contacts = civicrm_api4('Contact', 'get', [       // récupère la liste des contacts à mettre à jour
+            'select' => [
+              'id',
+              $original_custom_name,
+              $original_custom_name.':label',
+            ],
+            'where' => [
+              ['contact_sub_type', '=', 'Donateur'],
+              ['is_deleted', '=', FALSE],
+            ],
+            'orderBy' => [
+            'id' => 'ASC',
+            ],
+            'checkPermissions' => FALSE,
+            //'limit' => 5,
+          ]);
 
 
-        foreach ($list_contacts as $list_contact)
-          {  
-            $id = $list_contact['id'];      // id du contact à modifier
-            $old=$list_contact[$original_custom_name];
-            $old_label=$list_contact[$original_custom_name.':label'];
+          foreach ($list_contacts as $list_contact)
+            {  
+              $id = $list_contact['id'];      // id du contact à modifier
+              $old=$list_contact[$original_custom_name];
+              $old_label=$list_contact[$original_custom_name.':label'];
 
-            echo "contact id : ".$id."  -  ".$original_custom_name." : ".$old.' ('.$old_label.') --> ';
-            
-            if($old==NULL)    // si la valeur n'est pas définie : passe à 0
-              {
-                $old = 0;
-              }
+              //echo "contact id : ".$id."  -  ".$original_custom_name." : ".$old.' ('.$old_label.') --> ';
+              
+              if($old==NULL)    // si la valeur n'est pas définie : passe à 0
+                {
+                  $old = 0;
+                }
+
+              $contact_id=$list_contact['id'];
+
+              $stuff_to_update[$contact_id][$new_custom_name]=$old;
+            }
+            return($stuff_to_update);
+            break;
+      }
 
 
-            $results = civicrm_api4('Contact', 'update', [    // mise à jour de chaque contact
-              'values' => [
-                $new_custom_name => $old,
-              ],
-              'where' => [
-                ['id', '=', $id],
-              ],
-              'checkPermissions' => FALSE,
-            ]);
 
-            $results = civicrm_api4('Contact', 'get', [     // vérification de la bonne MAJ
-                  'select' => [
-                    $new_custom_name,
-                    $new_custom_name.':label',
-                  ],
-                  'where' => [
-                  ['id', '=', $id],
-                  ],
-                  'checkPermissions' => FALSE,
 
-                ]); 
-            
-              echo $results[0][$new_custom_name].' ('.$results[0][$new_custom_name.':label'].')'.PHP_EOL;
-          }
 
 
   } # FIN DE FONCTION CREATE STUFF
@@ -2087,11 +4270,6 @@ function export_stuff(){
 }
 
 
-// export de custom fields
-  if ($check_custom_field == 1){
-      $exp_file = $exp_dir."02_CustomField";  
-      export_stuff('CustomField','CustomField', $exp_file);
-    }
 
 // export des OptionValues
   if ($check_option_values == 1){
@@ -2104,6 +4282,8 @@ function export_stuff(){
       ];
   
       export_lyon($opts);
+
+      exit;
       }
 
 
@@ -2232,6 +4412,14 @@ function export_stuff(){
        //echo "Exporting ".$subtype." into ".$exp_file.PHP_EOL;
        export_stuff('OptionValue',$subtype, $exp_file);
       }
+
+// export de custom fields
+  if ($check_custom_field == 1){
+      $exp_file = $exp_dir."02_CustomField";  
+      export_stuff('CustomField','CustomField', $exp_file);
+    }
+
+
 // export organisations
   if ($import_organisations ==1){
       $exp_file = $exp_dir."05_organisations";
