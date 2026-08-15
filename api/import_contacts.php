@@ -7,14 +7,14 @@ error_reporting(E_ALL);
 
 
 
-$exp_dir = '/Users/destri_c/Desktop/import/';       // racine du répertoire d'import export
+$exp_dir = '/Users/destri_c/Desktop/importLyon/';       // racine du répertoire d'import export
 $contact_default = 2; // id du contact par defaut lorsque le contact origine a disparu
 
 $custom = '/Applications/MAMP/htdocs/preprod/wp-content/uploads/civicrm/custom';   // repertoire contenant les pdf
 $custom_orig = $custom."/custom_orig/";                                             // repertoire contenant les pdf de la base originale (cux qui sont utilisés sont  déplacés vers $custom)
 
 $check_custom_field = 0;
-$check_option_values =0 ;
+$check_option_values = 1 ;
 $import_organisations =0;
 $import_individus =0 ;
 $import_groups = 0 ;
@@ -22,10 +22,10 @@ $import_adresses = 0 ;
 $import_telephones = 0 ;
 $import_email = 0 ;
 $import_relationships = 0 ;
-$import_utilisations =0;
+$import_utilisations =1;
 $import_protinvivo =0 ;
 $import_FinancialType =0;
-$import_contributions =1 ;
+$import_contributions =0 ;
 $import_events =0 ;
 $import_participants =0;
 $import_activites =0 ;
@@ -854,6 +854,7 @@ function import_groups(){
     }
     $groups_import['modified_id']=$contacts[0]['id'];
 
+    //print_r($groups_import);
 
     // on vérifie si ce groupe existe dans la nouvelle base
     $group = civicrm_api4($entity, 'get', [
@@ -861,11 +862,14 @@ function import_groups(){
         'id',
       ],
       'where' => [
-        ['name', '=', $groups_import['name']],
+        ['title', '=', $groups_import['title']],
+        //['name', '=', $groups_import['name']],
       ],
       'limit' => 1,
       'checkPermissions' => FALSE,
     ]);
+
+    print_r($group);
 
     if (isset($group[0]['id'])){      // si le groupe existe : MAJ
       echo " existe dans la nouvelle base (id : ".$group[0]['id'].") - MISE A JOUR";
@@ -1133,7 +1137,7 @@ function import_utilisation(){
   $error_log=array();                   // chaine contenant les messages d'erreur à loguer
 
   foreach ($values as $value) {
-    //print_r($value);
+    print_r($value);
     //echo "old : ".$value['contact_id'].PHP_EOL;
     // on récupere les id des 3 contacts de cette utilisation dans la nouvelle base
 
@@ -1149,8 +1153,6 @@ function import_utilisation(){
           ],
           'checkPermissions' => FALSE,
         ]);
-
-
 
 
       if (isset($contacts[0]['id'])){
