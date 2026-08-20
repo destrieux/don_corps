@@ -14,7 +14,7 @@ $custom = '/Applications/MAMP/htdocs/preprod/wp-content/uploads/civicrm/custom';
 $custom_orig = $custom."/custom_orig/";                                             // repertoire contenant les pdf de la base originale (cux qui sont utilisés sont  déplacés vers $custom)
 
 $check_custom_field = 0;
-$check_option_values = 1 ;
+$check_option_values = 0 ;
 $import_organisations =0;
 $import_individus =0 ;
 $import_groups = 0 ;
@@ -22,13 +22,14 @@ $import_adresses = 0 ;
 $import_telephones = 0 ;
 $import_email = 0 ;
 $import_relationships = 0 ;
-$import_utilisations =1;
+$import_utilisations =0;
+$import_arrivees = 0;
 $import_protinvivo =0 ;
 $import_FinancialType =0;
 $import_contributions =0 ;
 $import_events =0 ;
 $import_participants =0;
-$import_activites =0 ;
+$import_activites =1 ;
 $import_notes =0 ;
 $import_documents =0 ;   // a faire avant files
 $import_files =0 ;
@@ -1129,6 +1130,8 @@ function import_relationship(){
     return ($check);
 }
 
+
+
 function import_utilisation(){
   $count=1;
   $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
@@ -1137,7 +1140,7 @@ function import_utilisation(){
   $error_log=array();                   // chaine contenant les messages d'erreur à loguer
 
   foreach ($values as $value) {
-    print_r($value);
+    //print_r($value);
     //echo "old : ".$value['contact_id'].PHP_EOL;
     // on récupere les id des 3 contacts de cette utilisation dans la nouvelle base
 
@@ -1255,6 +1258,104 @@ function import_utilisation(){
       } else{
         $entity_id=NULL;                                    // cas ou le donneur n'existe pas dans la nouvelle base : erreur
         $error = "Pas de contact lié à la pièce ".$value['N_de_pi_ce_ou_de_corps'];
+        array_push($error_log,$error);
+      }
+
+  }
+
+  echo PHP_EOL.$entity." : ".count($check)." lignes ont été importées sur ".count($values);
+
+
+    if (count($check)==count($values)) {// le bon nombre de lignes a été importées
+        echo " ---> OK".PHP_EOL;
+    }else {
+      echo "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+    }
+
+    if (isset($error_log)){
+      echo PHP_EOL."Erreurs :".PHP_EOL;
+      print_r($error_log).PHP_EOL;
+    }
+
+    return ($check);
+
+}
+
+function import_arrivee(){
+  $count=1;
+  $entity = func_get_arg(0);     // nom de l'entité à créer (Custom_Arriv_e_du_corps_new)
+  $values = func_get_arg(1);     // liste des entités à créer
+  $check=array();
+  $error_log=array();                   // chaine contenant les messages d'erreur à loguer
+
+  foreach ($values as $value) {
+    //print_r($value);
+    //echo "old : ".$value['contact_id'].PHP_EOL;
+    // on récupere l'id du contact à laquelle cette arrivée se rapporte
+      unset($contacts);
+      $old_entity_id=$value['entity_id'];                   // id du donneur dans l'ancienne base
+
+      $contacts = civicrm_api4('Contact', 'get', [
+        'select' => [
+          'id',
+        ],
+        'where' => [
+          ['external_identifier', '=', $value['entity_id']],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+      if(isset($contacts[0]['id'])){                        // Si le donneur existe dans la nouvelle base
+        $entity_id=$contacts[0]['id'];                      // id du donneur dans la nouvelle base
+
+         $arrivees = civicrm_api4('Custom_Arriv_e_du_corps_new', 'get', [     // on recherche si une arrivée existe pour ce contacts 
+          'select' => [
+            'id',
+          ],
+          'where' => [
+            ['entity_id', '=', $entity_id],
+          ],
+          'checkPermissions' => FALSE,
+
+        ]);
+
+        //var_dump($utilisations);
+        $value['entity_id']=$entity_id;       // on remplace le contact_id de l'anceinne base par celui dans la nouvelle
+
+
+        if (!isset($arrivees[0]['id'])){                     //  cette utilisaiton n'exista pas ; on la crée
+          $results = civicrm_api4('Custom_Arriv_e_du_corps_new', 'create', [
+            'values' => $value,
+            'checkPermissions' => FALSE,
+          ]);
+
+          echo $count." Custom_Arriv_e_du_corps_new crée pour contact id : ".$value['entity_id'].PHP_EOL;
+          ++$count;
+
+          //$value['relationship_type_id:name']=$relation_orig;
+
+          } else {                                                  // cette utilisation existe  ; on la MAJ
+            $arrivee_to_create = $arrivees[0]['id'];
+
+            $maj = civicrm_api4('Custom_Arriv_e_du_corps_new', 'update', [
+            'values' => $value,
+            'where' => [
+              ['id', '=', $arrivee_to_create],
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+
+            echo $count." Custom_Arriv_e_du_corps_new ".$arrivee_to_create." MAJ pour contact : ".$value['entity_id'].PHP_EOL;
+            //echo ".";
+            ++$count;
+        }
+
+        array_push($check, $value['entity_id']); // crée un tableau avec les id de contacts
+
+
+      } else{
+        $entity_id=NULL;                                    // cas ou le donneur n'existe pas dans la nouvelle base : erreur
+        $error = "Pas de contact lié à l'arrivée du corps ";
         array_push($error_log,$error);
       }
 
@@ -2528,8 +2629,6 @@ function import_protinvivo(){
 
 }
 
-
-
 function import_tags(){
   global $exp_dir;
   $count=1;
@@ -2930,6 +3029,32 @@ function import_tags(){
 
     echo count($toimport)." Utilisations du corps à importer".PHP_EOL;
     $check=import_utilisation('Custom_Utilisation_du_corps',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
+
+
+      $chk_file = $exp_dir."check_".$name.".txt";
+    file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
+    echo $chk_file." écrit".PHP_EOL;
+
+    echo "Continuer à importer (O/N) ?";
+    $kb = trim(fgets(STDIN)); // Lire l'entrée et supprimer les espaces inutiles
+
+    if ($kb=='O' OR $kb=='o'){
+      echo "On y va !!!".PHP_EOL;
+    } else {
+      echo "Vérifiez vos imports et reprenez".PHP_EOL;
+      exit;
+    }
+  }
+
+// importe arrivees
+  if($import_arrivees ==1){
+    $name = '42_Custom_Arrivee_du_corps';                     // nom du fichier à importer sans le suffixe
+    $toimport_file = $exp_dir.$name.".txt";
+    $json = file_get_contents($toimport_file);
+    $toimport = json_decode($json, true);
+
+    echo count($toimport)." Arrivées du corps à importer".PHP_EOL;
+    $check=import_arrivee('Custom_Arriv_e_du_corps_new',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
 
 
       $chk_file = $exp_dir."check_".$name.".txt";

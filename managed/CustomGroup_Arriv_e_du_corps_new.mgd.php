@@ -66,6 +66,28 @@ return [
     ],
   ],
   [
+    'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_A_v_rifier',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
+        'label' => E::ts('a vérifier'),
+        'value' => '4',
+        'name' => 'A vérifier',
+        'is_default' => TRUE,
+        'description' => E::ts(''),
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
     'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_pas_de_pacemaker',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
@@ -126,7 +148,7 @@ return [
     ],
   ],
   [
-    'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_A_v_rifier',
+    'name' => 'OptionGroup_Arriv_e_du_corps_new_Retrait_Stimulateur_piles_OptionValue_Pace_maker_implant_sans_sonde_p',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -134,10 +156,10 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'Arriv_e_du_corps_new_Retrait_Stimulateur_piles',
-        'label' => E::ts('a vérifier'),
-        'value' => '4',
-        'name' => 'A vérifier',
-        'is_default' => TRUE,
+        'label' => E::ts('Pace maker implanté sans sonde - pas de retrait'),
+        'value' => '5',
+        'name' => 'Pace_maker_implant_sans_sonde_p',
+        'description' => E::ts(''),
       ],
       'match' => [
         'option_group_id',
@@ -158,6 +180,7 @@ return [
         'name' => 'Retrait_Stimulateur_piles',
         'label' => E::ts('Retrait Stimulateur à piles'),
         'html_type' => 'Select',
+        'default_value' => '4',
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
