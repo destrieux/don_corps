@@ -166,7 +166,7 @@ chgrp(LOGFILE, $grp);
                       ]);
 
                       foreach($contactLayouts as $contactLayout){
-                      $block_cols=$contactLayout['blocks'];
+                        $block_cols=$contactLayout['blocks'];
                       
                           foreach($block_cols as $block_col){
                               $blocks=$block_col;
@@ -206,7 +206,39 @@ chgrp(LOGFILE, $grp);
                           }
                       }
 
-                  //
+                  // Si ce customgroup n'est pas utilisé par un contact layout on crée l'UFJoin module Profile
+                  $uFGroups = civicrm_api4('UFGroup', 'get', [
+                    'select' => [
+                      'name',
+                      'uf_join.module',
+                    ],
+                    'join' => [
+                      ['UFJoin AS uf_join', 'LEFT', ['uf_join.uf_group_id', '=', 'id']],
+                    ],
+                    'where' => [
+                      ['uf_join.module', 'IS NULL'],
+                      ['name', '=', $entitie['params']['values']['name']],
+                    ],
+                    'checkPermissions' => FALSE,
+                  ]);
+
+                  print_r($uFGroups);
+
+                  if(isset($uFGroups)){
+                    $to_create =  [  
+                      'entity' => 'UFJoin',
+                      'values' => [
+                          'module' => 'Profile',
+                          'is_active' => TRUE,
+                          'uf_group_id:name' => $entitie['params']['values']['name'],
+                          ],
+                      ];
+                      create_entity($to_create); 
+
+                  }
+
+
+
                       break;
 
               case 'UFField':
