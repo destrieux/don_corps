@@ -78,7 +78,6 @@ return [
         'value' => '4',
         'name' => 'A vérifier',
         'is_default' => TRUE,
-        'description' => E::ts(''),
       ],
       'match' => [
         'option_group_id',
@@ -159,7 +158,6 @@ return [
         'label' => E::ts('Pace maker implanté sans sonde - pas de retrait'),
         'value' => '5',
         'name' => 'Pace_maker_implant_sans_sonde_p',
-        'description' => E::ts(''),
       ],
       'match' => [
         'option_group_id',

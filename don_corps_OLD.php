@@ -61,215 +61,6 @@ chgrp(LOGFILE, $grp);
 
 # DEFINITION DES FONCTIONS
   
-  function after ($thisv, $inthatv){ // récupère la partie de chaine $inthatv située après $thisv
-        if (!is_bool(strpos($inthatv, $thisv)))
-        return substr($inthatv, strpos($inthatv,$thisv)+strlen($thisv));
-    };
-  function before ($thisv, $inthatv){ // récupère la partie de chaine $inthatv située avant $thisv
-        return substr($inthatv, 0, strpos($inthatv, $thisv));
-    };
-
-  function install_UFGroup(){ // installe les profils utilisés pour créer les contacts et dans les layouts
-      // Cette fonction est utilisée pour installer un profil specifié par un mgd file car l'imprt natif ne marche pas bien
-      // Elle lit le managed file spécifié dans l'argument puis : 
-      // - crée l'UFGroup (spécifié en premier dans le mgd file)
-      // - modifie les url appelées en cas de creation de contact ou d'annulation de cette creation
-      // - modifie les url de navigation qui appellent les profils de creation de contact
-      // - crée les UFjoins liés à l'UFGroup si celui ci est utilisé par un custom layout
-      // - supprime les UFfields de ce groupe
-      // - importe les UFfields depuis le mgd file
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-
-      // lit le fichier mgd specifié dans l'argument et met la valeur dans la variable $entities
-      $entities_to_process = func_get_arg(0);
-      $entities_to_process_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/")."UFGroup_".$entities_to_process.".mgd.php";
-      $entities = require $entities_to_process_file;
-
-      if(func_num_args()==3){
-          $nav_parent=func_get_arg(1); // nom du menu parent de navigation si le profil est appelé par un menu
-          $nav=func_get_arg(2);        // nom du menu de navigation si le profil est appelé par un menu
-      }
-
-      foreach($entities as $entitie){
-          $entity = $entitie['entity'];
-          switch ($entity){
-
-              case 'UFGroup':     // Création UF Group
-
-                  $msg= PHP_EOL.'Traitement de '.$entity." ".$entitie['params']['values']['name'].PHP_EOL;
-                  fwrite($fp, $msg);
-                  echo $msg;
-
-                  // Si l'UF group comporte une  url à charger apres creation du contact en utilisant le profil on la maj
-                  if(isset($entitie['params']['values']['post_url'])){
-                      $entitie['params']['values']['post_url'] = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";  
-                      $msg= "         Réécriture url à afficher apres utilisation du profil".PHP_EOL;
-                      fwrite($fp, $msg);
-                      echo $msg;
-                          
-                  }
-
-                  // Si l'UF group comporte une  url à charger en cas d'anulation en utilisant le profil on la maj
-                  if(isset($entitie['params']['values']['cancel_url'])){
-                      $entitie['params']['values']['cancel_url'] = admin_url("admin.php?page=CiviCRM");  
-                      $msg= "         Réécriture url à afficher en cas d'annulation".PHP_EOL;
-                      fwrite($fp, $msg);
-                      echo $msg;
-                  }
-
-                  $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
-                    'entity' => 'UFGroup',
-                    'values' => $entitie['params']['values'],
-                  ];
-
-                  $UFGroup_id=create_entity($to_create);  // create ou update UFGROUP
-
-                  // on met à jour le menu de navigation éventuel (2 et 3 eme arguments passés à la fonction) qui appelle ce profil
-                  // le champ URL doit être modifié en utilisant l'id de l'UF group qui est crée ($results[0]['id])
-
-                  if (isset($nav)){
-                  $msg= "         Menu de navigation : ".$nav_parent." / ".$nav;
-                  fwrite($fp, $msg);
-                  echo $msg;
-                  
-                  $to_create =  [                                                 // modifie l'URL pour le menu
-                      'entity' => 'Navigation',
-                      'values' => [
-                          'parent_id:name' => $nav_parent,
-                          'name' => $nav,
-                          'url' => 'civicrm/profile/create/?gid='.$UFGroup_id.'&reset=1',
-                          'permission' => 'add contacts',
-                          'is_active' =>true,
-                          ],
-                      ];
-                  create_entity($to_create); 
-                  }
-                  
-                  // Suppression des UFFields liés à cet UFGroup
-                      $results = civicrm_api4('UFField', 'delete', [
-                          'where' => [
-                              ['uf_group_id:name', '=', $entitie['params']['values']['name']],
-                          ],
-                          'checkPermissions' => FALSE,
-                          ]);
-
-                      $msg = "         Suppression des UF Fields liés à cet UFGroup".PHP_EOL;
-                      fwrite($fp, $msg);
-                      echo $msg;
-
-                  // Si ce customgroup est utilisé par un contact layout on crée l'UFJoin
-                      $contactLayouts = civicrm_api4('ContactLayout', 'get', [  
-                          'select' => [
-                              'blocks',
-                          ],
-                          'checkPermissions' => FALSE,
-                      ]);
-
-                      foreach($contactLayouts as $contactLayout){
-                      $block_cols=$contactLayout['blocks'];
-                      
-                          foreach($block_cols as $block_col){
-                              $blocks=$block_col;
-                              foreach($blocks as $block){
-                                  $profiles=$block;
-                                  foreach ($profiles as $profile){
-                                          if ($profile['name']=='profile.'.$entitie['params']['values']['name']){         // Profil utilisé par un CaontactLayout
-                                              $msg = '         UFGroup attaché à un Contact Layout : Traitement des UFJoins'.PHP_EOL;
-                                              fwrite($fp, $msg);
-                                              if (VERBOSE==1){
-                                              echo $msg;
-                                              }
-
-                                              $to_create =  [                                                 // modifie l'URL pour le menu
-                                              'entity' => 'UFJoin',
-                                              'values' => [
-                                                  'module' => 'Contact Summary',
-                                                  'is_active' => TRUE,
-                                                  'uf_group_id:name' => $entitie['params']['values']['name'],
-                                                  ],
-                                              ];
-                                              create_entity($to_create); 
-
-                                              $to_create =  [                                                 // modifie l'URL pour le menu
-                                              'entity' => 'UFJoin',
-                                              'values' => [
-                                                  'module' => 'Profile',
-                                                  'is_active' => TRUE,
-                                                  'uf_group_id:name' => $entitie['params']['values']['name'],
-                                                  ],
-                                              ];
-                                              create_entity($to_create); 
-                                          break 5;
-                                          }
-                                      }
-                                  }
-                          }
-                      }
-
-                  //
-                      break;
-
-              case 'UFField':
-                  // création du nom de l'UFfield 
-
-                  if(isset($entitie['params']['values']['field_name:name'])){
-                      // si le champ est identifié sous la forme field_name:name
-                      // (ex. custom_group_name.custom_field_name)
-                      // c à d que c'est un champ cré par l'utilisateur
-                      // il faut 
-                      //  1/ extraire le custom_GROUP_name et le custom_field_name 
-                      //  2/ récupérer l'id du custom field correspondant
-                      //  3/ creer le filed name custom_idDuCustomField
-                      //
-                      // si le champ est identifié sous la forme field_name
-                      // (ex. birth_date)
-                      // c à d que c'est un champ natif
-                      // on utilise directement le custom_field_name pour creer l'UFField
-
-                      $field=$entitie['params']['values']['field_name:name'];
-
-                      $custom_group=before('.', $field);
-                      $custom_field=after('.', $field);
-
-                      // On récupère l'id du custom field correspondant au custom_field_name
-                      $customFields = civicrm_api4('CustomField', 'get', [
-                      'select' => [
-                          'id',
-                      ],
-                      'where' => [
-                          ['custom_group_id:name', '=', $custom_group],
-                          ['name', '=', $custom_field],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-
-                      $field_name='custom_'.$customFields[0]['id'];
-                      unset ($entitie['params']['values']['field_name:name']);  // sinon erreur
-                      $entitie['params']['values']['field_name']=$field_name;
-
-                  } else {
-
-                      $field=$entitie['params']['values']['field_name'];
-
-                  }
-
-                  $entitie['params']['values']['is_active']=true;
-
-                  // création de l'UFField
-
-                  $to_create =  [                                                 // modifie l'URL pour le menu
-                  'entity' => 'UFField',
-                  'values' => $entitie['params']['values'],
-                  ];
-
-                  create_entity($to_create); 
-              break;
-          }          
-      }
-    }
-
-
-
   function don_corps_civicrm_pageRun($page) {
     // Vérifie si c’est notre page personnalisée
     if ($page->getVar('_name') === 'don_corps') {
@@ -977,19 +768,6 @@ chgrp(LOGFILE, $grp);
           $descr=$values['uf_group_id:name'];
         break;
 
-
-        case 'UFField':
-          $check_entity = civicrm_api4($entity, 'get', [    
-              'where' => [
-                  ['field_name', '=', $values['field_name']],
-                  ['uf_group_id.name', '=', $values['uf_group_id.name']],
-              ],
-              'checkPermissions' => FALSE,
-          ]);
-          $descr=$values['uf_group_id.name'];
-        break;
-
-
         case 'Navigation':                                             // Menus de navigation
           $check_entity = civicrm_api4($entity, 'get', [    
               'where' => [
@@ -1460,8 +1238,386 @@ chgrp(LOGFILE, $grp);
       fclose($fp);
     }   // Fin de la définition de la fonction : update_search() 
 
+  function modif_profils_perso(){ // LOG OK
+    #####
+    # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
+    # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
+    # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
+    # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
+    # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
+    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    $toimport_file = func_get_arg(0); // nom du fichier à importer
+
+    $json = file_get_contents($toimport_file);
+    $convert = json_decode($json, true);
+
+    $msg="         Table de conversion : ".$toimport_file.PHP_EOL;
+
+    ### Modification des UF Fields pour corrier les custom_id
+
+    $new = [];
+    $new[0]['id']=NULL;
+    $new[0]['field_name']=NULL;
+    $new[0]['field_name:name']=NULL;
+    $new[0]['label']=NULL;
+
+    foreach ($convert as $k => $v) {
+        $new[$k + 1] = $v;
+    }
+
+    $convert=$new;
+
+    $labels_table = array_column($convert, 'label');
+    $names_table = array_column($convert, 'field_name:name');
+    $customs_table = array_column($convert, 'field_name');
+
+    $uFFields = civicrm_api4('UFField', 'get', [
+        'select' => [
+          'field_name',
+          'field_name:name',
+          'label',
+        ],
+        'where' => [
+          ['field_name', 'CONTAINS', 'custom_'],
+        ],
+        'orderBy' => [
+          'uf_group_id:name' => 'ASC',
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+    if (isset($uFFields[0])){      
+      foreach ($uFFields as $uFField){
+
+        if (isset($uFField['label'])) {           // si un label existe, on récupère la valeur de field_name_name 
+          $label=$uFField['label'];
+          $key = array_search($label, $labels_table); 
+          if ($key){
+                $name=$convert[$key]['field_name:name'];
+          } else {
+            $msg="ERREUR : pas de label ".$label.' dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+            fwrite($fp, $msg);
+            echo $msg;
+            fclose($fp);
+            exit;
+          }
+        }  else { // si ce label n'existe pas 
+            //echo 'pas de label'.PHP_EOL;
+            if (isset($uFField['field_name:name'])){    // si un field_name:name de type customgroup.customfield existe
+              $name=$uFField['field_name:name'];          // on la conserve
+              $key = array_search($name, $names_table);   
+              if ($key){
+                    $label=$convert[$key]['field_name:label'];  // on récupère label depuis la table de correspondance en utilisant le field_name:name comme critere de concordance
+              } else {
+                $msg= "ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+                fwrite($fp, $msg);
+                echo $msg;
+                fclose($fp);
+                exit;
+              }
+            } else {                                          // pas de field _name:name de type customgroup.customfield 
+              $key = array_search($name, $customs_table);
+
+              if ($key){
+                $label=$convert[$key]['field_name:label'];      // on récupère label et name depuis table correspondance
+                $name=$convert[$key]['field_name:name'];        // en utilisant le custom_name comme critere de concordance
+              } else {
+                $msg ="ERREUR : pas de name ".$name.'dans le fichier de correspondance : '.$toimport_file.PHP_EOL;
+                fwrite($fp, $msg);
+                echo $msg;
+                fclose($fp);
+                exit;
+              }
+            }
+        }
+
+        $position = strpos($name, '.');             // retrouve la position du point dans le nom
+        if ($position !== false) {
+          $group = substr($name, 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+          $custom = substr($name, $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+          //echo 'group : '.$group.'        custom field :'.$custom.PHP_EOL;
+            $customFields = civicrm_api4('CustomField', 'get', [
+              'select' => [
+                'id',
+              ],
+              'where' => [
+                ['custom_group_id:name', '=', $group],
+                ['name', '=', $custom],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+
+            if(isset($customFields[0])){
+              $field_name='custom_'.$customFields[0]['id'];
+            }
+
+          $msg= "         UFFIELF id : ".$uFField['id']." name : ".$name." | label : ".$label." | field name : ".$field_name;
+          fwrite($fp, $msg);
+          if (VERBOSE==1){
+            echo $msg;
+          }
+
+          if($field_name!=$uFField['field_name']){
+            $msg= " - MAJ".PHP_EOL;  
+            fwrite($fp, $msg);
+            if (VERBOSE==1){
+              echo $msg;
+            }
+            
+
+            $results = civicrm_api4('UFField', 'update', [        // on inject les nouvelles valeurs dans
+              'values' => [
+                'label' => $label,
+                'field_name' => $field_name,
+              ],
+
+              'where' => [
+                //['field_name', '=', $uFField['field_name']],
+                
+                ['id', '=', $uFField['id']],
+              ],
+
+              'checkPermissions' => FALSE,
+            ]); 
+            //print_r($results);
+
+            }else {
+              $msg= " - Inchangé".PHP_EOL;
+              fwrite($fp, $msg);
+              if (VERBOSE==1){
+              echo $msg;
+            }
+            }
+        }
+      }
+    }
+
+    #### Creation / MAJ des UFJOINS
+    # Les UFjoins mettren en relation un profil avec les contacts layous ; sinon ils ne s'affichent pas 
+    # Il faut un UFjoin pour les modeles CustomSummary et un pour Profile par groupe de profil
+
+    $contactLayouts = civicrm_api4('ContactLayout', 'get', [
+      'select' => [
+        'blocks',
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+
+    $summary_profile_list=array();
+
+    foreach($contactLayouts as $contactLayout){
+      $block_cols=$contactLayout['blocks'];
+      foreach($block_cols as $block_col){
+        $blocks=$block_col;
+        foreach($blocks as $block){
+          $profiles=$block;
+          foreach ($profiles as $profile){
+            $position = strpos($profile['name'], '.');             // retrouve la position du point dans le nom
+            if ($position !== false) {
+              $prefix = substr($profile['name'], 0, $position);    // ne garde que ce qui est à gauche du point, donc le prefixe
+              $postfix = substr($profile['name'], $position + 1);// ne garde que ce qui est à droite du point, donc le nom du custom group ou du profile
+              if ($prefix=='profile'){
+                array_push($summary_profile_list, $postfix);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    foreach($summary_profile_list as $profile){
+        $uFJoins = civicrm_api4('UFJoin', 'get', [
+          'select' => [
+            'id',
+          ],
+          'where' => [
+            ['uf_group_id:name', '=', $profile],
+            ['module', '=', 'Contact Summary'],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        $msg= "         UFJoin pour Contact Summary et profil : ".$profile;
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
+
+      if(!isset($uFJoins[0]['id'])){
+          $results = civicrm_api4('UFJoin', 'create', [
+            'values' => [
+              'module' => 'Contact Summary',
+              'uf_group_id.name' => $profile,
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+          $msg=" - Créé".PHP_EOL;
+      }else{
+          $results = civicrm_api4('UFJoin', 'update', [
+          'values' => [
+            'uf_group_id.name' => $profile,
+          ],
+          'where' => [
+            ['id', '=', $uFJoins[0]['id']],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+              $msg=" - MAJ".PHP_EOL;
+      }
+      fwrite($fp, $msg);
+      if (VERBOSE==1){
+        echo $msg;
+      }
+
+    }
 
 
+    foreach($summary_profile_list as $profile){
+        $uFJoins = civicrm_api4('UFJoin', 'get', [
+          'select' => [
+            'id',
+          ],
+          'where' => [
+            ['uf_group_id:name', '=', $profile],
+            ['module', '=', 'Profile'],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+
+        $msg="         UFJoin pour Profile (standalone form) et profil : ".$profile;
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
+
+      if(!isset($uFJoins[0]['id'])){
+          $results = civicrm_api4('UFJoin', 'create', [
+            'values' => [
+              'module' => 'Profile',
+              'uf_group_id.name' => $profile,
+            ],
+            'checkPermissions' => FALSE,
+          ]);
+          $msg= " - Créé".PHP_EOL;
+      }else{
+          $results = civicrm_api4('UFJoin', 'update', [
+          'values' => [
+            'uf_group_id.name' => $profile,
+          ],
+          'where' => [
+            ['id', '=', $uFJoins[0]['id']],
+          ],
+          'checkPermissions' => FALSE,
+        ]);
+              $msg= " - MAJ".PHP_EOL;
+      }
+        fwrite($fp, $msg);
+        if (VERBOSE==1){
+          echo $msg;
+        }
+
+    }
+    fclose($fp);
+   }    // Fin de la définition de la fonction : modif_profils_perso
+
+  function modif_profils_utilisation(){ // LOG OK
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      $uFGroups = civicrm_api4('UFGroup', 'get', [   // récupère la liste des profils
+      'select' => [
+          'name',
+          'id',
+      ],
+      'checkPermissions' => FALSE,
+      ]);
+          
+          
+      foreach ($uFGroups as $uFGroup){                        // crée un tableau avec [id_UFGroup][name_UFGroup]
+          $profile_names[$uFGroup['id']]=$uFGroup['name'];
+      }
+      $cancel_url = admin_url("admin.php?page=CiviCRM");  // url à charger si annulation 
+      $url = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";  // url à charger apres creation du contact utilisant le profil 
+      
+      $profiles_to_update = ['Mairie','Lieu_de_stockage','Centre_d_accueil_des_corps','Personnel_de_centre_de_don_de_corps','Inscription_proche_donateur_14', 'Demandeur_information_22', 'inscription_pompes', 'Inscription_donateur','Inscription_anat_compar_e'];
+
+      // Liste de profils à associer à un role (ceux utilisés pour creation contacts) name_and_address = ionscription donneur ; Inscription_proche_donateur_27 : pompes
+      
+      foreach ($profiles_to_update as $profile_to_update) {
+          $position = array_search($profile_to_update, $profile_names);
+          if ($position !== false) {                                          // Si le profil est déja créé 
+              $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
+                  'entity' => 'UFGroup',
+                  'values' => [
+                      'post_url' => $url,
+                      'cancel_url' => $cancel_url,
+                      'name' => $profile_to_update,
+                  ],
+                ];
+                create_entity($to_create);  // create ou update UFGROUP
+
+              $to_create =  [                                                 // ajoute à chacun de ces profils l'utilisaiton "Profile" = "Formulaire ou Liste à afficher"
+                'entity' => 'UFJoin',
+                'values' => [
+                    'uf_group_id:name' => $profile_to_update,
+                    'module' => 'Profile',
+                    'is_active' => TRUE,
+                    'module_data' => NULL,
+                ],
+              ];
+              create_entity($to_create);  // create ou update UFJOIN
+            
+            } else {
+                $msg= $profile_to_update." : Profil non trouvé ////////.".PHP_EOL;
+                fwrite($fp, $msg);
+                echo $msg;
+            }
+      }
+    fclose($fp);
+   }    // Fin de la définition de la fonction : modif_profils_utilisation
+
+  function modif_profils_navigation(){ // LOG OK
+    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    /// Modifie les menus de navigation liés aux profil de création de contacts
+    $url_menus_to_change = func_get_arg(0); // liste des menus à modifier
+                                            // Profil name, parent_id:name, name du menu navigation
+
+    foreach ($url_menus_to_change as $url_menu_to_change){
+      $uFGroups = civicrm_api4('UFGroup', 'get', [                        // récupere l'id du profil
+          'select' => [
+          'id',
+          ],
+          'where' => [
+          ['name', '=', $url_menu_to_change[0]],
+          ],
+          'checkPermissions' => FALSE,
+      ]);
+
+      if (isset($uFGroups[0]['id'])){                                       // si le profil existe
+
+          $msg= "         ".$url_menu_to_change[1]." / ".$url_menu_to_change[2]." / ".$url_menu_to_change[0]." : ".PHP_EOL;
+
+          $to_create =  [                                                 // modifie l'URL pour le menu
+              'entity' => 'Navigation',
+              'values' => [
+                  'parent_id:name' => $url_menu_to_change[1],
+                  'name' => $url_menu_to_change[2],
+                  'url' => 'civicrm/profile/create/?gid='.$uFGroups[0]['id'].'&reset=1',
+                  'permission' => 'add contacts',
+                  'is_active' =>true,
+                  ],
+              ];
+          create_entity($to_create);                                     // create ou update navigation menu  
+
+      }else {
+
+          $msg= "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
+      }
+      fwrite($fp, $msg);
+      if (VERBOSE==1){
+        echo $msg;
+      }
+    }
+    fclose($fp);
+   }    // Fin de la définition de la fonction : modif_profils_navigation
 
   function ajoute_CDC(){ // LOG OK
        $exp_dir = func_get_arg(0); // liste des menus à modifier
@@ -1595,7 +1751,7 @@ chgrp(LOGFILE, $grp);
           ]);
         }
       }
-   }
+  }
   function create_rules(){
     ## les mgd files ne fonctionnent pas correctement car font référence aux id des activités, culstom fields...
     ## qui varient d'une installation à l'autre
@@ -3850,7 +4006,344 @@ chgrp(LOGFILE, $grp);
  
 
   function don_corps_civicrm_enable(): void {   // pas d'affcicahge des messages consoles lors installation
-     }
+    /* $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    $msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_enable ".PHP_EOL;
+    fwrite($fp, $msg);
+    echo $msg;
+  
+    _don_corps_civix_civicrm_enable();
+
+    
+    $msg= "  - Activation des groupes de champs personnalisés crées par l'extension".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $results = civicrm_api4('CustomGroup', 'update', [
+        'values' => [
+          'is_active' => TRUE,
+        ],
+        'where' => [
+          ['base_module', '=', 'don_corps'],
+          ],
+        'checkPermissions' => FALSE,
+      ]);
+      /// FIN Activation des groupes de champs personalisés crées par l'extension
+
+    $msg= "  - Activation des champs personnalisés crées par l'extension".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $results = civicrm_api4('CustomField', 'update', [
+        'values' => [
+          'is_active' => TRUE,
+        ],
+        'where' => [
+          ['base_module', '=', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      /// FIN Activation des champs personalisés crées par l'extension
+
+    $msg= "  - Activation des groupes de contact crées par l'extension".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $results = civicrm_api4('Group', 'update', [
+        'values' => [
+          'is_active' => TRUE,
+        ],
+        'where' => [
+          ['base_module', '=', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      /// FIN Activation des groupes de contacts personalisés crées par l'extension
+
+    
+      $msg= "  - Activation des relations personnalisés crées par l'extension".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $results = civicrm_api4('RelationshipType', 'update', [
+        'values' => [
+          'is_active' => TRUE,
+        ],
+        'where' => [
+          ['base_module', '=', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      // FIN Activation des relations personnalisés crées par l'extension;
+
+    $msg= "  - Activation des profils créés par l'extension".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $results = civicrm_api4('UFGroup', 'update', [
+        'values' => [
+          'is_active' => TRUE,
+        ],
+        'where' => [
+          ['base_module', '=', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      /// Fin Activation des profils crées par l'extension
+
+    $msg= "  - Activation des champs de profils créés par l'extension".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $results = civicrm_api4('UFField', 'update', [
+        'values' => [
+          'is_active' => TRUE,
+        ],
+        'where' => [
+          ['base_module', '=', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      /// Fin Activation des champs de profils crées par l'extension
+
+    $msg= "  - Déactivation des tags par défaut".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $tags = civicrm_api4('Tag', 'delete', [
+        'where' => [
+          ['base_module', 'NOT CONTAINS', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+      // Fin Déactivation des Tags par défaut
+
+    $msg= "  - Création des correspondances de mots".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+
+      $translats = [
+      [
+          'find_word' => 'Contribution',
+          'replace_word' => 'Don financier',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'add',
+          'replace_word' => 'ajouter',
+          'is_active' => TRUE,
+          'match_type' => 'exactMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'amount',
+          'replace_word' => 'montant',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Surnom',
+          'replace_word' => 'Nom de naissance',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Attendee List',
+          'replace_word' => 'liste des participants',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Événement',
+          'replace_word' => 'Cérémonie',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Event',
+          'replace_word' => 'Cérémonie',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'New',
+          'replace_word' => 'Nouveau/Nouvelle',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Activity',
+          'replace_word' => 'Activité',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Find',
+          'replace_word' => 'Cherche',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Report',
+          'replace_word' => 'Rapport',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Home',
+          'replace_word' => 'Domicile',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Don financier Source',
+          'replace_word' => 'Origine du don financier',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Don financier Status',
+          'replace_word' => 'Statut du Don Financier',
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Id. de transaction',
+          'replace_word' => "Référence de l'opération",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Title',
+          'replace_word' => "Titre",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Summary',
+          'replace_word' => "Résumé",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Template',
+          'replace_word' => "Modèle",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Register for',
+          'replace_word' => "Inscrire à",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Child of',
+          'replace_word' => "Enfant de",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Employee of',
+          'replace_word' => "Employé par",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Parent of',
+          'replace_word' => "Parent de",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Partner of',
+          'replace_word' => "Conjoint de",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Sibling of',
+          'replace_word' => "Frère/Soeur de",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Create',
+          'replace_word' => "Créer",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+        [
+          'find_word' => 'Record',
+          'replace_word' => "Enregistrer",
+          'is_active' => TRUE,
+          'match_type' => 'wildcardMatch',
+          'domain_id' => 1,
+        ],
+
+      ];
+
+      foreach ($translats as $translat){
+        $wordReplacements = civicrm_api4('WordReplacement', 'get', [
+        'where' => [
+          ['find_word', '=', $translat['find_word']],
+        ],
+        'checkPermissions' => FALSE,
+        ]);
+
+
+        if (isset($wordReplacements[0]['id']))  {  // si le Wordreplacement existe
+
+            $results = civicrm_api4('WordReplacement', 'update', [
+              'values' => [
+                'replace_word' => $translat['replace_word'],
+                'is_active' => TRUE,
+                'match_type' => $translat['match_type'],
+                ],
+              'where' => [
+                ['find_word', '=', $translat['find_word']],
+              ],
+              'checkPermissions' => FALSE,
+            ]);
+
+        
+
+
+        }  else {
+          //echo "create"."\n";
+          $results = civicrm_api4('WordReplacement', 'create', [
+          'values' => [
+          'find_word' => $translat['find_word'],
+          'replace_word' => $translat['replace_word'],
+            'is_active' => TRUE,
+            'match_type' => $translat['match_type'],
+          ],
+          'checkPermissions' => FALSE,
+          ]);
+
+        }
+        //echo $translat['find_word']." : done".PHP_EOL;
+      } 
+      // Fin de Création des correspondances de mots
+  fclose($fp);
+ */  }
 
 
 # IMPLEMENTS hook_civicrm_postInstall().
@@ -3968,24 +4461,35 @@ chgrp(LOGFILE, $grp);
       # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
       
       ##$toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
-      install_UFGroup ('Centre_d_accueil_des_corps','Centres de don du corpsDDC','New CDC'); 
-      install_UFGroup ('CESP_29');
-      install_UFGroup ('D_mographie_animal'); 
-      install_UFGroup ('Dates_naissance_et_d_c_s_17'); 
-      install_UFGroup ('Demandeur_information_22','ContactsDDC','New Demandeur_d_informationDDC'); 
-      install_UFGroup ('Employeur'); 
-      install_UFGroup ('Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'); 
-      install_UFGroup ('Inscription_donateur','ContactsDDC','New DonateurDDC'); 
-      install_UFGroup ('inscription_pompes', 'Pompes funebresDDC','New Pompes'); 
-      install_UFGroup ('Inscription_proche_donateur_14','ContactsDDC','Ajouter proche donateurDDC');
-      install_UFGroup ('Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'); 
-      install_UFGroup ('Mairie', 'MairiesDDC','New Mairies'); 
-      install_UFGroup ('Op_rations_fun_raires_r_alis_es_30');
-      install_UFGroup ('Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'); 
-      install_UFGroup ('Profil_sans_nom_20'); // Adresse incorrecte OK
-      install_UFGroup ('Restitution_28'); 
-      install_UFGroup ('Type_de_contact_23'); 
+     
+      $toimport_file = __DIR__.'/managed/ufnameconversion.txt';
+     
+      modif_profils_perso($toimport_file);
 
+    $msg="  - Modification de l'utilisation des profils".PHP_EOL;// LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
+      modif_profils_utilisation();
+  
+    $msg="  - Modification des menus de navigation liés aux profils".PHP_EOL;// LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
+      $url_menus_to_change =[           // Profil name, parent_id:name, name du menu navigation
+        ['Inscription_donateur', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
+        ['Inscription_proche_donateur_14', 'ContactsDDC','Ajouter proche donateurDDC'],///MODIFIE
+        ['Demandeur_information_22', 'ContactsDDC','New Demandeur_d_informationDDC'],///MODIFIE
+        ['inscription_pompes', 'Pompes funebresDDC','New Pompes'],  // 'Inscription_proche_donateur_27' correpond au profil pompes
+        ['Mairie', 'MairiesDDC','New Mairies'],
+        ['Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'],
+        ['Centre_d_accueil_des_corps', 'Centres de don du corpsDDC','New CDC'],
+        ['Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'],
+        ['Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'],
+      ];
+      modif_profils_navigation($url_menus_to_change);
 
       
     $msg="  - Ajout des centres de don du corps".PHP_EOL;// LOG OK
@@ -5843,9 +6347,121 @@ chgrp(LOGFILE, $grp);
       change_icon('Events','crm-i fa-users');
       // Fin du Changement des icones de menus
 
- 
+    $msg="  - Modification des url de redirection et d'annulation des profils".PHP_EOL; 
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      echo $msg;
+      fclose($fp);
+
+      $uFGroups = civicrm_api4('UFGroup', 'get', [   // récupère la liste des profils
+        'select' => [
+            'name',
+            'id',
+        ],
+        'checkPermissions' => FALSE,
+        ]);
+            
+        foreach ($uFGroups as $uFGroup){                        // crée un tableau avec [id_UFGroup][name_UFGroup]
+            $profile_names[$uFGroup['id']]=$uFGroup['name'];
+        }
+        $cancel_url = admin_url("admin.php?page=CiviCRM");  // url à charger si annulation 
+        $url = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";  // url à charger apres creation du contact utilisant le profil 
+        
+        $profiles_to_update = ['Mairie','Lieu_de_stockage','Centre_d_accueil_des_corps','Personnel_de_centre_de_don_de_corps','Inscription_proche_donateur_14', 'Demandeur_information_22', 'inscription_pompes', 'Inscription_donateur','Inscription_anat_compar_e'];
+  
+        // Liste de profils à associer à un role (ceux utilisés pour creation contacts) name_and_address = ionscription donneur ; Inscription_proche_donateur_27 : pompes
+        
+        foreach ($profiles_to_update as $profile_to_update) {
+            $position = array_search($profile_to_update, $profile_names);
+            if ($position !== false) {                                          // Si le profil est déja créé 
+                $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
+                    'entity' => 'UFGroup',
+                    'values' => [
+                        'post_url' => $url,
+                        'cancel_url' => $cancel_url,
+                        'name' => $profile_to_update,
+                    ],
+                  ];
+                  create_entity($to_create);  // create ou update UFJOIN
+        
+                $to_create =  [                                                 // ajoute à chacun de ces profils l'utilisaiton "Profile" = "Formulaire ou Liste à afficher"
+                  'entity' => 'UFJoin',
+                  'values' => [
+                      'uf_group_id:name' => $profile_to_update,
+                      'module' => 'Profile',
+                      'is_active' => TRUE,
+                      'module_data' => NULL,
+                  ],
+                ];
+                create_entity($to_create);  // create ou update UFJOIN
+              
+              } else {
+                  $msg="         ".$profile_to_update." : Profil non trouvé ////////.".PHP_EOL;
+                  $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+                  fwrite($fp, $msg);
+                  if (VERBOSE==1){
+                    echo $msg;
+                  }
+                  fclose($fp);
+              }
+        }
+     // fin de Modification des url de redirection et d'annulation des profils
 
      /// Modification des menus de navigation liés aux profil de création de contacts
+    $msg="  - Modification des menus de navigation liés aux profils".PHP_EOL;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      echo $msg;
+      fclose($fp);
+
+      $url_menus_to_change =[                             // Profil name, parent_id:name, name du menu navigation
+        ['Inscription_donateur', 'ContactsDDC','New DonateurDDC'],  //// MODIFIE
+        ['Inscription_proche_donateur_14', 'ContactsDDC','Ajouter proche donateurDDC'],///MODIFIE
+        ['Demandeur_information_22', 'ContactsDDC','New Demandeur_d_informationDDC'],///MODIFIE
+        ['inscription_pompes', 'Pompes funebresDDC','New Pompes'],  // 'Inscription_proche_donateur_27' correpond au profil pompes
+        ['Mairie', 'MairiesDDC','New Mairies'],
+        ['Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'],
+        ['Centre_d_accueil_des_corps', 'Centres de don du corpsDDC','New CDC'],
+        ['Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'],
+        ['Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'],
+      ];
+
+      foreach ($url_menus_to_change as $url_menu_to_change){
+        $uFGroups = civicrm_api4('UFGroup', 'get', [                        // récupere l'id du profil
+            'select' => [
+            'id',
+            ],
+            'where' => [
+            ['name', '=', $url_menu_to_change[0]],
+            ],
+            'checkPermissions' => FALSE,
+        ]);
+
+        if ($uFGroups[0]['id']!=0){                                       // si le profil existe
+
+            //echo $url_menu_to_change[1]." / ".$url_menu_to_change[2]." / ".$url_menu_to_change[0]." : ";
+            $to_create =  [                                                 // modifie l'URL pour le menu
+                'entity' => 'Navigation',
+                'values' => [
+                    'parent_id:name' => $url_menu_to_change[1],
+                    'name' => $url_menu_to_change[2],
+                    'url' => 'civicrm/profile/create/?gid='.$uFGroups[0]['id'].'&reset=1',
+                    ],
+                ];
+            create_entity($to_create);                                     // create ou update navigation menu  
+
+        }else {
+
+            $msg= "***** Le profil ".$url_menu_to_change[0]." n'existe pas *****".PHP_EOL;
+            $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+            fwrite($fp, $msg);
+            if (VERBOSE==1){
+              echo $msg;
+            }
+            fclose($fp);
+              }
+      }
+     /// Fin de Modification des menus de navigation liés aux profil de création de contacts
 
     $msg="  - Création des templates d'emails".PHP_EOL; // (hors ceux crees par les rules)
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
@@ -6257,6 +6873,14 @@ chgrp(LOGFILE, $grp);
   $container->autowire(\Civi\EventSubscriber\CiviOfficeTokenSubscriber::class)->addTag('kernel.event_subscriber');
  
 } 
+
+
+
+
+
+
+
+
 
 
   # IMPLEMENTS hook_civicrm_uninstall().

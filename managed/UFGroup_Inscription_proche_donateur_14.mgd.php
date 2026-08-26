@@ -257,6 +257,36 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_proche_donateur_14',
+        'field_name' => 'nick_name',
+        'label' => E::ts('Nom d\'usage'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Inscription_proche_donateur_14_UFField_17',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Inscription_proche_donateur_14',
+        'field_name' => 'nick_name',
+        'label' => E::ts('Nom d\'usage'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Inscription_proche_donateur_14_UFField_18',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Inscription_proche_donateur_14',
         'field_name' => 'first_name',
         'label' => E::ts('Prénom'),
         'field_type' => 'Proches',

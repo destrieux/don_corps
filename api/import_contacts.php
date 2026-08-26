@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 
 
 
-$exp_dir = '/Users/destri_c/Desktop/importLyon/';       // racine du répertoire d'import export
+$exp_dir = '/Users/destri_c/Desktop/importStrasbourg/';       // racine du répertoire d'import export
 $contact_default = 2; // id du contact par defaut lorsque le contact origine a disparu
 
 $custom = '/Applications/MAMP/htdocs/preprod/wp-content/uploads/civicrm/custom';   // repertoire contenant les pdf
@@ -15,7 +15,7 @@ $custom_orig = $custom."/custom_orig/";                                         
 
 $check_custom_field = 0;
 $check_option_values = 0 ;
-$import_organisations =0;
+$import_organisations = 0;
 $import_individus =0 ;
 $import_groups = 0 ;
 $import_adresses = 0 ;
@@ -29,12 +29,12 @@ $import_FinancialType =0;
 $import_contributions =0 ;
 $import_events =0 ;
 $import_participants =0;
-$import_activites =1 ;
+$import_activites =0 ;
 $import_notes =0 ;
 $import_documents =0 ;   // a faire avant files
 $import_files =0 ;
 $mv_files = 0 ;
-$import_tags = 0 ;
+$import_tags = 1 ;
 
 
 function check_custom(){
@@ -2631,6 +2631,7 @@ function import_protinvivo(){
 
 function import_tags(){
   global $exp_dir;
+  global $contact_default;
   $count=1;
   $entity = func_get_arg(0);                // nom de l'entité à créer (Tags...)
   $values = func_get_arg(1);                // liste des entités (Tags) à importer
@@ -2650,9 +2651,24 @@ function import_tags(){
     $tag_id_old = $value['id'];
     unset($value['id']);
 
+    $contacts = civicrm_api4('Contact', 'get', [
+      'select' => [
+        'id',
+      ],
+      'where' => [
+        ['external_identifier', '=', $value['created_id']],
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+
+    if (!isset($contacts[0]['id']) && $value['created_id']<>'null'){                                // si aucun contact correspondant n'existe dans la nouvelle base
+      $contacts[0]['id']=$contact_default;                          //  --> on met le contact par défaut en créateur
+    }
+    $value['created_id']=$contacts[0]['id'];                // id du contact aynt cré le groupe ou du contact par défaut dans la nouvelle base ou
+
     $tags = civicrm_api4('Tag', 'get', [
       'where' => [
-        ['name', '=', $value['name']],
+        ['label', '=', $value['label']],
       ],
       'limit' => 1,
       'checkPermissions' => FALSE,
@@ -2663,7 +2679,7 @@ function import_tags(){
       $results = civicrm_api4('Tag', 'update', [
         'values' => $value,
         'where' => [
-          ['name', '=', $value['name']],
+          ['id', '=', $tags[0]['id']],
         ],
         'checkPermissions' => FALSE,
       ]);
@@ -2676,6 +2692,9 @@ function import_tags(){
         'checkPermissions' => FALSE,
       ]);
     }
+
+    //print_r($results);
+    
     $check[$tag_id_old]=$results[0]['id'];
   }
 

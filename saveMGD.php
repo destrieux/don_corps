@@ -249,172 +249,172 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
 
   */
 
-  # Création de la table de correspondance
-    $uFFields=
-    [
-  [
-    'id' => 168,
-    'field_name' => 'custom_114',
-    'label' => E::ts('Provenance'),
-    'field_name:name' => 'animal.Provenance',
-  ],
-  [
-    'id' => 167,
-    'field_name' => 'custom_115',
-    'label' => E::ts('Espèce'),
-    'field_name:name' => 'animal.Esp_ce',
-  ],
-  [
-    'id' => 160,
-    'field_name' => 'custom_29',
-    'label' => E::ts('Civilité'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-  ],
-  [
-    'id' => 172,
-    'field_name' => 'custom_29',
-    'label' => E::ts('Civilité'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-  ],
-  [
-    'id' => 182,
-    'field_name' => 'custom_29',
-    'label' => E::ts('Civilité'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-  ],
-  [
-    'id' => 190,
-    'field_name' => 'custom_29',
-    'label' => E::ts('Civilité'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-  ],
-  [
-    'id' => 208,
-    'field_name' => 'custom_29',
-    'label' => E::ts('Civilité'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
-  ],
-  [
-    'id' => 154,
-    'field_name' => 'custom_31',
-    'label' => E::ts('Ville de naissance'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Ville_de_naissance',
-  ],
-  [
-    'id' => 155,
-    'field_name' => 'custom_32',
-    'label' => E::ts('Année naissance (auto)'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_naissance',
-  ],
-  [
-    'id' => 185,
-    'field_name' => 'custom_33',
-    'label' => E::ts('Adresse incorrecte'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Adresse_incorrecte',
-  ],
-  [
-    'id' => 152,
-    'field_name' => 'custom_34',
-    'label' => E::ts('Heure du décès'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-  ],
-  [
-    'id' => 158,
-    'field_name' => 'custom_34',
-    'label' => E::ts('Heure du décès'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-  ],
-  [
-    'id' => 171,
-    'field_name' => 'custom_34',
-    'label' => E::ts('Heure du décès'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
-  ],
-  [
-    'id' => 159,
-    'field_name' => 'custom_35',
-    'label' => E::ts('Année de décès (auto)'),
-    'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_de_d_c_s_auto_',
-  ],
-  [
-    'id' => 163,
-    'field_name' => 'custom_36',
-    'label' => E::ts('Date envoi informations'),
-    'field_name:name' => 'Demandeur_information.Date_d_envoi_d_informations',
-  ],
-  [
-    'id' => 147,
-    'field_name' => 'custom_37',
-    'label' => E::ts('Avis du Comité éthique'),
-    'field_name:name' => 'Devenir_du_corps.CESP',
-  ],
-  [
-    'id' => 148,
-    'field_name' => 'custom_38',
-    'label' => E::ts('ref avis Comité éthique'),
-    'field_name:name' => 'Devenir_du_corps.ref_avis_CESP',
-  ],
-  [
-    'id' => 179,
-    'field_name' => 'custom_40',
-    'label' => E::ts("Type d'opération funéraire réalisée"),
-    'field_name:name' => 'Devenir_du_corps.devenir_effectif_du_corps',
-  ],
-  [
-    'id' => 178,
-    'field_name' => 'custom_41',
-    'label' => E::ts('Date de sortie définitive'),
-    'field_name:name' => 'Devenir_du_corps.Date_de_sortie_d_finitive',
-  ],
-  [
-    'id' => 180,
-    'field_name' => 'custom_42',
-    'label' => E::ts('Date opérations funéraires'),
-    'field_name:name' => 'Devenir_du_corps.Date_op_rations_fun_raires',
-  ],
-  [
-    'id' => 181,
-    'field_name' => 'custom_43',
-    'label' => E::ts('Date approximative de réalisation des opérations funéraires'),
-    'field_name:name' => 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
-  ],
-  [
-    'id' => 206,
-    'field_name' => 'custom_44',
-    'label' => E::ts('Date de restitution'),
-    'field_name:name' => 'Devenir_du_corps.Date_de_restitution',
-  ],
-  [
-    'id' => 207,
-    'field_name' => 'custom_45',
-    'label' => E::ts('Pompes funèbres mandatées par personne référente'),
-    'field_name:name' => 'Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches',
-  ],
-  [
-    'id' => 205,
-    'field_name' => 'custom_46',
-    'label' => E::ts('Souhait funeraire personne reférente'),
-    'field_name:name' => 'Devenir_du_corps.Souhait_funeraire_personne_ref_rente',
-  ],
-  [
-    'id' => 213,
-    'field_name' => 'custom_54',
-    'label' => E::ts('Centre de don'),
-    'field_name:name' => 'Promesse_de_don.Centre_de_don',
-  ],
-  [
-    'id' => 215,
-    'field_name' => 'custom_55',
-    'label' => E::ts('N° de don'),
-    'field_name:name' => 'Promesse_de_don.N_de_don',
-  ],
-  [
-    'id' => 214,
-    'field_name' => 'custom_56',
-    'label' => E::ts('Date du don'),
-    'field_name:name' => 'Promesse_de_don.Date_du_don',
-  ],
-];
+/* # Création de la table de correspondance
+        $uFFields=
+        [
+      [
+        'id' => 168,
+        'field_name' => 'custom_114',
+        'label' => E::ts('Provenance'),
+        'field_name:name' => 'animal.Provenance',
+      ],
+      [
+        'id' => 167,
+        'field_name' => 'custom_115',
+        'label' => E::ts('Espèce'),
+        'field_name:name' => 'animal.Esp_ce',
+      ],
+      [
+        'id' => 160,
+        'field_name' => 'custom_29',
+        'label' => E::ts('Civilité'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+      ],
+      [
+        'id' => 172,
+        'field_name' => 'custom_29',
+        'label' => E::ts('Civilité'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+      ],
+      [
+        'id' => 182,
+        'field_name' => 'custom_29',
+        'label' => E::ts('Civilité'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+      ],
+      [
+        'id' => 190,
+        'field_name' => 'custom_29',
+        'label' => E::ts('Civilité'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+      ],
+      [
+        'id' => 208,
+        'field_name' => 'custom_29',
+        'label' => E::ts('Civilité'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Civilit_user',
+      ],
+      [
+        'id' => 154,
+        'field_name' => 'custom_31',
+        'label' => E::ts('Ville de naissance'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Ville_de_naissance',
+      ],
+      [
+        'id' => 155,
+        'field_name' => 'custom_32',
+        'label' => E::ts('Année naissance (auto)'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_naissance',
+      ],
+      [
+        'id' => 185,
+        'field_name' => 'custom_33',
+        'label' => E::ts('Adresse incorrecte'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Adresse_incorrecte',
+      ],
+      [
+        'id' => 152,
+        'field_name' => 'custom_34',
+        'label' => E::ts('Heure du décès'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+      ],
+      [
+        'id' => 158,
+        'field_name' => 'custom_34',
+        'label' => E::ts('Heure du décès'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+      ],
+      [
+        'id' => 171,
+        'field_name' => 'custom_34',
+        'label' => E::ts('Heure du décès'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Heure_du_d_c_s',
+      ],
+      [
+        'id' => 159,
+        'field_name' => 'custom_35',
+        'label' => E::ts('Année de décès (auto)'),
+        'field_name:name' => 'Compl_m_nt_tat_civil.Ann_e_de_d_c_s_auto_',
+      ],
+      [
+        'id' => 163,
+        'field_name' => 'custom_36',
+        'label' => E::ts('Date envoi informations'),
+        'field_name:name' => 'Demandeur_information.Date_d_envoi_d_informations',
+      ],
+      [
+        'id' => 147,
+        'field_name' => 'custom_37',
+        'label' => E::ts('Avis du Comité éthique'),
+        'field_name:name' => 'Devenir_du_corps.CESP',
+      ],
+      [
+        'id' => 148,
+        'field_name' => 'custom_38',
+        'label' => E::ts('ref avis Comité éthique'),
+        'field_name:name' => 'Devenir_du_corps.ref_avis_CESP',
+      ],
+      [
+        'id' => 179,
+        'field_name' => 'custom_40',
+        'label' => E::ts("Type d'opération funéraire réalisée"),
+        'field_name:name' => 'Devenir_du_corps.devenir_effectif_du_corps',
+      ],
+      [
+        'id' => 178,
+        'field_name' => 'custom_41',
+        'label' => E::ts('Date de sortie définitive'),
+        'field_name:name' => 'Devenir_du_corps.Date_de_sortie_d_finitive',
+      ],
+      [
+        'id' => 180,
+        'field_name' => 'custom_42',
+        'label' => E::ts('Date opérations funéraires'),
+        'field_name:name' => 'Devenir_du_corps.Date_op_rations_fun_raires',
+      ],
+      [
+        'id' => 181,
+        'field_name' => 'custom_43',
+        'label' => E::ts('Date approximative de réalisation des opérations funéraires'),
+        'field_name:name' => 'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
+      ],
+      [
+        'id' => 206,
+        'field_name' => 'custom_44',
+        'label' => E::ts('Date de restitution'),
+        'field_name:name' => 'Devenir_du_corps.Date_de_restitution',
+      ],
+      [
+        'id' => 207,
+        'field_name' => 'custom_45',
+        'label' => E::ts('Pompes funèbres mandatées par personne référente'),
+        'field_name:name' => 'Devenir_du_corps.Pompes_fun_bres_mandat_es_par_proches',
+      ],
+      [
+        'id' => 205,
+        'field_name' => 'custom_46',
+        'label' => E::ts('Souhait funeraire personne reférente'),
+        'field_name:name' => 'Devenir_du_corps.Souhait_funeraire_personne_ref_rente',
+      ],
+      [
+        'id' => 213,
+        'field_name' => 'custom_54',
+        'label' => E::ts('Centre de don'),
+        'field_name:name' => 'Promesse_de_don.Centre_de_don',
+      ],
+      [
+        'id' => 215,
+        'field_name' => 'custom_55',
+        'label' => E::ts('N° de don'),
+        'field_name:name' => 'Promesse_de_don.N_de_don',
+      ],
+      [
+        'id' => 214,
+        'field_name' => 'custom_56',
+        'label' => E::ts('Date du don'),
+        'field_name:name' => 'Promesse_de_don.Date_du_don',
+      ],
+    ];
 
     # On vérifie que pour chaque UF field il y a bien un label, field_name:name et field_name
 
@@ -435,7 +435,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
     $exp_file = 'managed/ufnameconversion.txt'  ;        // nom du fichier à exporter
     file_put_contents($exp_file, json_encode($convert, JSON_PRETTY_PRINT));
     echo "Fichier de conversion sauvegardé : ".$exp_file.PHP_EOL;
-  ## Fin de l'écriture de la table de correspondance
+## Fin de l'écriture de la table de correspondance */
 
 
 ### Export des CiviRulesRules ne fonctione pas bien 
