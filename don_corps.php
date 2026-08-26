@@ -82,7 +82,7 @@ chgrp(LOGFILE, $grp);
 
       // lit le fichier mgd specifié dans l'argument et met la valeur dans la variable $entities
       $entities_to_process = func_get_arg(0);
-      $entities_to_process_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/")."UFGroup_".$entities_to_process.".mgd.php";
+      $entities_to_process_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/")."UFGroup_".$entities_to_process.".mgd.php.disable";
       $entities = require $entities_to_process_file;
 
       if(func_num_args()==3){

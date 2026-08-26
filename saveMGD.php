@@ -525,6 +525,11 @@ $CiviRulesActions = civicrm_api4('CiviRulesAction', 'get', [
           echo "Returned with status $retval and output:\n";
           print_r($output);
           unset ($output);
+
+          // on renome le fichier mgd pour qu'il ne soit pas géré par civicrm automatiquement mais uniquement
+          // à la demande, sinon almertes sur l'impossiblité de créer des UFFieds en double
+          rename('managed/UFGroup_'.$uFGroup['name'].'.mgd.php', 'managed/UFGroup_'.$uFGroup['name'].'.mgd.php.disable');
+
         }
       }
   # Fin export des UF Groups avec civix export
