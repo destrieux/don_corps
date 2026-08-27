@@ -117,10 +117,13 @@ chgrp(LOGFILE, $grp);
                       echo $msg;
                   }
 
+                  $entitie['params']['values']['is_active'] = TRUE;  
+
                   $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
                     'entity' => 'UFGroup',
                     'values' => $entitie['params']['values'],
                   ];
+
 
                   $UFGroup_id=create_entity($to_create);  // create ou update UFGROUP
 
@@ -139,7 +142,7 @@ chgrp(LOGFILE, $grp);
                           'name' => $nav,
                           'url' => 'civicrm/profile/create/?gid='.$UFGroup_id.'&reset=1',
                           'permission' => 'add contacts',
-                          'is_active' =>true,
+                          'is_active' => TRUE,
                           ],
                       ];
                   create_entity($to_create); 
@@ -222,7 +225,7 @@ chgrp(LOGFILE, $grp);
                     'checkPermissions' => FALSE,
                   ]);
 
-                  print_r($uFGroups);
+                  //print_r($uFGroups);
 
                   if(isset($uFGroups)){
                     $to_create =  [  
@@ -1103,7 +1106,8 @@ chgrp(LOGFILE, $grp);
       ]);
 
     }else{                                  // si l'entité n'existe pas, on la crée
-      if($values['is_active']==TRUE){       // on verifie qu'elle est bien active sinon pas de création
+
+      if(!isset($values['is_active']) || $values['is_active']==TRUE){       // on verifie qu'elle est bien active sinon pas de création
         $msg= "         entité ".$entity." ".$descr." n'existe pas - creation".PHP_EOL;
         $results = civicrm_api4($entity, 'create', [
           'values' => $values,
@@ -3988,35 +3992,6 @@ chgrp(LOGFILE, $grp);
         ],
       ];
     
-    $msg="  - Modification des profils personnalisés".PHP_EOL;// LOG OK
-      echo $msg;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
-      # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
-      # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
-      # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
-      # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
-      # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
-      
-      ##$toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
-      install_UFGroup ('Centre_d_accueil_des_corps','Centres de don du corpsDDC','New CDC'); 
-      install_UFGroup ('CESP_29');
-      install_UFGroup ('D_mographie_animal'); 
-      install_UFGroup ('Dates_naissance_et_d_c_s_17'); 
-      install_UFGroup ('Demandeur_information_22','ContactsDDC','New Demandeur_d_informationDDC'); 
-      install_UFGroup ('Employeur'); 
-      install_UFGroup ('Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'); 
-      install_UFGroup ('Inscription_donateur','ContactsDDC','New DonateurDDC'); 
-      install_UFGroup ('inscription_pompes', 'Pompes funebresDDC','New Pompes'); 
-      install_UFGroup ('Inscription_proche_donateur_14','ContactsDDC','Ajouter proche donateurDDC');
-      install_UFGroup ('Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'); 
-      install_UFGroup ('Mairie', 'MairiesDDC','New Mairies'); 
-      install_UFGroup ('Op_rations_fun_raires_r_alis_es_30');
-      install_UFGroup ('Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'); 
-      install_UFGroup ('Profil_sans_nom_20'); // Adresse incorrecte OK
-      install_UFGroup ('Restitution_28'); 
-      install_UFGroup ('Type_de_contact_23'); 
 
 
       
@@ -6276,8 +6251,43 @@ chgrp(LOGFILE, $grp);
         }
         fclose($fp);
         create_entity($to_create);
+
+
+
+    $msg="  - Modification des profils personnalisés".PHP_EOL;// LOG OK
+      echo $msg;
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      fclose($fp);
+      # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
+      # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
+      # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
+      # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
+      # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
+      
+      ##$toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
+      install_UFGroup ('Centre_d_accueil_des_corps','Centres de don du corpsDDC','New CDC'); 
+      install_UFGroup ('CESP_29');
+      install_UFGroup ('D_mographie_animal'); 
+      install_UFGroup ('Dates_naissance_et_d_c_s_17'); 
+      install_UFGroup ('Demandeur_information_22','ContactsDDC','New Demandeur_d_informationDDC'); 
+      install_UFGroup ('Employeur'); 
+      install_UFGroup ('Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'); 
+      install_UFGroup ('Inscription_donateur','ContactsDDC','New DonateurDDC'); 
+      install_UFGroup ('inscription_pompes', 'Pompes funebresDDC','New Pompes'); 
+      install_UFGroup ('Inscription_proche_donateur_14','ContactsDDC','Ajouter proche donateurDDC');
+      install_UFGroup ('Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'); 
+      install_UFGroup ('Mairie', 'MairiesDDC','New Mairies'); 
+      install_UFGroup ('Op_rations_fun_raires_r_alis_es_30');
+      install_UFGroup ('Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'); 
+      install_UFGroup ('Profil_sans_nom_20'); // Adresse incorrecte OK
+      install_UFGroup ('Restitution_28'); 
+      install_UFGroup ('Type_de_contact_23'); 
+
      // Fin modification message liés aux ceremonies
 
+  
+  
   }   // fin Implements hook_civicrm_postInstall().
 
 #IMPLEMENTS hook_civicrm_container().
