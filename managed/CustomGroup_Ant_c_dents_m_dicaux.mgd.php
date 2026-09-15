@@ -15,7 +15,6 @@ return [
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
         'weight' => 3,
-        'created_date' => '2021-04-18 19:51:35',
       ],
       'match' => ['name'],
     ],
@@ -37,7 +36,6 @@ return [
         'attributes' => 'rows=4, cols=60',
         'note_columns' => 100,
         'note_rows' => 4,
-        'column_name' => 'ant_c_dents_m_dico_chirurgicaux_23',
       ],
       'match' => [
         'name',
@@ -60,7 +58,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'cause_du_d_c_s_si_connue_150',
       ],
       'match' => [
         'name',
@@ -181,7 +178,6 @@ return [
         'text_length' => 20,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'stimulateur_pile_24',
         'option_group_id.name' => 'stimulateur_pile_20210418195347',
         'serialize' => 1,
       ],
@@ -217,7 +213,7 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
-        'label' => E::ts('SNC - athrophie multisystémique'),
+        'label' => E::ts('SNC - Atrophie multisystémique'),
         'value' => '4',
         'name' => 'SNC_athrophie_multisyst_mique',
       ],
@@ -337,9 +333,109 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
-        'label' => E::ts('SNC - Tumeur'),
+        'label' => E::ts('SNC - Tumeur cérébrale'),
         'value' => '6',
         'name' => 'SNC_Tumeur',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Demence_fronto_temporale',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Demence fronto-temporale'),
+        'value' => '10',
+        'name' => 'SNC_Demence_fronto_temporale',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Demence_vasculaire',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Demence vasculaire'),
+        'value' => '11',
+        'name' => 'SNC_Demence_vasculaire',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Scl_rose_en_plaques',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Sclérose en plaques'),
+        'value' => '8',
+        'name' => 'SNC - Sclérose en plaques',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Scl_rose_Lat_rale_Amyotroph',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Sclérose Latérale Amyotrophique'),
+        'value' => '12',
+        'name' => 'SNC_Scl_rose_Lat_rale_Amyotroph',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_Ant_c_dents_m_dicaux_Pathologie_cible_OptionValue_SNC_Maladie_de_Huntington',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
+        'label' => E::ts('SNC - Maladie de Huntington'),
+        'value' => '9',
+        'name' => 'SNC - Maladie de Huntington',
       ],
       'match' => [
         'option_group_id',
@@ -362,10 +458,10 @@ return [
         'data_type' => 'Int',
         'html_type' => 'Select',
         'is_searchable' => TRUE,
+        'help_pre' => E::ts('En cas de pathologie cible : ajouter comment le diagnostic a été porté (clinique, imagerie, biologie...) et si le donneur était suivi par un neurologue'),
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'pathologie_cible_151',
         'option_group_id.name' => 'Ant_c_dents_m_dicaux_Pathologie_cible',
         'serialize' => 1,
       ],
@@ -529,7 +625,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'protection_juridique_112',
         'option_group_id.name' => 'Ant_c_dents_m_dicaux_Protection_juridique',
       ],
       'match' => [

@@ -40,6 +40,7 @@ return [
             'GROUP_CONCAT(DISTINCT Contact_Custom_Protocoles_in_vivo_entity_id_01.Intitul_du_protocole:label) AS GROUP_CONCAT_Contact_Custom_Protocoles_in_vivo_entity_id_01_Intitul_du_protocole_label',
             'CONCAT_WS("/", last_name, nick_name) AS CONCAT_WS_last_name_nick_name',
             'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],

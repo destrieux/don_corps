@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 
 
 
-$exp_dir = '/Users/destri_c/Desktop/importStrasbourg/';       // racine du répertoire d'import export
+$exp_dir = '/Users/christophe.destrieux/Library/CloudStorage/Nextcloud-utbox.univ-tours.fr-ChristopheDestrieux/civicrm/villes/Strasbourg/data/2026/importStrasbourg/';       // racine du répertoire d'import export
 $contact_default = 2; // id du contact par defaut lorsque le contact origine a disparu
 
 $custom = '/Applications/MAMP/htdocs/preprod/wp-content/uploads/civicrm/custom';   // repertoire contenant les pdf
@@ -32,7 +32,7 @@ $import_participants =0;
 $import_activites =0 ;
 $import_notes =0 ;
 $import_documents =0 ;   // a faire avant files
-$import_files =0 ;
+$import_files =1 ;
 $mv_files = 0 ;
 $import_tags = 1 ;
 
@@ -1954,7 +1954,32 @@ function import_files(){
       'checkPermissions' => FALSE,
     ]);
 
-    //print_r($files);
+
+  // Retrouve l'extension du nom de fichier 
+    $last = strrpos($values['uri'], '.'); // position du dernier '.' dans l'url
+
+    if ($last !== false) {
+        $ext = substr($values['uri'], $last, null); // garde ce qui est après le dernier '.'
+
+    } else {
+        // Le séparateur n'existe pas dans la chaîne
+        $ext = ''; 
+    }
+
+
+    // Retrouve le nom de fichier (il n'est plsu possible d'entrer directement 'uri' en API)
+      $last = strrpos($values['uri'], '_'); // position du dernier '-' dans l'url
+
+      if ($last !== false) {
+          $values['file_name'] = substr($values['uri'], 0, $last).$ext; // garde ce qui est en avant du dernier '_'
+
+      } else {
+          // Le séparateur n'existe pas dans la chaîne
+          $values['file_name'] = $values['uri']; 
+      }
+
+      $uri_to_keep[$file_orig_id]['url_orig']=$values['uri'];  // uri originale
+      unset($values['uri']);
 
     if (isset($files[0]['id'])){        // si ce fichier existe dans la nouvelle base
 
@@ -1982,9 +2007,9 @@ function import_files(){
     //$uri_to_keep[$results[0]['id']]=$results[0]['uri'];
 
     $uri_to_keep[$file_orig_id]['new_id']=$results[0]['id'];
-    $uri_to_keep[$file_orig_id]['url']=$results[0]['uri'];
+    $uri_to_keep[$file_orig_id]['url']=$results[0]['uri'];    // uri generee par la base
 
-    //print_r($values).PHP_EOL;
+
 
     // on modifie l'entity file
     unset($entityfile['id']);
@@ -2030,7 +2055,7 @@ function import_files(){
 
 function mv_files(){
   $filetoimport = func_get_arg(0);                       // liste des fichiers à déplacer (clé : id OLD du file)
-                                                                    // 'new_id' et 'url'
+                                                                    // 'new_id' 'url_orig' et 'url'
   $custom = func_get_arg(1);                              // repertoire ou sont stockes les pdf
   $custom_orig=func_get_arg(2);   // repertoire termporaire pour les pdf copiés depuis la base originale
   $count=1;
@@ -2041,7 +2066,7 @@ function mv_files(){
   $error_log=array(); // liste des erreurs
 
   foreach ($filetoimport as $move){
-    $orig = $custom_orig."/".$move['url'];
+    $orig = $custom_orig."/".$move['url_orig'];
     $target = $custom."/".$move['url'];
     if (file_exists($orig)){         // un fichier à déplacer existe
       if (file_exists($target)){        // et un fichier cible existe déja --> MAJ

@@ -18,7 +18,6 @@ return [
         'help_pre' => E::ts('<p>R&eacute;orientation du corps vers un autre centre de don</p>'),
         'weight' => 10,
         'collapse_adv_display' => TRUE,
-        'created_date' => '2023-04-29 08:49:49',
       ],
       'match' => ['name'],
     ],
@@ -598,7 +597,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'cdc_de_transfert_97',
         'option_group_id.name' => 'centre_de_don_20210419175120',
       ],
       'match' => [
@@ -625,7 +623,6 @@ return [
         'date_format' => 'mm/dd/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_de_transfert_vers_un_autre__98',
       ],
       'match' => [
         'name',
@@ -651,7 +648,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_de_retour_du_corps_cendres_101',
       ],
       'match' => [
         'name',
@@ -677,7 +673,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_de_r_c_ption_du_corps_ou_de_102',
       ],
       'match' => [
         'name',

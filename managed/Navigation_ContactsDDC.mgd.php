@@ -14,7 +14,7 @@ return [
         'name' => 'ContactsDDC',
         'icon' => 'crm-i fa-address-book-o',
         'has_separator' => NULL,
-        'weight' => 27,
+        'weight' => 28,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -46,7 +46,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau proche de donneur'),
         'name' => 'Ajouter proche donateurDDC',
-        'url' => 'civicrm/profile/create/?gid=22&reset=1',
+        'url' => 'civicrm/profile/create/?gid=23&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'ContactsDDC',
       ],
@@ -117,7 +117,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle Mairie'),
         'name' => 'New Mairies',
-        'url' => 'civicrm/profile/create/?gid=24&reset=1',
+        'url' => 'civicrm/profile/create/?gid=25&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'MairiesDDC',
       ],
@@ -187,7 +187,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau Centre de don de corps'),
         'name' => 'New CDC',
-        'url' => 'civicrm/profile/create/?gid=15&reset=1',
+        'url' => 'civicrm/profile/create/?gid=14&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'Centres de don du corpsDDC',
       ],
@@ -204,7 +204,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau personnel de CDC'),
         'name' => 'New Personnel',
-        'url' => 'civicrm/profile/create/?gid=26&reset=1',
+        'url' => 'civicrm/profile/create/?gid=27&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'Centres de don du corpsDDC',
         'has_separator' => 1,
@@ -257,7 +257,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle entreprise de Pompes Funèbres'),
         'name' => 'New Pompes',
-        'url' => 'civicrm/profile/create/?gid=30&reset=1',
+        'url' => 'civicrm/profile/create/?gid=22&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'Pompes funebresDDC',
       ],

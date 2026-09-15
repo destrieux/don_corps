@@ -16,7 +16,6 @@ return [
         'extends_entity_column_value' => ['Animal'],
         'weight' => 13,
         'collapse_adv_display' => TRUE,
-        'created_date' => '2025-08-28 16:30:32',
       ],
       'match' => ['name'],
     ],
@@ -114,7 +113,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'provenance_198',
         'option_group_id.name' => 'animal_Provenance',
       ],
       'match' => [
@@ -195,7 +193,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'esp_ce_199',
         'option_group_id.name' => 'animal_Esp_ce',
       ],
       'match' => [
@@ -219,7 +216,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'ref_avis_comit_thique_200',
       ],
       'match' => [
         'name',
@@ -244,7 +240,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_avis_comit_thique_201',
       ],
       'match' => [
         'name',
@@ -267,7 +262,6 @@ return [
         'text_length' => 10,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'poids_au_d_c_s_202',
       ],
       'match' => [
         'name',
@@ -327,7 +321,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'euthanasie_203',
         'option_group_id.name' => 'animal_Euthanasie',
       ],
       'match' => [

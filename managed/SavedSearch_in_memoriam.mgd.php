@@ -16,11 +16,10 @@ return [
         'api_params' => [
           'version' => 4,
           'select' => [
-            'display_name',
-            'first_name',
+            'prefix_id:label',
+            'CONCAT_WS(" ", first_name, last_name, nick_name) AS CONCAT_WS_first_name_last_name_nick_name',
             'birth_date',
             'deceased_date',
-            'sort_name',
           ],
           'orderBy' => [],
           'where' => [
@@ -59,7 +58,7 @@ return [
         'settings' => [
           'description' => E::ts('Liste les donneurs décédés ayant souhaité que leur nom soit affiche sur le site ou la stele'),
           'sort' => [
-            ['sort_name', 'ASC'],
+            ['last_name', 'ASC'],
           ],
           'limit' => 50,
           'pager' => [],
@@ -67,20 +66,26 @@ return [
           'columns' => [
             [
               'type' => 'field',
-              'key' => 'display_name',
-              'label' => E::ts('Nom affiché'),
+              'key' => 'prefix_id:label',
+              'label' => E::ts('Civilité'),
               'sortable' => TRUE,
             ],
             [
               'type' => 'field',
-              'key' => 'deceased_date',
-              'label' => E::ts('Décès'),
+              'key' => 'CONCAT_WS_first_name_last_name_nick_name',
+              'label' => E::ts('(Combine text)   Prénom Nom de famille Surnom/sigle'),
               'sortable' => TRUE,
             ],
             [
               'type' => 'field',
               'key' => 'birth_date',
               'label' => E::ts('Date de naissance'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'deceased_date',
+              'label' => E::ts('Décès'),
               'sortable' => TRUE,
             ],
           ],

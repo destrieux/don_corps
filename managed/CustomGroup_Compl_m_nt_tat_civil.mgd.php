@@ -14,7 +14,6 @@ return [
         'title' => E::ts('Complémént état civil'),
         'collapse_display' => TRUE,
         'weight' => 5,
-        'created_date' => '2022-04-16 07:37:18',
       ],
       'match' => ['name'],
     ],
@@ -132,7 +131,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'civilit_user_197',
         'option_group_id.name' => 'Compl_m_nt_tat_civil_Civilit_user',
       ],
       'match' => [
@@ -158,7 +156,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'ad_ok_28',
       ],
       'match' => [
         'name',
@@ -181,7 +178,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'ville_de_naissance_47',
       ],
       'match' => [
         'name',
@@ -208,7 +204,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'ann_e_naissance_auto__148',
       ],
       'match' => [
         'name',
@@ -233,7 +228,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'adresse_incorrecte_66',
       ],
       'match' => [
         'name',
@@ -259,7 +253,6 @@ return [
         'time_format' => 2,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'heure_du_d_c_s_152',
       ],
       'match' => [
         'name',
@@ -287,7 +280,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'ann_e_de_d_c_s_auto__186',
       ],
       'match' => [
         'name',

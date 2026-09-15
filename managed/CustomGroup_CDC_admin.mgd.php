@@ -16,7 +16,6 @@ return [
         'extends_entity_column_value' => ['CDC'],
         'weight' => 8,
         'collapse_adv_display' => TRUE,
-        'created_date' => '2025-11-06 09:38:17',
       ],
       'match' => ['name'],
     ],
@@ -36,7 +35,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'directeur_du_centre_d_accueil_122',
       ],
       'match' => [
         'name',
@@ -59,7 +57,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'gestionnaire_du_centre_d_accueil_123',
       ],
       'match' => [
         'name',
@@ -82,7 +79,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'pr_sident_du_cesp_120',
       ],
       'match' => [
         'name',
@@ -105,7 +101,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'qualit_du_pr_sident_du_cesp_121',
       ],
       'match' => [
         'name',
@@ -128,7 +123,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'dpo_109',
       ],
       'match' => [
         'name',
@@ -152,7 +146,6 @@ return [
         'text_length' => 2047,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'site_web_125',
       ],
       'match' => [
         'name',

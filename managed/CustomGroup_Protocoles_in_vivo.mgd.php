@@ -75,7 +75,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'intitul_du_protocole_194',
         'option_group_id.name' => 'Protocoles_in_vivo_intitul_du_protocole',
         'in_selector' => TRUE,
       ],
@@ -101,7 +100,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'identifiant_dans_le_protocole_121',
         'in_selector' => TRUE,
       ],
       'match' => [
@@ -127,7 +125,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_inclusion_in_vivo_122',
         'in_selector' => TRUE,
       ],
       'match' => [

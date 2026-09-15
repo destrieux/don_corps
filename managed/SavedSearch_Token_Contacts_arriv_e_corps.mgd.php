@@ -18,6 +18,7 @@ return [
           'select' => [
             'Contact_Custom_Arriv_e_du_corps_new_entity_id_01.Effets_personnels:label',
             'id',
+            'Contact_Custom_Arriv_e_du_corps_new_entity_id_01.Effets_personnels_retir_s',
             'id',
             'id',
           ],
@@ -57,8 +58,9 @@ return [
           'columns' => [
             [
               'type' => 'field',
-              'key' => 'Contact_Custom_Arriv_e_du_corps_new_entity_id_01.Effets_personnels:label',
-              'label' => E::ts('Effets personnels'),
+              'key' => 'Contact_Custom_Arriv_e_du_corps_new_entity_id_01.Effets_personnels_retir_s',
+              'rewrite' => '',
+              'label' => E::ts('Effets personnels retirés'),
             ],
           ],
         ],

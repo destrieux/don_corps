@@ -14,7 +14,6 @@ return [
         'title' => E::ts('Demandeur information'),
         'weight' => 6,
         'collapse_adv_display' => TRUE,
-        'created_date' => '2023-05-02 15:02:35',
       ],
       'match' => ['name'],
     ],
@@ -36,7 +35,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_d_envoi_d_informations_109',
       ],
       'match' => [
         'name',

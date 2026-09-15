@@ -35,7 +35,6 @@ return [
         'is_searchable' => TRUE,
         'text_length' => 255,
         'date_format' => 'dd/mm/yy',
-        'column_name' => 'date_du_d_but_des_fonctions_123',
       ],
       'match' => [
         'name',
@@ -59,7 +58,6 @@ return [
         'is_searchable' => TRUE,
         'text_length' => 255,
         'date_format' => 'dd/mm/yy',
-        'column_name' => 'date_de_la_fin_des_fonctions_124',
       ],
       'match' => [
         'name',
@@ -139,7 +137,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'm_tier_188',
         'option_group_id.name' => 'Informations_Personnel_M_tier',
       ],
       'match' => [
@@ -240,7 +237,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'cat_gorie_189',
         'option_group_id.name' => 'Informations_Personnel_Cat_gorie',
       ],
       'match' => [
@@ -421,7 +417,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'bap_190',
         'option_group_id.name' => 'Informations_Personnel_BAP',
       ],
       'match' => [
@@ -522,7 +517,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'contrat_191',
         'option_group_id.name' => 'Informations_Personnel_Contrat',
       ],
       'match' => [

@@ -15,7 +15,6 @@ return [
         'extends' => 'Individual',
         'extends_entity_column_value' => ['Donateur'],
         'weight' => 9,
-        'created_date' => '2022-05-02 18:27:48',
       ],
       'match' => ['name'],
     ],
@@ -193,7 +192,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'cesp_61',
         'option_group_id.name' => 'cesp_20220502190911',
         'serialize' => 1,
       ],
@@ -218,7 +216,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'ref_avis_cesp_62',
       ],
       'match' => [
         'name',
@@ -244,7 +241,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'd_cision_de_suspension_acc_s_au__99',
       ],
       'match' => [
         'name',
@@ -385,7 +381,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'devenir_effectif_du_corps_63',
         'option_group_id.name' => 'devenir_effectif_du_corps_20220502191136',
       ],
       'match' => [
@@ -411,7 +406,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_de_sortie_d_finitive_64',
       ],
       'match' => [
         'name',
@@ -436,7 +430,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_op_rations_fun_raires_100',
       ],
       'match' => [
         'name',
@@ -461,7 +454,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_approximative_de_r_alisatio_117',
       ],
       'match' => [
         'name',
@@ -486,7 +478,6 @@ return [
         'date_format' => 'dd/mm/yy',
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'date_de_restitution_103',
       ],
       'match' => [
         'name',
@@ -511,7 +502,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'pompes_fun_bres_mandat_es_par_pr_106',
         'filter' => 'action=lookup&group=64',
       ],
       'match' => [
@@ -635,7 +625,6 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'column_name' => 'souhait_funeraire_personne_ref_r_108',
         'option_group_id.name' => 'Devenir_du_corps_Souhait_funeraire_personne_ref_rente',
       ],
       'match' => [

@@ -15,7 +15,7 @@ return [
         'icon' => 'crm-i fa-heart-o',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',
-        'weight' => 58,
+        'weight' => 59,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -49,7 +49,7 @@ return [
       'values' => [
         'label' => E::ts('Créer Lieu de conservation'),
         'name' => 'New Emprunteur',
-        'url' => 'civicrm/profile/create/?gid=23&reset=1',
+        'url' => 'civicrm/profile/create/?gid=24&reset=1',
         'icon' => 'crm-i fa-rectangle-list',
         'permission' => ['add contacts'],
         'permission_operator' => 'OR',
