@@ -323,7 +323,7 @@ echo PHP_EOL.'**** ACTIVITES IMPLIQUANT DES CONTACTS NON SUPPRIMES'.PHP_EOL;
         ['option_group_id:name', '=', 'activity_type'],
     ],
     'orderBy' => [
-        'name' => 'ASC',
+        'id' => 'ASC',
     ],
     'checkPermissions' => FALSE,
     ]);
@@ -333,20 +333,35 @@ echo PHP_EOL.'**** ACTIVITES IMPLIQUANT DES CONTACTS NON SUPPRIMES'.PHP_EOL;
     $total=0;
 
     foreach ($types as $type){
-        $activities = civicrm_api4('Activity', 'get', [
-        'select' => [
-            'COUNT(*) AS total',
-        ],
-        'where' => [
-            ['activity_type_id', '=', $type['value']],
-            ['is_deleted', '=', FALSE],
-            ['source_contact_id', 'IS NOT NULL'],
-            ['target_contact_id', 'IS NOT NULL'],
-        ],
-        'limit' => 25,
-        'checkPermissions' => FALSE,
-        ]);
-        
+        try {
+            $activities = civicrm_api4('Activity', 'get', [
+            'select' => [
+                'COUNT(*) AS total',
+            ],
+            'where' => [
+                ['activity_type_id', '=', $type['value']],
+                ['is_deleted', '=', FALSE],
+                ['source_contact_id', 'IS NOT NULL'],
+                ['target_contact_id', 'IS NOT EMPTY'],
+            ],
+            'checkPermissions' => FALSE,
+            ]);
+        }catch (Exception $e){
+                        $activities = civicrm_api4('Activity', 'get', [
+            'select' => [
+                'COUNT(*) AS total',
+            ],
+            'where' => [
+                ['activity_type_id', '=', $type['value']],
+                ['is_deleted', '=', FALSE],
+                //['source_contact_id', 'IS NOT NULL'],// ne peut etre NULL dans les versions recentes civicrm
+                ['target_contact_id', 'IS NOT EMPTY'], 
+            ],
+            'checkPermissions' => FALSE,
+            ]);
+        }
+
+
         if($activities[0]['total']<>0){
             $total=$total + $activities[0]['total'];
             $msg = 'Activity Contact pour activité '.$type['label']." , ".$activities[0]['total'].PHP_EOL;
