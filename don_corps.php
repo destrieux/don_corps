@@ -15,6 +15,7 @@ require_once 'don_corps.civix.php';
 
 use CRM_DonCorps_ExtensionUtil as E;
 use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouvelles actions pour utilation des corps
+use Civi\DonCorps\UpdateSearchGroups;
 
 /* function don_corps_civicrm_container(ContainerBuilder $container): void {
 $container
@@ -34,7 +35,7 @@ define("VERBOSE","1"); // mettre à 1 pour afficher les messages lors de l'insta
 define("LOGFILE", CRM_Core_Config::singleton()->configAndLogDir."/civicrm_ddc_installation.log"); // définition du ficher de log dans wp-content/uploads/civicrm/ConfigAndLogs
 
 
-if (is_writable(LOGFILE)) {  // le ficher log existe 
+if (is_writable(LOGFILE)) {  // le ficher log existe
 
       // Dans notre exemple, nous ouvrons le fichier $logfile en mode d'ajout
       // Le pointeur de fichier est placé à la fin du fichier
@@ -51,7 +52,7 @@ if (is_writable(LOGFILE)) {  // le ficher log existe
   }
 
 // change le propriétaire et le groupe du fichier de log identique au repertoire de log principal
-// dans le cas contraire, les menus ne s'affichent pas 
+// dans le cas contraire, les menus ne s'affichent pas
 $own= fileowner(CRM_Core_Config::singleton()->configAndLogDir);
 $grp= filegroup(CRM_Core_Config::singleton()->configAndLogDir);
 chown(LOGFILE, $own);
@@ -60,7 +61,7 @@ chgrp(LOGFILE, $grp);
 
 
 # DEFINITION DES FONCTIONS
-  
+
   function after ($thisv, $inthatv){ // récupère la partie de chaine $inthatv située après $thisv
         if (!is_bool(strpos($inthatv, $thisv)))
         return substr($inthatv, strpos($inthatv,$thisv)+strlen($thisv));
@@ -71,7 +72,7 @@ chgrp(LOGFILE, $grp);
 
   function install_UFGroup(){ // installe les profils utilisés pour créer les contacts et dans les layouts
       // Cette fonction est utilisée pour installer un profil specifié par un mgd file car l'imprt natif ne marche pas bien
-      // Elle lit le managed file spécifié dans l'argument puis : 
+      // Elle lit le managed file spécifié dans l'argument puis :
       // - crée l'UFGroup (spécifié en premier dans le mgd file)
       // - modifie les url appelées en cas de creation de contact ou d'annulation de cette creation
       // - modifie les url de navigation qui appellent les profils de creation de contact
@@ -102,22 +103,22 @@ chgrp(LOGFILE, $grp);
 
                   // Si l'UF group comporte une  url à charger apres creation du contact en utilisant le profil on la maj
                   if(isset($entitie['params']['values']['post_url'])){
-                      $entitie['params']['values']['post_url'] = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";  
+                      $entitie['params']['values']['post_url'] = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";
                       $msg= "         Réécriture url à afficher apres utilisation du profil".PHP_EOL;
                       fwrite($fp, $msg);
                       echo $msg;
-                          
+
                   }
 
                   // Si l'UF group comporte une  url à charger en cas d'anulation en utilisant le profil on la maj
                   if(isset($entitie['params']['values']['cancel_url'])){
-                      $entitie['params']['values']['cancel_url'] = admin_url("admin.php?page=CiviCRM");  
+                      $entitie['params']['values']['cancel_url'] = admin_url("admin.php?page=CiviCRM");
                       $msg= "         Réécriture url à afficher en cas d'annulation".PHP_EOL;
                       fwrite($fp, $msg);
                       echo $msg;
                   }
 
-                  $entitie['params']['values']['is_active'] = TRUE;  
+                  $entitie['params']['values']['is_active'] = TRUE;
 
                   $to_create =  [                                                 // modifie l'URL à afficher apres la creation (post url) par un profil
                     'entity' => 'UFGroup',
@@ -134,7 +135,7 @@ chgrp(LOGFILE, $grp);
                   $msg= "         Menu de navigation : ".$nav_parent." / ".$nav;
                   fwrite($fp, $msg);
                   echo $msg;
-                  
+
                   $to_create =  [                                                 // modifie l'URL pour le menu
                       'entity' => 'Navigation',
                       'values' => [
@@ -145,9 +146,9 @@ chgrp(LOGFILE, $grp);
                           'is_active' => TRUE,
                           ],
                       ];
-                  create_entity($to_create); 
+                  create_entity($to_create);
                   }
-                  
+
                   // Suppression des UFFields liés à cet UFGroup
                       $results = civicrm_api4('UFField', 'delete', [
                           'where' => [
@@ -161,7 +162,7 @@ chgrp(LOGFILE, $grp);
                       echo $msg;
 
                   // Si ce customgroup est utilisé par un contact layout on crée l'UFJoin
-                      $contactLayouts = civicrm_api4('ContactLayout', 'get', [  
+                      $contactLayouts = civicrm_api4('ContactLayout', 'get', [
                           'select' => [
                               'blocks',
                           ],
@@ -170,7 +171,7 @@ chgrp(LOGFILE, $grp);
 
                       foreach($contactLayouts as $contactLayout){
                         $block_cols=$contactLayout['blocks'];
-                      
+
                           foreach($block_cols as $block_col){
                               $blocks=$block_col;
                               foreach($blocks as $block){
@@ -191,7 +192,7 @@ chgrp(LOGFILE, $grp);
                                                   'uf_group_id:name' => $entitie['params']['values']['name'],
                                                   ],
                                               ];
-                                              create_entity($to_create); 
+                                              create_entity($to_create);
 
                                               $to_create =  [                                                 // modifie l'URL pour le menu
                                               'entity' => 'UFJoin',
@@ -201,7 +202,7 @@ chgrp(LOGFILE, $grp);
                                                   'uf_group_id:name' => $entitie['params']['values']['name'],
                                                   ],
                                               ];
-                                              create_entity($to_create); 
+                                              create_entity($to_create);
                                           break 5;
                                           }
                                       }
@@ -228,7 +229,7 @@ chgrp(LOGFILE, $grp);
                   //print_r($uFGroups);
 
                   if(isset($uFGroups)){
-                    $to_create =  [  
+                    $to_create =  [
                       'entity' => 'UFJoin',
                       'values' => [
                           'module' => 'Profile',
@@ -236,7 +237,7 @@ chgrp(LOGFILE, $grp);
                           'uf_group_id:name' => $entitie['params']['values']['name'],
                           ],
                       ];
-                      create_entity($to_create); 
+                      create_entity($to_create);
 
                   }
 
@@ -245,14 +246,14 @@ chgrp(LOGFILE, $grp);
                       break;
 
               case 'UFField':
-                  // création du nom de l'UFfield 
+                  // création du nom de l'UFfield
 
                   if(isset($entitie['params']['values']['field_name:name'])){
                       // si le champ est identifié sous la forme field_name:name
                       // (ex. custom_group_name.custom_field_name)
                       // c à d que c'est un champ cré par l'utilisateur
-                      // il faut 
-                      //  1/ extraire le custom_GROUP_name et le custom_field_name 
+                      // il faut
+                      //  1/ extraire le custom_GROUP_name et le custom_field_name
                       //  2/ récupérer l'id du custom field correspondant
                       //  3/ creer le filed name custom_idDuCustomField
                       //
@@ -297,9 +298,9 @@ chgrp(LOGFILE, $grp);
                   'values' => $entitie['params']['values'],
                   ];
 
-                  create_entity($to_create); 
+                  create_entity($to_create);
               break;
-          }          
+          }
       }
     }
 
@@ -330,11 +331,11 @@ chgrp(LOGFILE, $grp);
         $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
         $values = func_get_arg(1);     // parametres de cette entité
         $check=array();
-        
+
         $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
 
         foreach ($values as $value) {
-            unset ($value['external_identifier']);   
+            unset ($value['external_identifier']);
             unset ($value['id']);
             unset ($value['hash']);
             unset ($value['email_greeting_id']);
@@ -352,7 +353,7 @@ chgrp(LOGFILE, $grp);
             $value['gender_id']=NULL;
 
             if (isset($value['employer_id'])){                     // si le contact a un champ employer_id non null
-            
+
             $msg="employer_id : ".$value['employer_id'].PHP_EOL;   // on en modifie la valeur par l'id de l'institution crée au préalable
             fwrite($fp, $msg);
 
@@ -430,7 +431,7 @@ chgrp(LOGFILE, $grp);
 
             array_push($check, $results[0]['id']);
         }
-        
+
         $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
         fwrite($fp, $msg);
         if (VERBOSE==1){
@@ -493,7 +494,7 @@ chgrp(LOGFILE, $grp);
               'checkPermissions' => FALSE,
 
               ]);
-              $old_contact_id=$value['contact_id'];   // id du contact dans le fichier export 
+              $old_contact_id=$value['contact_id'];   // id du contact dans le fichier export
               $value['contact_id']=$contact_id;       // id du contact dans la nouvelle base
 
               if (!isset($addresses[0]['id'])){       //  cette adresse n'existe pas pour ce contact ; on la crée
@@ -559,7 +560,7 @@ chgrp(LOGFILE, $grp);
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
 
       foreach ($values as $value) {
-          // on verifie que le CDC rattaché au téléphone existe bien 
+          // on verifie que le CDC rattaché au téléphone existe bien
           // i.e., avec le meme numéro de SIRET (legal_identifier)
           $contacts = civicrm_api4('Contact', 'get', [
               'select' => [
@@ -654,7 +655,7 @@ chgrp(LOGFILE, $grp);
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
 
       foreach ($values as $value) {
-          // on verifie que le contact rattaché au mail existe bien 
+          // on verifie que le contact rattaché au mail existe bien
           // CAD avec le meme SIRET (legal-identifier)
           $contacts = civicrm_api4('Contact', 'get', [
               'select' => [
@@ -743,7 +744,7 @@ chgrp(LOGFILE, $grp);
       fwrite($fp, $msg);
       echo $msg;
       }
-    
+
 
 
 
@@ -761,7 +762,7 @@ chgrp(LOGFILE, $grp);
     ##  syntaxe : _myextension_remove_wp_capabilities(role, caps)
     ##      role : role wordpress (chaine : author, contributor...)
     ##      caps : privilèges (array)
-    ##  
+    ##
     ##  Pour lister les utilisateurs : wp user list
     ##  Pour Lister les privileges d'un utilisateur : wp user list-caps <user id>
     ############
@@ -796,7 +797,7 @@ chgrp(LOGFILE, $grp);
     $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
     $roleName = func_get_arg(0);
     $caps = func_get_arg(1);
-  
+
     $role = get_role($roleName);
     if ($role) {
       $msg="         AJOUT des permissions pour le role ".$roleName.PHP_EOL;
@@ -811,14 +812,14 @@ chgrp(LOGFILE, $grp);
       }
     }   // fin de définition de _myextension_add_wp_capabilities
 
-  function deactivate_menu(){   // // LOG OK invoquée à l'installation pour desactiver un menu original 
+  function deactivate_menu(){   // // LOG OK invoquée à l'installation pour desactiver un menu original
     // syntaxe : deactivate_menu ('nom_du_menu_a_desactiver');
     // elle est appelée par : function don_corps_civicrm_install()
     //////////////
     $menu = func_get_arg(0);
 
     try {
-      $results = civicrm_api4('Navigation', 'update', [  
+      $results = civicrm_api4('Navigation', 'update', [
       'values' => [
         'is_active' => FALSE,
         ],
@@ -826,7 +827,7 @@ chgrp(LOGFILE, $grp);
             ['name', '=', $menu],
         ],
         'checkPermissions' => FALSE,
-      ]); 
+      ]);
 
       $msg= "         Menu ".$menu." désactivé"."\n";
 
@@ -852,7 +853,7 @@ chgrp(LOGFILE, $grp);
     $menu = func_get_arg(0);
 
     try {
-      $results = civicrm_api4('Navigation', 'update', [  
+      $results = civicrm_api4('Navigation', 'update', [
       'values' => [
         'is_active' => TRUE,
         ],
@@ -860,7 +861,7 @@ chgrp(LOGFILE, $grp);
             ['name', '=', $menu],
         ],
         'checkPermissions' => FALSE,
-      ]); 
+      ]);
 
       $msg="         Menu ".$menu." activé"."\n";
 
@@ -931,10 +932,10 @@ chgrp(LOGFILE, $grp);
     //////////////
     $entity = func_get_arg(0)['entity'];     // nom de l'entité à créer (rule, condition....)
     $values = func_get_arg(0)['values'];     // parametres de cette entité
-      
+
     switch ($entity) {
         case 'CiviRulesRuleAction':                           // CiviRulesRuleAction
-            $check_entity = civicrm_api4($entity, 'get', [    
+            $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                 ['rule_id.name', '=', $values['rule_id.name']],
                 ['action_id.name', '=', $values['action_id.name']],
@@ -945,7 +946,7 @@ chgrp(LOGFILE, $grp);
         break;
 
         case 'CiviRulesRuleCondition':                        // CiviRulesRuleCondition
-            $check_entity = civicrm_api4($entity, 'get', [    
+            $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                 ['rule_id.name', '=', $values['rule_id.name']],
                 ['condition_id.name', '=', $values['condition_id.name']],
@@ -991,7 +992,7 @@ chgrp(LOGFILE, $grp);
     break;
 
         case 'OptionValue':                                             // Option value
-          $check_entity = civicrm_api4($entity, 'get', [    
+          $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                   ['option_group_id:name', '=', $values['option_group_id:name']],
                   [ 'name', "=", $values['name']],
@@ -1002,7 +1003,7 @@ chgrp(LOGFILE, $grp);
         break;
 
         case 'UFJoin':                                             // UF join (utilisation des profiles)
-          $check_entity = civicrm_api4($entity, 'get', [    
+          $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                   ['uf_group_id:name', "=", $values['uf_group_id:name']],
                   [ 'module', "=", $values['module']],
@@ -1014,7 +1015,7 @@ chgrp(LOGFILE, $grp);
 
 
         case 'UFField':
-          $check_entity = civicrm_api4($entity, 'get', [    
+          $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                   ['field_name', '=', $values['field_name']],
                   ['uf_group_id.name', '=', $values['uf_group_id.name']],
@@ -1026,7 +1027,7 @@ chgrp(LOGFILE, $grp);
 
 
         case 'Navigation':                                             // Menus de navigation
-          $check_entity = civicrm_api4($entity, 'get', [    
+          $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                   ['parent_id:name', "=", $values['parent_id:name']],
                   [ 'name', "=", $values['name']],
@@ -1037,7 +1038,7 @@ chgrp(LOGFILE, $grp);
         break;
 
         case 'RelationshipType':                                             // Relations
-          $check_entity = civicrm_api4($entity, 'get', [    
+          $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                   ['name_a_b', '=', $values['name_a_b']],
               ],
@@ -1047,7 +1048,7 @@ chgrp(LOGFILE, $grp);
         break;
 
         case 'Afform':                                                      // Afform (traitement différent car pas d'id)
-          $check_entity = civicrm_api4($entity, 'get', [    
+          $check_entity = civicrm_api4($entity, 'get', [
               'where' => [
                   ['name', '=', $values['name']],
               ],
@@ -1064,7 +1065,7 @@ chgrp(LOGFILE, $grp);
               ],
               'checkPermissions' => FALSE,
             ]);
-        
+
           }else{                                  // si l'entité n'existe pas, on la crée
             $msg= "         entité ".$entity." ".$descr." n'existe pas - creation".PHP_EOL;
             $results = civicrm_api4($entity, 'create', [
@@ -1077,7 +1078,7 @@ chgrp(LOGFILE, $grp);
           if (VERBOSE==1){
             echo $msg;
           }
-          return; 
+          return;
         break;
 
         default:
@@ -1096,7 +1097,7 @@ chgrp(LOGFILE, $grp);
 
     if(isset($check_entity[0])){            // si l'entité existe on l'update
       $msg= "         entité ".$entity." ".$descr." existe - update (".$check_entity[0]['id'].")".PHP_EOL;
-      
+
       $results = civicrm_api4($entity, 'update', [
         'values' => $values,
         'where' => [
@@ -1138,12 +1139,12 @@ chgrp(LOGFILE, $grp);
     //
     //      $civirule_rule_name :nom de la règle à modifier
     //      $civirule_condition_name : nom de la condition à modifier
-    //      $CustomField_name1, $CustomField_name2, $CustomField_name3... : liste de custom fields  
+    //      $CustomField_name1, $CustomField_name2, $CustomField_name3... : liste de custom fields
     //
-    // elle est appelée par : le hook post installation 
+    // elle est appelée par : le hook post installation
     //////////////
     $args = func_get_args();
-    
+
     // Si des custom fields ne sont pas passés à la fonction : return
     if (count($args)==0){
       $msg="Pas de custom field passé à la fonction ".PHP_EOL;
@@ -1173,10 +1174,10 @@ chgrp(LOGFILE, $grp);
       $array[] = $id[0]['id'];                       // on liste les id des champs custom dans $array
     }
 
-    $array = [                                       // on ajoute une colonne Custom_field_id à $array 
+    $array = [                                       // on ajoute une colonne Custom_field_id à $array
       "custom_field_id" => $array
     ];
-    
+
     return serialize($array);                           // retourne la valeur en sértialisant (foramt atendu par condition_params)
 
    }   // Fin de la définition de la fonction : serialize_custom_fields()
@@ -1215,9 +1216,9 @@ chgrp(LOGFILE, $grp);
         'checkPermissions' => FALSE,
         ]);
 
-        
+
         if ($contacts[0]['number']==0) {  // le sous type de contact n'est utilisé par aucun contact alors on le supprime
-          try{   
+          try{
             $deleteResult = civicrm_api4('ContactType', 'delete', [
                 'where' => [
                   ['name', '=', $name],
@@ -1257,14 +1258,14 @@ chgrp(LOGFILE, $grp);
     //////////////
     $Custom_name = func_get_arg(0);
     $Group_name =func_get_arg(1);
-    
+
     $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-    
+
     $msg="      -> filtre du champ ".$Custom_name." par groupe ".$Group_name." : ";
     fwrite($fp, $msg);
     if (VERBOSE==1){
       echo $msg;
-    }   
+    }
 
     $results = civicrm_api4('CustomField', 'get', [
       'select' => [
@@ -1303,7 +1304,7 @@ chgrp(LOGFILE, $grp);
             ],
             'checkPermissions' => FALSE,
           ]);
-          
+
           $msg= "modifié".PHP_EOL;
 
         } catch  (API_Exception $e) {
@@ -1313,14 +1314,14 @@ chgrp(LOGFILE, $grp);
         fwrite($fp, $msg);
         if (VERBOSE==1){
           echo $msg;
-        }      
+        }
 
         }else{
           $msg= "le groupe n'existe pas".PHP_EOL;
           fwrite($fp, $msg);
           if (VERBOSE==1){
             echo $msg;
-          }     
+          }
         }
 
       }else{
@@ -1328,9 +1329,9 @@ chgrp(LOGFILE, $grp);
         fwrite($fp, $msg);
         if (VERBOSE==1){
           echo $msg;
-        }     
+        }
       }
-    fclose($fp);  
+    fclose($fp);
    }   // Fin de la définition de la fonction : modif_filtre()
 
   function deactivate_relation_type(){ // LOG OK
@@ -1363,7 +1364,7 @@ chgrp(LOGFILE, $grp);
       ]);
 
         $msg= "         Type de relation ".$relation_type." désactivé"."\n";
-      
+
 
     } else {
         $msg= "         Type de relation ".$relation_type." inexistant"."\n";
@@ -1385,7 +1386,7 @@ chgrp(LOGFILE, $grp);
     //
     //      $$searchname : nom der la recherche
     //      $search_api_params : parametres des api à modifier
-    //      $tag [optionnel] : tag à ajouter 
+    //      $tag [optionnel] : tag à ajouter
     //
     // elle est appelée par : function don_corps_civicrm_postinstall()
     //////////////
@@ -1394,7 +1395,7 @@ chgrp(LOGFILE, $grp);
       $searchname = func_get_arg(0);              // nom de la recherche sauvegardée à modifier
       $search_api_params = func_get_arg(1);       // parametres de l'api
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      
+
       if (func_num_args()==3){                    // s'il y a 3 arguments, c'est qu'il y a un tag
           $tags = civicrm_api4('Tag', 'get', [
             'select' => [
@@ -1405,16 +1406,16 @@ chgrp(LOGFILE, $grp);
             ],
             'checkPermissions' => FALSE,
           ]);
-    
+
           if (isset($tags[0]['id'])){
             $tag= func_get_arg(2);                  // valeur du tag s'il existe sinon nul
           } else {
             $tag="";
           }
-        
+
       }
       //echo "Tag : ".$tag.PHP_EOL;
-      
+
       $savedSearches = civicrm_api4('SavedSearch', 'get', [
         'select' => [
           'id',
@@ -1424,9 +1425,9 @@ chgrp(LOGFILE, $grp);
         ],
         'checkPermissions' => FALSE,
       ]);
-    
+
       //echo "id : ".$savedSearches[0]['id'].PHP_EOL;
-    
+
       if(isset($savedSearches[0]['id'])){      // si la requete existe on l'update
         if ($search_api_params != "onlytag"){  // si on ne change pas que le tag
             try {
@@ -1441,7 +1442,7 @@ chgrp(LOGFILE, $grp);
             ]);
 
             $msg= "         Requete ".$searchname." MAJ".PHP_EOL;
-            
+
             } catch (API_Exception $e) {
               $msg= "         Erreur lors de la MAJ de la requete ".$searchname.": ".$e->getMessage().PHP_EOL;
             }
@@ -1458,9 +1459,9 @@ chgrp(LOGFILE, $grp);
               echo $msg;
             }
           }
-    
+
         if ($tag!=""){                                       /// la requete existe et le tag est non nul
-    
+
           $entityTags = civicrm_api4('EntityTag', 'get', [
             'select' => [
               'id',
@@ -1471,7 +1472,7 @@ chgrp(LOGFILE, $grp);
             ],
             'checkPermissions' => FALSE,
           ]);
-    
+
           if (!isset($entityTags[0]['id'])) {                     /// si le tag n'est pas associé à cette requete
               $tags = civicrm_api4('EntityTag', 'create', [      /// associe le tag  à la reqauete
                 'values' => [
@@ -1482,8 +1483,8 @@ chgrp(LOGFILE, $grp);
                 'checkPermissions' => FALSE,
               ]);
           //echo "      & Tag ajouté".PHP_EOL;
-          }          
-    
+          }
+
         }
       } else {                                              // si la requete n'exste pas
         $msg= "         La requete ".$searchname." n'existe pas".PHP_EOL;
@@ -1494,7 +1495,7 @@ chgrp(LOGFILE, $grp);
 
       }
       fclose($fp);
-    }   // Fin de la définition de la fonction : update_search() 
+    }   // Fin de la définition de la fonction : update_search()
 
 
 
@@ -1534,7 +1535,7 @@ chgrp(LOGFILE, $grp);
             ],
             'checkPermissions' => FALSE,
             ]);
-            
+
             $msg= "      -> Création ";
         }
             fwrite($fp, $msg);
@@ -1663,7 +1664,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
       $to_create =  [         //Déplace lot : Rule
-                  
+
         'entity' => 'CiviRulesRule',
         'values' => [
           'trigger_id:name' => 'new_activity',
@@ -1708,8 +1709,8 @@ chgrp(LOGFILE, $grp);
           ]);
 
       $activity_type_id = $weight[0]['weight'];
-      
-      $to_create =  [                   
+
+      $to_create =  [
         'entity' => 'CiviRulesRuleCondition',
         'values' => [
         'condition_link' => NULL,
@@ -1751,7 +1752,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
       $to_create =  [         //Supprime Lot : Rule
-                
+
         'entity' => 'CiviRulesRule',
         'values' => [
           'trigger_id:name' => 'new_activity',
@@ -1797,7 +1798,7 @@ chgrp(LOGFILE, $grp);
 
       $activity_type_id = $weight[0]['weight'];
 
-      $to_create =  [                   
+      $to_create =  [
         'entity' => 'CiviRulesRuleCondition',
         'values' => [
           'condition_link' => NULL,
@@ -1883,8 +1884,8 @@ chgrp(LOGFILE, $grp);
       ]);
 
       $activity_type_id = $weight[0]['weight'];
-      
-      $to_create =  [                   
+
+      $to_create =  [
         'entity' => 'CiviRulesRuleCondition',
         'values' => [
         'condition_link' => NULL,
@@ -1909,7 +1910,7 @@ chgrp(LOGFILE, $grp);
       fclose($fp);
         if (VERBOSE==1){
           echo $msg;
-        } 
+        }
       $to_create =  [        //Corriger_civililite : Déclaration de l'Action
           'entity' => 'CiviRulesAction',
           'values' => [
@@ -1926,7 +1927,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
       $to_create =  [         //Corriger_civililite : Rule
-              
+
         'entity' => 'CiviRulesRule',
         'values' => [
           'trigger_id:name' => 'changed_contact_custom_data',
@@ -1973,7 +1974,7 @@ chgrp(LOGFILE, $grp);
 
       $custom_field_id = $customFields[0]['id'];
 
-      $to_create =  [      
+      $to_create =  [
         'entity' => 'CiviRulesRuleCondition',
         'values' => [
           'condition_link' => NULL,
@@ -1989,7 +1990,7 @@ chgrp(LOGFILE, $grp);
         ],
       ];
       create_entity($to_create);
-                  
+
 
 
     $msg="      -> Civirule : Compile pieces et utilisations".PHP_EOL;
@@ -1998,7 +1999,7 @@ chgrp(LOGFILE, $grp);
       fclose($fp);
         if (VERBOSE==1){
           echo $msg;
-        }   
+        }
 
       $to_create =  [        //compile pieces et utilisations : Déclaration de l'Action
           'entity' => 'CiviRulesAction',
@@ -2062,13 +2063,13 @@ chgrp(LOGFILE, $grp);
 
       $custom_field_id = array_column($customFields->getArrayCopy(), 'id');
 
-      $to_create =  [      
+      $to_create =  [
         'entity' => 'CiviRulesRuleCondition',
         'values' => [
           'rule_id.name' => 'update_pieces_et_utilisations',
           'condition_id.name' => 'contact_custom_field_changed',
           'is_active' => TRUE,
-          #'condition_params' => $condition_params, 
+          #'condition_params' => $condition_params,
           'condition_params' => [
               'custom_field_id' => $custom_field_id
               ],
@@ -2083,7 +2084,7 @@ chgrp(LOGFILE, $grp);
       fclose($fp);
         if (VERBOSE==1){
           echo $msg;
-        }  
+        }
       $to_create =  [         //Copie code barre corps : Déclaration de Action
         'entity' => 'CiviRulesAction',
         'values' => [
@@ -2136,7 +2137,7 @@ chgrp(LOGFILE, $grp);
 
       //$condition_params=serialize_custom_fields('N_de_pi_ce_ou_de_corps');
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'CiviRulesRuleCondition',
         'values' => [
           'rule_id.name' => 'copie_code_barre_corps',
@@ -2170,9 +2171,9 @@ chgrp(LOGFILE, $grp);
       fclose($fp);
         if (VERBOSE==1){
           echo $msg;
-        }  
+        }
 
-      $to_create =  [     //envoyer_mail_si_demande_cremation : Message template à envoyer 
+      $to_create =  [     //envoyer_mail_si_demande_cremation : Message template à envoyer
         'entity' => 'MessageTemplate',
         'values' => [
           'msg_title' => 'Demander crémation au secrétariat',
@@ -2274,7 +2275,7 @@ chgrp(LOGFILE, $grp);
           'rule_id.name' => 'envoyer_mail_si_demande_cremation',
           'condition_id.name' => 'contact_custom_field_changed',
           'is_active' => TRUE,
-          //'condition_params' => $condition_params,  
+          //'condition_params' => $condition_params,
           'condition_params' => [
               'custom_field_id' => $custom_field_id
           ],
@@ -2289,14 +2290,14 @@ chgrp(LOGFILE, $grp);
           'rule_id.name' => 'envoyer_mail_si_demande_cremation',
           'condition_id.name' => 'demander_cremation_du_contact',
           'is_active' => TRUE,
-          'condition_params' => NULL, 
+          'condition_params' => NULL,
         ],
       ];
       create_entity($to_create);
 
       $to_create =  [      //envoyer_mail_si_demande_cremation : Rule Action 1
         'entity' => 'CiviRulesRuleAction',
-        'values' => [    
+        'values' => [
           'action_params' => [
               'from_name' => 'Techniciens labo anatomie',
               'from_email' => 'dons.corps@med.univ-tours.fr',
@@ -2309,7 +2310,7 @@ chgrp(LOGFILE, $grp);
               'bcc' => '',
               'file_on_case' => FALSE,
           ],
-          #'action_params' => 'a:10:{s:9:"from_name";s:25:"Techniciens labo anatomie";s:10:"from_email";s:28:"dons.corps@med.univ-tours.fr";s:11:"template_id";'.$msg_id.'s:14:"disable_smarty";b:0;s:16:"location_type_id";s:0:"";s:17:"from_email_option";s:0:"";s:28:"alternative_receiver_address";s:23:"destrieux@univ-tours.fr";s:2:"cc";s:0:"";s:3:"bcc";s:0:"";s:12:"file_on_case";b:0;}',    
+          #'action_params' => 'a:10:{s:9:"from_name";s:25:"Techniciens labo anatomie";s:10:"from_email";s:28:"dons.corps@med.univ-tours.fr";s:11:"template_id";'.$msg_id.'s:14:"disable_smarty";b:0;s:16:"location_type_id";s:0:"";s:17:"from_email_option";s:0:"";s:28:"alternative_receiver_address";s:23:"destrieux@univ-tours.fr";s:2:"cc";s:0:"";s:3:"bcc";s:0:"";s:12:"file_on_case";b:0;}',
           'delay' => NULL,
           'ignore_condition_with_delay' => 0,
           'is_active' => TRUE,
@@ -2339,7 +2340,7 @@ chgrp(LOGFILE, $grp);
       fclose($fp);
         if (VERBOSE==1){
           echo $msg;
-        }  
+        }
       //reécupère l'id de l'action "modification des coordonnées"
       $optionValues = civicrm_api4('OptionValue', 'get', [
         'select' => [
@@ -2498,7 +2499,7 @@ chgrp(LOGFILE, $grp);
           'is_active' => TRUE,
           'rule_id.name' => 'neutralise_adresse_postale',
           'condition_id.name' => 'activity_of_type',
-        ], 
+        ],
       ];
       create_entity($to_create);
 
@@ -2518,7 +2519,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-        // passer l'adresse en erroné : recupere l'id du champ adresse erronée 
+        // passer l'adresse en erroné : recupere l'id du champ adresse erronée
         $customFields = civicrm_api4('CustomField', 'get', [
           'select' => [
             'id',
@@ -2530,11 +2531,11 @@ chgrp(LOGFILE, $grp);
         ]);
 
         #$custom_adresse_incorrecte = serialize ($customFields[0]['id']);
-        
+
 
       $to_create =  [                                  // passer l'adresse en erroné : Rule Action 1
         'entity' => 'CiviRulesRuleAction',
-        'values' => [    
+        'values' => [
           #'action_params' => 'a:2:{s:8:"field_id";'.$custom_adresse_incorrecte.'s:5:"value";s:1:"1";}',
           'action_params' => [
               'field_id' => $customFields[0]['id'],
@@ -2581,7 +2582,7 @@ chgrp(LOGFILE, $grp);
     #fclose($fp);
     //function don_corps_civicrm_config(&$config) {
     _don_corps_civix_civicrm_config($config);
-    
+
   }
 
 # IMPLEMENTS hook_civicrm_install() //LOG OK
@@ -2823,9 +2824,9 @@ chgrp(LOGFILE, $grp);
         'access_civioffice',
         'author',
         ];
-      
 
-      
+
+
       $contributor_caps = [         // liste des privileges du role contributor
         'edit_posts',
         'read',
@@ -3009,15 +3010,15 @@ chgrp(LOGFILE, $grp);
           ],
         ];
         create_entity($to_create);
-    
-    
-    
+
+
+
     $msg= "  - Création/inactivation des types de contact".PHP_EOL;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
       fclose($fp);
-      
+
         $to_create =  [       // Création des types de contact : donnneur
           'entity' => 'ContactType',
           'values' => [
@@ -3088,7 +3089,7 @@ chgrp(LOGFILE, $grp);
               ],
             ];
           create_entity($to_create);
-      
+
 
         $to_create =  [       // Création des types de contact : Pompes
           'entity' => 'ContactType',
@@ -3146,8 +3147,8 @@ chgrp(LOGFILE, $grp);
       fwrite($fp, $msg);
       echo $msg;
       fclose($fp);
-    
-      $to_create =  [       
+
+      $to_create =  [
       'entity' => 'FinancialType',
       'values' => [
               'name' => 'Donation',
@@ -3161,7 +3162,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'FinancialType',
         'values' => [
                 'name' => 'Don',
@@ -3174,7 +3175,7 @@ chgrp(LOGFILE, $grp);
         ];
         create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'FinancialType',
           'values' => [
               'name' => 'Member Dues',
@@ -3182,12 +3183,12 @@ chgrp(LOGFILE, $grp);
               'description' => NULL,
               'is_deductible' => TRUE,
               'is_reserved' => FALSE,
-              'is_active' => FALSE,   
+              'is_active' => FALSE,
           ],
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'FinancialType',
         'values' => [
             'name' => 'Cotisation des membres',
@@ -3201,7 +3202,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'FinancialType',
         'values' => [
             'name' => 'Contribution Prise en charge Corps',
@@ -3214,7 +3215,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'FinancialType',
           'values' => [
               'name' => 'Campaign Contribution',
@@ -3227,7 +3228,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'FinancialType',
           'values' => [
               'name' => 'Event Fee',
@@ -3247,7 +3248,7 @@ chgrp(LOGFILE, $grp);
       echo $msg;
       fclose($fp);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'option_group_id:name' => 'contribution_status',
@@ -3270,7 +3271,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [      
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'option_group_id:name' => 'contribution_status',
@@ -3293,7 +3294,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'option_group_id:name' => 'contribution_status',
@@ -3316,7 +3317,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'name' => 'Failed',
@@ -3326,7 +3327,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'name' => 'Refunded',
@@ -3336,7 +3337,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'name' => 'Partially paid',
@@ -3346,7 +3347,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'name' => 'Pending refund',
@@ -3356,7 +3357,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'name' => 'Chargeback',
@@ -3367,7 +3368,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
 
-      $to_create =  [       
+      $to_create =  [
           'entity' => 'OptionValue',
           'values' => [
               'name' => 'Template',
@@ -3376,15 +3377,15 @@ chgrp(LOGFILE, $grp);
           ],
       ];
       create_entity($to_create);
-      // Fin de la création des statuts de contribution  
+      // Fin de la création des statuts de contribution
 
     $msg= "  - Création/inactivation des modes de paiement".PHP_EOL;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
       fclose($fp);
-    
-      $to_create =  [       
+
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'payment_instrument',
@@ -3394,7 +3395,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'payment_instrument',
@@ -3404,7 +3405,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'payment_instrument',
@@ -3415,7 +3416,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'payment_instrument',
@@ -3428,7 +3429,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'payment_instrument',
@@ -3440,7 +3441,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'payment_instrument',
@@ -3464,7 +3465,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'payment_instrument',
@@ -3495,7 +3496,7 @@ chgrp(LOGFILE, $grp);
       fwrite($fp, $msg);
       echo $msg;
       fclose($fp);
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'event_type',
@@ -3519,7 +3520,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'event_type',
@@ -3529,7 +3530,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'event_type',
@@ -3539,7 +3540,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'event_type',
@@ -3549,7 +3550,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'event_type',
@@ -3559,7 +3560,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'event_type',
@@ -3575,7 +3576,7 @@ chgrp(LOGFILE, $grp);
       fwrite($fp, $msg);
       echo $msg;
       fclose($fp);
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'participant_role',
@@ -3593,13 +3594,13 @@ chgrp(LOGFILE, $grp);
           'component_id' => NULL,
           'domain_id' => NULL,
           'visibility_id' => NULL,
-          'icon' => NULL, 
+          'icon' => NULL,
           'color' => NULL,
         ],
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'participant_role',
@@ -3612,7 +3613,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'participant_role',
@@ -3622,7 +3623,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
           'option_group_id:name' => 'participant_role',
@@ -3692,17 +3693,17 @@ chgrp(LOGFILE, $grp);
           'visibility_id' => 2,
         ],
         ];
-        create_entity($to_create);     
+        create_entity($to_create);
         // Fin de création des statuts de participants
 
-    
-    
+
+
     $msg= "  - Création des relations spécifiques à l'application".PHP_EOL;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
       fclose($fp);
-        $to_create =  [       
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'Child of',
@@ -3720,7 +3721,7 @@ chgrp(LOGFILE, $grp);
         ];
         create_entity($to_create);
 
-        $to_create =  [       
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'Partner of',
@@ -3738,7 +3739,7 @@ chgrp(LOGFILE, $grp);
         ];
         create_entity($to_create);
 
-        $to_create =  [       
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'a pour personne de confiance',
@@ -3756,7 +3757,7 @@ chgrp(LOGFILE, $grp);
         ];
         create_entity($to_create);
 
-        $to_create =  [       
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'a pour personne de confiance 2',
@@ -3774,7 +3775,7 @@ chgrp(LOGFILE, $grp);
         ];
         create_entity($to_create);
 
-        $to_create =  [       
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'a pour PAQPF',
@@ -3792,7 +3793,7 @@ chgrp(LOGFILE, $grp);
         ];
         create_entity($to_create);
 
-        $to_create =  [       
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'en attente',
@@ -3810,7 +3811,7 @@ chgrp(LOGFILE, $grp);
         ];
         create_entity($to_create);
 
-        $to_create =  [       
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'Sibling of',
@@ -3827,8 +3828,8 @@ chgrp(LOGFILE, $grp);
           ],
         ];
         create_entity($to_create);
-      
-        $to_create =  [       
+
+        $to_create =  [
           'entity' => 'RelationshipType',
           'values' => [
             'name_a_b' => 'Employee of',
@@ -3841,12 +3842,12 @@ chgrp(LOGFILE, $grp);
             'contact_sub_type_a' => NULL,
             'contact_sub_type_b' => NULL,
             'is_reserved' => TRUE,
-            'is_active' => TRUE,      
+            'is_active' => TRUE,
           ],
         ];
         create_entity($to_create);
       // Fin de création des relations
-    
+
     $msg= "  - Déactivation des relations par défaut".PHP_EOL;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
@@ -3858,9 +3859,11 @@ chgrp(LOGFILE, $grp);
       deactivate_relation_type ('Household Member of');
       deactivate_relation_type ('Case Coordinator is');
       deactivate_relation_type ('Supervised by');
-      // Fin de la Déactivation des types de relation par défaut  
+      // Fin de la Déactivation des types de relation par défaut
+      echo PHP_EOL."##### L'etape suivante est longue (plusieurs minutes) - Soyez patient ! #####".PHP_EOL;
 
-      
+
+
    /*     $msg= "  - Déactivation des champs du profil par defaut ".PHP_EOL; // sans cela le profil contient de champs suppléntaiers
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
@@ -3883,7 +3886,7 @@ chgrp(LOGFILE, $grp);
 
 # IMPLEMENTS hook_civicrm_enable(). // LOG OK
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
- 
+
 
   function don_corps_civicrm_enable(): void {   // pas d'affcicahge des messages consoles lors installation
      }
@@ -3891,7 +3894,7 @@ chgrp(LOGFILE, $grp);
 
 # IMPLEMENTS hook_civicrm_postInstall().
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
- 
+
   function don_corps_civicrm_postInstall() {
     $msg= PHP_EOL."@@@  hook_civicrm_postinstall ".PHP_EOL;
     echo $msg;
@@ -3964,14 +3967,14 @@ chgrp(LOGFILE, $grp);
           "CiviReport"
         ],
       ]);
-   
+
 
     $msg="  - Modification des tags".PHP_EOL; // LOG OK
       echo $msg;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       fclose($fp);
-      $entities[] = 
+      $entities[] =
       [
         'module' => 'don_corps',
         'name' => 'Tag_bilan',
@@ -3991,10 +3994,10 @@ chgrp(LOGFILE, $grp);
           'match' => [E::ts('name')],
         ],
       ];
-    
 
 
-      
+
+
     $msg="  - Ajout des centres de don du corps".PHP_EOL;// LOG OK
       echo $msg;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
@@ -4146,8 +4149,8 @@ chgrp(LOGFILE, $grp);
           fwrite($fp, $msg);
           if (VERBOSE==1){
             echo $msg;
-          }          
-          
+          }
+
           foreach($custom_dedupes as $custom_dedupe){
               $results = civicrm_api4('DedupeRule', 'create', [
               'values' => [
@@ -4162,7 +4165,7 @@ chgrp(LOGFILE, $grp);
               fwrite($fp, $msg);
               if (VERBOSE==1){
                 echo $msg;
-              }      
+              }
               }
 
 
@@ -4241,7 +4244,7 @@ chgrp(LOGFILE, $grp);
           fwrite($fp, $msg);
           if (VERBOSE==1){
             echo $msg;
-          }       
+          }
 
           foreach($custom_dedupes as $custom_dedupe){
               $results = civicrm_api4('DedupeRule', 'create', [
@@ -4257,7 +4260,7 @@ chgrp(LOGFILE, $grp);
                         fwrite($fp, $msg);
               if (VERBOSE==1){
                 echo $msg;
-              }  
+              }
             }
 
 
@@ -4271,7 +4274,7 @@ chgrp(LOGFILE, $grp);
               $custom_table['name']['column']='organization_name';
               $custom_table['email']['table']='civicrm_email';
               $custom_table['email']['column']='email';
-              
+
 
       ### Organisation : création règle supervisée de dédoublonage utilisant le nom ou courriel
           $rule_name = 'OrganizationSupervised';
@@ -4283,7 +4286,7 @@ chgrp(LOGFILE, $grp);
                   ['name', '=', $rule_name],
               ],
               'checkPermissions' => FALSE,
-          ]); 
+          ]);
 
           if(isset($dedupeRuleGroups[0])){
               $results = civicrm_api4('DedupeRuleGroup', 'update', [
@@ -4347,8 +4350,8 @@ chgrp(LOGFILE, $grp);
           fwrite($fp, $msg);
           if (VERBOSE==1){
             echo $msg;
-          }   
-          
+          }
+
           foreach($custom_dedupes as $custom_dedupe){
               $results = civicrm_api4('DedupeRule', 'create', [
               'values' => [
@@ -4363,7 +4366,7 @@ chgrp(LOGFILE, $grp);
               fwrite($fp, $msg);
               if (VERBOSE==1){
                 echo $msg;
-              }        
+              }
             }
 
 
@@ -4444,8 +4447,8 @@ chgrp(LOGFILE, $grp);
           fwrite($fp, $msg);
           if (VERBOSE==1){
             echo $msg;
-          }      
-          
+          }
+
           foreach($custom_dedupes as $custom_dedupe){
               $results = civicrm_api4('DedupeRule', 'create', [
               'values' => [
@@ -4461,14 +4464,14 @@ chgrp(LOGFILE, $grp);
               fwrite($fp, $msg);
               if (VERBOSE==1){
                 echo $msg;
-              } 
+              }
           }
 
      fclose($fp); // ferme fichier de log
 
      /// Fin de Reglage des règles de dédoublonage
 
-  
+
     $msg="  - Modification des filtres de champs personnalisés".PHP_EOL; // permet de n'afficher que certains contacts pour certains champs
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
@@ -4481,8 +4484,8 @@ chgrp(LOGFILE, $grp);
       // fin de modification des filtre de champs personnalisés
 
 
-    
-      
+
+
 
     $msg="  - Création des Rules".PHP_EOL;
       create_rules();
@@ -4513,7 +4516,7 @@ chgrp(LOGFILE, $grp);
       //
       //      Pour tester avec lexplorer api : afficher le resultat en json et copier la valeur dans le cahmp api_params encadres de {}
       //   { "version": 4,   ...  "having": []}
-      //    $searchname = '';     //       
+      //    $searchname = '';     //
       //      $api_params = [];
       //  update_search($searchname, $api_params, 'bilan');*/
       //
@@ -4533,7 +4536,7 @@ chgrp(LOGFILE, $grp);
 
         $searchname = 'Tokens_pour_personne_de_confinace_1';            // requete search creation Tokens_pour_personne_de_confinace_1  //
         update_search($searchname, $api_params, 'tokens');
-        
+
         $searchname = 'tokens_for_a_pour_personne_de_confiance_1';            // requete search creation tokens_for_a_pour_personne_de_confiance_2 (et pas 1)  //
         update_search($searchname, $api_params, 'tokens');
 
@@ -4547,7 +4550,7 @@ chgrp(LOGFILE, $grp);
 
         $searchname = 'Personnes_r_f_rentes_dont_le_donneur_est_d_c_d_sans_les_deux_mois_pr_c_dents';            // requete PAQF //
         update_search($searchname, $api_params, 'civi_ddc');
-        
+
         $searchname = 'Tous_les_contacts';            // requete Tous les contacts //
         update_search($searchname, $api_params, 'civi_ddc');
 
@@ -4563,20 +4566,20 @@ chgrp(LOGFILE, $grp);
         $searchname = 'Mairies';                   // requete mairies
         update_search($searchname, $api_params,'civi_ddc');
 
-        $searchname = 'tableau_bord_2';            // requete tableau de bord   
+        $searchname = 'tableau_bord_2';            // requete tableau de bord
         update_search($searchname, $api_params,'civi_ddc');
 
-        $searchname = 'Donneurs_vivants_ano_ville_CP';        // requete donneurs vivants avec anomalie de ville d'adresse ou CP  
+        $searchname = 'Donneurs_vivants_ano_ville_CP';        // requete donneurs vivants avec anomalie de ville d'adresse ou CP
         update_search($searchname, $api_params,'civi_ddc');
 
-        $searchname = 'Emprunteurs';                // requete emprunteurs et lieux de stockage 
+        $searchname = 'Emprunteurs';                // requete emprunteurs et lieux de stockage
         //$api_params = ['version' => 4, 'select' => [ 'id', 'contact_sub_type:label', 'display_name', 'Contact_Address_contact_id_01.street_address', 'Contact_Address_contact_id_01.supplemental_address_1', 'Contact_Address_contact_id_01.postal_code', 'Contact_Address_contact_id_01.city', 'phone_primary.phone', ], 'orderBy' => [], 'where' => [ [ 'OR', [ [ 'contact_sub_type:name', 'CONTAINS', 'Emprunteur', ], [ 'contact_sub_type:name', 'CONTAINS', 'CDC', ], ], ], ], 'groupBy' => [], 'join' => [ [ 'Address AS Contact_Address_contact_id_01', 'LEFT', [ 'id', '=', 'Contact_Address_contact_id_01.contact_id', ], [ 'Contact_Address_contact_id_01.is_primary', '=', TRUE, ], ], ], 'having' => [],];
         update_search($searchname, $api_params,'civi_ddc');
 
         $searchname = 'Personnel_centre_de_don';     // requete personnels centre de don (crée groupe dyn)
         update_search($searchname, $api_params,'civi_ddc');
 
-        $searchname = 'Centres_d_accueil_des_corps';     // requete centre de don 
+        $searchname = 'Centres_d_accueil_des_corps';     // requete centre de don
         update_search($searchname, $api_params,'civi_ddc');
 
         $searchname = 'Pompes_funebres';            // requete pompes funebres (crée groupe dyn)
@@ -4585,17 +4588,17 @@ chgrp(LOGFILE, $grp);
         $searchname = 'Inventaires';                // requete inventaires
         update_search($searchname, $api_params,'civi_ddc');
 
-        $searchname = 'Toutes_pi_ces_corps';        // requete utilisée pour lister corps et pieces presents     
+        $searchname = 'Toutes_pi_ces_corps';        // requete utilisée pour lister corps et pieces presents
         update_search($searchname, $api_params, 'civi_ddc');
 
-        $searchname = 'participants';        // requete utilisée pour lister participants aux ceremonies    
+        $searchname = 'participants';        // requete utilisée pour lister participants aux ceremonies
         update_search($searchname, $api_params, 'civi_ddc');
 
-        $searchname = 'in_memoriam';        // requete utilisée pour lister les donneurs défunts souhaitant inscription sur stele   
+        $searchname = 'in_memoriam';        // requete utilisée pour lister les donneurs défunts souhaitant inscription sur stele
         update_search($searchname, $api_params, 'civi_ddc');
 
         // Requetes utilisées par les purges
-        $searchname = 'Donneurs_annul_s';          // requete donneurs annulés sans ceux placés en archive, ie deja purgé       
+        $searchname = 'Donneurs_annul_s';          // requete donneurs annulés sans ceux placés en archive, ie deja purgé
         update_search($searchname, $api_params, 'purge');
 
         $searchname = 'Anonymis_s_par_la_purge';   // requete contacts ayant été anonymisés par les purges
@@ -4605,28 +4608,28 @@ chgrp(LOGFILE, $grp);
                                                   // Utilisé pour préserver les ATCD des donneurs inclus dans un ptotocole
         update_search($searchname, $api_params, 'purge');
 
-        $searchname = 'Proches_sans_relation_1';                      // requete Proches sans relation    
+        $searchname = 'Proches_sans_relation_1';                      // requete Proches sans relation
         update_search($searchname, $api_params, 'purge');
 
-        $searchname = 'Personnels';                                   // requete Personnels partis depuis plus de 5 ans      
+        $searchname = 'Personnels';                                   // requete Personnels partis depuis plus de 5 ans
         update_search($searchname, $api_params, 'purge');
 
-        $searchname = 'Demandeurs_d_informations_plus_d_un_an';      // requete demandeurs d'informations de plus d'un an      
+        $searchname = 'Demandeurs_d_informations_plus_d_un_an';      // requete demandeurs d'informations de plus d'un an
         update_search($searchname, $api_params, 'purge');
 
-        $searchname = 'Donneurs_120_ans';                        // requete Donneurs âgés de plus de 120 ans et sans numéro de DC  : anonymisation 
+        $searchname = 'Donneurs_120_ans';                        // requete Donneurs âgés de plus de 120 ans et sans numéro de DC  : anonymisation
         update_search($searchname, $api_params, 'purge');
 
-        $searchname = 'donneurs_DC_un_an_et_refus';              // requete  Donneurs décédés depuis plus d'un an et refusés en raison du motif de décès ou de l'état de conservation : suppression"),     
+        $searchname = 'donneurs_DC_un_an_et_refus';              // requete  Donneurs décédés depuis plus d'un an et refusés en raison du motif de décès ou de l'état de conservation : suppression"),
         update_search($searchname, $api_params, 'purge');
 
         $searchname = 'Donneurs_dont_op_fun_raires_1_an';        // requeteDonneurs dont les opérations funéraires ont été achevées il y a plus d'un an : suppression des relations (avant purge des proches sans relations)\nLes donneurs dont les relations sont déja purgés (tag \"relations purgées\" sont exclus"),
         update_search($searchname, $api_params, 'purge');
 
-        $searchname = 'Op_rations_fun_raires_de_plus_de_5_ans'; // requete Op_rations_fun_raires_de_plus_de_5_ans  
+        $searchname = 'Op_rations_fun_raires_de_plus_de_5_ans'; // requete Op_rations_fun_raires_de_plus_de_5_ans
         update_search($searchname, $api_params, 'purge');
 
-        $searchname = 'Proches_dont_donneur_DC_1_an_et_refuses'; // requete Proches_dont_donneur_DC_1_an_et_refuses     
+        $searchname = 'Proches_dont_donneur_DC_1_an_et_refuses'; // requete Proches_dont_donneur_DC_1_an_et_refuses
         update_search($searchname, $api_params, 'purge');
 
         $searchname = 'Contacts_impliqu_s_dans_un_protocole_ex_vivo';                   //    %    Contacts ayant au moins une piece impliquée dans un protocole ex vivo
@@ -4639,77 +4642,77 @@ chgrp(LOGFILE, $grp);
         update_search($searchname, $api_params, 'purge');
 
         // Requetes utilisées pour le bilan annuel (aform activité)
-        $searchname = 'corps_pr_sents_au_1_1_ann_e_en_cours';                   // % requete Bilan : corps présents au 1/1 année en cours      
+        $searchname = 'corps_pr_sents_au_1_1_ann_e_en_cours';                   // % requete Bilan : corps présents au 1/1 année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'bilan_corps_presents_au_31_12_ann_e_A_1';                // % requete bilan : corps presents au 31/12 année A -1         
+        $searchname = 'bilan_corps_presents_au_31_12_ann_e_A_1';                // % requete bilan : corps presents au 31/12 année A -1
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'bilan_corps_presents_31_12_ann_e_en_cours';             // bilan : nombre de corps presents 31/12 année en cours          
+        $searchname = 'bilan_corps_presents_31_12_ann_e_en_cours';             // bilan : nombre de corps presents 31/12 année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'bilan_nombre_de_corps_pr_sents_1_1_ann_e_A_1';         // % bilan : nombre de corps présents 1/1 année A-1        
+        $searchname = 'bilan_nombre_de_corps_pr_sents_1_1_ann_e_A_1';         // % bilan : nombre de corps présents 1/1 année A-1
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'bilan_nombre_de_corps_recus_dans_l_ann_e_pr_cdente';   //  bilan : corps recus année A-1'         
+        $searchname = 'bilan_nombre_de_corps_recus_dans_l_ann_e_pr_cdente';   //  bilan : corps recus année A-1'
         update_search($searchname, $api_params, 'bilan');
 
         $searchname = 'Dons_ann_e_en_cours';                                  //  % Bilan : dons année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Inscriptions_annulations_ann_e_en_cours';              // Bilan : Inscriptions année en cours     
+        $searchname = 'Inscriptions_annulations_ann_e_en_cours';              // Bilan : Inscriptions année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_annulations_ann_e_A_1';                          // Bilan : annulations année A-1      
+        $searchname = 'Bilan_annulations_ann_e_A_1';                          // Bilan : annulations année A-1
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_c_r_monies_ann_e_en_cours';                      // % Bilan : cérémonies année en cours      
+        $searchname = 'Bilan_c_r_monies_ann_e_en_cours';                      // % Bilan : cérémonies année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_c_r_monies_ann_e_A_1';                           // % Bilan : cérémonies année en cours      
+        $searchname = 'Bilan_c_r_monies_ann_e_A_1';                           // % Bilan : cérémonies année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_corps_recus_et_devenir_ann_e_en_cours';          // Bilan : corps sortis année en cours      
+        $searchname = 'Bilan_corps_recus_et_devenir_ann_e_en_cours';          // Bilan : corps sortis année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_corps_sortis_ann_e_A_1';                         // % Bilan : corps sortis année A -1      
+        $searchname = 'Bilan_corps_sortis_ann_e_A_1';                         // % Bilan : corps sortis année A -1
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_demandeurs_information_ann_e_en_cours';          // Bilan : demandeurs information année en cours      
+        $searchname = 'Bilan_demandeurs_information_ann_e_en_cours';          // Bilan : demandeurs information année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_dons_ann_e_A_1';                                 // Bilan : dons année A -1       
+        $searchname = 'Bilan_dons_ann_e_A_1';                                 // Bilan : dons année A -1
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_inscription_ann_e_A_1';                          //  Bilan : inscription année A-1     
+        $searchname = 'Bilan_inscription_ann_e_A_1';                          //  Bilan : inscription année A-1
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_nombre_d_annualtion_ann_e_en_cours';             //  Bilan : nombre d'annulations année en cours     
+        $searchname = 'Bilan_nombre_d_annualtion_ann_e_en_cours';             //  Bilan : nombre d'annulations année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_nombre_de_corps_rec_us_ann_e_en_cours';          //  Bilan : nombre de corps reçus année en cours     
+        $searchname = 'Bilan_nombre_de_corps_rec_us_ann_e_en_cours';          //  Bilan : nombre de corps reçus année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'corps_pr_sents_au_1_1_ann_e_en_cours';             // bilan : nombre de corps presents 1/1 année en cours          
+        $searchname = 'corps_pr_sents_au_1_1_ann_e_en_cours';             // bilan : nombre de corps presents 1/1 année en cours
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_nombre_de_demandeurs_d_information';             // Bilan : nombre de demandeurs d'information année A-1      
+        $searchname = 'Bilan_nombre_de_demandeurs_d_information';             // Bilan : nombre de demandeurs d'information année A-1
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Personnels_id3q';                                           //  Personnels     
+        $searchname = 'Personnels_id3q';                                           //  Personnels
         update_search($searchname, $api_params, 'bilan');
 
-        $searchname = 'Bilan_refus_ou_non_reception_corps_A_1';               // % Corps refusés ou non recus année A -1 
+        $searchname = 'Bilan_refus_ou_non_reception_corps_A_1';               // % Corps refusés ou non recus année A -1
         update_search($searchname, $api_params, 'bilan');
-      
+
         $searchname = 'Bilan_refus_ou_non_reception_corps';                   //    %    Corps refusés ou non recus année en cours
         update_search($searchname, $api_params, 'bilan');
 
 
-      
+
        // fin de Modifie les requetes qui ne sont pas correctement importées
 
-    
+
 
     /*  création des layouts (inutile avec managed)
 
@@ -5800,26 +5803,26 @@ chgrp(LOGFILE, $grp);
 
 
               /// inactivation des onglets inutiles et changement des icones dans les layouts installés
-        
+
               echo "  - inactivation des onglets inutiles et changement des icones dans les layouts installés".PHP_EOL;
-        
+
               $icons_default = [                      /// modifier ici les icones à afficher par tab
                 ["name" => "Arriv_e_du_corps_new",
                 "id" => "",
                 "icon" => "crm-i fa-ambulance"],
-        
+
                 ["name" => "Utilisation_du_corps",
                 "id" => "",
                 "icon" => "crm-i fa-sign-language"],
-        
+
                 ["name" => "Protocoles_in_vivo",
                 "id" => "",
                 "icon" => "crm-i fa-flask"],
-        
+
                 ["name" => "contribute",
                   'id' => 'contribute',
                 "icon" => "crm-i fa-money"],
-        
+
                 ["name" => "participant",
                   'id' => 'participant',
                 "icon" => "crm-i fa-users"],
@@ -5850,7 +5853,7 @@ chgrp(LOGFILE, $grp);
       change_icon('Events','crm-i fa-users');
       // Fin du Changement des icones de menus
 
- 
+
 
      /// Modification des menus de navigation liés aux profil de création de contacts
 
@@ -5860,7 +5863,7 @@ chgrp(LOGFILE, $grp);
       echo $msg;
       fclose($fp);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'MessageTemplate',
         'values' => [
           'msg_title' => '001 - Préinscription: envoi informations MAIL',
@@ -5879,7 +5882,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'MessageTemplate',
         'values' => [
           'msg_title' => '002 - Préinscription: envoi informations POSTALE',
@@ -5897,7 +5900,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'MessageTemplate',
         'values' => [
           'msg_title' => '010 - Inscription : Mail confirmation inscription',
@@ -5915,7 +5918,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'MessageTemplate',
         'values' => [
           'msg_title' => '300 - Cérémonie invitation (email)',
@@ -5933,7 +5936,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'MessageTemplate',
         'values' => [
           'msg_title' => '310 - Cérémonie confirmation  (email)',
@@ -5951,7 +5954,7 @@ chgrp(LOGFILE, $grp);
       ];
       create_entity($to_create);
 
-      $to_create =  [       
+      $to_create =  [
         'entity' => 'MessageTemplate',
         'values' => [
           'msg_title' => '320 - Cérémonie non inscription  (email)',
@@ -5978,11 +5981,11 @@ chgrp(LOGFILE, $grp);
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
-      fclose($fp);   
-      
-      $to_create =  [        
+      fclose($fp);
+
+      $to_create =  [
           'entity' => 'Event',
-          'values' => 
+          'values' =>
           [ 'title' => 'Cérémonie test',
               'summary' => "Cérémonie d'hommage aux donneurs et à leurs familles",
               'description' => NULL,
@@ -6054,7 +6057,7 @@ chgrp(LOGFILE, $grp);
       ];
       $event_id=create_entity($to_create);
 
-  
+
 
 
 
@@ -6070,7 +6073,7 @@ chgrp(LOGFILE, $grp);
         }
         fclose($fp);
 
-        $to_create =  [       
+        $to_create =  [
             'entity' => 'MessageTemplate',
             'values' => [
               'msg_title' => "Événements - Confirmation d'inscription et reçu (hors ligne)",
@@ -6262,32 +6265,41 @@ chgrp(LOGFILE, $grp);
       # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
       # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
       # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
-      # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id) 
+      # Ici on utilise un tableau donnant la correspondance entre le nom original du champ personnlisé (uf id)
       # et son nom ; cela permt de modifier celui-ci dans la nouvelle installation
-      
+
       ##$toimport_file = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/ufnameconversion.txt");
-      install_UFGroup ('Centre_d_accueil_des_corps','Centres de don du corpsDDC','New CDC'); 
+      install_UFGroup ('Centre_d_accueil_des_corps','Centres de don du corpsDDC','New CDC');
       install_UFGroup ('CESP_29');
-      install_UFGroup ('D_mographie_animal'); 
-      install_UFGroup ('Dates_naissance_et_d_c_s_17'); 
-      install_UFGroup ('Demandeur_information_22','ContactsDDC','New Demandeur_d_informationDDC'); 
-      install_UFGroup ('Employeur'); 
-      install_UFGroup ('Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée'); 
-      install_UFGroup ('Inscription_donateur','ContactsDDC','New DonateurDDC'); 
-      install_UFGroup ('inscription_pompes', 'Pompes funebresDDC','New Pompes'); 
+      install_UFGroup ('D_mographie_animal');
+      install_UFGroup ('Dates_naissance_et_d_c_s_17');
+      install_UFGroup ('Demandeur_information_22','ContactsDDC','New Demandeur_d_informationDDC');
+      install_UFGroup ('Employeur');
+      install_UFGroup ('Inscription_anat_compar_e', 'ContactsDDC','Nouvelle pièce anat comparée');
+      install_UFGroup ('Inscription_donateur','ContactsDDC','New DonateurDDC');
+      install_UFGroup ('inscription_pompes', 'Pompes funebresDDC','New Pompes');
       install_UFGroup ('Inscription_proche_donateur_14','ContactsDDC','Ajouter proche donateurDDC');
-      install_UFGroup ('Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur'); 
-      install_UFGroup ('Mairie', 'MairiesDDC','New Mairies'); 
+      install_UFGroup ('Lieu_de_stockage', 'Pièces anatomiquesDDC','New Emprunteur');
+      install_UFGroup ('Mairie', 'MairiesDDC','New Mairies');
       install_UFGroup ('Op_rations_fun_raires_r_alis_es_30');
-      install_UFGroup ('Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel'); 
+      install_UFGroup ('Personnel_de_centre_de_don_de_corps', 'Centres de don du corpsDDC','New Personnel');
       install_UFGroup ('Profil_sans_nom_20'); // Adresse incorrecte OK
-      install_UFGroup ('Restitution_28'); 
-      install_UFGroup ('Type_de_contact_23'); 
+      install_UFGroup ('Restitution_28');
+      install_UFGroup ('Type_de_contact_23');
 
      // Fin modification message liés aux ceremonies
 
-  
-  
+    $msg = "  - Mise à jour des groupes des SavedSearch" . PHP_EOL;
+      echo $msg;
+
+      $fp = fopen(LOGFILE, 'a');
+      fwrite($fp, $msg);
+      fclose($fp);
+
+      UpdateSearchGroups::updateAll();
+    // fin MAJ des groupes des SavedSearch
+
+
   }   // fin Implements hook_civicrm_postInstall().
 
 #IMPLEMENTS hook_civicrm_container().
@@ -6297,12 +6309,12 @@ chgrp(LOGFILE, $grp);
 
   ## Remonte tous les tokens d'utilisation du corps pour les rendre disponibles
   $container->autowire(\Civi\EventSubscriber\CiviOfficeTokenSubscriber::class)->addTag('kernel.event_subscriber');
- 
-} 
+
+}
 
 
   # IMPLEMENTS hook_civicrm_uninstall().
- 
+
   function don_corps_civicrm_uninstall() {
     $msg="  - Activation des menus par défaut".PHP_EOL;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
@@ -6318,5 +6330,5 @@ chgrp(LOGFILE, $grp);
       activate_menu('Reports');
       activate_menu('Support');
 
-  
+
   }
