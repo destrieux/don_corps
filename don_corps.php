@@ -27,7 +27,46 @@ $container
   ->addTag('kernel.event_subscriber');
 } */
 
+// Lien entre Wordpress et la classe civicrm qui genere le flux iCalendar
+add_action('template_redirect', 'don_corps_ical_feed');
+  // fonction wordpress : lorsque wp arrive a l'étape template_redirect 
+  //                      (executé justa avant que WP charge le template de la page à afficher)
+  //                      alors WP execute don_corps_ical_feed
 
+  define(
+    'DON_CORPS_ICAL_TOKEN',
+    '0d8c90157fbcdd35aa10664db67c71b7cd395f17ece65fccf5edba093759e9a3'
+);
+  
+  
+  function don_corps_ical_feed() {
+
+      if (!isset($_GET['doncorps_ical'])) { // vérifie qu'une page du type https://monsite.fr/?doncorps_ical=1
+                                            // existe bien sinon retour
+          return;
+      }
+
+      if (
+          !isset($_GET['token']) ||
+          !hash_equals(
+              DON_CORPS_ICAL_TOKEN,
+              (string) $_GET['token']
+          )
+      ) {
+          status_header(403);
+          header('Content-Type: text/plain; charset=utf-8');
+          echo 'Accès refusé';
+          exit;
+      }
+
+      require_once __DIR__ . '/CRM/DonCorps/Page/DonCorpsICal.php';// demande à PHP de charger ce fichier une fois
+
+
+      $page = new CRM_DonCorps_Page_DonCorpsICal();
+      $page->run();
+
+      exit;
+  }
 
 
 
@@ -61,6 +100,13 @@ chgrp(LOGFILE, $grp);
 
 
 # DEFINITION DES FONCTIONS
+
+  // hook decalrant l'entrée des menus (utilise pour calendar)
+  // Utilise le fichier xml de définition du menu ./xml/Menu/don_corps.xml
+  // ce fichier fait référence au controleur CRM_DonCorps_Page_DonCorpsICal ou le calendrier est défini
+  function don_corps_civicrm_xmlMenu(&$files) {     // format reconnu par civicrm : extension_civicrm_nom du hook
+    $files[] = __DIR__ . '/xml/Menu/don_corps.xml';
+  }
 
   function after ($thisv, $inthatv){ // récupère la partie de chaine $inthatv située après $thisv
         if (!is_bool(strpos($inthatv, $thisv)))

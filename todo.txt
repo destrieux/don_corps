@@ -1,0 +1,4 @@
+changer permissions civievent calendar : anonymous
+copier le lien dans gerer events vers abonnement ical
+creer event type activité au laboratoire
+exporter champs perso 17 à 20
