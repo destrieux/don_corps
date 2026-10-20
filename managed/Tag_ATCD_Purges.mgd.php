@@ -13,9 +13,7 @@ return [
         'name' => 'ATCD Purges',
         'label' => E::ts('ATCD Purges'),
         'description' => E::ts('Donneurs non inclus dans protocole dont les ATCD ont été purges - évite des purges multiples'),
-        'used_for' => [
-          'civicrm_contact',
-        ],
+        'used_for:name' => ['Contact'],
         'color' => '#2d8de6',
       ],
       'match' => ['name'],

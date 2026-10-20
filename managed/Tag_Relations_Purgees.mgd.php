@@ -13,9 +13,7 @@ return [
         'name' => 'Relations Purgees',
         'label' => E::ts('Contacts dont les relations ont été purgées'),
         'description' => E::ts('Donneurs dont les relations ont été purgées - évite des purges multiples'),
-        'used_for' => [
-          'civicrm_contact',
-        ],
+        'used_for:name' => ['Contact'],
         'color' => '#cd7979',
       ],
       'match' => ['name'],

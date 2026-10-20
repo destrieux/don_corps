@@ -55,7 +55,7 @@ return [
         'name' => 'Bilan_annulations_ann_e_A_1_List_1',
         'label' => E::ts('Bilan : annulations année A-1 List 1'),
         'saved_search_id.name' => 'Bilan_annulations_ann_e_A_1',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

@@ -52,7 +52,7 @@ return [
         'name' => 'Tous_les_contacts_Table_1',
         'label' => E::ts('Tous les contacts Table 1'),
         'saved_search_id.name' => 'Tous_les_contacts',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts(''),
           'sort' => [

@@ -13,7 +13,7 @@ return [
         'label' => E::ts('Centre de don'),
         'contact_type' => 'Organization',
         'contact_sub_type' => ['CDC', 'Emprunteur'],
-        'weight' => 7,
+        'weight' => 8,
         'blocks' => [
           [
             [

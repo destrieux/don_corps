@@ -90,7 +90,7 @@ return [
         'name' => 'Donneurs_annul_s',
         'label' => E::ts('Donneurs annulés'),
         'saved_search_id.name' => 'Donneurs_annul_s',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Donneurs annulés à purger'),
           'sort' => [

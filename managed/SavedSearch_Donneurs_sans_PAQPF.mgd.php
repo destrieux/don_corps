@@ -116,7 +116,7 @@ return [
         'name' => 'Donneurs_sans_PAQPF_Table_1',
         'label' => E::ts('Donneurs sans PAQPF Table 1'),
         'saved_search_id.name' => 'Donneurs_sans_PAQPF',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Liste des défunts avec référents pour lesquels une PAQPF devrait être désignée'),
           'sort' => [

@@ -21,6 +21,8 @@ return [
             'Contact_Custom_Arriv_e_du_corps_new_entity_id_01.Effets_personnels_retir_s',
             'id',
             'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],
@@ -53,7 +55,7 @@ return [
         'name' => 'Token_Contacts_arriv_e_corps_Champs_de_fusion_1',
         'label' => E::ts('Token Contacts arrivée corps'),
         'saved_search_id.name' => 'Token_Contacts_arriv_e_corps',
-        'type' => 'tokens',
+        'type:name' => 'crm-search-display-tokens',
         'settings' => [
           'columns' => [
             [

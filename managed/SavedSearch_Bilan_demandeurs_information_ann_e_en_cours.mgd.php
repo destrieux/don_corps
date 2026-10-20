@@ -45,7 +45,7 @@ return [
         'name' => 'Bilan_demandeurs_information_ann_e_en_cours_List_1',
         'label' => E::ts('Bilan : demandeurs information année en cours List 1'),
         'saved_search_id.name' => 'Bilan_demandeurs_information_ann_e_en_cours',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

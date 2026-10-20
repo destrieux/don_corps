@@ -128,7 +128,7 @@ return [
         'name' => 'PAQFP_des_d_funts_d_c_d_s_non_inscrits_une_c_r_monie_ou_inscrits_une_c_r_monie_venir_Table_2',
         'label' => E::ts('PAQPFTable 2'),
         'saved_search_id.name' => 'Personnes_r_f_rentes_dont_le_donneur_est_d_c_d_sans_les_deux_mois_pr_c_dents',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('PAQFP non inscrits à une cérémonie ou cérémonie à venir'),
           'sort' => [

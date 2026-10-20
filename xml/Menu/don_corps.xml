@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  Déclaration des routes CiviCRM de l'extension Don Corps.
+
+  Deux pages sont déclarées :
+  - civicrm/event/doncorpsical : point d'accès au flux iCalendar ;
+  - civicrm/doncorps/ical-token : interface de gestion de l'abonnement
+    iCalendar personnel.
+
+  Les deux routes sont publiques car l'accès au flux iCalendar est
+  protégé par un token personnel généré depuis la seconde page.
+  Le paramètre is_public permet à CiviCRM de rendre ces routes
+  accessibles sans session CiviCRM.
+-->
+
 <menu>
   <item>
     <path>civicrm/event/doncorpsical</path>
     <title>Don Corps iCalendar</title>
     <page_callback>CRM_DonCorps_Page_DonCorpsICal</page_callback>
+    <access_callback>1</access_callback>
+    <is_public>true</is_public>
+  </item>
+  <item>
+    <path>civicrm/doncorps/ical-token</path>
+    <title>Mon abonnement iCalendar</title>
+    <page_callback><CRM_DonCorps_Page_DonCorpsICalToken></page_callback>
     <access_callback>1</access_callback>
     <is_public>true</is_public>
   </item>

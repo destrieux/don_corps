@@ -88,7 +88,7 @@ return [
         'name' => 'donneurs_DC_un_an_et_refus',
         'label' => E::ts('donneurs DC > un an et refus'),
         'saved_search_id.name' => 'donneurs_DC_un_an_et_refus',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Donneurs décédés depuis plus d\'un an et refusés en raison du motif de décès ou de l\'état de conservation'),
           'sort' => [

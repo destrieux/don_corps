@@ -32,6 +32,8 @@ return [
             'Contact_RelationshipCache_Contact_01.postal_greeting_id:label',
             'id',
             'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [
@@ -94,7 +96,7 @@ return [
         'name' => 'tokens_for_a_pour_personne_de_confiance_1_Champs_de_fusion_1',
         'label' => E::ts('PersConf2'),
         'saved_search_id.name' => 'tokens_for_a_pour_personne_de_confiance_1',
-        'type' => 'tokens',
+        'type:name' => 'crm-search-display-tokens',
         'settings' => [
           'columns' => [
             [

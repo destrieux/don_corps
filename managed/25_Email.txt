@@ -1,33 +1,5 @@
 [
     {
-        "contact_id": 1,
-        "email": "fixme.domainemail@example.org",
-        "is_primary": true,
-        "is_billing": false,
-        "on_hold": 0,
-        "is_bulkmail": false,
-        "hold_date": null,
-        "reset_date": null,
-        "signature_text": null,
-        "signature_html": null,
-        "location_type_id:name": "Home",
-        "contact_id.legal_identifier": "19370800500478"
-    },
-    {
-        "contact_id": 1,
-        "email": "dons.corps@med.univ-tours.fr",
-        "is_primary": false,
-        "is_billing": false,
-        "on_hold": 0,
-        "is_bulkmail": false,
-        "hold_date": null,
-        "reset_date": null,
-        "signature_text": null,
-        "signature_html": null,
-        "location_type_id:name": "Main",
-        "contact_id.legal_identifier": "19370800500478"
-    },
-    {
         "contact_id": 3,
         "email": "laboratoire.anatomie@u-picardie.fr",
         "is_primary": true,
@@ -334,6 +306,34 @@
         "signature_html": null,
         "location_type_id:name": "Main",
         "contact_id.legal_identifier": "93827139200012"
+    },
+    {
+        "contact_id": 25,
+        "email": "fixme.domainemail@example.org",
+        "is_primary": true,
+        "is_billing": false,
+        "on_hold": 0,
+        "is_bulkmail": false,
+        "hold_date": null,
+        "reset_date": null,
+        "signature_text": null,
+        "signature_html": null,
+        "location_type_id:name": "Home",
+        "contact_id.legal_identifier": "19370800500478"
+    },
+    {
+        "contact_id": 25,
+        "email": "dons.corps@med.univ-tours.fr",
+        "is_primary": false,
+        "is_billing": false,
+        "on_hold": 0,
+        "is_bulkmail": false,
+        "hold_date": null,
+        "reset_date": null,
+        "signature_text": null,
+        "signature_html": null,
+        "location_type_id:name": "Main",
+        "contact_id.legal_identifier": "19370800500478"
     },
     {
         "contact_id": 26,

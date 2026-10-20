@@ -68,7 +68,7 @@ return [
         'name' => 'Bilan_c_r_monies_ann_e_A_1_Table_1',
         'label' => E::ts('cérémonies A-1 Table 1'),
         'saved_search_id.name' => 'Bilan_c_r_monies_ann_e_A_1',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts(''),
           'sort' => [

@@ -78,7 +78,7 @@ return [
         'name' => 'Mairies',
         'label' => E::ts('Mairies'),
         'saved_search_id.name' => 'Mairies',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts(''),
           'sort' => [

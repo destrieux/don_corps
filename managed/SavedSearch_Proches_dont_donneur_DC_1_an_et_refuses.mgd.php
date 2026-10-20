@@ -168,7 +168,7 @@ return [
         'name' => 'Proches_dont_donneur_DC_1_an_et_refuses',
         'label' => E::ts('Proches dont donneur DC >1 an et refuses'),
         'saved_search_id.name' => 'Proches_dont_donneur_DC_1_an_et_refuses',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Proches dont les donneurs sont décédés il y a plus d\'un an et refusés : suppression'),
           'sort' => [

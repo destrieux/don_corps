@@ -95,7 +95,7 @@ return [
         'name' => 'Demandeurs_d_informations_sans_r_ponse_depuis_plus_d_un_an',
         'label' => E::ts('Demandeurs d\'informations sans réponse depuis plus d\'un an'),
         'saved_search_id.name' => 'Demandeurs_d_informations_plus_d_un_an',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Personnes ayant demandé des informations et n\'ayant pas donné suite un an après l\'envoi des documents'),
           'sort' => [

@@ -62,7 +62,7 @@ return [
         'name' => 'corps_sortis_A_1_Table_1',
         'label' => E::ts('corps sortis A -1 Table 1'),
         'saved_search_id.name' => 'Bilan_corps_sortis_ann_e_A_1',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts(''),
           'sort' => [

@@ -79,7 +79,7 @@ return [
         'name' => 'bilan_corps_presents_au_31_12_ann_e_A_1_List_1',
         'label' => E::ts('corps au 31/12 A -1 List 1'),
         'saved_search_id.name' => 'bilan_corps_presents_au_31_12_ann_e_A_1',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

@@ -85,7 +85,7 @@ return [
         'name' => 'Annulation_non_d_c_d_s_Table_1',
         'label' => E::ts('Annulés'),
         'saved_search_id.name' => 'Annulation',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Annulations'),
           'sort' => [

@@ -45,7 +45,7 @@ return [
         'name' => 'Bilan_nombre_de_demandeurs_d_information_List_1',
         'label' => E::ts('Bilan : nombre de demandeurs d\'information année A-1List 1'),
         'saved_search_id.name' => 'Bilan_nombre_de_demandeurs_d_information',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

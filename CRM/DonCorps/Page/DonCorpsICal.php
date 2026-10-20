@@ -1,8 +1,34 @@
 <?php
+/**
+ * Génère le flux iCalendar des événements Don Corps.
+ *
+ * Le flux est construit à partir des événements CiviCRM actifs et
+ * inclut les informations utiles issues des champs personnalisés.
+ *
+ * Le calendrier respecte le format iCalendar (RFC 5545), notamment :
+ * - gestion du fuseau Europe/Paris ;
+ * - échappement des caractères spéciaux ;
+ * - repli des lignes trop longues ;
+ * - identifiant unique de chaque événement ;
+ * - URL permettant d'accéder à l'événement CiviCRM.
+ *
+ * Cette classe est appelée directement par le point d'entrée WordPress
+ * du flux iCalendar et doit donc pouvoir fonctionner sans session
+ * CiviCRM ni contrôle de permissions utilisateur.
+ */
 
 class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
 
   private function getCustomFieldDisplayValue($fieldName, $value) {
+    /**
+     * Convertit une valeur de CustomField en libellé utilisateur.
+     *
+     * Pour les champs de type liste, recherche le CustomField puis son
+     * OptionGroup afin de transformer les valeurs stockées (ex. 1, 2, 3)
+     * en libellés (ex. Frais, Congelé, Embaumé).
+     *
+     * Gère également les champs à valeurs multiples.
+     */
     #Retourne le libellé d'une valeur de CustomField de type liste.
 
       if ($value === null || $value === '') {
@@ -107,7 +133,13 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
    }
 
   private function foldIcalLine($line) {
-
+    /**
+     * Effectue le "line folding" imposé par le format iCalendar.
+     *
+     * Les lignes iCalendar de plus de 75 octets sont coupées et poursuivies
+     * sur la ligne suivante avec un espace. La coupure est ajustée afin de
+     * ne pas interrompre un caractère UTF-8.
+     */
     $result = '';
 
     while (strlen($line) > 75) {
@@ -126,58 +158,17 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
     return $result . $line;
     }
 
-
-/* public function run() {
-
-    $ical = [
-        'BEGIN:VCALENDAR',
-        'CALSCALE:GREGORIAN',
-        'PRODID:-//Don Corps//CiviCRM//FR',
-        'VERSION:2.0',
-        'BEGIN:VTIMEZONE',
-        'TZID:Europe/Paris',
-        'BEGIN:DAYLIGHT',
-        'DTSTART:19810329T020000',
-        'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
-        'TZNAME:UTC+2',
-        'TZOFFSETFROM:+0100',
-        'TZOFFSETTO:+0200',
-        'END:DAYLIGHT',
-        'BEGIN:STANDARD',
-        'DTSTART:19961027T030000',
-        'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
-        'TZNAME:UTC+1',
-        'TZOFFSETFROM:+0200',
-        'TZOFFSETTO:+0100',
-        'END:STANDARD',
-        'END:VTIMEZONE',
-        'METHOD:PUBLISH',
-        'BEGIN:VEVENT',
-        'UID:test-doncorps-1@localhost',
-        'DTSTAMP:20261018T180000Z',
-        'DTSTART:20261024T080000Z',
-        'DTEND:20261024T100000Z',
-        'SUMMARY:Test calendrier',
-        'END:VEVENT',
-        'END:VCALENDAR',
-    ];
-
-    header('Content-Type: text/calendar; charset=utf-8');
-
-    echo implode("\r\n", $ical) . "\r\n";
-
-    CRM_Utils_System::civiExit();
-} */
-
-
      public function run() {   // méthode publique appelée depuis l'extétieur de la classe
-
-    ## Contrôleur du flux iCalendar : 
-    ##    - il interroge CiviCRM, 
-    ##    - sélectionne les événements  actifs, 
-    ##    - récupère leurs champs, 
-    ##    - configure les en-têtes HTTP 
-    ##    - puis renvoie le calendrier au client.
+        /**
+         * Génère et retourne le flux iCalendar.
+         *
+         * Interroge les événements CiviCRM actifs, construit un VEVENT pour
+         * chaque événement et ajoute les informations spécifiques au Don Corps.
+         *
+         * Le flux est retourné directement au client avec le type MIME
+         * `text/calendar`, afin d'être utilisable notamment comme abonnement
+         * dans Apple Calendar.
+         */
 
     $events = \Civi\Api4\Event::get()
         ->addSelect('id')
@@ -187,6 +178,7 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
         ->addSelect('location')
         ->addSelect('description')
         ->addSelect('Caract_ristiques_de_l_activit_.R_f_rence_Saisine')
+        ->addSelect('Caract_ristiques_de_l_activit_.En_attente_de_confirmation')
         ->addSelect('Donn_es_techniques.Nombre_de_corps_sans_segmentation')
         ->addSelect('Donn_es_techniques.Conservation')
         ->addSelect('Donn_es_techniques.Installation_des_corps')
@@ -246,25 +238,42 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
           $end->format('Ymd\THis');
       $output[] = 'DTSTAMP:' . gmdate('Ymd\THis\Z');          // date de génération du fichier en gmt
       
-      $output[] = 'STATUS:CONFIRMED';
+      $confirmation = $event['Caract_ristiques_de_l_activit_.En_attente_de_confirmation'] ?? '';
+      if ($confirmation = '1'){
+        $output[] = 'STATUS:TENTATIVE';
+        $output[] = 'TRANSP:TRANSPARENT';
+      }else{
+        $output[] = 'STATUS:CONFIRMED';
+        $output[] = 'TRANSP:OPAQUE';
+      }
+
       $output[] = 'SUMMARY:' . $this->escapeIcal($event['title']); // ajoute le titre de l'évenement
                                               // escapeIcal échappe les caractères spéciaux iCalendar (, ;  \...)
                                               // réécrit en precedant les caractesrs speciaux par
-      $output[] = 'TRANSP:OPAQUE';
+      
+      $eventUrl = home_url('/?page=CiviCRM&q=civicrm/event/info&id=' . $event['id']);
+      $output[] = 'URL:'. $this->escapeIcal($eventUrl);
+          
+
       $output[] = 'UID:doncorps-' . $event['id'] . '@civicrm';// identifiant unique de l'évenement construit à parti de son id dans civicrm
 
 
 
       # Récupère les champs perso à intégrer au calendrier
+        // Prépare les informations spécifiques Don Corps qui seront
+        // regroupées dans la propriété DESCRIPTION du VEVENT.
       $description = $event['description'] ?? '';
       $reference = $event['Caract_ristiques_de_l_activit_.R_f_rence_Saisine'] ?? '';
+      $reference = str_replace('-', '‑', $reference);
+
       $nombreCorps = $event['Donn_es_techniques.Nombre_de_corps_sans_segmentation'] ?? '';
       $conservation = $event['Donn_es_techniques.Conservation'] ?? '';
       $installation = $event['Donn_es_techniques.Installation_des_corps'] ?? '';
       $remarques = $event['Donn_es_techniques.Remarques'] ?? '';
       $nombre = $event['Participants.Nombre_d_apprenants']." | ".$event['Participants.Nombre_de_formateurs']." | ".$event['Participants.Nombre_de_Staff'] ?? '0';
       
-
+        // Les champs sont regroupés en plusieurs lignes afin de conserver
+        // une présentation lisible dans les applications de calendrier.
       $descriptionLines = [];
 
       if (!empty($reference)) {
@@ -305,20 +314,13 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
           $this->escapeIcal(implode("\n", $descriptionLines));
       }
 
-
-
-
-/*       if (!empty($event['location'])) {
-        $output[] = 'LOCATION:' . $this->escapeIcal($event['location']); // ajoute le lieu au tableau
-      } */
-
       $output[] = 'END:VEVENT';
     }
 
     $output[] = 'END:VCALENDAR';
 
     header('Content-Type: text/calendar; charset=utf-8');
-    //header('Content-Type: text/plain; charset=utf-8');
+    //header('Content-Type: text/plain; charset=utf-8');  // POUR TESTER AFFICHAGE AU LIEU GENERATION DE CALENDIRER
 
     foreach ($output as $line) {
     echo $this->foldIcalLine($line) . "\r\n";
@@ -330,7 +332,15 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
 
 
   private function escapeIcal($value) {
-
+    /**
+     * Échappe une valeur destinée à une propriété iCalendar.
+     *
+     * Les caractères spéciaux du format iCalendar (\, ; ,) sont échappés
+     * et les retours à la ligne sont convertis en séquences `\n`.
+     *
+     * Cette fonction est utilisée pour éviter qu'une valeur provenant de
+     * CiviCRM ne modifie accidentellement la structure du fichier iCalendar.
+     */
     $value = (string) $value;
 
     $value = str_replace(

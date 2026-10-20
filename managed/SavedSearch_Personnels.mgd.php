@@ -79,7 +79,7 @@ return [
         'name' => 'Personnels_partis_depuis_plus_de_5_ans_Table_1',
         'label' => E::ts('Personnels partis depuis plus de 5 ans Table 1'),
         'saved_search_id.name' => 'Personnels',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Personnels ayant quitté la structure depuis plus de 5 ans'),
           'sort' => [

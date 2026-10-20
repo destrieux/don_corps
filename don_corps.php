@@ -28,47 +28,110 @@ $container
 } */
 
 // Lien entre Wordpress et la classe civicrm qui genere le flux iCalendar
-add_action('template_redirect', 'don_corps_ical_feed');
-  // fonction wordpress : lorsque wp arrive a l'étape template_redirect 
-  //                      (executé justa avant que WP charge le template de la page à afficher)
-  //                      alors WP execute don_corps_ical_feed
-
-  define(
-    'DON_CORPS_ICAL_TOKEN',
-    '0d8c90157fbcdd35aa10664db67c71b7cd395f17ece65fccf5edba093759e9a3'
-);
-  
-  
-  function don_corps_ical_feed() {
-
-      if (!isset($_GET['doncorps_ical'])) { // vérifie qu'une page du type https://monsite.fr/?doncorps_ical=1
-                                            // existe bien sinon retour
-          return;
-      }
-
-      if (
-          !isset($_GET['token']) ||
-          !hash_equals(
-              DON_CORPS_ICAL_TOKEN,
-              (string) $_GET['token']
-          )
-      ) {
-          status_header(403);
-          header('Content-Type: text/plain; charset=utf-8');
-          echo 'Accès refusé';
-          exit;
-      }
-
-      require_once __DIR__ . '/CRM/DonCorps/Page/DonCorpsICal.php';// demande à PHP de charger ce fichier une fois
 
 
-      $page = new CRM_DonCorps_Page_DonCorpsICal();
-      $page->run();
+/* Gestion d'un flux iCalendar personnalisé pour les événements Don Corps.
+  *
+  * Un abonnement personnel est créé depuis la page CiviCRM
+  * « Mon abonnement iCalendar ». Une URL contenant un token aléatoire
+  * de 256 bits est générée pour chaque contact.
+  *
+  * Le token n'est jamais stocké en clair : seul son hash SHA-256 est
+  * enregistré dans la table civicrm_don_corps_ical_token.
+  *
+  * Le flux est exposé par WordPress via le paramètre `doncorps_ical`.
+  * Avant de générer le calendrier, le token est vérifié et doit être
+  * actif. L'accès au flux est ensuite effectué sans contrôle de
+  * permissions CiviCRM, afin de permettre l'abonnement depuis
+  * Apple Calendar ou toute autre application iCalendar.
+  *
+  * Un token peut être révoqué depuis la page d'abonnement. La génération
+  * d'un nouveau token désactive l'ancien.
+  * 
+  * Voir aussi les fichiers suivants : 
+  * - xml/Menu/don_corps.xlm : déclare les routes CiviCRM ; déclare les 2 pages suivantes
+  * - CRM/DonCorps/Page/DonCorpsICal qui génère la page civicrm/event/doncorpsical : point d'accès au flux iCalendar ;
+  * - CRM_DonCorps_Page_DonCorpsICalToken qui génère la page civicrm/doncorps/ical-token : interface de gestion de l'abonnement iCalendar personnel.
+  * - templates/CRM/DonCorps/Page/DonCorpsIcalToken.tpl : template de la page pour la gestion des tokens
+  * - sql/install.sql : routine sql d'installation de la table de gestion des tokens (retrouvée dans upgrader)
+  * - 
+*/
 
-      exit;
+
+  if (function_exists('add_action')) {
+
+      // Fonction WordPress : lorsque WP arrive à l'étape
+      // (executé juste avant que WP charge le template de la page à afficher)
+      // template_redirect, WP exécute don_corps_ical_feed().
+      add_action(
+          'template_redirect',
+          'don_corps_ical_feed'
+      );
   }
 
+  function don_corps_ical_feed() {
+    /**
+    * Expose le flux iCalendar Don Corps via WordPress.
+    *
+    * Cette interception par `template_redirect` est nécessaire car, sur
+    * WordPress, une URL CiviCRM classique peut être interceptée par le CMS
+    * et retourner une page HTML au lieu du flux `text/calendar`.
+    *
+    * Le token est validé avant l'accès aux données CiviCRM.
+    */
+    if (!isset($_GET['doncorps_ical'])) {
+        return;
+    }
 
+    $token = isset($_GET['token'])
+        ? (string) $_GET['token']
+        : '';
+
+    if ($token === '') {
+        status_header(403);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo 'Accès refusé';
+        exit;
+    }
+
+    $tokenHash = hash('sha256', $token);
+
+    $dao = CRM_Core_DAO::executeQuery(
+        'SELECT id, contact_id
+        FROM civicrm_don_corps_ical_token
+        WHERE token_hash = %1
+          AND is_active = 1
+        LIMIT 1',
+        [
+            1 => [$tokenHash, 'String'],
+        ]
+    );
+
+    if (!$dao->fetch()) {
+        status_header(403);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo 'Token invalide';
+        exit;
+    }
+
+    CRM_Core_DAO::executeQuery(
+        'UPDATE civicrm_don_corps_ical_token
+        SET last_access_date = NOW()
+        WHERE id = %1',
+        [
+            1 => [$dao->id, 'Integer'],
+        ]
+    );
+
+    require_once __DIR__ .
+        '/CRM/DonCorps/Page/DonCorpsICal.php';
+
+    $page = new CRM_DonCorps_Page_DonCorpsICal();
+
+    $page->run();
+
+    exit;
+  }
 
 define("VERBOSE","1"); // mettre à 1 pour afficher les messages lors de l'installation en plus des logs
 define("LOGFILE", CRM_Core_Config::singleton()->configAndLogDir."/civicrm_ddc_installation.log"); // définition du ficher de log dans wp-content/uploads/civicrm/ConfigAndLogs
@@ -2640,6 +2703,18 @@ chgrp(LOGFILE, $grp);
     $msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_install ".PHP_EOL;
     fwrite($fp, $msg);
     echo $msg;
+
+    $msg= "  - Création de la table de stockage des tokens pour ical".PHP_EOL;
+      fwrite($fp, $msg);
+      echo $msg;
+      $sqlFile = __DIR__ . '/sql/install.sql';
+      if (!file_exists($sqlFile)) {
+          throw new Exception(
+              'Fichier SQL introuvable : ' . $sqlFile
+          );
+      }
+      $sql = file_get_contents($sqlFile);
+      CRM_Core_DAO::executeQuery($sql);
 
     $msg= "  - Vérification de la version de l'extension CiviRules".PHP_EOL;
       fwrite($fp, $msg);
@@ -6333,7 +6408,7 @@ chgrp(LOGFILE, $grp);
       install_UFGroup ('Restitution_28');
       install_UFGroup ('Type_de_contact_23');
 
-     // Fin modification message liés aux ceremonies
+     
 
     $msg = "  - Mise à jour des groupes des SavedSearch" . PHP_EOL;
       echo $msg;

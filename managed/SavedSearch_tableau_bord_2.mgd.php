@@ -141,7 +141,7 @@ return [
         'name' => 'Tableau_bord_corps',
         'label' => E::ts('Tableau bord corps'),
         'saved_search_id.name' => 'tableau_bord_2',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Tableau de bord des corps présents (Donneurs décédés sans date d\'opérations funéraires)
 Alertes si : restitution, pas de numéro de décès ou de code barres, stimulateur à piles non vérifié, pièce non localisée'),

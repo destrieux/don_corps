@@ -67,7 +67,7 @@ return [
         'name' => 'Toutes_pi_ces_corps_Table_1',
         'label' => E::ts('Toutes pièces'),
         'saved_search_id.name' => 'Toutes_pi_ces_corps',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Liste toutes les pièces anatomiques prélevées'),
           'sort' => [

@@ -49,7 +49,7 @@ return [
         'name' => 'Anonymis_s_par_la_purge',
         'label' => E::ts('Anonymisés par la purge'),
         'saved_search_id.name' => 'Anonymis_s_par_la_purge',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Contacts anonymisés par la purge. Le motif est dans une note.'),
           'sort' => [

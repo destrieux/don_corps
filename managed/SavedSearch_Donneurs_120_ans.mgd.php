@@ -77,7 +77,7 @@ return [
         'name' => 'Donneurs_120_ans',
         'label' => E::ts('Donneurs > 120 ans'),
         'saved_search_id.name' => 'Donneurs_120_ans',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Donneurs âgés de plus de 120 ans et sans numéro de DC : anonymisation'),
           'sort' => [

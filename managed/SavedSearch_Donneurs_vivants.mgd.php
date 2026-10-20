@@ -69,7 +69,7 @@ return [
         'name' => 'Donneurs_vivants_Table_1',
         'label' => E::ts('Donneurs vivants'),
         'saved_search_id.name' => 'Donneurs_vivants',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Donneurs vivants'),
           'sort' => [

@@ -32,6 +32,8 @@ return [
             'Contact_RelationshipCache_Contact_01.email_greeting_id:label',
             'id',
             'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [
@@ -85,7 +87,7 @@ return [
         'name' => 'Tokens_PAQPF_Champs_de_fusion_1',
         'label' => E::ts('Tokens PAQPF Champs de fusion 1'),
         'saved_search_id.name' => 'Tokens_PAQPF',
-        'type' => 'tokens',
+        'type:name' => 'crm-search-display-tokens',
         'settings' => [
           'columns' => [
             [

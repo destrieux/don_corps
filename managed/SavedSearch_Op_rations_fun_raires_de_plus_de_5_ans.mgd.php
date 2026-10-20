@@ -99,7 +99,7 @@ return [
         'name' => 'Op_rations_fun_raires_de_plus_de_5_ans_Table_1',
         'label' => E::ts('Opérations funéraires de plus de 5 ans'),
         'saved_search_id.name' => 'Op_rations_fun_raires_de_plus_de_5_ans',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Opérations funéraires de plus de 5 ans à purger'),
           'sort' => [

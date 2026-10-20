@@ -62,7 +62,7 @@ return [
         'name' => 'Bilan_nombre_de_corps_rec_us_ann_e_en_cours_List_1',
         'label' => E::ts('corps reçus année en cours List 1'),
         'saved_search_id.name' => 'Bilan_nombre_de_corps_rec_us_ann_e_en_cours',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

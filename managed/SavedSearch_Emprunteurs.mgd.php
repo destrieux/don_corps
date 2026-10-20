@@ -101,7 +101,7 @@ return [
         'name' => 'Emprunteurs_Table_1',
         'label' => E::ts('Emprunteurs table'),
         'saved_search_id.name' => 'Emprunteurs',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Lieux de conservation des corps et des pièces : CDC, locaux des CDC et emprunteurs'),
           'sort' => [

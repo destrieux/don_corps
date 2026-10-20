@@ -55,7 +55,7 @@ return [
         'name' => 'Inscriptions_ann_e_en_cours_List_1',
         'label' => E::ts('bilan : Inscriptions année en cours List 1'),
         'saved_search_id.name' => 'Inscriptions_annulations_ann_e_en_cours',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

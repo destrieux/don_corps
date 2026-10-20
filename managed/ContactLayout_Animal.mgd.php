@@ -13,7 +13,7 @@ return [
         'label' => E::ts('Animal'),
         'contact_type' => 'Individual',
         'contact_sub_type' => ['Animal'],
-        'weight' => 8,
+        'weight' => 9,
         'blocks' => [
           [
             [

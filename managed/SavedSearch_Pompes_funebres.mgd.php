@@ -81,7 +81,7 @@ return [
         'name' => 'Pompes_funebres_Table_1',
         'label' => E::ts('Pompes funebres Table 1'),
         'saved_search_id.name' => 'Pompes_funebres',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Pompes funebres'),
           'sort' => [

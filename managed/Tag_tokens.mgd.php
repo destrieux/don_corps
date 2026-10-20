@@ -12,9 +12,7 @@ return [
       'values' => [
         'name' => 'tokens',
         'label' => E::ts('tokens'),
-        'used_for' => [
-          'civicrm_saved_search',
-        ],
+        'used_for:name' => ['SavedSearch'],
         'color' => '#749a0e',
       ],
       'match' => ['name'],

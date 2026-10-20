@@ -82,7 +82,7 @@ Les donneurs dont les relations ont déja été purgées (tag "relations purgees
         'name' => 'Donneurs_dont_op_fun_raires_1_an_Table_1',
         'label' => E::ts('Donneurs dont op funéraires > 1 an'),
         'saved_search_id.name' => 'Donneurs_dont_op_fun_raires_1_an',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Donneurs dont les opérations funéraires ont été achevées il y a plus d\'un an : suppression des relations (avant purge des proches sans relations)'),
           'sort' => [

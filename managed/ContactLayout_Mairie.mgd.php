@@ -13,7 +13,7 @@ return [
         'label' => E::ts('Mairie'),
         'contact_type' => 'Organization',
         'contact_sub_type' => ['Mairies'],
-        'weight' => 6,
+        'weight' => 7,
         'blocks' => [
           [
             [

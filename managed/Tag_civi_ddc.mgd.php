@@ -12,9 +12,7 @@ return [
       'values' => [
         'name' => 'civi_ddc',
         'label' => E::ts('Requêtes utilisées pour créer pages'),
-        'used_for' => [
-          'civicrm_saved_search',
-        ],
+        'used_for:name' => ['SavedSearch'],
         'color' => '#ad95c9',
       ],
       'match' => ['name'],

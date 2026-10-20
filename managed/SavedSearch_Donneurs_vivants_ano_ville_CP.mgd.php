@@ -105,7 +105,7 @@ return [
         'name' => 'Donneurs_vivants_ano_ville_CP',
         'label' => E::ts('Donneurs vivants ano ville CP'),
         'saved_search_id.name' => 'Donneurs_vivants_ano_ville_CP',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Donneurs vivants, non annulés avec une adresse notée valide dont : le code postal ne fait pas 5 caractères,  ou dont la ville est vide, ou dont l\'adresse manque'),
           'sort' => [

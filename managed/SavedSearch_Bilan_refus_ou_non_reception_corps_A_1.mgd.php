@@ -54,7 +54,7 @@ return [
         'name' => 'refus_A_1_Table_1',
         'label' => E::ts('refus A-1 Table 1'),
         'saved_search_id.name' => 'Bilan_refus_ou_non_reception_corps_A_1',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts(''),
           'sort' => [

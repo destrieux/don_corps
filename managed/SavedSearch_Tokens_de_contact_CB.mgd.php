@@ -41,7 +41,7 @@ return [
         'name' => 'Tokens_for_contact_Champs_de_fusion_1_copy_',
         'label' => E::ts('Tokens for contact CB'),
         'saved_search_id.name' => 'Tokens_de_contact_CB',
-        'type' => 'tokens',
+        'type:name' => 'crm-search-display-tokens',
         'settings' => [
           'columns' => [
             [

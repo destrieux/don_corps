@@ -76,7 +76,7 @@ return [
         'name' => 'Personnels_Table_1',
         'label' => E::ts('Personnels Table 1'),
         'saved_search_id.name' => 'Personnels_id3q',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts(''),
           'sort' => [

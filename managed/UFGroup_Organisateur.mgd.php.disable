@@ -1,0 +1,113 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'UFGroup_Organisateur',
+    'entity' => 'UFGroup',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Organisateur',
+        'group_type' => ['Contact', 'Individual'],
+        'title' => E::ts('Organisateur'),
+        'frontend_title' => E::ts('Organisateur d\'activité utilisant des corps'),
+        'is_update_dupe' => TRUE,
+        'created_date' => '2026-10-19 18:40:09',
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Organisateur_UFField_1',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Organisateur',
+        'field_name' => 'contact_sub_type',
+        'label' => E::ts('Type de contacte'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Organisateur_UFField_2',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Organisateur',
+        'field_name' => 'prefix_id',
+        'label' => E::ts('Civilité'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Organisateur_UFField_3',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Organisateur',
+        'field_name' => 'first_name',
+        'label' => E::ts('Prénom'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Organisateur_UFField_4',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Organisateur',
+        'field_name' => 'last_name',
+        'label' => E::ts('Nom de famille'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Organisateur_UFField_5',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Organisateur',
+        'field_name' => 'current_employer',
+        'label' => E::ts('Employeur actuel'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Organisateur_UFField_6',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Organisateur',
+        'field_name' => 'job_title',
+        'label' => E::ts('Fonction'),
+        'field_type' => 'Individual',
+      ],
+    ],
+  ],
+];

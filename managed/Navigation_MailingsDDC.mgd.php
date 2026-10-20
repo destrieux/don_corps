@@ -22,7 +22,7 @@ return [
         ],
         'permission_operator' => 'OR',
         'has_separator' => NULL,
-        'weight' => 58,
+        'weight' => 59,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -213,7 +213,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Manage A/B Tests'),
+        'label' => E::ts('Gérer les tests A/B'),
         'name' => 'Manage A/B Tests',
         'url' => 'civicrm/a/#/abtest',
         'permission' => [

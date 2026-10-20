@@ -1,0 +1,202 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'UFGroup_Nouvel_organisateur',
+    'entity' => 'UFGroup',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Nouvel_organisateur',
+        'group_type' => [
+          'Intervenant_ext_rieur',
+          'Contact',
+        ],
+        'title' => E::ts('Nouvel organisateur'),
+        'frontend_title' => E::ts('Nouvel organisateur'),
+        'description' => E::ts('Organisateur (déposant ou porteur) d\'une activité utilisant des corps'),
+        'post_url' => 'http://localhost:8888/dev/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
+        'is_update_dupe' => TRUE,
+        'cancel_url' => 'http://localhost:8888/dev/wp-admin/admin.php?page=CiviCRM',
+        'created_date' => '2026-10-19 18:05:57',
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_1',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'prefix_id',
+        'is_required' => TRUE,
+        'label' => E::ts('Civilité'),
+        'field_type' => 'Intervenant_ext_rieur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_2',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'first_name',
+        'is_required' => TRUE,
+        'label' => E::ts('Prénom'),
+        'field_type' => 'Intervenant_ext_rieur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_3',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'last_name',
+        'is_required' => TRUE,
+        'label' => E::ts('Nom de famille'),
+        'field_type' => 'Intervenant_ext_rieur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_4',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'current_employer',
+        'help_pre' => E::ts('Société, institut...'),
+        'label' => E::ts('Entité'),
+        'field_type' => 'Intervenant_ext_rieur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_5',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'street_address',
+        'label' => E::ts('Rue'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_6',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'supplemental_address_1',
+        'label' => E::ts('Complément d\'adresse 1'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_7',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'supplemental_address_2',
+        'label' => E::ts('Complément d\'adresse 2'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_8',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'postal_code',
+        'is_required' => TRUE,
+        'label' => E::ts('Code postal'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_9',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'city',
+        'is_required' => TRUE,
+        'label' => E::ts('Ville'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_10',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'email',
+        'label' => E::ts('Courriel'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_11',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'phone_and_ext',
+        'location_type_id.name' => 'Home',
+        'phone_type_id:name' => 'Phone',
+        'label' => E::ts('Téléphone et extension'),
+        'field_type' => 'Contact',
+      ],
+    ],
+  ],
+];

@@ -45,7 +45,7 @@ return [
         'name' => 'bilan_nombre_de_corps_recus_dans_l_ann_e_pr_cdente_List_1',
         'label' => E::ts('corps A-1 List 1'),
         'saved_search_id.name' => 'bilan_nombre_de_corps_recus_dans_l_ann_e_pr_cdente',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

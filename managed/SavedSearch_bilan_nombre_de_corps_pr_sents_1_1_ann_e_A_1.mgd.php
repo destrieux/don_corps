@@ -84,7 +84,7 @@ return [
         'name' => 'bilan_nombre_de_corps_pr_sents_1_1_ann_e_A_1_List_1',
         'label' => E::ts('corps 1/1 A-1 List 1'),
         'saved_search_id.name' => 'bilan_nombre_de_corps_pr_sents_1_1_ann_e_A_1',
-        'type' => 'list',
+        'type:name' => 'crm-search-display-list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

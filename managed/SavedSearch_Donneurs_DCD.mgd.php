@@ -69,7 +69,7 @@ return [
         'name' => 'Donneurs_DCD',
         'label' => E::ts('Donneurs DCD'),
         'saved_search_id.name' => 'Donneurs_DCD',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Donneurs décédés'),
           'sort' => [

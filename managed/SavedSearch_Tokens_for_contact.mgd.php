@@ -41,6 +41,8 @@ return [
             'CONCAT_WS("/", last_name, nick_name) AS CONCAT_WS_last_name_nick_name',
             'id',
             'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],
@@ -73,7 +75,7 @@ return [
         'name' => 'Tokens_for_contact_Champs_de_fusion_1',
         'label' => E::ts('Tokens for contact Champs de fusion 1'),
         'saved_search_id.name' => 'Tokens_for_contact',
-        'type' => 'tokens',
+        'type:name' => 'crm-search-display-tokens',
         'settings' => [
           'columns' => [
             [

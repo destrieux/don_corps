@@ -89,7 +89,7 @@ return [
         'name' => 'Proches_sans_relation',
         'label' => E::ts('Proches sans relation'),
         'saved_search_id.name' => 'Proches_sans_relation_1',
-        'type' => 'table',
+        'type:name' => 'crm-search-display-table',
         'settings' => [
           'description' => E::ts('Proches sans relation active'),
           'sort' => [
