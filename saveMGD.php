@@ -396,7 +396,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
         'name',
       ],
       'where' => [
-        ['OR', [['name', '=', 'document_type'], ['name', '=', 'activity_type'], ['name', '=', 'email_greeting'], ['name', '=', 'gender'], ['name', '=', 'postal_greeting']]],
+        ['OR', [['name', '=', 'event_type'],['name', '=', 'document_type'], ['name', '=', 'activity_type'], ['name', '=', 'email_greeting'], ['name', '=', 'gender'], ['name', '=', 'postal_greeting']]],
       ],
       'checkPermissions' => FALSE,
     ]);

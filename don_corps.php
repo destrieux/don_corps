@@ -3140,7 +3140,7 @@ chgrp(LOGFILE, $grp);
       echo $msg;
       fclose($fp);
 
-        $to_create =  [       // Création des types de contact : donnneur
+        $to_create =  [       // Création des types de contact : donneur
           'entity' => 'ContactType',
           'values' => [
               'name' => 'Donateur',
@@ -3261,6 +3261,20 @@ chgrp(LOGFILE, $grp);
           ],
         ];
         create_entity($to_create);
+
+        $to_create =  [       // Création des types de contact : Organisateurs
+          'entity' => 'ContactType',
+          'values' => [
+            'name' => 'Intervenant_ext_rieur',
+            'label' => E::ts('Intervenant extérieur'),
+            'description' => E::ts('Organisateur d une activité utilisant des corps'),
+            'parent_id.name' => 'Individual',
+            'icon' => 'fa-person-walking-dashed-line-arrow-right',
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
       // fin de la création des types de contact
 
     $msg= "  - Création/inactivation des types de contributions financieres".PHP_EOL;
@@ -3612,7 +3626,7 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
       // Fin de Création des modes de paiement
 
-    $msg= "  - Création/inactivation des types d'evenements".PHP_EOL;
+    /* $msg= "  - Création/inactivation des types d'evenements".PHP_EOL;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
       fwrite($fp, $msg);
       echo $msg;
@@ -3624,6 +3638,30 @@ chgrp(LOGFILE, $grp);
           'label' => "Cérémonie d'hommage",
           'value' => '100',
           'name' => 'Cérémonie Hommage',
+          'grouping' => NULL,
+          'filter' => 0,
+          'is_default' => TRUE,
+          'weight' => 1,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'is_active' => TRUE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'label' => "Activité au laboratoire",
+          'value' => '101',
+          'name' => 'Activité au laboratoire',
           'grouping' => NULL,
           'filter' => 0,
           'is_default' => TRUE,
@@ -3689,8 +3727,21 @@ chgrp(LOGFILE, $grp);
           'is_active' => FALSE,
         ],
       ];
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'name' => 'Conference',
+          'is_active' => FALSE,
+        ],
+      ];
+
+
+
+
       create_entity($to_create);
-      // fin de Création des types d'evenements
+      // fin de Création des types d'evenements */
 
     $msg= "  - Création/inactivation des types de participants".PHP_EOL;
       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
@@ -6407,7 +6458,8 @@ chgrp(LOGFILE, $grp);
       install_UFGroup ('Profil_sans_nom_20'); // Adresse incorrecte OK
       install_UFGroup ('Restitution_28');
       install_UFGroup ('Type_de_contact_23');
-
+      install_UFGroup ('Organisateur');
+      install_UFGroup ('Nouvel_organisateur', 'ContactsDDC', 'Nouvel organisateur');
      
 
     $msg = "  - Mise à jour des groupes des SavedSearch" . PHP_EOL;

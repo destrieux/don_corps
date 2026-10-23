@@ -25,7 +25,7 @@
   <item>
     <path>civicrm/doncorps/ical-token</path>
     <title>Mon abonnement iCalendar</title>
-    <page_callback><CRM_DonCorps_Page_DonCorpsICalToken></page_callback>
+    <page_callback>CRM_DonCorps_Page_DonCorpsICalToken</page_callback>
     <access_callback>1</access_callback>
     <is_public>true</is_public>
   </item>

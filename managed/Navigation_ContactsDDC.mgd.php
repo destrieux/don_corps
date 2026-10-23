@@ -518,22 +518,4 @@ return [
       'match' => ['name', 'domain_id'],
     ],
   ],
-  [
-    'name' => 'Navigation_ContactsDDC_Navigation_Nouvel_organisateur',
-    'entity' => 'Navigation',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'label' => E::ts('Nouvel organisateur'),
-        'name' => 'Nouvel organisateur',
-        'url' => 'civicrm/profile/create/?gid=31&reset=1',
-        'permission' => ['access CiviCRM'],
-        'permission_operator' => 'AND',
-        'parent_id.name' => 'ContactsDDC',
-      ],
-      'match' => ['name', 'domain_id'],
-    ],
-  ],
 ];

@@ -10,14 +10,14 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Cérémonies'),
+        'label' => E::ts('Evènements'),
         'name' => 'EventsDDC',
         'icon' => 'crm-i fa-users',
         'permission' => [
           'access CiviEvent',
         ],
         'has_separator' => NULL,
-        'weight' => 48,
+        'weight' => 49,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -30,7 +30,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Tableau de bord Cérémonies'),
+        'label' => E::ts('Tableau de bord Evènements'),
         'name' => 'Tableau de bord Ceremonies',
         'url' => 'civicrm/event?reset=1',
         'permission' => [
@@ -51,7 +51,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Nouvelle cérémonie'),
+        'label' => E::ts('Nouvel évènement'),
         'name' => 'Nouvelle cérémonie',
         'url' => 'civicrm/event/add?reset=1&action=add',
         'permission' => [
@@ -72,7 +72,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Gérer les cérémonies'),
+        'label' => E::ts('Gérer les évènements'),
         'name' => 'Gérer les cérémonies',
         'url' => 'civicrm/event/manage?reset=1',
         'permission' => [
@@ -93,7 +93,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Modèles de Cérémonies'),
+        'label' => E::ts('Modèles d\'évènements'),
         'name' => 'Modèles de Cérémonies',
         'url' => 'civicrm/admin/eventTemplate?reset=1',
         'permission' => [
@@ -162,7 +162,6 @@ return [
         ],
         'permission_operator' => 'OR',
         'parent_id.name' => 'EventsDDC',
-        'has_separator' => 2,
       ],
       'match' => ['name', 'domain_id'],
     ],

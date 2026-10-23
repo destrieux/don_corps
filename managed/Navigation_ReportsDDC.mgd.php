@@ -17,7 +17,7 @@ return [
           'access CiviReport',
         ],
         'has_separator' => NULL,
-        'weight' => 108,
+        'weight' => 105,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -178,7 +178,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Tous les imports'),
+        'label' => E::ts('All imports'),
         'name' => 'afsearchAllImports',
         'url' => 'civicrm/imports/all-imports',
         'icon' => 'crm-i fa-list-alt',
@@ -200,7 +200,7 @@ return [
     'params' => [
       'version' => 4,
       'values' => [
-        'label' => E::ts('Mes imports'),
+        'label' => E::ts('My Imports'),
         'name' => 'afsearchMyImports',
         'url' => 'civicrm/imports/my-listing',
         'permission' => ['access CiviCRM'],
