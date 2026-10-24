@@ -10,7 +10,13 @@ que les formules de politess par courrier et par mail suivantes sont actives
 madame; monsieur; madamoiselle; MadameMonsieur, nom prénom
 
 */
+/* 
 
+
+schema/Saisine.entityType.php → décrit l'entité et sa table ;
+CRM/DonCorps/DAO/Saisine.php → DAO PHP correspondant à cette table ;
+Civi/Api4/Saisine.php → expose cette entité à l'API4 ;
+ */
 require_once 'don_corps.civix.php';
 
 use CRM_DonCorps_ExtensionUtil as E;

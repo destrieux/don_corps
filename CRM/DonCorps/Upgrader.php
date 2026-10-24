@@ -137,4 +137,33 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
 
     return TRUE;
   }
+
+public function upgrade_2034(): bool {
+
+  echo "******** UPGRADE #2033 DON_CORPS ********" . PHP_EOL;
+  $msg= "  - Création de la table civicrm_saisine".PHP_EOL;
+      /**
+       * Création de la table de gestion des tokens iCalendar.
+       *
+       * Cette migration est exécutée lors de la mise à jour de l'extension.
+       * La table est également présente dans sql/install.sql pour les
+       * nouvelles installations.
+       */
+      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      fwrite($fp, $msg);
+      echo $msg;
+      fclose($fp);
+
+  \Civi::log('don_corps')->info(
+    'Création de la table civicrm_saisine'
+  );
+
+  CRM_DonCorps_ExtensionUtil::schema()->createEntityTable(
+    'schema/Saisine.entityType.php'
+  );
+
+  return TRUE;
+}
+
+
 }

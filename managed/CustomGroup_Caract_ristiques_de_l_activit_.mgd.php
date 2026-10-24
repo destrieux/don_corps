@@ -479,4 +479,28 @@ return [
       ],
     ],
   ],
+  [
+    'name' => 'CustomGroup_Caract_ristiques_de_l_activit_CustomField_Saisine',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'Caract_ristiques_de_l_activit_',
+        'name' => 'Saisine',
+        'label' => E::ts('Saisine'),
+        'data_type:name' => 'Entity Reference',
+        'html_type' => 'Autocomplete-Select',
+        'text_length' => 255,
+        'note_columns' => 60,
+        'note_rows' => 4,
+        'fk_entity' => 'Saisine',
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
 ];

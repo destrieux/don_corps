@@ -16,7 +16,7 @@ return [
         'icon' => 'crm-i fa-calendar-days',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',
-        'weight' => 107,
+        'weight' => 108,
       ],
       'match' => ['name', 'domain_id'],
     ],

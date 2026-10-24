@@ -99,6 +99,21 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Nouvel_organisateur',
+        'field_name' => 'job_title',
+        'label' => E::ts('Fonction'),
+        'field_type' => 'Intervenant_ext_rieur',
+      ],
+    ],
+  ],
+  [
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_6',
+    'entity' => 'UFField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'uf_group_id.name' => 'Nouvel_organisateur',
         'field_name' => 'street_address',
         'label' => E::ts('Rue'),
         'field_type' => 'Contact',
@@ -106,7 +121,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_Nouvel_organisateur_UFField_6',
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_7',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -121,7 +136,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_Nouvel_organisateur_UFField_7',
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_8',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -136,7 +151,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_Nouvel_organisateur_UFField_8',
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_9',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -152,7 +167,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_Nouvel_organisateur_UFField_9',
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_10',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -168,7 +183,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_Nouvel_organisateur_UFField_10',
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_11',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
@@ -183,7 +198,7 @@ return [
     ],
   ],
   [
-    'name' => 'UFGroup_Nouvel_organisateur_UFField_11',
+    'name' => 'UFGroup_Nouvel_organisateur_UFField_12',
     'entity' => 'UFField',
     'cleanup' => 'unused',
     'update' => 'unmodified',
