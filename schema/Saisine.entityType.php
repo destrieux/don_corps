@@ -95,17 +95,34 @@ return [
   ],
 ],
 
-    'created_date' => [
-      'title' => E::ts('Date de création'),
-      'sql_type' => 'datetime',
-      'readonly' => TRUE,
-    ],
+   
 
-    'modified_date' => [
-      'title' => E::ts('Date de modification'),
-      'sql_type' => 'datetime',
-      'readonly' => TRUE,
-    ],
+'created_date' => [
+  'title' => E::ts('Date de création'),
+  'sql_type' => 'timestamp',
+  'input_type' => 'Select Date',
+  'required' => TRUE,
+  'readonly' => TRUE,
+  'description' => E::ts('Date et heure de création de la saisine.'),
+  'default' => 'CURRENT_TIMESTAMP',
+  'input_attrs' => [
+    'format_type' => 'activityDateTime',
+  ],
+],
+
+'modified_date' => [
+  'title' => E::ts('Date de modification'),
+  'sql_type' => 'timestamp',
+  'input_type' => 'Select Date',
+  'required' => TRUE,
+  'readonly' => TRUE,
+  'description' => E::ts('Date et heure de dernière modification de la saisine.'),
+  'default' => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+  'input_attrs' => [
+    'format_type' => 'activityDateTime',
+  ],
+],
+
   ],
 
   'getIndices' => fn() => [

@@ -1,0 +1,22 @@
+<div class="crm-saisine-display-wrapper">
+  <pre ng-if="$ctrl.debugInfo" class="small" style="white-space: pre-wrap;">{{ $ctrl.debugInfo }}</pre>
+  <div class="panel panel-default crm-saisine-display" ng-if="$ctrl.currentId">
+    <div class="panel-heading">
+      <strong>{{ $ctrl.heading || 'Données de la saisine' }}</strong>
+      <span class="text-muted">(n° {{ $ctrl.currentId }})</span>
+    </div>
+    <div class="panel-body">
+      <p class="text-muted" ng-if="$ctrl.loading">
+        <i class="crm-i fa-spinner fa-spin" role="img" aria-hidden="true"></i> Chargement…
+      </p>
+      <p class="text-danger" ng-if="!$ctrl.loading && $ctrl.error">{{ $ctrl.error }}</p>
+      <dl class="dl-horizontal" ng-if="!$ctrl.loading && !$ctrl.error && $ctrl.rows.length">
+        <dt ng-repeat-start="row in $ctrl.rows" style="white-space: normal; overflow: visible; text-overflow: clip;">{{ row.label }}</dt>
+        <dd ng-repeat-end style="white-space: pre-line;">{{ row.value }}</dd>
+      </dl>
+      <p class="text-muted" ng-if="!$ctrl.loading && !$ctrl.error && !$ctrl.rows.length">
+        Aucune donnée à afficher pour cette saisine.
+      </p>
+    </div>
+  </div>
+</div>

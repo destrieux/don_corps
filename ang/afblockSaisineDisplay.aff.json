@@ -1,0 +1,6 @@
+{
+  "type": "block",
+  "title": "Données de la saisine",
+  "entity_type": "Event",
+  "requires": ["saisineDisplay"]
+}

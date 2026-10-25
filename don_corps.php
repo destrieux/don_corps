@@ -23,6 +23,10 @@ use CRM_DonCorps_ExtensionUtil as E;
 use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouvelles actions pour utilation des corps
 use Civi\DonCorps\UpdateSearchGroups;
 
+
+
+
+
 /* function don_corps_civicrm_container(ContainerBuilder $container): void {
 $container
   ->autowire(\Civi\EventSubscriber\CiviOfficeSearchKitTaskSubscriber::class)
@@ -34,6 +38,48 @@ $container
 } */
 
 // Lien entre Wordpress et la classe civicrm qui genere le flux iCalendar
+
+
+/* Implements hook_civicrm_angularModules() pour afficher le contenu dasi saisienes dans event
+
+  ## Utilisation dans Form Builder
+
+  Dans le formulaire Event, à l'intérieur du fieldset Event (là où se trouve le champ saisine), ajouter le bloc **« Données de la saisine »** (section Blocs de l'éditeur), juste après le champ saisine.
+
+  Le bloc se met à jour dès que la saisine sélectionnée change.
+
+  ## Réglages (attributs de `<saisine-display>`)
+
+  Le bloc livré utilise les valeurs par défaut. Pour les changer, modifier `ang/afblockSaisineDisplay.aff.html` :
+
+  ```html
+  <saisine-display
+    field-name="Evenement_Saisine.saisine_id"
+    api-entity="Saisine"
+    fields="titre,date_reception,statut_id"
+    heading="Saisine liée"></saisine-display>
+  ```
+
+  | Attribut | Rôle | Défaut |
+  |---|---|---|
+  | `field-name` | Nom du champ du formulaire qui contient l'id | premier champ dont le nom finit par `saisine_id` |
+  | `api-entity` | Entité APIv4 à lire | `Saisine` |
+  | `fields` | Champs à afficher, séparés par des virgules | tous sauf `id` |
+  | `heading` | Titre du bloc | « Données de la saisine » |
+
+  Après modification : `cv flush`.
+
+  ## Dépannage
+
+  - Rien ne s'affiche : ouvrir la console du navigateur (F12). Une erreur du type `Module 'xxx' is not available` indique un nom de module Angular à corriger dans `ang/saisineDisplay.ang.php` (ligne `requires`).
+  - « Saisine introuvable ou accès refusé » : vérifier le nom de l'entité (`api-entity`) dans l'explorateur APIv4 et les permissions de l'utilisateur.
+    */
+
+  function don_corps_civicrm_angularModules(&$angularModules): void {
+    $angularModules['saisineDisplay'] = include __DIR__ . '/ang/saisineDisplay.ang.php';
+} # fin de hook_civicrm_angularModules()
+
+
 
 
 /* Gestion d'un flux iCalendar personnalisé pour les événements Don Corps.
