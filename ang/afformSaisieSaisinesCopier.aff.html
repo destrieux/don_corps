@@ -1,0 +1,123 @@
+<af-form ctrl="afform">
+  <af-entity actions="{create: true, update: true}" type="Saisine" name="Saisine1" label="Saisine 1" security="RBAC" url-autofill="1" />
+  <fieldset af-fieldset="Saisine1" class="af-container">
+    <div class="af-container af-layout-cols af-container-style-pane" af-title="Caract&eacute;ristiques">
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">N° de saisine</p>
+          <af-field name="label" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Titre</p>
+          <af-field name="description" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Déposant</p>
+          <af-field name="caracteristiques.D_posant" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Demandeur</p>
+          <af-field name="caracteristiques.Demandeur" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Participation d'une entité tierce</p>
+          <af-field name="caracteristiques.Participation_d_une_entit_tierce" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Type d'activité</p>
+          <af-field name="caracteristiques.Type_d_activit_" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Simulation sans corps</p>
+          <af-field name="caracteristiques.Simulation_sans_recours_au_corps" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Activités exceptionnelles</p>
+          <af-field name="caracteristiques.Activit_s_exceptionnelles" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Début de validité</p>
+          <af-field name="caracteristiques.Date_d_but_de_validit_" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Fin de validité</p>
+          <af-field name="caracteristiques.Date_fin_de_validit_" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+    </div>
+    <p class="af-text"></p>
+    <div class="af-container af-layout-cols af-container-style-pane" af-title="Vie de la saisine">
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Etat de la saisine</p>
+          <af-field name="suivi.Saisine" defn="{label: false, input_attrs: {}, afform_default: '1'}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Etat du devis</p>
+          <af-field name="suivi.Devis" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Etat de la convention</p>
+          <af-field name="suivi.Convention" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Passage CESP</p>
+          <af-field name="suivi.CESP" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Porteur notifié</p>
+          <af-field name="suivi.Porteur_notif_" defn="{label: false}" />
+        </div>
+      </div>
+    </div>
+    <p class="af-text"></p>
+    <div class="af-container af-layout-cols af-container-style-pane" af-title="Fichiers de la saisine">
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Document de saisine</p>
+          <af-field name="fichierssaisine.Saisine" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Convention</p>
+          <af-field name="fichierssaisine.Convention" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Devis</p>
+          <af-field name="fichierssaisine.Devis" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Participants</p>
+          <af-field name="fichierssaisine.Liste_des_participants" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+      <div class="af-container">
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Programme</p>
+          <af-field name="fichierssaisine.Programme" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <p class="af-text text-right">Avis CESP</p>
+          <af-field name="fichierssaisine.Avis_CESP" defn="{label: false, input_attrs: {}}" />
+        </div>
+      </div>
+    </div>
+    <p class="af-text"></p>
+    <div class="af-container af-container-style-pane" af-title="Remarques">
+      <af-field name="suivi.Remarques" defn="{label: false, input_attrs: {}}" />
+    </div>
+  </fieldset>
+  <p class="af-text"></p>
+  <div class="af-container">
+    <button class="af-button btn btn-primary" crm-icon="fa-check" ng-click="afform.submit()" ng-if="afform.showSubmitButton">Enregistrer</button>
+  </div>
+</af-form>

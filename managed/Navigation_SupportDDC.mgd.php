@@ -14,7 +14,7 @@ return [
         'name' => 'SupportDDC',
         'icon' => 'crm-i fa-life-ring',
         'has_separator' => NULL,
-        'weight' => 112,
+        'weight' => 113,
       ],
       'match' => ['name', 'domain_id'],
     ],

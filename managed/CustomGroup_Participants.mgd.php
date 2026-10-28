@@ -21,53 +21,6 @@ return [
     ],
   ],
   [
-    'name' => 'CustomGroup_Participants_CustomField_Porteur_du_projet',
-    'entity' => 'CustomField',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'custom_group_id.name' => 'Participants',
-        'name' => 'Porteur_du_projet',
-        'label' => E::ts('Porteur du projet'),
-        'data_type:name' => 'Contact Reference',
-        'html_type' => 'Autocomplete-Select',
-        'is_required' => TRUE,
-        'text_length' => 255,
-        'note_columns' => 60,
-        'note_rows' => 4,
-      ],
-      'match' => [
-        'name',
-        'custom_group_id',
-      ],
-    ],
-  ],
-  [
-    'name' => 'CustomGroup_Participants_CustomField_D_posant',
-    'entity' => 'CustomField',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'custom_group_id.name' => 'Participants',
-        'name' => 'D_posant',
-        'label' => E::ts('Déposant'),
-        'data_type:name' => 'Contact Reference',
-        'html_type' => 'Autocomplete-Select',
-        'text_length' => 255,
-        'note_columns' => 60,
-        'note_rows' => 4,
-      ],
-      'match' => [
-        'name',
-        'custom_group_id',
-      ],
-    ],
-  ],
-  [
     'name' => 'CustomGroup_Participants_CustomField_Nombre_d_apprenants',
     'entity' => 'CustomField',
     'cleanup' => 'unused',

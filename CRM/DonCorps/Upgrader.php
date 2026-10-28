@@ -141,26 +141,21 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
 public function upgrade_2034(): bool {
 
   echo "******** UPGRADE #2033 DON_CORPS ********" . PHP_EOL;
-  $msg= "  - Création de la table civicrm_saisine".PHP_EOL;
-      /**
-       * Création de la table de gestion des tokens iCalendar.
-       *
-       * Cette migration est exécutée lors de la mise à jour de l'extension.
-       * La table est également présente dans sql/install.sql pour les
-       * nouvelles installations.
-       */
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
+    // crée la table civicrm_saisine
+    // modifie les filtres sur les champs de type contact pour 'Déposants' et 'Demandeurs'
 
-  \Civi::log('don_corps')->info(
-    'Création de la table civicrm_saisine'
-  );
+  $msg= "  - Création de la table civicrm_saisine".PHP_EOL;
+  \Civi::log()->info("don_corps : ".$msg);
 
   CRM_DonCorps_ExtensionUtil::schema()->createEntityTable(
     'schema/Saisine.entityType.php'
   );
+
+  
+  $msg="  - Modification des filtres de champs personnalisés".PHP_EOL; // permet de n'afficher que certains contacts pour certains champs
+      \Civi::log()->info("don_corps : ".$msg);
+      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('D_posant', 'groupe_d_posants_porteurs_potent_24');
+      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Demandeur', 'groupe_d_posants_porteurs_potent_24');
 
   return TRUE;
 }

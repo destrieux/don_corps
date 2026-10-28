@@ -415,6 +415,9 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
 ### Fin de l'export des options de choix multiples (Option groups)
 
 ### Export des formulaires (afforms)
+ # Lorsqu'on exporte un formulaire lié à une recherche, 
+ # la recherche est sauvegardée dans le meme temps
+ # Il est inutile de le faire 
   $afforms = civicrm_api4('Afform', 'get', [
     'where' => [
       ['base_module', '=', 'don_corps'],
@@ -443,7 +446,7 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
 
 ### Export des menus de navigation
   // remove navigation menus mgd files created by afform (sinon doublons)
-  $navigations = scandir($exp_dir);  // récupère l liste des fichiers contenus dans managed
+  $navigations = scandir($exp_dir);  // récupère la liste des fichiers contenus dans managed
 
   foreach($navigations as $navigation){
       if(preg_match("/Navigation/i",$navigation)){

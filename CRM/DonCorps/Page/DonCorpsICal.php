@@ -177,7 +177,8 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
         ->addSelect('end_date')
         ->addSelect('location')
         ->addSelect('description')
-        ->addSelect('Caract_ristiques_de_l_activit_.R_f_rence_Saisine')
+        ->addSelect('Caract_ristiques_de_l_activit_.id_de_saisine.caracteristiques.Demandeur.display_name')
+        ->addSelect('Caract_ristiques_de_l_activit_.id_de_saisine.label')
         ->addSelect('Caract_ristiques_de_l_activit_.En_attente_de_confirmation')
         ->addSelect('Donn_es_techniques.Nombre_de_corps_sans_segmentation')
         ->addSelect('Donn_es_techniques.Conservation')
@@ -239,12 +240,14 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
       $output[] = 'DTSTAMP:' . gmdate('Ymd\THis\Z');          // date de génération du fichier en gmt
       
       $confirmation = $event['Caract_ristiques_de_l_activit_.En_attente_de_confirmation'] ?? '';
-      if ($confirmation = '1'){
+      if ($confirmation == '0'){
         $output[] = 'STATUS:TENTATIVE';
         $output[] = 'TRANSP:TRANSPARENT';
+        $confirmation ="Non";
       }else{
         $output[] = 'STATUS:CONFIRMED';
         $output[] = 'TRANSP:OPAQUE';
+        $confirmation ="Oui";
       }
 
       $output[] = 'SUMMARY:' . $this->escapeIcal($event['title']); // ajoute le titre de l'évenement
@@ -263,21 +266,27 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
         // Prépare les informations spécifiques Don Corps qui seront
         // regroupées dans la propriété DESCRIPTION du VEVENT.
       $description = $event['description'] ?? '';
-      $reference = $event['Caract_ristiques_de_l_activit_.R_f_rence_Saisine'] ?? '';
+      $reference = $event['Caract_ristiques_de_l_activit_.id_de_saisine.label'] ?? '';
       $reference = str_replace('-', '‑', $reference);
-
+      $porteur = $event['Caract_ristiques_de_l_activit_.id_de_saisine.caracteristiques.Demandeur.display_name'] ?? '';
       $nombreCorps = $event['Donn_es_techniques.Nombre_de_corps_sans_segmentation'] ?? '';
       $conservation = $event['Donn_es_techniques.Conservation'] ?? '';
       $installation = $event['Donn_es_techniques.Installation_des_corps'] ?? '';
       $remarques = $event['Donn_es_techniques.Remarques'] ?? '';
       $nombre = $event['Participants.Nombre_d_apprenants']." | ".$event['Participants.Nombre_de_formateurs']." | ".$event['Participants.Nombre_de_Staff'] ?? '0';
       
+
         // Les champs sont regroupés en plusieurs lignes afin de conserver
         // une présentation lisible dans les applications de calendrier.
       $descriptionLines = [];
-
       if (!empty($reference)) {
         $descriptionLines[] = 'Saisine : ' . $reference;
+      }
+      $descriptionLines[]= 'Confirmé : '  .$confirmation;
+
+
+      if (!empty($porteur)) {
+        $descriptionLines[] = 'Porteur : ' . $porteur;
       }
 
       if (!empty($nombreCorps)) {

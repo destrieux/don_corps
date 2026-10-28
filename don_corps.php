@@ -11,12 +11,14 @@ madame; monsieur; madamoiselle; MadameMonsieur, nom prénom
 
 */
 /* 
-
-
 schema/Saisine.entityType.php → décrit l'entité et sa table ;
 CRM/DonCorps/DAO/Saisine.php → DAO PHP correspondant à cette table ;
 Civi/Api4/Saisine.php → expose cette entité à l'API4 ;
  */
+
+
+
+
 require_once 'don_corps.civix.php';
 
 use CRM_DonCorps_ExtensionUtil as E;
@@ -24,7 +26,16 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouv
 use Civi\DonCorps\UpdateSearchGroups;
 
 
+  $msg= "  - Création de la table civicrm_saisine".PHP_EOL;
+  \Civi::log()->info("don_corps : ".$msg);
 
+  CRM_DonCorps_ExtensionUtil::schema()->createEntityTable(
+    'schema/Saisine.entityType.php'
+  );
+
+
+## Gestion des logs
+  define("VERBOSE","1"); // mettre à 1 pour afficher les messages lors de l'installation en plus des logs
 
 
 /* function don_corps_civicrm_container(ContainerBuilder $container): void {
@@ -37,7 +48,6 @@ $container
   ->addTag('kernel.event_subscriber');
 } */
 
-// Lien entre Wordpress et la classe civicrm qui genere le flux iCalendar
 
 
 /* Implements hook_civicrm_angularModules() pour afficher le contenu dasi saisienes dans event
@@ -80,8 +90,6 @@ $container
 } # fin de hook_civicrm_angularModules()
 
 
-
-
 /* Gestion d'un flux iCalendar personnalisé pour les événements Don Corps.
   *
   * Un abonnement personnel est créé depuis la page CiviCRM
@@ -107,7 +115,7 @@ $container
   * - templates/CRM/DonCorps/Page/DonCorpsIcalToken.tpl : template de la page pour la gestion des tokens
   * - sql/install.sql : routine sql d'installation de la table de gestion des tokens (retrouvée dans upgrader)
   * - 
-*/
+  */
 
 
   if (function_exists('add_action')) {
@@ -185,35 +193,11 @@ $container
     exit;
   }
 
-define("VERBOSE","1"); // mettre à 1 pour afficher les messages lors de l'installation en plus des logs
-define("LOGFILE", CRM_Core_Config::singleton()->configAndLogDir."/civicrm_ddc_installation.log"); // définition du ficher de log dans wp-content/uploads/civicrm/ConfigAndLogs
-
-
-if (is_writable(LOGFILE)) {  // le ficher log existe
-
-      // Dans notre exemple, nous ouvrons le fichier $logfile en mode d'ajout
-      // Le pointeur de fichier est placé à la fin du fichier
-      // c'est là que $logtext sera placé
-      if (!$fp = fopen(LOGFILE, 'a')) {
-          echo "Impossible d'ouvrir le fichier (".LOGFILE.")"."\n";
-          exit;
-      }
-
-  } else {  // le fichier log n'existe pas  ; le créer
-      $fp = fopen(LOGFILE, 'c+b');
-      echo "Création nouveau log : ".LOGFILE."\n";
-      fclose($fp);
-  }
-
-// change le propriétaire et le groupe du fichier de log identique au repertoire de log principal
-// dans le cas contraire, les menus ne s'affichent pas
-$own= fileowner(CRM_Core_Config::singleton()->configAndLogDir);
-$grp= filegroup(CRM_Core_Config::singleton()->configAndLogDir);
-chown(LOGFILE, $own);
-chgrp(LOGFILE, $grp);
 
 
 
+
+  
 # DEFINITION DES FONCTIONS
 
   // hook decalrant l'entrée des menus (utilise pour calendar)
@@ -240,7 +224,7 @@ chgrp(LOGFILE, $grp);
       // - crée les UFjoins liés à l'UFGroup si celui ci est utilisé par un custom layout
       // - supprime les UFfields de ce groupe
       // - importe les UFfields depuis le mgd file
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      
 
       // lit le fichier mgd specifié dans l'argument et met la valeur dans la variable $entities
       $entities_to_process = func_get_arg(0);
@@ -259,14 +243,14 @@ chgrp(LOGFILE, $grp);
               case 'UFGroup':     // Création UF Group
 
                   $msg= PHP_EOL.'Traitement de '.$entity." ".$entitie['params']['values']['name'].PHP_EOL;
-                  fwrite($fp, $msg);
+                  \Civi::log()->info("don_corps : ".$msg);
                   echo $msg;
 
                   // Si l'UF group comporte une  url à charger apres creation du contact en utilisant le profil on la maj
                   if(isset($entitie['params']['values']['post_url'])){
                       $entitie['params']['values']['post_url'] = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";
                       $msg= "         Réécriture url à afficher apres utilisation du profil".PHP_EOL;
-                      fwrite($fp, $msg);
+                      \Civi::log()->info("don_corps : ".$msg);
                       echo $msg;
 
                   }
@@ -274,8 +258,7 @@ chgrp(LOGFILE, $grp);
                   // Si l'UF group comporte une  url à charger en cas d'anulation en utilisant le profil on la maj
                   if(isset($entitie['params']['values']['cancel_url'])){
                       $entitie['params']['values']['cancel_url'] = admin_url("admin.php?page=CiviCRM");
-                      $msg= "         Réécriture url à afficher en cas d'annulation".PHP_EOL;
-                      fwrite($fp, $msg);
+                      \Civi::log()->info("don_corps : ".$msg);
                       echo $msg;
                   }
 
@@ -294,7 +277,7 @@ chgrp(LOGFILE, $grp);
 
                   if (isset($nav)){
                   $msg= "         Menu de navigation : ".$nav_parent." / ".$nav;
-                  fwrite($fp, $msg);
+                  \Civi::log()->info("don_corps : ".$msg);
                   echo $msg;
 
                   $to_create =  [                                                 // modifie l'URL pour le menu
@@ -319,7 +302,7 @@ chgrp(LOGFILE, $grp);
                           ]);
 
                       $msg = "         Suppression des UF Fields liés à cet UFGroup".PHP_EOL;
-                      fwrite($fp, $msg);
+                      \Civi::log()->info("don_corps : ".$msg);
                       echo $msg;
 
                   // Si ce customgroup est utilisé par un contact layout on crée l'UFJoin
@@ -340,7 +323,7 @@ chgrp(LOGFILE, $grp);
                                   foreach ($profiles as $profile){
                                           if ($profile['name']=='profile.'.$entitie['params']['values']['name']){         // Profil utilisé par un CaontactLayout
                                               $msg = '         UFGroup attaché à un Contact Layout : Traitement des UFJoins'.PHP_EOL;
-                                              fwrite($fp, $msg);
+                                              \Civi::log()->info("don_corps : ".$msg);
                                               if (VERBOSE==1){
                                               echo $msg;
                                               }
@@ -493,7 +476,7 @@ chgrp(LOGFILE, $grp);
         $values = func_get_arg(1);     // parametres de cette entité
         $check=array();
 
-        $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+        
 
         foreach ($values as $value) {
             unset ($value['external_identifier']);
@@ -516,7 +499,7 @@ chgrp(LOGFILE, $grp);
             if (isset($value['employer_id'])){                     // si le contact a un champ employer_id non null
 
             $msg="employer_id : ".$value['employer_id'].PHP_EOL;   // on en modifie la valeur par l'id de l'institution crée au préalable
-            fwrite($fp, $msg);
+            \Civi::log()->info("don_corps : ".$msg);
 
             if (VERBOSE==1){
               echo $msg;
@@ -536,13 +519,13 @@ chgrp(LOGFILE, $grp);
                 if (isset($employeur)){
                     $value['employer_id']=$employeur[0]['id'];
                     $msg="employer_id new: ".$value['employer_id'].PHP_EOL;
-                    fwrite($fp, $msg);
+                    \Civi::log()->info("don_corps : ".$msg);
                     if (VERBOSE==1){
                       echo $msg;
                     }
                 } else {
                     $msg = "employer_id  extereal identifier n'existe pas : ".$value['employer_id '].PHP_EOL;
-                    fwrite($fp, $msg);
+                    \Civi::log()->info("don_corps : ".$msg);
                     if (VERBOSE==1){
                       echo $msg;
                     }
@@ -565,7 +548,7 @@ chgrp(LOGFILE, $grp);
                 'checkPermissions' => FALSE,
                 ]);
                 $msg = "         ".$count." CREATION : ".$value['sort_name'].PHP_EOL;
-                fwrite($fp, $msg);
+                \Civi::log()->info("don_corps : ".$msg);
                 if (VERBOSE==1){
                   echo $msg;
                 }
@@ -583,7 +566,7 @@ chgrp(LOGFILE, $grp);
                 'checkPermissions' => FALSE,
                 ]);
                 $msg= "         ".$count." MAJ : ".$value['sort_name']." | id : ".$id_to_update.PHP_EOL;
-                fwrite($fp, $msg);
+                \Civi::log()->info("don_corps : ".$msg);
                 if (VERBOSE==1){
                   echo $msg;
                 }
@@ -594,25 +577,24 @@ chgrp(LOGFILE, $grp);
         }
 
         $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-        fwrite($fp, $msg);
+        \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
           echo $msg;
         }
 
         if (count($check)==count($values)) {    // le bon nombre de lignes a été importées
             $msg= " ---> OK".PHP_EOL.PHP_EOL;
-            fwrite($fp, $msg);
+            \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
               echo $msg;
             }
         }else {
         $msg ="---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
-        fwrite($fp, $msg);
+        \Civi::log()->info("don_corps : ".$msg);
         echo $msg;
         }
         return ($check);
 
-      fclose($fp); // ferme le fichier de log
     }   // fin de définition de fonction import_stuffCDC
 
   function import_addressCDC(){   // LOG OK utilisée pour importer les adresses des CDC
@@ -620,7 +602,7 @@ chgrp(LOGFILE, $grp);
       $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
       $values = func_get_arg(1);     // parametres de cette entité
       $check=array();
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      
 
       foreach ($values as $value) {
           // on verifie que le CDC rattaché à l'adresse a bien été crée,
@@ -665,7 +647,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
               ]);
               $msg= "         ".$count." CREATION adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -681,7 +663,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
               ]);
               $msg= "         ".$count." MAJ adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -692,25 +674,25 @@ chgrp(LOGFILE, $grp);
                                               // à utiliser avec check_address.php
       }
       $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
 
           if (count($check)==count($values)) {// le bon nombre de lignes a été importées
               $msg= " ---> OK".PHP_EOL.PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
           }else {
           $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
           }
           return ($check);
 
-      fclose($fp); // ferme le fichier de log
+      
     }   // fin de définition de fonction import_addressCDC
 
   function import_phoneCDC(){     // LOG OK utilisée pour importer les telephones des CDC
@@ -718,7 +700,7 @@ chgrp(LOGFILE, $grp);
       $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
       $values = func_get_arg(1);     // parametres de cette entité
       $check=array();
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      
 
       foreach ($values as $value) {
           // on verifie que le CDC rattaché au téléphone existe bien
@@ -758,7 +740,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
               ]);
               $msg = "         ".$count." CREATION téléphone: ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -774,7 +756,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
               ]);
               $msg= "         ".$count." MAJ téléphone : ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -787,25 +769,25 @@ chgrp(LOGFILE, $grp);
       }
 
       $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
 
           if (count($check)==count($values)) {// le bon nombre de lignes a été importées
               $msg= " ---> OK".PHP_EOL.PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
           }else {
           $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
           }
           return ($check);
 
-      fclose($fp); // ferme le fichier de log
+      
     }   // fin de définition de fonction import_phoneCDC
 
   function import_emailCDC(){     // LOG OK utilisée pour importer les mails des CDC
@@ -813,7 +795,7 @@ chgrp(LOGFILE, $grp);
       $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
       $values = func_get_arg(1);     // parametres de cette entité
       $check=array();
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      
 
       foreach ($values as $value) {
           // on verifie que le contact rattaché au mail existe bien
@@ -857,7 +839,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
               ]);
               $msg= "         ".$count." CREATION email: ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -874,7 +856,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
               ]);
               $msg= "         ".$count." MAJ email : ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -889,29 +871,24 @@ chgrp(LOGFILE, $grp);
 
 
       $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
 
       if (count($check)==count($values)) {// le bon nombre de lignes a été importées
         $msg=" ---> OK".PHP_EOL.PHP_EOL;
-        fwrite($fp, $msg);
+        \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
           echo $msg;
         }
       }else {
       $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
       }
 
-
-
-
-
-
-      fclose($fp); // ferme le fichier de log
+      
     }   // fin de définition de fonction import_emailCDC
 
     ############
@@ -932,18 +909,18 @@ chgrp(LOGFILE, $grp);
     if (!function_exists('get_role')) {
         return;
     }
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    
     $roleName = func_get_arg(0);
     $caps = func_get_arg(1);
 
     $role = get_role($roleName);
     if ($role) {
       $msg= "         SUPPRESSION de toutes les permissions pour le role ".$roleName.PHP_EOL;
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
 
       foreach ($caps as $cap) {
         $role->remove_cap($cap);
@@ -955,18 +932,18 @@ chgrp(LOGFILE, $grp);
     if (!function_exists('get_role')) {
         return;
     }
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    
     $roleName = func_get_arg(0);
     $caps = func_get_arg(1);
 
     $role = get_role($roleName);
     if ($role) {
       $msg="         AJOUT des permissions pour le role ".$roleName.PHP_EOL;
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
       foreach ($caps as $cap) {
         $role->add_cap($cap);
         }
@@ -996,12 +973,12 @@ chgrp(LOGFILE, $grp);
       $msg= "         Pas de Menu ".$menu."\n";
     }
 
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
 
 
    }   // Fin de définition de la fonction : deactivate_menu()
@@ -1030,12 +1007,12 @@ chgrp(LOGFILE, $grp);
       $msg="         Pas de Menu ".$menu."\n";
       //CRM_Core_Session::setStatus('Pas de Menu '.$menu, 'Info', 'info');
     }
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
 
    }   // Fin de définition de la fonction : activate_menu()
 
@@ -1067,10 +1044,10 @@ chgrp(LOGFILE, $grp);
     } else {
         $msg= "         Pas de sous rubrique pour ".$menu."\n";
     }
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-    fwrite($fp, $msg);
+    
+    \Civi::log()->info("don_corps : ".$msg);
     echo $msg;
-    fclose($fp);
+    
 
     }   // Fin de définition de la fonction : change_icon()
 
@@ -1234,8 +1211,8 @@ chgrp(LOGFILE, $grp);
               'checkPermissions' => FALSE,
             ]);
           }
-          $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-          fwrite($fp, $msg);
+          
+          \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
             echo $msg;
           }
@@ -1254,7 +1231,7 @@ chgrp(LOGFILE, $grp);
     }
 
 
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    
 
     if(isset($check_entity[0])){            // si l'entité existe on l'update
       $msg= "         entité ".$entity." ".$descr." existe - update (".$check_entity[0]['id'].")".PHP_EOL;
@@ -1281,7 +1258,7 @@ chgrp(LOGFILE, $grp);
       }
     }
 
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
@@ -1309,12 +1286,11 @@ chgrp(LOGFILE, $grp);
     // Si des custom fields ne sont pas passés à la fonction : return
     if (count($args)==0){
       $msg="Pas de custom field passé à la fonction ".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
       return;
     }
 
@@ -1408,92 +1384,8 @@ chgrp(LOGFILE, $grp);
 
    }   // Fin de la définition de la fonction : delete_contact_type()
 
-  function modif_filtre(){ // LOG OK
-    //////////// function modif_filtre /////////
-    // Cette fonction est invoquée après l'installation des champs personalisés qui filtrent les contacts
-    //
-    // syntaxe : modif_filtre (Custom_field_name Groupe_servant_de_filtre
-    //   ;
-    //
-    // elle est appelée par : function don_corps_civicrm_install()
-    //////////////
-    $Custom_name = func_get_arg(0);
-    $Group_name =func_get_arg(1);
-
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-
-    $msg="      -> filtre du champ ".$Custom_name." par groupe ".$Group_name." : ";
-    fwrite($fp, $msg);
-    if (VERBOSE==1){
-      echo $msg;
-    }
-
-    $results = civicrm_api4('CustomField', 'get', [
-      'select' => [
-        'id',
-      ],
-      'where' => [
-        ['name', '=', $Custom_name],
-      ],
-      'checkPermissions' => FALSE,
-    ]);
-
-
-    //echo "Custom filed id :".$results[0]['id']."\n";
-
-    if (isset($results[0]['id'])){									      // si le champ personnalisé existe bien
-      $groups = civicrm_api4('Group', 'get', [				// récupère l'id du groupe
-        'select' => [
-          'id',
-        ],
-        'where' => [
-          ['name', '=', $Group_name],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-      if (isset($groups[0]['id'])){                       // si le groupe existe lui aussi
-
-        $filter="action=lookup&group=".strval($groups[0]['id']);	// la valeur du filtre est définie à partir du groupe
-        try{
-          $results = civicrm_api4('CustomField', 'update', [		// injecte la valeur du filtre dans le champ personnalisé
-            'values' => [
-              'filter' => $filter,
-            ],
-            'where' => [
-              ['name', '=', $Custom_name],
-            ],
-            'checkPermissions' => FALSE,
-          ]);
-
-          $msg= "modifié".PHP_EOL;
-
-        } catch  (API_Exception $e) {
-          $msg= "erreur lors de l'injection du filtre".PHP_EOL;
-        }
-
-        fwrite($fp, $msg);
-        if (VERBOSE==1){
-          echo $msg;
-        }
-
-        }else{
-          $msg= "le groupe n'existe pas".PHP_EOL;
-          fwrite($fp, $msg);
-          if (VERBOSE==1){
-            echo $msg;
-          }
-        }
-
-      }else{
-        $msg= "le champ personalisé n'existe pas".PHP_EOL;
-        fwrite($fp, $msg);
-        if (VERBOSE==1){
-          echo $msg;
-        }
-      }
-    fclose($fp);
-   }   // Fin de la définition de la fonction : modif_filtre()
+  //function modif_filtre() reecrite : \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Mon_champ', 'Mon_groupe');
+    
 
   function deactivate_relation_type(){ // LOG OK
     //////////// function deactivate_relation_type /////////
@@ -1504,7 +1396,7 @@ chgrp(LOGFILE, $grp);
     // elle est appelée par : function don_corps_civicrm_install()
     //////////////
     $relation_type = func_get_arg(0);
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    
 
     $relationshipTypes = civicrm_api4('RelationshipType', 'get', [
       'where' => [
@@ -1530,11 +1422,11 @@ chgrp(LOGFILE, $grp);
     } else {
         $msg= "         Type de relation ".$relation_type." inexistant"."\n";
     }
-    fwrite($fp, $msg);
+    \Civi::log()->info("don_corps : ".$msg);
     if (VERBOSE==1){
       echo $msg;
     }
-    fclose($fp);
+    
 
 
     }   // Fin de la définition de la fonction : deactivate_relation_type()
@@ -1555,7 +1447,7 @@ chgrp(LOGFILE, $grp);
       $nbargs = func_num_args();
       $searchname = func_get_arg(0);              // nom de la recherche sauvegardée à modifier
       $search_api_params = func_get_arg(1);       // parametres de l'api
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+      
 
       if (func_num_args()==3){                    // s'il y a 3 arguments, c'est qu'il y a un tag
           $tags = civicrm_api4('Tag', 'get', [
@@ -1608,14 +1500,14 @@ chgrp(LOGFILE, $grp);
               $msg= "         Erreur lors de la MAJ de la requete ".$searchname.": ".$e->getMessage().PHP_EOL;
             }
 
-            fwrite($fp, $msg);
+            \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
               echo $msg;
             }
 
           }else{
             $msg= "         Requete ".$searchname." MAJ du seul tag".PHP_EOL;
-            fwrite($fp, $msg);
+            \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
               echo $msg;
             }
@@ -1649,13 +1541,13 @@ chgrp(LOGFILE, $grp);
         }
       } else {                                              // si la requete n'exste pas
         $msg= "         La requete ".$searchname." n'existe pas".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
             echo $msg;
           }
 
       }
-      fclose($fp);
+      
     }   // Fin de la définition de la fonction : update_search()
 
 
@@ -1663,7 +1555,7 @@ chgrp(LOGFILE, $grp);
 
   function ajoute_CDC(){ // LOG OK
        $exp_dir = func_get_arg(0); // liste des menus à modifier
-       $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+       
     ## On vérifie qu'il existe bien une location_type pour le cesp - Sinon on la crée
 
         $locationTypes = civicrm_api4('LocationType', 'get', [
@@ -1699,13 +1591,13 @@ chgrp(LOGFILE, $grp);
 
             $msg= "      -> Création ";
         }
-            fwrite($fp, $msg);
+            \Civi::log()->info("don_corps : ".$msg);
             echo $msg;
 
 
         $msg= "de la location type : ".$results[0]['name']." (".$results[0]['id'].")".PHP_EOL;
 
-        fwrite($fp, $msg);
+        \Civi::log()->info("don_corps : ".$msg);
         echo $msg;
 
     ## Fin verification location_type pour CESP
@@ -1716,7 +1608,7 @@ chgrp(LOGFILE, $grp);
           $json = file_get_contents($toimport_file);
           $toimport = json_decode($json, true);
           $msg= "      -> ".count($toimport)." Organisations à importer".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
           $check=import_stuffCDC('Contact',$toimport);
           $chk_file = $exp_dir."check_".$name.".txt";
@@ -1729,7 +1621,7 @@ chgrp(LOGFILE, $grp);
           $json = file_get_contents($toimport_file);
           $toimport = json_decode($json, true);
           $msg= "      -> ".count($toimport)." Adresses à importer".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
           $check=import_addressCDC('Address',$toimport); // appelle la fonction import  et assigne à check la liste des anciennes id de contact
           $chk_file = $exp_dir."check_".$name.".txt";
@@ -1742,7 +1634,7 @@ chgrp(LOGFILE, $grp);
           $json = file_get_contents($toimport_file);
           $toimport = json_decode($json, true);
           $msg = "      -> ".count($toimport)." Téléphones à importer".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
           $check=import_phoneCDC('Phone',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
           $chk_file = $exp_dir."check_".$name.".txt";
@@ -1756,13 +1648,13 @@ chgrp(LOGFILE, $grp);
           $toimport = json_decode($json, true);
 
           $msg= "      -> ".count($toimport)." Emails à importer".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
           $check=import_emailCDC('Email',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
           $chk_file = $exp_dir."check_".$name.".txt";
           file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
           //echo $chk_file." écrit".PHP_EOL;
-          fclose($fp);
+          
        # fin de Ajout des centres de don du corps
 
 
@@ -1798,16 +1690,16 @@ chgrp(LOGFILE, $grp);
     ## les mgd files ne fonctionnent pas correctement car font référence aux id des activités, culstom fields...
     ## qui varient d'une installation à l'autre
     $msg="  - Création/MAJ des Rules".PHP_EOL;
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-    fwrite($fp, $msg);
+    
+    \Civi::log()->info("don_corps : ".$msg);
     echo $msg;
 
     $msg="      -> Civirule : Déplace lot de pièces ".PHP_EOL;
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
 
       $to_create =  [        //Déplace lot : Déclaration de l'Action
         'entity' => 'CiviRulesAction',
@@ -1890,9 +1782,9 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
     $msg="      -> Civirule : Supprime lot de pièces ".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
         if (VERBOSE==1){
           echo $msg;
         }
@@ -1979,9 +1871,9 @@ chgrp(LOGFILE, $grp);
       create_entity($to_create);
 
     $msg="      -> Civirule : Inventaire ".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
         if (VERBOSE==1){
           echo $msg;
         }
@@ -2066,9 +1958,9 @@ chgrp(LOGFILE, $grp);
 
 
     $msg="      -> Civirule : MAJ civilités ".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
         if (VERBOSE==1){
           echo $msg;
         }
@@ -2155,9 +2047,9 @@ chgrp(LOGFILE, $grp);
 
 
     $msg="      -> Civirule : Compile pieces et utilisations".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
         if (VERBOSE==1){
           echo $msg;
         }
@@ -2240,9 +2132,9 @@ chgrp(LOGFILE, $grp);
 
 
     $msg="      -> Civirule : Copie code barre corps".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
         if (VERBOSE==1){
           echo $msg;
         }
@@ -2327,9 +2219,9 @@ chgrp(LOGFILE, $grp);
 
 
     $msg="      -> Civirule : Envoyer_mail_si_demande_cremation".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
         if (VERBOSE==1){
           echo $msg;
         }
@@ -2496,9 +2388,9 @@ chgrp(LOGFILE, $grp);
 
 
     $msg="      -> Civirule : Neutralise adresse postale en cas de retour de courrier".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
         if (VERBOSE==1){
           echo $msg;
         }
@@ -2723,10 +2615,10 @@ chgrp(LOGFILE, $grp);
     if (_don_corps_is_civirules_installed()) {
       CRM_Civirules_Utils_Upgrader::insertTriggersFromJson(E::path('civirules/triggers.json'));
     }
-    #$fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    #
 
     #$msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_managed ".PHP_EOL;
-    #fwrite($fp, $msg);
+    #\Civi::log()->info("don_corps : ".$msg);
     #echo $msg;
 
       } # fin de la définition de don_corps_civicrm_managed
@@ -2736,11 +2628,11 @@ chgrp(LOGFILE, $grp);
 
 
   function don_corps_civicrm_config(&$config): void {
-    #$fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    #
     #$msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_config ".PHP_EOL;
-    #fwrite($fp, $msg);
+    #\Civi::log()->info("don_corps : ".$msg);
     #echo $msg;
-    #fclose($fp);
+    #
     //function don_corps_civicrm_config(&$config) {
     _don_corps_civix_civicrm_config($config);
 
@@ -2750,14 +2642,15 @@ chgrp(LOGFILE, $grp);
   # @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install/
 
   function don_corps_civicrm_install(): void {
+    \Civi::log()->warning("don_corps : INSTALL appelé");
     //function don_corps_civicrm_install() {
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
+    
     $msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_install ".PHP_EOL;
-    fwrite($fp, $msg);
+    \Civi::log()->info("don_corps : ".$msg);
     echo $msg;
 
     $msg= "  - Création de la table de stockage des tokens pour ical".PHP_EOL;
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
       $sqlFile = __DIR__ . '/sql/install.sql';
       if (!file_exists($sqlFile)) {
@@ -2769,7 +2662,7 @@ chgrp(LOGFILE, $grp);
       CRM_Core_DAO::executeQuery($sql);
 
     $msg= "  - Vérification de la version de l'extension CiviRules".PHP_EOL;
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
       $ext = civicrm_api4('Extension', 'get', [
         'where' => [
@@ -2781,13 +2674,1086 @@ chgrp(LOGFILE, $grp);
 
       if (empty($ext[0]['version']) || version_compare($ext[0]['version'], '3.36.0', '<')) {
         $msg= "  L’extension org.civicoop.civirules 3.36.0 ou supérieure est requise".PHP_EOL;
-        fwrite($fp, $msg);
+        \Civi::log()->info("don_corps : ".$msg);
         echo $msg;
       }
 
 
+    
+
+    $msg= "  - Création/inactivation des intervales de date personnalisés".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      $to_create =  [       // intervales de date personnalisés
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'relative_date_filters',
+          'label' => E::ts("Derniers 5 ans incluant aujourd'hui"),
+          'value' => 'ending_5.year',
+          'name' => "Derniers 5 ans incluant aujourd'hui",
+          'grouping' => NULL,
+          'filter' => 0,
+          'is_default' => FALSE,
+          'weight' => 65,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'is_active' => TRUE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+        ],
+      ];
+      create_entity($to_create);
+
+    $msg= "  - Création/inactivation des prefixes de contact".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+      $to_create =  [       // Création des prefixes de contact : Mme
+        'entity' => 'OptionValue',
+        'values' => [
+          'label' => 'Mme',
+          'value' => '1',
+          'name' => 'Mrs.',
+          'grouping' => NULL,
+          'filter' => 0,
+          'is_default' => NULL,
+          'weight' => 1,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'is_active' => TRUE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+          'option_group_id:name' => 'individual_prefix',
+        ],
+      ];
+        create_entity($to_create);
+
+        $to_create =  [       // Création des prefixes de contact : Melle
+          'entity' => 'OptionValue',
+          'values' => [
+              'label' => 'Melle',
+              'value' => '2',
+              'name' => 'Ms.',
+              'grouping' => NULL,
+              'filter' => 0,
+              'is_default' => NULL,
+              'weight' => 2,
+              'description' => NULL,
+              'is_optgroup' => FALSE,
+              'is_reserved' => FALSE,
+              'is_active' => TRUE,
+              'component_id' => NULL,
+              'domain_id' => NULL,
+              'visibility_id' => NULL,
+              'icon' => NULL,
+              'color' => NULL,
+              'option_group_id:name' => 'individual_prefix',
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [       // Création des prefixes de contact : M.
+          'entity' => 'OptionValue',
+          'values' => [
+            'label' => 'M.',
+            'value' => '3',
+            'name' => 'Mr.',
+            'grouping' => NULL,
+            'filter' => 0,
+            'is_default' => NULL,
+            'weight' => 3,
+            'description' => NULL,
+            'is_optgroup' => FALSE,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+            'component_id' => NULL,
+            'domain_id' => NULL,
+            'visibility_id' => NULL,
+            'icon' => NULL,
+            'color' => NULL,
+            'option_group_id:name' => 'individual_prefix',
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [       // Création des prefixes de contact : Mx
+          'entity' => 'OptionValue',
+          'values' => [
+            'label' => 'Mx.',
+            'value' => '4',
+            'name' => 'Dr.',
+            'grouping' => NULL,
+            'filter' => 0,
+            'is_default' => FALSE,
+            'weight' => 4,
+            'description' => NULL,
+            'is_optgroup' => FALSE,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+            'component_id' => NULL,
+            'domain_id' => NULL,
+            'visibility_id' => NULL,
+            'icon' => NULL,
+            'color' => NULL,
+            'option_group_id:name' => 'individual_prefix',
+          ],
+        ];
+        create_entity($to_create);
+
+
+
+    $msg= "  - Création/inactivation des types de contact".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+
+        $to_create =  [       // Création des types de contact : donneur
+          'entity' => 'ContactType',
+          'values' => [
+              'name' => 'Donateur',
+              'label' => 'Donneur',
+              'description' => 'Donneur inscrit',
+              'icon' => 'fa-user',
+              'parent_id.name' => 'Individual',
+              'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+
+        $to_create =  [       // Création des types de contact : proches
+          'entity' => 'ContactType',
+          'values' => [
+                'name' => 'Proches',
+                'label' => 'Proches',
+                'description' => 'Proche lié à un donneur',
+                'parent_id.name' => 'Individual',
+                'icon' => 'fa-user',
+                'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [       // Création des types de contact : Demandeur_d_information
+        'entity' => 'ContactType',
+        'values' => [
+            'name' => 'Demandeur_d_information',
+            'label' => 'Demandeur information',
+            'description' => 'Personne demandant un dossier,  non encore inscrite',
+            'parent_id.name' => 'Individual',
+            'icon' => 'fa-user',
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [       // Création des types de contact : Personnels
+          'entity' => 'ContactType',
+          'values' => [
+            'name' => 'Personnel',
+            'label' => E::ts('Personnel'),
+            'description' => "Employés du centre d'accueil des corps",
+            'image_URL' => NULL,
+            'icon' => NULL,
+            'parent_id.name' => 'Individual',
+            'is_active' => TRUE,
+            'is_reserved' => FALSE,
+            ],
+          ];
+          create_entity($to_create);
+
+
+          $to_create =  [       // Création des types de contact : Animal
+            'entity' => 'ContactType',
+            'values' => [
+              'name' => 'Animal',
+              'label' => E::ts('Animal'),
+              'description' => "Spécimens non humains",
+              'image_URL' => NULL,
+              'icon' => "fa-cow",
+              'parent_id.name' => 'Individual',
+              'is_active' => TRUE,
+              'is_reserved' => FALSE,
+              ],
+            ];
+          create_entity($to_create);
+
+
+        $to_create =  [       // Création des types de contact : Pompes
+          'entity' => 'ContactType',
+          'values' => [
+          'name' => 'Pompes',
+          'label' => 'Pompes',
+          'description' =>'Entreprise de Pompes Funèbres',
+          'parent_id.name' => 'Organization',
+          'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+
+        $to_create =  [       // Création des types de contact : Centre de don du corps
+          'entity' => 'ContactType',
+          'values' => [
+            'name' => 'CDC',
+            'label' => E::ts('CDC'),
+            'description' => E::ts('Centre de don du corps'),
+            'parent_id.name' => 'Organization',
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [       // Création des types de contact : piece de conservation
+          'entity' => 'ContactType',
+          'values' => [
+            'name' => 'Emprunteur',
+            'label' => E::ts('Localisation pièces'),
+            'description' => E::ts('Localisation des pièces dans le CDC ou à l extérieur'),
+            'parent_id.name' => 'Organization',
+            'is_active' => TRUE,
+          ],
+        ];
+
+        create_entity($to_create);
+
+        $to_create =  [       // Création des types de contact : Mairies
+          'entity' => 'ContactType',
+          'values' => [
+            'name' => 'Mairies',
+            'label' => E::ts('Mairies'),
+            'description' => E::ts('Mairies'),
+            'parent_id.name' => 'Organization',
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [       // Création des types de contact : Organisateurs
+          'entity' => 'ContactType',
+          'values' => [
+            'name' => 'Intervenant_ext_rieur',
+            'label' => E::ts('Intervenant extérieur'),
+            'description' => E::ts('Organisateur d une activité utilisant des corps'),
+            'parent_id.name' => 'Individual',
+            'icon' => 'fa-person-walking-dashed-line-arrow-right',
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+      // fin de la création des types de contact
+
+    $msg= "  - Création/inactivation des types de contributions financieres".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+
+      $to_create =  [
+      'entity' => 'FinancialType',
+      'values' => [
+              'name' => 'Donation',
+              'label' => 'Don',
+              'description' => NULL,
+              'is_deductible' => TRUE,
+              'is_reserved' => FALSE,
+              'is_active' => FALSE,
+      ],
+      ];
+      create_entity($to_create);
+
+
+      $to_create =  [
+        'entity' => 'FinancialType',
+        'values' => [
+                'name' => 'Don',
+                'label' => 'Don',
+                'description' => NULL,
+                'is_deductible' => TRUE,
+                'is_reserved' => FALSE,
+                'is_active' => TRUE,
+        ],
+        ];
+        create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'FinancialType',
+          'values' => [
+              'name' => 'Member Dues',
+              'label' => 'Cotisations',
+              'description' => NULL,
+              'is_deductible' => TRUE,
+              'is_reserved' => FALSE,
+              'is_active' => FALSE,
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'FinancialType',
+        'values' => [
+            'name' => 'Cotisation des membres',
+            'label' => 'Cotisation des membres',
+            'description' => NULL,
+            'is_deductible' => TRUE,
+            'is_reserved' => FALSE,
+            'is_active' => FALSE,   // a mettre a false hors Tours
+        ],
+      ];
+      create_entity($to_create);
+
+
+      $to_create =  [
+        'entity' => 'FinancialType',
+        'values' => [
+            'name' => 'Contribution Prise en charge Corps',
+            'label' => 'Contribution Prise en charge Corps',
+            'description' => NULL,
+            'is_deductible' => TRUE,
+            'is_reserved' => FALSE,
+            'is_active' => FALSE,   // a mettre a false hors Tours
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'FinancialType',
+          'values' => [
+              'name' => 'Campaign Contribution',
+              'label' => 'Contribution à la campagne',
+              'description' => NULL,
+              'is_deductible' => FALSE,
+              'is_reserved' => FALSE,
+              'is_active' => FALSE,
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'FinancialType',
+          'values' => [
+              'name' => 'Event Fee',
+              'label' => 'Inscription évenement',
+              'description' => NULL,
+              'is_deductible' => FALSE,
+              'is_reserved' => FALSE,
+              'is_active' => FALSE,
+          ],
+      ];
+      create_entity($to_create);
+      // fin de la création des types  de contributions financieres
+
+    $msg= "  - Création/inactivation des status de contribution ".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'option_group_id:name' => 'contribution_status',
+              'label' => 'Encaissé',
+              'name' => 'Completed',
+              'grouping' => NULL,
+              'filter' => 0,
+              'is_default' => FALSE,
+              'weight' => 1,
+              'description' => NULL,
+              'is_optgroup' => FALSE,
+              'is_reserved' => TRUE,
+              'is_active' => TRUE,
+              'component_id' => NULL,
+              'domain_id' => NULL,
+              'visibility_id' => NULL,
+              'icon' => NULL,
+              'color' => NULL,
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'option_group_id:name' => 'contribution_status',
+              'label' => 'Promesse de don',
+              'name' => 'Pending',
+              'grouping' => NULL,
+              'filter' => 0,
+              'is_default' => TRUE,
+              'weight' => 1,
+              'description' => NULL,
+              'is_optgroup' => FALSE,
+              'is_reserved' => TRUE,
+              'is_active' => TRUE,
+              'component_id' => NULL,
+              'domain_id' => NULL,
+              'visibility_id' => NULL,
+              'icon' => NULL,
+              'color' => NULL,
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'option_group_id:name' => 'contribution_status',
+              'label' => 'Annulé',
+              'name' => 'Cancelled',
+              'grouping' => NULL,
+              'filter' => 0,
+              'is_default' => FALSE,
+              'weight' => 3,
+              'description' => NULL,
+              'is_optgroup' => FALSE,
+              'is_reserved' => TRUE,
+              'is_active' => TRUE,
+              'component_id' => NULL,
+              'domain_id' => NULL,
+              'visibility_id' => NULL,
+              'icon' => NULL,
+              'color' => NULL,
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'name' => 'Failed',
+              'is_active' => FALSE,
+              'option_group_id:name' => 'contribution_status',
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'name' => 'Refunded',
+              'is_active' => FALSE,
+              'option_group_id:name' => 'contribution_status',
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'name' => 'Partially paid',
+              'is_active' => FALSE,
+              'option_group_id:name' => 'contribution_status',
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'name' => 'Pending refund',
+              'is_active' => FALSE,
+              'option_group_id:name' => 'contribution_status',
+          ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'name' => 'Chargeback',
+              'is_active' => FALSE,
+              'option_group_id:name' => 'contribution_status',
+          ],
+      ];
+      create_entity($to_create);
+
+
+      $to_create =  [
+          'entity' => 'OptionValue',
+          'values' => [
+              'name' => 'Template',
+              'is_active' => FALSE,
+              'option_group_id:name' => 'contribution_status',
+          ],
+      ];
+      create_entity($to_create);
+      // Fin de la création des statuts de contribution
+
+    $msg= "  - Création/inactivation des modes de paiement".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'payment_instrument',
+          'is_active' => FALSE,
+          'name' => 'Credit Card',
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'payment_instrument',
+          'is_active' => FALSE,
+          'name' => 'Debit Card',
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'payment_instrument',
+          'is_active' => TRUE,
+          'name' => 'Cash',
+          'label' => 'Espèces',
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'payment_instrument',
+          'is_active' => TRUE,
+          'name' => 'Check',
+          'label' => 'Chèque Bancaire',
+          'weight' => 1,
+          'is_default' => TRUE,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'payment_instrument',
+          'is_active' => TRUE,
+          'name' => 'EFT',
+          'label' => 'Virement',
+          'weight' => 2,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'payment_instrument',
+          'is_active' => TRUE,
+          'name' => 'Leg',
+          'label' => 'Leg',
+          'value' => '6',
+          'grouping' => NULL,
+          'filter' => 0,
+          'is_default' => FALSE,
+          'weight' => 3,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'payment_instrument',
+          'is_active' => TRUE,
+          'name' => 'Assurance',
+          'label' => 'Assurance',
+          'option_group_id' => 10,
+          'value' => '7',
+          'grouping' => NULL,
+          'filter' => 0,
+          'is_default' => FALSE,
+          'weight' => 4,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+        ],
+      ];
+      create_entity($to_create);
+      // Fin de Création des modes de paiement
+
+    /* $msg= "  - Création/inactivation des types d'evenements".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'label' => "Cérémonie d'hommage",
+          'value' => '100',
+          'name' => 'Cérémonie Hommage',
+          'grouping' => NULL,
+          'filter' => 0,
+          'is_default' => TRUE,
+          'weight' => 1,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'is_active' => TRUE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'label' => "Activité au laboratoire",
+          'value' => '101',
+          'name' => 'Activité au laboratoire',
+          'grouping' => NULL,
+          'filter' => 0,
+          'is_default' => TRUE,
+          'weight' => 1,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'is_active' => TRUE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'name' => 'Exhibition',
+          'is_active' => FALSE,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'name' => 'Fundraiser',
+          'is_active' => FALSE,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'name' => 'Meeting',
+          'is_active' => FALSE,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'name' => 'Performance',
+          'is_active' => FALSE,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'name' => 'Workshop',
+          'is_active' => FALSE,
+        ],
+      ];
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'event_type',
+          'name' => 'Conference',
+          'is_active' => FALSE,
+        ],
+      ];
+
+
+
+
+      create_entity($to_create);
+      // fin de Création des types d'evenements */
+
+    $msg= "  - Création/inactivation des types de participants".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'participant_role',
+          'label' => 'Invité',
+          'value' => '1',
+          'name' => 'Attendee',
+          'grouping' => NULL,
+          'filter' => 1,
+          'is_default' => TRUE,
+          'weight' => 1,
+          'description' => NULL,
+          'is_optgroup' => FALSE,
+          'is_reserved' => FALSE,
+          'is_active' => TRUE,
+          'component_id' => NULL,
+          'domain_id' => NULL,
+          'visibility_id' => NULL,
+          'icon' => NULL,
+          'color' => NULL,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'participant_role',
+          'label' => 'Organisateur',
+          'value' => '2',
+          'name' => 'Volunteer',
+          'weight' => 2,
+          'is_active' => TRUE,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'participant_role',
+          'name' => 'Host',
+          'is_active' => FALSE,
+        ],
+      ];
+      create_entity($to_create);
+
+      $to_create =  [
+        'entity' => 'OptionValue',
+        'values' => [
+          'option_group_id:name' => 'participant_role',
+          'name' => 'Speaker',
+          'is_active' => FALSE,
+        ],
+      ];
+      create_entity($to_create);
+
+      // Fin de création des types de participants
+
+    $msg= "  - Création/inactivation des Statuts de participants".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+      $results = civicrm_api4('ParticipantStatusType', 'update', [ // on inactive tous les sttuts non reliée à l'appli
+        'values' => [
+          'is_active' => FALSE,
+        ],
+        'where' => [
+          ['base_module', 'NOT CONTAINS ONE OF', 'don_corps'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+       $to_create =  [   // On waitlist / invité
+        'entity' => 'ParticipantStatusType',
+        'values' => [
+          'name' => 'On waitlist',
+          'label' => 'Invité',
+          'class' => 'Waiting',
+          'is_reserved' => TRUE,
+          'is_active' => TRUE,
+          'is_counted' => FALSE,
+          'weight' => 1,
+          'visibility_id' => 1,
+        ],
+        ];
+        create_entity($to_create);
+
+      $to_create =  [   // Registered / confirmé
+        'entity' => 'ParticipantStatusType',
+        'values' => [
+          'name' => 'Registered',
+          'label' => 'Confirmé',
+          'class' => 'Positive',
+          'is_reserved' => TRUE,
+          'is_active' => TRUE,
+          'is_counted' => TRUE,
+          'weight' => 2,
+          'visibility_id' => 1,
+        ],
+        ];
+        create_entity($to_create);
+
+      $to_create =  [   // Cancelled / Annulé - Refus
+        'entity' => 'ParticipantStatusType',
+        'values' => [
+          'name' => 'Cancelled',
+          'label' => 'Annulé - Refus',
+          'class' => 'Negative',
+          'is_reserved' => TRUE,
+          'is_active' => TRUE,
+          'is_counted' => FALSE,
+          'weight' => 3,
+          'visibility_id' => 2,
+        ],
+        ];
+        create_entity($to_create);
+        // Fin de création des statuts de participants
+
+
+
+    $msg= "  - Création des relations spécifiques à l'application".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'Child of',
+            'label_a_b' => 'Enfant de',
+            'name_b_a' => 'Parent of',
+            'label_b_a' => 'Parent de',
+            'description' => 'Relation enfant/Parent.',
+            'contact_type_a' => 'Individual',
+            'contact_type_b' => 'Individual',
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'Partner of',
+            'label_a_b' => 'Conjoint de',
+            'name_b_a' => 'Partner of',
+            'label_b_a' => 'Conjoint de',
+            'description' => 'Relation conjoints',
+            'contact_type_a' => 'Individual',
+            'contact_type_b' => 'Individual',
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'a pour personne de confiance',
+            'label_a_b' => E::ts('a pour personne de confiance'),
+            'name_b_a' => 'est la personne de confiance de',
+            'label_b_a' => E::ts('est la personne de confiance de'),
+            'description' => E::ts('personne confiance'),
+            'contact_type_a' => 'Individual',
+            'contact_type_b' => 'Individual',
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'a pour personne de confiance 2',
+            'label_a_b' => E::ts('a pour personne de confiance 2'),
+            'name_b_a' => 'est la personne de confiance 2',
+            'label_b_a' => E::ts('est la personne de confiance 2'),
+            'description' => E::ts('personne de confiance alternative'),
+            'contact_type_a' => 'Individual',
+            'contact_type_b' => 'Individual',
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'a pour PAQPF',
+            'label_a_b' => E::ts('a pour PAQPF'),
+            'name_b_a' => 'est la PAQPF',
+            'label_b_a' => E::ts('est la PAQPF'),
+            'description' => E::ts('Personne ayant qualité pour pourvoir aux funérailles'),
+            'contact_type_a' => 'Individual',
+            'contact_type_b' => 'Individual',
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'en attente',
+            'label_a_b' => E::ts('en attente'),
+            'name_b_a' => 'en attente',
+            'label_b_a' => E::ts('en attente'),
+            'description' => E::ts('en attente de creation'),
+            'contact_type_a' => NULL,
+            'contact_type_b' => NULL,
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'Sibling of',
+            'label_a_b' => 'Frère/Soeur de',
+            'name_b_a' => 'Sibling of',
+            'label_b_a' => 'Frère/Soeur de',
+            'description' => 'Frère/Soeur',
+            'contact_type_a' => 'Individual',
+            'contact_type_b' => 'Individual',
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => FALSE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+
+        $to_create =  [
+          'entity' => 'RelationshipType',
+          'values' => [
+            'name_a_b' => 'Employee of',
+            'label_a_b' => 'Employé de',
+            'name_b_a' => 'Employer of',
+            'label_b_a' => 'Employeur de',
+            'description' => 'Relation employé/employeur',
+            'contact_type_a' => 'Individual',
+            'contact_type_b' => 'Organization',
+            'contact_sub_type_a' => NULL,
+            'contact_sub_type_b' => NULL,
+            'is_reserved' => TRUE,
+            'is_active' => TRUE,
+          ],
+        ];
+        create_entity($to_create);
+      // Fin de création des relations
+
+    $msg= "  - Déactivation des relations par défaut".PHP_EOL;
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+      deactivate_relation_type ('Spouse of');
+      deactivate_relation_type ('Volunteer for');
+      deactivate_relation_type ('Head of Household for');
+      deactivate_relation_type ('Household Member of');
+      deactivate_relation_type ('Case Coordinator is');
+      deactivate_relation_type ('Supervised by');
+      // Fin de la Déactivation des types de relation par défaut
+      echo PHP_EOL."##### L'etape suivante est longue (plusieurs minutes) - Soyez patient ! #####".PHP_EOL;
+
+
+
+   /*     $msg= "  - Déactivation des champs du profil par defaut ".PHP_EOL; // sans cela le profil contient de champs suppléntaiers
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg;
+      
+      $results = civicrm_api4('UFField', 'update', [
+        'values' => [
+          'is_active' => FALSE,
+        ],
+        'where' => [
+          ['uf_group_id:name', '=', 'name_and_address'],
+        ],
+        'checkPermissions' => FALSE,
+      ]);
+
+      // Fin de Déactivation des champs du profil par defaut */
+
+    _don_corps_civix_civicrm_install();
+  }
+
+# IMPLEMENTS hook_civicrm_enable(). // LOG OK
+  #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
+
+
+  function don_corps_civicrm_enable(): void {   // pas d'affcicahge des messages consoles lors installation
+     }
+
+
+# IMPLEMENTS hook_civicrm_postInstall().
+  #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
+
+  function don_corps_civicrm_postInstall() {
+    $msg= PHP_EOL."@@@  hook_civicrm_postinstall ".PHP_EOL;
+    echo $msg;
+    \Civi::log()->info("don_corps : ".$msg);
+
+
     $msg= "  - Modification des privilèges civicrm selon le rôle wordpress".PHP_EOL;
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);  
       echo $msg;
       $all_caps=[                   // liste tous les privileges
         'access_all_custom_data',
@@ -3033,11 +3999,11 @@ chgrp(LOGFILE, $grp);
 
 
       $msg = "      -> Suppression des privilèges de tous les rôles".PHP_EOL;
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
       _myextension_remove_wp_capabilities('editor', $all_caps);
       _myextension_remove_wp_capabilities('author', $all_caps);
       _myextension_remove_wp_capabilities('contributor', $all_caps);
@@ -3045,1090 +4011,21 @@ chgrp(LOGFILE, $grp);
       _myextension_remove_wp_capabilities('anonymous_user', $all_caps);
 
       $msg = "      -> Ajout des privilèges aux rôles utlilisés".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
         echo $msg;
       }
-      fclose($fp);
+      
       _myextension_add_wp_capabilities('author', $author_caps);
       _myextension_add_wp_capabilities('contributor', $contributor_caps);
 
 
-    $msg= "  - Création/inactivation des intervales de date personnalisés".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      $to_create =  [       // intervales de date personnalisés
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'relative_date_filters',
-          'label' => E::ts("Derniers 5 ans incluant aujourd'hui"),
-          'value' => 'ending_5.year',
-          'name' => "Derniers 5 ans incluant aujourd'hui",
-          'grouping' => NULL,
-          'filter' => 0,
-          'is_default' => FALSE,
-          'weight' => 65,
-          'description' => NULL,
-          'is_optgroup' => FALSE,
-          'is_reserved' => FALSE,
-          'is_active' => TRUE,
-          'component_id' => NULL,
-          'domain_id' => NULL,
-          'visibility_id' => NULL,
-          'icon' => NULL,
-          'color' => NULL,
-        ],
-      ];
-      create_entity($to_create);
-
-    $msg= "  - Création/inactivation des prefixes de contact".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-      $to_create =  [       // Création des prefixes de contact : Mme
-        'entity' => 'OptionValue',
-        'values' => [
-          'label' => 'Mme',
-          'value' => '1',
-          'name' => 'Mrs.',
-          'grouping' => NULL,
-          'filter' => 0,
-          'is_default' => NULL,
-          'weight' => 1,
-          'description' => NULL,
-          'is_optgroup' => FALSE,
-          'is_reserved' => FALSE,
-          'is_active' => TRUE,
-          'component_id' => NULL,
-          'domain_id' => NULL,
-          'visibility_id' => NULL,
-          'icon' => NULL,
-          'color' => NULL,
-          'option_group_id:name' => 'individual_prefix',
-        ],
-      ];
-        create_entity($to_create);
-
-        $to_create =  [       // Création des prefixes de contact : Melle
-          'entity' => 'OptionValue',
-          'values' => [
-              'label' => 'Melle',
-              'value' => '2',
-              'name' => 'Ms.',
-              'grouping' => NULL,
-              'filter' => 0,
-              'is_default' => NULL,
-              'weight' => 2,
-              'description' => NULL,
-              'is_optgroup' => FALSE,
-              'is_reserved' => FALSE,
-              'is_active' => TRUE,
-              'component_id' => NULL,
-              'domain_id' => NULL,
-              'visibility_id' => NULL,
-              'icon' => NULL,
-              'color' => NULL,
-              'option_group_id:name' => 'individual_prefix',
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [       // Création des prefixes de contact : M.
-          'entity' => 'OptionValue',
-          'values' => [
-            'label' => 'M.',
-            'value' => '3',
-            'name' => 'Mr.',
-            'grouping' => NULL,
-            'filter' => 0,
-            'is_default' => NULL,
-            'weight' => 3,
-            'description' => NULL,
-            'is_optgroup' => FALSE,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-            'component_id' => NULL,
-            'domain_id' => NULL,
-            'visibility_id' => NULL,
-            'icon' => NULL,
-            'color' => NULL,
-            'option_group_id:name' => 'individual_prefix',
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [       // Création des prefixes de contact : Mx
-          'entity' => 'OptionValue',
-          'values' => [
-            'label' => 'Mx.',
-            'value' => '4',
-            'name' => 'Dr.',
-            'grouping' => NULL,
-            'filter' => 0,
-            'is_default' => FALSE,
-            'weight' => 4,
-            'description' => NULL,
-            'is_optgroup' => FALSE,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-            'component_id' => NULL,
-            'domain_id' => NULL,
-            'visibility_id' => NULL,
-            'icon' => NULL,
-            'color' => NULL,
-            'option_group_id:name' => 'individual_prefix',
-          ],
-        ];
-        create_entity($to_create);
-
-
-
-    $msg= "  - Création/inactivation des types de contact".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-
-        $to_create =  [       // Création des types de contact : donneur
-          'entity' => 'ContactType',
-          'values' => [
-              'name' => 'Donateur',
-              'label' => 'Donneur',
-              'description' => 'Donneur inscrit',
-              'icon' => 'fa-user',
-              'parent_id.name' => 'Individual',
-              'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-
-        $to_create =  [       // Création des types de contact : proches
-          'entity' => 'ContactType',
-          'values' => [
-                'name' => 'Proches',
-                'label' => 'Proches',
-                'description' => 'Proche lié à un donneur',
-                'parent_id.name' => 'Individual',
-                'icon' => 'fa-user',
-                'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [       // Création des types de contact : Demandeur_d_information
-        'entity' => 'ContactType',
-        'values' => [
-            'name' => 'Demandeur_d_information',
-            'label' => 'Demandeur information',
-            'description' => 'Personne demandant un dossier,  non encore inscrite',
-            'parent_id.name' => 'Individual',
-            'icon' => 'fa-user',
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [       // Création des types de contact : Personnels
-          'entity' => 'ContactType',
-          'values' => [
-            'name' => 'Personnel',
-            'label' => E::ts('Personnel'),
-            'description' => "Employés du centre d'accueil des corps",
-            'image_URL' => NULL,
-            'icon' => NULL,
-            'parent_id.name' => 'Individual',
-            'is_active' => TRUE,
-            'is_reserved' => FALSE,
-            ],
-          ];
-          create_entity($to_create);
-
-
-          $to_create =  [       // Création des types de contact : Animal
-            'entity' => 'ContactType',
-            'values' => [
-              'name' => 'Animal',
-              'label' => E::ts('Animal'),
-              'description' => "Spécimens non humains",
-              'image_URL' => NULL,
-              'icon' => "fa-cow",
-              'parent_id.name' => 'Individual',
-              'is_active' => TRUE,
-              'is_reserved' => FALSE,
-              ],
-            ];
-          create_entity($to_create);
-
-
-        $to_create =  [       // Création des types de contact : Pompes
-          'entity' => 'ContactType',
-          'values' => [
-          'name' => 'Pompes',
-          'label' => 'Pompes',
-          'description' =>'Entreprise de Pompes Funèbres',
-          'parent_id.name' => 'Organization',
-          'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-
-        $to_create =  [       // Création des types de contact : Centre de don du corps
-          'entity' => 'ContactType',
-          'values' => [
-            'name' => 'CDC',
-            'label' => E::ts('CDC'),
-            'description' => E::ts('Centre de don du corps'),
-            'parent_id.name' => 'Organization',
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [       // Création des types de contact : piece de conservation
-          'entity' => 'ContactType',
-          'values' => [
-            'name' => 'Emprunteur',
-            'label' => E::ts('Localisation pièces'),
-            'description' => E::ts('Localisation des pièces dans le CDC ou à l extérieur'),
-            'parent_id.name' => 'Organization',
-            'is_active' => TRUE,
-          ],
-        ];
-
-        create_entity($to_create);
-
-        $to_create =  [       // Création des types de contact : Mairies
-          'entity' => 'ContactType',
-          'values' => [
-            'name' => 'Mairies',
-            'label' => E::ts('Mairies'),
-            'description' => E::ts('Mairies'),
-            'parent_id.name' => 'Organization',
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [       // Création des types de contact : Organisateurs
-          'entity' => 'ContactType',
-          'values' => [
-            'name' => 'Intervenant_ext_rieur',
-            'label' => E::ts('Intervenant extérieur'),
-            'description' => E::ts('Organisateur d une activité utilisant des corps'),
-            'parent_id.name' => 'Individual',
-            'icon' => 'fa-person-walking-dashed-line-arrow-right',
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-      // fin de la création des types de contact
-
-    $msg= "  - Création/inactivation des types de contributions financieres".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-
-      $to_create =  [
-      'entity' => 'FinancialType',
-      'values' => [
-              'name' => 'Donation',
-              'label' => 'Don',
-              'description' => NULL,
-              'is_deductible' => TRUE,
-              'is_reserved' => FALSE,
-              'is_active' => FALSE,
-      ],
-      ];
-      create_entity($to_create);
-
-
-      $to_create =  [
-        'entity' => 'FinancialType',
-        'values' => [
-                'name' => 'Don',
-                'label' => 'Don',
-                'description' => NULL,
-                'is_deductible' => TRUE,
-                'is_reserved' => FALSE,
-                'is_active' => TRUE,
-        ],
-        ];
-        create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'FinancialType',
-          'values' => [
-              'name' => 'Member Dues',
-              'label' => 'Cotisations',
-              'description' => NULL,
-              'is_deductible' => TRUE,
-              'is_reserved' => FALSE,
-              'is_active' => FALSE,
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'FinancialType',
-        'values' => [
-            'name' => 'Cotisation des membres',
-            'label' => 'Cotisation des membres',
-            'description' => NULL,
-            'is_deductible' => TRUE,
-            'is_reserved' => FALSE,
-            'is_active' => FALSE,   // a mettre a false hors Tours
-        ],
-      ];
-      create_entity($to_create);
-
-
-      $to_create =  [
-        'entity' => 'FinancialType',
-        'values' => [
-            'name' => 'Contribution Prise en charge Corps',
-            'label' => 'Contribution Prise en charge Corps',
-            'description' => NULL,
-            'is_deductible' => TRUE,
-            'is_reserved' => FALSE,
-            'is_active' => FALSE,   // a mettre a false hors Tours
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'FinancialType',
-          'values' => [
-              'name' => 'Campaign Contribution',
-              'label' => 'Contribution à la campagne',
-              'description' => NULL,
-              'is_deductible' => FALSE,
-              'is_reserved' => FALSE,
-              'is_active' => FALSE,
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'FinancialType',
-          'values' => [
-              'name' => 'Event Fee',
-              'label' => 'Inscription évenement',
-              'description' => NULL,
-              'is_deductible' => FALSE,
-              'is_reserved' => FALSE,
-              'is_active' => FALSE,
-          ],
-      ];
-      create_entity($to_create);
-      // fin de la création des types  de contributions financieres
-
-    $msg= "  - Création/inactivation des status de contribution ".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'option_group_id:name' => 'contribution_status',
-              'label' => 'Encaissé',
-              'name' => 'Completed',
-              'grouping' => NULL,
-              'filter' => 0,
-              'is_default' => FALSE,
-              'weight' => 1,
-              'description' => NULL,
-              'is_optgroup' => FALSE,
-              'is_reserved' => TRUE,
-              'is_active' => TRUE,
-              'component_id' => NULL,
-              'domain_id' => NULL,
-              'visibility_id' => NULL,
-              'icon' => NULL,
-              'color' => NULL,
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'option_group_id:name' => 'contribution_status',
-              'label' => 'Promesse de don',
-              'name' => 'Pending',
-              'grouping' => NULL,
-              'filter' => 0,
-              'is_default' => TRUE,
-              'weight' => 1,
-              'description' => NULL,
-              'is_optgroup' => FALSE,
-              'is_reserved' => TRUE,
-              'is_active' => TRUE,
-              'component_id' => NULL,
-              'domain_id' => NULL,
-              'visibility_id' => NULL,
-              'icon' => NULL,
-              'color' => NULL,
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'option_group_id:name' => 'contribution_status',
-              'label' => 'Annulé',
-              'name' => 'Cancelled',
-              'grouping' => NULL,
-              'filter' => 0,
-              'is_default' => FALSE,
-              'weight' => 3,
-              'description' => NULL,
-              'is_optgroup' => FALSE,
-              'is_reserved' => TRUE,
-              'is_active' => TRUE,
-              'component_id' => NULL,
-              'domain_id' => NULL,
-              'visibility_id' => NULL,
-              'icon' => NULL,
-              'color' => NULL,
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'name' => 'Failed',
-              'is_active' => FALSE,
-              'option_group_id:name' => 'contribution_status',
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'name' => 'Refunded',
-              'is_active' => FALSE,
-              'option_group_id:name' => 'contribution_status',
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'name' => 'Partially paid',
-              'is_active' => FALSE,
-              'option_group_id:name' => 'contribution_status',
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'name' => 'Pending refund',
-              'is_active' => FALSE,
-              'option_group_id:name' => 'contribution_status',
-          ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'name' => 'Chargeback',
-              'is_active' => FALSE,
-              'option_group_id:name' => 'contribution_status',
-          ],
-      ];
-      create_entity($to_create);
-
-
-      $to_create =  [
-          'entity' => 'OptionValue',
-          'values' => [
-              'name' => 'Template',
-              'is_active' => FALSE,
-              'option_group_id:name' => 'contribution_status',
-          ],
-      ];
-      create_entity($to_create);
-      // Fin de la création des statuts de contribution
-
-    $msg= "  - Création/inactivation des modes de paiement".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'payment_instrument',
-          'is_active' => FALSE,
-          'name' => 'Credit Card',
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'payment_instrument',
-          'is_active' => FALSE,
-          'name' => 'Debit Card',
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'payment_instrument',
-          'is_active' => TRUE,
-          'name' => 'Cash',
-          'label' => 'Espèces',
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'payment_instrument',
-          'is_active' => TRUE,
-          'name' => 'Check',
-          'label' => 'Chèque Bancaire',
-          'weight' => 1,
-          'is_default' => TRUE,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'payment_instrument',
-          'is_active' => TRUE,
-          'name' => 'EFT',
-          'label' => 'Virement',
-          'weight' => 2,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'payment_instrument',
-          'is_active' => TRUE,
-          'name' => 'Leg',
-          'label' => 'Leg',
-          'value' => '6',
-          'grouping' => NULL,
-          'filter' => 0,
-          'is_default' => FALSE,
-          'weight' => 3,
-          'description' => NULL,
-          'is_optgroup' => FALSE,
-          'is_reserved' => FALSE,
-          'component_id' => NULL,
-          'domain_id' => NULL,
-          'visibility_id' => NULL,
-          'icon' => NULL,
-          'color' => NULL,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'payment_instrument',
-          'is_active' => TRUE,
-          'name' => 'Assurance',
-          'label' => 'Assurance',
-          'option_group_id' => 10,
-          'value' => '7',
-          'grouping' => NULL,
-          'filter' => 0,
-          'is_default' => FALSE,
-          'weight' => 4,
-          'description' => NULL,
-          'is_optgroup' => FALSE,
-          'is_reserved' => FALSE,
-          'component_id' => NULL,
-          'domain_id' => NULL,
-          'visibility_id' => NULL,
-          'icon' => NULL,
-          'color' => NULL,
-        ],
-      ];
-      create_entity($to_create);
-      // Fin de Création des modes de paiement
-
-    /* $msg= "  - Création/inactivation des types d'evenements".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'label' => "Cérémonie d'hommage",
-          'value' => '100',
-          'name' => 'Cérémonie Hommage',
-          'grouping' => NULL,
-          'filter' => 0,
-          'is_default' => TRUE,
-          'weight' => 1,
-          'description' => NULL,
-          'is_optgroup' => FALSE,
-          'is_reserved' => FALSE,
-          'is_active' => TRUE,
-          'component_id' => NULL,
-          'domain_id' => NULL,
-          'visibility_id' => NULL,
-          'icon' => NULL,
-          'color' => NULL,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'label' => "Activité au laboratoire",
-          'value' => '101',
-          'name' => 'Activité au laboratoire',
-          'grouping' => NULL,
-          'filter' => 0,
-          'is_default' => TRUE,
-          'weight' => 1,
-          'description' => NULL,
-          'is_optgroup' => FALSE,
-          'is_reserved' => FALSE,
-          'is_active' => TRUE,
-          'component_id' => NULL,
-          'domain_id' => NULL,
-          'visibility_id' => NULL,
-          'icon' => NULL,
-          'color' => NULL,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'name' => 'Exhibition',
-          'is_active' => FALSE,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'name' => 'Fundraiser',
-          'is_active' => FALSE,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'name' => 'Meeting',
-          'is_active' => FALSE,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'name' => 'Performance',
-          'is_active' => FALSE,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'name' => 'Workshop',
-          'is_active' => FALSE,
-        ],
-      ];
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'event_type',
-          'name' => 'Conference',
-          'is_active' => FALSE,
-        ],
-      ];
-
-
-
-
-      create_entity($to_create);
-      // fin de Création des types d'evenements */
-
-    $msg= "  - Création/inactivation des types de participants".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'participant_role',
-          'label' => 'Invité',
-          'value' => '1',
-          'name' => 'Attendee',
-          'grouping' => NULL,
-          'filter' => 1,
-          'is_default' => TRUE,
-          'weight' => 1,
-          'description' => NULL,
-          'is_optgroup' => FALSE,
-          'is_reserved' => FALSE,
-          'is_active' => TRUE,
-          'component_id' => NULL,
-          'domain_id' => NULL,
-          'visibility_id' => NULL,
-          'icon' => NULL,
-          'color' => NULL,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'participant_role',
-          'label' => 'Organisateur',
-          'value' => '2',
-          'name' => 'Volunteer',
-          'weight' => 2,
-          'is_active' => TRUE,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'participant_role',
-          'name' => 'Host',
-          'is_active' => FALSE,
-        ],
-      ];
-      create_entity($to_create);
-
-      $to_create =  [
-        'entity' => 'OptionValue',
-        'values' => [
-          'option_group_id:name' => 'participant_role',
-          'name' => 'Speaker',
-          'is_active' => FALSE,
-        ],
-      ];
-      create_entity($to_create);
-
-      // Fin de création des types de participants
-
-    $msg= "  - Création/inactivation des Statuts de participants".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-      $results = civicrm_api4('ParticipantStatusType', 'update', [ // on inactive tous les sttuts non reliée à l'appli
-        'values' => [
-          'is_active' => FALSE,
-        ],
-        'where' => [
-          ['base_module', 'NOT CONTAINS ONE OF', 'don_corps'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-       $to_create =  [   // On waitlist / invité
-        'entity' => 'ParticipantStatusType',
-        'values' => [
-          'name' => 'On waitlist',
-          'label' => 'Invité',
-          'class' => 'Waiting',
-          'is_reserved' => TRUE,
-          'is_active' => TRUE,
-          'is_counted' => FALSE,
-          'weight' => 1,
-          'visibility_id' => 1,
-        ],
-        ];
-        create_entity($to_create);
-
-      $to_create =  [   // Registered / confirmé
-        'entity' => 'ParticipantStatusType',
-        'values' => [
-          'name' => 'Registered',
-          'label' => 'Confirmé',
-          'class' => 'Positive',
-          'is_reserved' => TRUE,
-          'is_active' => TRUE,
-          'is_counted' => TRUE,
-          'weight' => 2,
-          'visibility_id' => 1,
-        ],
-        ];
-        create_entity($to_create);
-
-      $to_create =  [   // Cancelled / Annulé - Refus
-        'entity' => 'ParticipantStatusType',
-        'values' => [
-          'name' => 'Cancelled',
-          'label' => 'Annulé - Refus',
-          'class' => 'Negative',
-          'is_reserved' => TRUE,
-          'is_active' => TRUE,
-          'is_counted' => FALSE,
-          'weight' => 3,
-          'visibility_id' => 2,
-        ],
-        ];
-        create_entity($to_create);
-        // Fin de création des statuts de participants
-
-
-
-    $msg= "  - Création des relations spécifiques à l'application".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'Child of',
-            'label_a_b' => 'Enfant de',
-            'name_b_a' => 'Parent of',
-            'label_b_a' => 'Parent de',
-            'description' => 'Relation enfant/Parent.',
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Individual',
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'Partner of',
-            'label_a_b' => 'Conjoint de',
-            'name_b_a' => 'Partner of',
-            'label_b_a' => 'Conjoint de',
-            'description' => 'Relation conjoints',
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Individual',
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'a pour personne de confiance',
-            'label_a_b' => E::ts('a pour personne de confiance'),
-            'name_b_a' => 'est la personne de confiance de',
-            'label_b_a' => E::ts('est la personne de confiance de'),
-            'description' => E::ts('personne confiance'),
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Individual',
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'a pour personne de confiance 2',
-            'label_a_b' => E::ts('a pour personne de confiance 2'),
-            'name_b_a' => 'est la personne de confiance 2',
-            'label_b_a' => E::ts('est la personne de confiance 2'),
-            'description' => E::ts('personne de confiance alternative'),
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Individual',
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'a pour PAQPF',
-            'label_a_b' => E::ts('a pour PAQPF'),
-            'name_b_a' => 'est la PAQPF',
-            'label_b_a' => E::ts('est la PAQPF'),
-            'description' => E::ts('Personne ayant qualité pour pourvoir aux funérailles'),
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Individual',
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'en attente',
-            'label_a_b' => E::ts('en attente'),
-            'name_b_a' => 'en attente',
-            'label_b_a' => E::ts('en attente'),
-            'description' => E::ts('en attente de creation'),
-            'contact_type_a' => NULL,
-            'contact_type_b' => NULL,
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'Sibling of',
-            'label_a_b' => 'Frère/Soeur de',
-            'name_b_a' => 'Sibling of',
-            'label_b_a' => 'Frère/Soeur de',
-            'description' => 'Frère/Soeur',
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Individual',
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => FALSE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-
-        $to_create =  [
-          'entity' => 'RelationshipType',
-          'values' => [
-            'name_a_b' => 'Employee of',
-            'label_a_b' => 'Employé de',
-            'name_b_a' => 'Employer of',
-            'label_b_a' => 'Employeur de',
-            'description' => 'Relation employé/employeur',
-            'contact_type_a' => 'Individual',
-            'contact_type_b' => 'Organization',
-            'contact_sub_type_a' => NULL,
-            'contact_sub_type_b' => NULL,
-            'is_reserved' => TRUE,
-            'is_active' => TRUE,
-          ],
-        ];
-        create_entity($to_create);
-      // Fin de création des relations
-
-    $msg= "  - Déactivation des relations par défaut".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-      deactivate_relation_type ('Spouse of');
-      deactivate_relation_type ('Volunteer for');
-      deactivate_relation_type ('Head of Household for');
-      deactivate_relation_type ('Household Member of');
-      deactivate_relation_type ('Case Coordinator is');
-      deactivate_relation_type ('Supervised by');
-      // Fin de la Déactivation des types de relation par défaut
-      echo PHP_EOL."##### L'etape suivante est longue (plusieurs minutes) - Soyez patient ! #####".PHP_EOL;
-
-
-
-   /*     $msg= "  - Déactivation des champs du profil par defaut ".PHP_EOL; // sans cela le profil contient de champs suppléntaiers
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-      $results = civicrm_api4('UFField', 'update', [
-        'values' => [
-          'is_active' => FALSE,
-        ],
-        'where' => [
-          ['uf_group_id:name', '=', 'name_and_address'],
-        ],
-        'checkPermissions' => FALSE,
-      ]);
-
-      // Fin de Déactivation des champs du profil par defaut */
-
-    _don_corps_civix_civicrm_install();
-  }
-
-# IMPLEMENTS hook_civicrm_enable(). // LOG OK
-  #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
-
-
-  function don_corps_civicrm_enable(): void {   // pas d'affcicahge des messages consoles lors installation
-     }
-
-
-# IMPLEMENTS hook_civicrm_postInstall().
-  #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
-
-  function don_corps_civicrm_postInstall() {
-    $msg= PHP_EOL."@@@  hook_civicrm_postinstall ".PHP_EOL;
-    echo $msg;
-    $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-    fwrite($fp, $msg);
-
     $msg="  - Modification des parametres de localisation, date...".PHP_EOL; //LOG OK // modification des parametres de localisation, date....utilise apiv3 car non porté en V4 pour le moment
+        
       echo $msg;
-      fwrite($fp, $msg);
-      fclose($fp);
+      \Civi::log()->info("don_corps : ".$msg);
+      
       $result = civicrm_api3('Setting', 'create', [
         'dateformatDatetime'=> "%e %B %Y",
         // 'dateformatDatetime'=> "%e %B %Y %H:%M",
@@ -4195,9 +4092,9 @@ chgrp(LOGFILE, $grp);
 
     $msg="  - Modification des tags".PHP_EOL; // LOG OK
       echo $msg;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
       $entities[] =
       [
         'module' => 'don_corps',
@@ -4224,17 +4121,17 @@ chgrp(LOGFILE, $grp);
 
     $msg="  - Ajout des centres de don du corps".PHP_EOL;// LOG OK
       echo $msg;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
       $exp_dir = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/");;    // racine du répertoire d'import export
       ajoute_CDC($exp_dir);
 
 
     $msg="  - Désactivation des menus par défaut".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
 
       deactivate_menu('Contacts');
       deactivate_menu('Search');
@@ -4245,8 +4142,8 @@ chgrp(LOGFILE, $grp);
       deactivate_menu('Support');
 
     $msg="  - Reglage des règles de dédoublonage".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
       #####
       # Lors de l acréation des dedupe rules en utilisant les fichier mgd, les champs sont mal mappés
@@ -4261,7 +4158,7 @@ chgrp(LOGFILE, $grp);
           # "Supervised" : lancée si création depuis l'interface utilisateur
           # "Unsupervised" : lancée si creation online ou import de contact
           $msg= "      -> Passage des usages de tous les groupes de règles de dédoublonage à General".PHP_EOL;
-            fwrite($fp, $msg);
+            \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
             echo $msg;
             }
@@ -4326,7 +4223,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
                   ]);
                   $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  fwrite($fp, $msg);
+                  \Civi::log()->info("don_corps : ".$msg);
                   if (VERBOSE==1){
                     echo $msg;
                   }
@@ -4345,7 +4242,7 @@ chgrp(LOGFILE, $grp);
                       'checkPermissions' => FALSE,
                       ]);
                       $msg= " et suppression des règles attachées";
-                      fwrite($fp, $msg);
+                      \Civi::log()->info("don_corps : ".$msg);
                       if (VERBOSE==1){
                         echo $msg;
                       }
@@ -4364,13 +4261,13 @@ chgrp(LOGFILE, $grp);
                   ]);
 
               $msg= "      -> Création groupe de règles de dédoublonage";
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
           }
           $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
             echo $msg;
           }
@@ -4386,7 +4283,7 @@ chgrp(LOGFILE, $grp);
               'checkPermissions' => FALSE,
               ]);
               $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -4420,7 +4317,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
                   ]);
                   $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  fwrite($fp, $msg);
+                  \Civi::log()->info("don_corps : ".$msg);
                   if (VERBOSE==1){
                     echo $msg;
                   }
@@ -4440,7 +4337,7 @@ chgrp(LOGFILE, $grp);
                       'checkPermissions' => FALSE,
                       ]);
                       $msg= " et suppression des règles attachées";
-                      fwrite($fp, $msg);
+                      \Civi::log()->info("don_corps : ".$msg);
                       if (VERBOSE==1){
                         echo $msg;
                       }
@@ -4459,13 +4356,13 @@ chgrp(LOGFILE, $grp);
                   ]);
 
               $msg= "      -> Création groupe de règles de dédoublonage";
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
           }
           $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
             echo $msg;
           }
@@ -4481,7 +4378,7 @@ chgrp(LOGFILE, $grp);
               'checkPermissions' => FALSE,
               ]);
               $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
-                        fwrite($fp, $msg);
+                        \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -4526,7 +4423,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
                   ]);
                   $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  fwrite($fp, $msg);
+                  \Civi::log()->info("don_corps : ".$msg);
                   if (VERBOSE==1){
                     echo $msg;
                   }
@@ -4546,7 +4443,7 @@ chgrp(LOGFILE, $grp);
                       'checkPermissions' => FALSE,
                       ]);
                       $msg= " et suppression des règles attachées";
-                      fwrite($fp, $msg);
+                      \Civi::log()->info("don_corps : ".$msg);
                       if (VERBOSE==1){
                         echo $msg;
                       }
@@ -4565,13 +4462,13 @@ chgrp(LOGFILE, $grp);
                   ]);
 
               $msg= "      -> Création groupe de règles de dédoublonage";
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
           }
           $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
             echo $msg;
           }
@@ -4587,7 +4484,7 @@ chgrp(LOGFILE, $grp);
               'checkPermissions' => FALSE,
               ]);
               $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
@@ -4621,7 +4518,7 @@ chgrp(LOGFILE, $grp);
                   'checkPermissions' => FALSE,
                   ]);
                   $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  fwrite($fp, $msg);
+                  \Civi::log()->info("don_corps : ".$msg);
                   if (VERBOSE==1){
                     echo $msg;
                   }
@@ -4642,7 +4539,7 @@ chgrp(LOGFILE, $grp);
                       ]);
 
                       $msg= " et suppression des règles attachées";
-                      fwrite($fp, $msg);
+                      \Civi::log()->info("don_corps : ".$msg);
                       if (VERBOSE==1){
                         echo $msg;
                       }
@@ -4661,14 +4558,14 @@ chgrp(LOGFILE, $grp);
                   ]);
 
               $msg= "      -> Création groupe de règles de dédoublonage";
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
           }
 
           $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
             echo $msg;
           }
@@ -4685,39 +4582,33 @@ chgrp(LOGFILE, $grp);
               ]);
 
               $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
-              fwrite($fp, $msg);
+              \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
                 echo $msg;
               }
           }
 
-     fclose($fp); // ferme fichier de log
+      // ferme fichier de log
 
      /// Fin de Reglage des règles de dédoublonage
 
 
     $msg="  - Modification des filtres de champs personnalisés".PHP_EOL; // permet de n'afficher que certains contacts pour certains champs
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
+      \Civi::log()->info("don_corps : ".$msg);
+      //\Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Pr_par_par', 'Personnel_centre_de_don_77'); // INUTILE CAR DEFINITION SUR LE SUBTYPE NON SUR GROUPE
+      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Lacalisation', 'Emprunteurs_44');
+      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('D_posant', 'groupe_d_posants_porteurs_potent_24');
+      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Demandeur', 'groupe_d_posants_porteurs_potent_24');
 
-      modif_filtre('Pr_par_par','Personnel_centre_de_don_77');
-      modif_filtre('Lacalisation','Emprunteurs_44');
-
-      // fin de modification des filtre de champs personnalisés
-
-
-
-
+    
 
     $msg="  - Création des Rules".PHP_EOL;
       create_rules();
     $msg="  - Modification des requetes".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
-      fclose($fp);
+      
       // Modifie les requetes qui ne sont pas correctement importées
       //  sur le serveur maitre,
       //  - dans Searchkit retrouver l'id de la requete en posant la souris sur modifier, l'adresse se modifie ds la basse du bas et donne l'id
@@ -6068,10 +5959,10 @@ chgrp(LOGFILE, $grp);
       */
 
     $msg="  - Changement des icones de menus".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
-      fclose($fp);
+      
 
       change_icon('Contributions','crm-i fa-money-bill-1');
       change_icon('Events','crm-i fa-users');
@@ -6082,10 +5973,10 @@ chgrp(LOGFILE, $grp);
      /// Modification des menus de navigation liés aux profil de création de contacts
 
     $msg="  - Création des templates d'emails".PHP_EOL; // (hors ceux crees par les rules)
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
-      fclose($fp);
+      
 
       $to_create =  [
         'entity' => 'MessageTemplate',
@@ -6202,10 +6093,10 @@ chgrp(LOGFILE, $grp);
 
 
     $msg="  - Création des Templates de cérémonie".PHP_EOL; //les statuts et les roles des participants doivent etre crées en amont
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
-      fclose($fp);
+      
 
       $to_create =  [
           'entity' => 'Event',
@@ -6286,16 +6177,16 @@ chgrp(LOGFILE, $grp);
 
 
     $msg="  - Modification des regles de message liés aux cérémonies".PHP_EOL; // si non supprimé un message est envoyé à l'inscription prevenant d'une liste d attente
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
 
       $msg="      -> Inactivation du message template de confirmation d'inscription".PHP_EOL; // si non supprimé un message est envoyé à l'inscription prevenant d'une liste d attente
-        fwrite($fp, $msg);
+        \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
           echo $msg;
         }
-        fclose($fp);
+        
 
         $to_create =  [
             'entity' => 'MessageTemplate',
@@ -6310,14 +6201,14 @@ chgrp(LOGFILE, $grp);
           create_entity($to_create);
 
         $msg="      -> Modification des règles de message".PHP_EOL;
-        $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-        fwrite($fp, $msg);
+        
+        \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
           echo $msg;
         }
 
       $msg="         Message : 300 Cérémonie invitation (email) pour statut On waitlist (Invité)".PHP_EOL;
-        fwrite($fp, $msg);
+        \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
           echo $msg;
         }
@@ -6364,16 +6255,16 @@ chgrp(LOGFILE, $grp);
 
         } else {
           echo "         Message template, statut, ou évenement manquent".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
         }
-        fclose($fp);
+        
         create_entity($to_create);
 
 
       $msg="         Message : 310 Cérémonie confirmation  (email) pour statut Registered (Confirmé)".PHP_EOL;
-        $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-        fwrite($fp, $msg);
+        
+        \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
           echo $msg;
         }
@@ -6419,16 +6310,16 @@ chgrp(LOGFILE, $grp);
 
         } else {
           $msg="         Message template, statut, ou évenement manquent".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
         }
-        fclose($fp);
+        
         create_entity($to_create);
 
 
       $msg="         Message : 320 Cérémonie non inscription  (email) pour statut Cancelled (Annulé)".PHP_EOL;
-        $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-        fwrite($fp, $msg);
+        
+        \Civi::log()->info("don_corps : ".$msg);
         echo $msg;
 
         $messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// récupère l'id du MessageTemplate
@@ -6473,19 +6364,19 @@ chgrp(LOGFILE, $grp);
 
         } else {
           $msg="         Message template, statut, ou évenement manquent".PHP_EOL;
-          fwrite($fp, $msg);
+          \Civi::log()->info("don_corps : ".$msg);
           echo $msg;
         }
-        fclose($fp);
+        
         create_entity($to_create);
 
 
 
     $msg="  - Modification des profils personnalisés".PHP_EOL;// LOG OK
       echo $msg;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
+      
+      \Civi::log()->info("don_corps : ".$msg);
+      
       # Lors de la création de profils de formulaires ou de custom layouts, des profils personnalisés sont générés
       # ils regroupent des champs personnalisés qui sont identifiés par custom_XX avec XX l'id du customfield correspondant
       # Lors d'une nouvelle installation les id des custom fields peuvent varier ce qui induit une incohérence
@@ -6516,10 +6407,8 @@ chgrp(LOGFILE, $grp);
 
     $msg = "  - Mise à jour des groupes des SavedSearch" . PHP_EOL;
       echo $msg;
-
-      $fp = fopen(LOGFILE, 'a');
-      fwrite($fp, $msg);
-      fclose($fp);
+      \Civi::log()->info("don_corps : ".$msg);
+      
 
       UpdateSearchGroups::updateAll();
     // fin MAJ des groupes des SavedSearch
@@ -6527,7 +6416,7 @@ chgrp(LOGFILE, $grp);
 
   }   // fin Implements hook_civicrm_postInstall().
 
-#IMPLEMENTS hook_civicrm_container().
+# IMPLEMENTS hook_civicrm_container().
   function don_corps_civicrm_container(ContainerBuilder $container): void {
   ## Ajoute l'action imprimer document civioffice dans les utilisations du corps
   $container->autowire(\Civi\EventSubscriber\CiviOfficeSearchKitTaskSubscriber::class)->addTag('kernel.event_subscriber');
@@ -6542,10 +6431,8 @@ chgrp(LOGFILE, $grp);
 
   function don_corps_civicrm_uninstall() {
     $msg="  - Activation des menus par défaut".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
+      \Civi::log()->info("don_corps : ".$msg);
       echo $msg;
-      fclose($fp);
 
       activate_menu('Contacts');
       activate_menu('Search');
@@ -6557,3 +6444,22 @@ chgrp(LOGFILE, $grp);
 
 
   }
+  # IMPLEMENTS hook_civicrm_uninstall(). Lnacé à chaque flush
+
+ /*  function don_corps_civicrm_cleanup_caches() {
+
+  \Civi::log()->info("don_corps : vide la cache");
+    try {
+      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('D_posant', 'groupe_d_posants_porteurs_potent_24');
+    }
+    catch (\Throwable $e) {
+      \Civi::log()->error('don_corps : ' . $e->getMessage());
+    }
+
+    try {
+      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Demandeur', 'groupe_d_posants_porteurs_potent_24');
+    }
+    catch (\Throwable $e) {
+      \Civi::log()->error('don_corps : ' . $e->getMessage());
+    }
+} */

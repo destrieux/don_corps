@@ -1,0 +1,52 @@
+<af-form ctrl="afform">
+  <af-entity actions="{create: true, update: true}" type="Event" name="Event1" label="&Eacute;v&eacute;nement 1" security="RBAC" url-autofill="1" />
+  <fieldset af-fieldset="Event1" class="af-container">
+    <div class="af-container af-container-style-pane" af-title="Saisine">
+      <af-field name="Caract_ristiques_de_l_activit_.id_de_saisine" defn="{label: false, input_attrs: {}}" />
+    </div>
+    <div class="af-container af-layout-cols">
+      <div class="af-container af-container-style-pane" af-title="Caract&eacute;ristiques de l'activit&eacute;">
+        <af-field name="title" defn="{input_attrs: {}, required: true}" />
+        <af-field name="event_type_id" defn="{afform_default: 101, input_attrs: {}, input_type: 'Hidden'}" />
+        <af-field name="default_role_id" defn="{afform_default: 1, input_attrs: {}, input_type: 'Hidden'}" />
+        <div class="af-container af-layout-cols">
+          <af-field name="start_date" defn="{label: 'D&eacute;but', input_attrs: {}, required: true}" />
+          <af-field name="end_date" defn="{label: 'Fin', input_attrs: {}, required: true}" />
+        </div>
+        <af-field name="Caract_ristiques_de_l_activit_.En_attente_de_confirmation" defn="{label: 'Confirm&eacute;'}" />
+        <div class="af-container">
+          <af-field name="Donn_es_techniques.Remarques" defn="{label: 'Remarques'}" />
+        </div>
+      </div>
+      <div class="af-container">
+        <div class="af-container af-layout-inline af-container-style-pane" af-title="Nombre de Corps">
+          <af-field name="Donn_es_techniques.Nombre_de_corps_sans_segmentation" defn="{label: 'Sans segmentation', input_attrs: {}}" />
+          <af-field name="Donn_es_techniques.Nombre_de_corps_avec_segmentation" defn="{label: 'Avec segmentation', input_attrs: {}}" />
+          <af-field name="Donn_es_techniques.Nombre_de_corps_avec_prel_vement_d_organe_ou_de_tissu" defn="{label: 'Avec pr&eacute;l&egrave;vement', input_attrs: {}}" />
+          <af-field name="Donn_es_techniques.Nombre_de_corps_avec_sortie_temporaire_corps_tissus_organes_" defn="{label: 'Sortie temporaire', input_attrs: {}}" />
+        </div>
+        <div class="af-container af-container-style-pane" af-title="Installation et technique de conservation">
+          <af-field name="Donn_es_techniques.Conservation" defn="{input_attrs: {}, label: 'Conservation'}" />
+          <af-field name="Donn_es_techniques.Installation_des_corps" defn="{input_attrs: {}, label: 'Installation'}" />
+        </div>
+        <div class="af-container af-layout-inline af-container-style-pane" af-title="Participants">
+          <af-field name="Participants.Nombre_d_apprenants" defn="{label: 'Apprenants', input_attrs: {}}" />
+          <af-field name="Participants.Nombre_de_formateurs" defn="{label: 'Formateurs / Chercheurs', input_attrs: {}}" />
+          <af-field name="Participants.Nombre_de_Staff" defn="{label: '&nbsp;Staff', input_attrs: {}}" />
+        </div>
+        <div class="af-container af-container-style-pane" af-title="Feuille d'&eacute;margement">
+          <af-field name="Documents_de_l_activit_.Feuille_d_margement" defn="{label: false, input_attrs: {}}" />
+        </div>
+        <div class="af-container af-layout-inline af-container-style-pane" af-title="Tarifs">
+          <af-field name="Participants.Tarif_par_apprenant" defn="{label: 'Apprenants', input_attrs: {}}" />
+          <af-field name="Participants.Tarif_par_formateur" defn="{label: 'Formateurs / Chercheurs', input_attrs: {}}" />
+          <af-field name="Participants.Tarif_par_staff" defn="{label: 'Staff', input_attrs: {}}" />
+        </div>
+      </div>
+      <afblock-saisine-display actions="{update: true, delete: true}"></afblock-saisine-display>
+    </div>
+    <div class="af-container">
+      <button class="af-button btn btn-primary" crm-icon="fa-check" ng-click="afform.submit()" ng-if="afform.showSubmitButton">Soumettre</button>
+    </div>
+  </fieldset>
+</af-form>

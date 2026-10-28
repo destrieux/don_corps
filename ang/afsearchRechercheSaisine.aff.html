@@ -1,0 +1,20 @@
+<div af-fieldset="">
+  <div class="af-container af-layout-cols">
+    <div class="af-container">
+      <af-field name="label" defn="{required: false, input_attrs: {}}" />
+      <div class="af-container af-layout-cols">
+        <af-field name="caracteristiques.Date_d_but_de_validit_" defn="{input_type: 'Select', search_range: true, input_attrs: {}, label: 'D&eacute;but de validit&eacute;'}" />
+        <af-field name="caracteristiques.Date_fin_de_validit_" defn="{input_type: 'Select', search_range: true, input_attrs: {}, label: 'Fin de validit&eacute;'}" />
+      </div>
+    </div>
+    <div class="af-container">
+      <af-field name="suivi.Saisine" defn="{input_attrs: {multiple: true}, label: 'Etat de la saisine'}" />
+      <af-field name="suivi.Devis" defn="{input_attrs: {multiple: true}, label: 'Etat du devis'}" />
+    </div>
+    <div class="af-container">
+      <af-field name="suivi.Convention" defn="{input_attrs: {multiple: true}, label: 'Etat de la convention'}" />
+      <af-field name="suivi.CESP" defn="{input_attrs: {multiple: true}, label: 'Etat de l\'avis du CESP'}" />
+    </div>
+  </div>
+  <crm-search-display-table search-name="test_saisines" display-name="Saisines_Table_1"></crm-search-display-table>
+</div>

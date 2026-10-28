@@ -20,27 +20,6 @@ return [
     ],
   ],
   [
-    'name' => 'OptionGroup_event_type_OptionValue_C_r_monie_Hommage',
-    'entity' => 'OptionValue',
-    'cleanup' => 'unused',
-    'update' => 'unmodified',
-    'params' => [
-      'version' => 4,
-      'values' => [
-        'option_group_id.name' => 'event_type',
-        'label' => E::ts('Cérémonie d\'hommage'),
-        'value' => '100',
-        'name' => 'Cérémonie Hommage',
-        'is_default' => TRUE,
-      ],
-      'match' => [
-        'option_group_id',
-        'name',
-        'value',
-      ],
-    ],
-  ],
-  [
     'name' => 'OptionGroup_event_type_OptionValue_Conference',
     'entity' => 'OptionValue',
     'cleanup' => 'unused',
@@ -137,6 +116,47 @@ return [
         'value' => '5',
         'name' => 'Performance',
         'is_active' => FALSE,
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_event_type_OptionValue_Workshop',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'event_type',
+        'label' => E::ts('Atelier'),
+        'value' => '6',
+        'name' => 'Workshop',
+      ],
+      'match' => [
+        'option_group_id',
+        'name',
+        'value',
+      ],
+    ],
+  ],
+  [
+    'name' => 'OptionGroup_event_type_OptionValue_C_r_monie_Hommage',
+    'entity' => 'OptionValue',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'option_group_id.name' => 'event_type',
+        'label' => E::ts('Cérémonie d\'hommage'),
+        'value' => '100',
+        'name' => 'Cérémonie Hommage',
+        'is_default' => TRUE,
       ],
       'match' => [
         'option_group_id',

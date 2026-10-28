@@ -14,7 +14,7 @@ return [
         'name' => 'ContactsDDC',
         'icon' => 'crm-i fa-address-book-o',
         'has_separator' => NULL,
-        'weight' => 30,
+        'weight' => 31,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -81,7 +81,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvel organisateur'),
         'name' => 'Nouvel organisateur',
-        'url' => 'civicrm/profile/create/?gid=31&reset=1',
+        'url' => 'civicrm/profile/create/?gid=32&reset=1',
         'permission' => ['add contacts'],
         'permission_operator' => 'AND',
         'parent_id.name' => 'ContactsDDC',
