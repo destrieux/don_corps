@@ -87,6 +87,19 @@ return [
                 'target' => '_blank',
                 'task' => '',
               ],
+              'cssRules' => [
+                [
+                  'bg-danger',
+                  'Event_Saisine_id_de_saisine_01.label',
+                  'IS EMPTY',
+                ],
+                [
+                  'disabled',
+                  'Caract_ristiques_de_l_activit_.En_attente_de_confirmation',
+                  '=',
+                  FALSE,
+                ],
+              ],
             ],
             [
               'type' => 'field',
@@ -108,16 +121,6 @@ return [
                   'Caract_ristiques_de_l_activit_.En_attente_de_confirmation',
                   '=',
                   FALSE,
-                ],
-                [
-                  'bg-danger',
-                  'Event_Saisine_id_de_saisine_01.label',
-                  'IS EMPTY',
-                ],
-                [
-                  'bg-success',
-                  'Event_Saisine_id_de_saisine_01.label',
-                  'IS NOT EMPTY',
                 ],
               ],
             ],

@@ -13,6 +13,18 @@ use Civi\DonCorps\UpdateSearchGroups;   // impote update search group
  */
 class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
 
+  public function install(): void {
+    // Cette méthode n'est jouée qu'une fois à l'installation
+    // Elle en'est pas rejouée à l'upgrade
+    if (!CRM_Core_DAO::checkTableExists('civicrm_saisine')) {
+      E::schema()->createEntityTable('schema/Saisine.entityType.php');
+      $msg= "  - Création de la table civicrm_saisine";
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg.PHP_EOL;
+    }
+  }
+
+
   public function upgrade_2030() {
     echo 'Upgrade vers 2.0.3'.PHP_EOL;
     \Civi::log('don_corps')->info('Upgrade vers 2.0.3');
@@ -144,12 +156,13 @@ public function upgrade_2034(): bool {
     // crée la table civicrm_saisine
     // modifie les filtres sur les champs de type contact pour 'Déposants' et 'Demandeurs'
 
-  $msg= "  - Création de la table civicrm_saisine".PHP_EOL;
-  \Civi::log()->info("don_corps : ".$msg);
-
-  CRM_DonCorps_ExtensionUtil::schema()->createEntityTable(
-    'schema/Saisine.entityType.php'
-  );
+  $msg= "  - Création de la table civicrm_saisine";
+    if (!CRM_Core_DAO::checkTableExists('civicrm_saisine')) {
+      E::schema()->createEntityTable('schema/Saisine.entityType.php');
+      $msg= "  - Création de la table civicrm_saisine";
+      \Civi::log()->info("don_corps : ".$msg);
+      echo $msg.PHP_EOL;
+    }
 
   
   $msg="  - Modification des filtres de champs personnalisés".PHP_EOL; // permet de n'afficher que certains contacts pour certains champs

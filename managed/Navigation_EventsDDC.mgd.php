@@ -293,6 +293,26 @@ return [
     ],
   ],
   [
+    'name' => 'Navigation_EventsDDC_Navigation_Calendrier',
+    'entity' => 'Navigation',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'label' => E::ts('Abonnement calendrier'),
+        'name' => 'Calendrier',
+        'url' => 'civicrm/doncorps/ical-token',
+        'icon' => 'crm-i fa-calendar-days',
+        'permission' => ['access CiviCRM'],
+        'permission_operator' => 'AND',
+        'parent_id.name' => 'EventsDDC',
+        'has_separator' => 2,
+      ],
+      'match' => ['name', 'domain_id'],
+    ],
+  ],
+  [
     'name' => 'Navigation_EventsDDC_Navigation_Import_Participants',
     'entity' => 'Navigation',
     'cleanup' => 'unused',

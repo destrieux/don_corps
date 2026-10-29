@@ -214,7 +214,24 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
         return true;
   } // fin de définition de la fonction replaceInfile
 
+### Export de l'option Value OptionGroup_cg_extend_objects_Saisine
+  $name ='civicrm_saisine';
+  $optionValue = \Civi\Api4\OptionValue::get(FALSE)
+    ->addSelect('id')
+    ->addWhere('name', '=', $name)
+    ->execute()
+    ->first();
 
+    if ($optionValue) {
+      $cmd = "civix export OptionValue ".$optionValue['id'];
+      exec($cmd, $output, $retval);
+      echo "Returned with status $retval and output:\n";
+      print_r($output);
+      unset ($output);
+
+      rename('managed/OptionValue_'.$name.'.mgd.php', 'managed/05_OptionValue_'.$name.'.mgd.php');
+      
+    }
 
   # Export des UF Groups avec civix export
     $uFGroups = civicrm_api4('UFGroup', 'get', [
@@ -278,8 +295,6 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
     }
   # Fin de l'export des ContactLayouts avec civix export
 
-### Fin de l'export des contactlayouts
-
 ### Export des Tags
   $tags = civicrm_api4('Tag', 'get', [
       'select' => [
@@ -304,7 +319,6 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
       }
     }
 ### Fin de l'export des Tags
-
 
 ### Export des Saved searches non crées avec civix export afform (pour tokens et purges)
   $savedSearches = civicrm_api4('SavedSearch', 'get', [
@@ -410,9 +424,17 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
         echo "Returned with status $retval and output:\n";
         print_r($output);
         unset ($output);
+
+        rename('managed/OptionGroup_'.$optionGroup['name'].'.mgd.php', 'managed/05_OptionGroup_'.$optionGroup['name'].'.mgd.php');
+
       }
     }
+
+
+
+
 ### Fin de l'export des options de choix multiples (Option groups)
+
 
 ### Export des formulaires (afforms)
  # Lorsqu'on exporte un formulaire lié à une recherche, 

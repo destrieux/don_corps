@@ -25,15 +25,6 @@ use CRM_DonCorps_ExtensionUtil as E;
 use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouvelles actions pour utilation des corps
 use Civi\DonCorps\UpdateSearchGroups;
 
-
-  $msg= "  - Création de la table civicrm_saisine".PHP_EOL;
-  \Civi::log()->info("don_corps : ".$msg);
-
-  CRM_DonCorps_ExtensionUtil::schema()->createEntityTable(
-    'schema/Saisine.entityType.php'
-  );
-
-
 ## Gestion des logs
   define("VERBOSE","1"); // mettre à 1 pour afficher les messages lors de l'installation en plus des logs
 
@@ -242,16 +233,16 @@ $container
 
               case 'UFGroup':     // Création UF Group
 
-                  $msg= PHP_EOL.'Traitement de '.$entity." ".$entitie['params']['values']['name'].PHP_EOL;
+                  $msg='Traitement de '.$entity." ".$entitie['params']['values']['name'];
                   \Civi::log()->info("don_corps : ".$msg);
-                  echo $msg;
+                  echo $msg.PHP_EOL;
 
                   // Si l'UF group comporte une  url à charger apres creation du contact en utilisant le profil on la maj
                   if(isset($entitie['params']['values']['post_url'])){
                       $entitie['params']['values']['post_url'] = admin_url("admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid=")."{contact.id}";
-                      $msg= "         Réécriture url à afficher apres utilisation du profil".PHP_EOL;
+                      $msg= "         Réécriture url à afficher apres utilisation du profil";
                       \Civi::log()->info("don_corps : ".$msg);
-                      echo $msg;
+                      echo $msg.PHP_EOL;
 
                   }
 
@@ -301,9 +292,9 @@ $container
                           'checkPermissions' => FALSE,
                           ]);
 
-                      $msg = "         Suppression des UF Fields liés à cet UFGroup".PHP_EOL;
+                      $msg = "         Suppression des UF Fields liés à cet UFGroup";
                       \Civi::log()->info("don_corps : ".$msg);
-                      echo $msg;
+                      echo $msg.PHP_EOL;
 
                   // Si ce customgroup est utilisé par un contact layout on crée l'UFJoin
                       $contactLayouts = civicrm_api4('ContactLayout', 'get', [
@@ -322,10 +313,10 @@ $container
                                   $profiles=$block;
                                   foreach ($profiles as $profile){
                                           if ($profile['name']=='profile.'.$entitie['params']['values']['name']){         // Profil utilisé par un CaontactLayout
-                                              $msg = '         UFGroup attaché à un Contact Layout : Traitement des UFJoins'.PHP_EOL;
+                                              $msg = '         UFGroup attaché à un Contact Layout : Traitement des UFJoins';
                                               \Civi::log()->info("don_corps : ".$msg);
                                               if (VERBOSE==1){
-                                              echo $msg;
+                                              echo $msg.PHP_EOL;
                                               }
 
                                               $to_create =  [                                                 // modifie l'URL pour le menu
@@ -498,11 +489,11 @@ $container
 
             if (isset($value['employer_id'])){                     // si le contact a un champ employer_id non null
 
-            $msg="employer_id : ".$value['employer_id'].PHP_EOL;   // on en modifie la valeur par l'id de l'institution crée au préalable
+            $msg="employer_id : ".$value['employer_id'];   // on en modifie la valeur par l'id de l'institution crée au préalable
             \Civi::log()->info("don_corps : ".$msg);
 
             if (VERBOSE==1){
-              echo $msg;
+              echo $msg.PHP_EOL;
             }
 
             $employeur = civicrm_api4('Contact', 'get', [
@@ -518,16 +509,16 @@ $container
 
                 if (isset($employeur)){
                     $value['employer_id']=$employeur[0]['id'];
-                    $msg="employer_id new: ".$value['employer_id'].PHP_EOL;
+                    $msg="employer_id new: ".$value['employer_id'];
                     \Civi::log()->info("don_corps : ".$msg);
                     if (VERBOSE==1){
-                      echo $msg;
+                      echo $msg.PHP_EOL;
                     }
                 } else {
-                    $msg = "employer_id  extereal identifier n'existe pas : ".$value['employer_id '].PHP_EOL;
+                    $msg = "employer_id  extereal identifier n'existe pas : ".$value['employer_id '];
                     \Civi::log()->info("don_corps : ".$msg);
                     if (VERBOSE==1){
-                      echo $msg;
+                      echo $msg.PHP_EOL;
                     }
                  }
             }
@@ -547,10 +538,10 @@ $container
                 'values' => $value,
                 'checkPermissions' => FALSE,
                 ]);
-                $msg = "         ".$count." CREATION : ".$value['sort_name'].PHP_EOL;
+                $msg = "         ".$count." CREATION : ".$value['sort_name'];
                 \Civi::log()->info("don_corps : ".$msg);
                 if (VERBOSE==1){
-                  echo $msg;
+                  echo $msg.PHP_EOL;
                 }
                 ++$count;
 
@@ -565,10 +556,10 @@ $container
                 ],
                 'checkPermissions' => FALSE,
                 ]);
-                $msg= "         ".$count." MAJ : ".$value['sort_name']." | id : ".$id_to_update.PHP_EOL;
+                $msg= "         ".$count." MAJ : ".$value['sort_name']." | id : ".$id_to_update;
                 \Civi::log()->info("don_corps : ".$msg);
                 if (VERBOSE==1){
-                  echo $msg;
+                  echo $msg.PHP_EOL;
                 }
                 ++$count;
             }
@@ -583,15 +574,15 @@ $container
         }
 
         if (count($check)==count($values)) {    // le bon nombre de lignes a été importées
-            $msg= " ---> OK".PHP_EOL.PHP_EOL;
+            $msg= " ---> OK";
             \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
-              echo $msg;
+              echo $msg.PHP_EOL;
             }
         }else {
-        $msg ="---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+        $msg ="---> VERIFIER LIMPORT : LIGNES MANQUANTES";
         \Civi::log()->info("don_corps : ".$msg);
-        echo $msg;
+        echo $msg.PHP_EOL;
         }
         return ($check);
 
@@ -646,10 +637,10 @@ $container
               'values' => $value,
                   'checkPermissions' => FALSE,
               ]);
-              $msg= "         ".$count." CREATION adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg= "         ".$count." CREATION adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
               ++$count;
 
@@ -662,10 +653,10 @@ $container
                   ],
                   'checkPermissions' => FALSE,
               ]);
-              $msg= "         ".$count." MAJ adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg= "         ".$count." MAJ adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
               ++$count;
           }
@@ -680,15 +671,15 @@ $container
       }
 
           if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-              $msg= " ---> OK".PHP_EOL.PHP_EOL;
+              $msg= " ---> OK";
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
           }else {
-          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
           }
           return ($check);
 
@@ -755,10 +746,10 @@ $container
                   ],
                   'checkPermissions' => FALSE,
               ]);
-              $msg= "         ".$count." MAJ téléphone : ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg= "         ".$count." MAJ téléphone : ".$value['phone']." pour CDC id ".$value['contact_id'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
               ++$count;
               ++$count;
@@ -775,15 +766,15 @@ $container
               }
 
           if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-              $msg= " ---> OK".PHP_EOL.PHP_EOL;
+              $msg= " ---> OK";
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
           }else {
-          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
           }
           return ($check);
 
@@ -838,10 +829,10 @@ $container
               'values' => $value,
                   'checkPermissions' => FALSE,
               ]);
-              $msg= "         ".$count." CREATION email: ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg= "         ".$count." CREATION email: ".$value['email']." pour CDC id ".$value['contact_id'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
 
               ++$count;
@@ -855,10 +846,10 @@ $container
                   ],
                   'checkPermissions' => FALSE,
               ]);
-              $msg= "         ".$count." MAJ email : ".$value['email']." pour CDC id ".$value['contact_id'].PHP_EOL;
+              $msg= "         ".$count." MAJ email : ".$value['email']." pour CDC id ".$value['contact_id'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
               ++$count;
 
@@ -877,15 +868,15 @@ $container
       }
 
       if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-        $msg=" ---> OK".PHP_EOL.PHP_EOL;
+        $msg=" ---> OK";
         \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
       }else {
-      $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES".PHP_EOL;
+      $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES";
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       }
 
       
@@ -915,10 +906,10 @@ $container
 
     $role = get_role($roleName);
     if ($role) {
-      $msg= "         SUPPRESSION de toutes les permissions pour le role ".$roleName.PHP_EOL;
+      $msg= "         SUPPRESSION de toutes les permissions pour le role ".$roleName;
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
 
@@ -938,10 +929,10 @@ $container
 
     $role = get_role($roleName);
     if ($role) {
-      $msg="         AJOUT des permissions pour le role ".$roleName.PHP_EOL;
+      $msg="         AJOUT des permissions pour le role ".$roleName;
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
       foreach ($caps as $cap) {
@@ -967,16 +958,16 @@ $container
         'checkPermissions' => FALSE,
       ]);
 
-      $msg= "         Menu ".$menu." désactivé"."\n";
+      $msg= "         Menu ".$menu." désactivé";
 
     } catch (API_Exception $e) {                  // si l'update échoue
-      $msg= "         Pas de Menu ".$menu."\n";
+      $msg= "         Pas de Menu ".$menu;
     }
 
       
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
 
@@ -1001,16 +992,16 @@ $container
         'checkPermissions' => FALSE,
       ]);
 
-      $msg="         Menu ".$menu." activé"."\n";
+      $msg="         Menu ".$menu." activé";
 
     } catch (API_Exception $e) {    // si l'update échoue
-      $msg="         Pas de Menu ".$menu."\n";
+      $msg="         Pas de Menu ".$menu;
       //CRM_Core_Session::setStatus('Pas de Menu '.$menu, 'Info', 'info');
     }
       
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
 
@@ -1040,13 +1031,13 @@ $container
           ],
           'checkPermissions' => FALSE,
         ]);
-        $msg= "         icone du menu ".$menu." changée pour : ".$icon."\n";
+        $msg= "         icone du menu ".$menu." changée pour : ".$icon;
     } else {
-        $msg= "         Pas de sous rubrique pour ".$menu."\n";
+        $msg= "         Pas de sous rubrique pour ".$menu;
     }
     
     \Civi::log()->info("don_corps : ".$msg);
-    echo $msg;
+    echo $msg.PHP_EOL;
     
 
     }   // Fin de définition de la fonction : change_icon()
@@ -1205,7 +1196,7 @@ $container
             ]);
 
           }else{                                  // si l'entité n'existe pas, on la crée
-            $msg= "         entité ".$entity." ".$descr." n'existe pas - creation".PHP_EOL;
+            $msg= "         entité ".$entity." ".$descr." n'existe pas - creation";
             $results = civicrm_api4($entity, 'create', [
               'values' => $values,
               'checkPermissions' => FALSE,
@@ -1214,7 +1205,7 @@ $container
           
           \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
-            echo $msg;
+            echo $msg.PHP_EOL;
           }
           return;
         break;
@@ -1253,14 +1244,14 @@ $container
           'checkPermissions' => FALSE,
         ]);
       } else {
-        $msg=  "         entité ".$entity." ".$descr." n'existe pas mais inactive - ignorée".PHP_EOL;
+        $msg=  "         entité ".$entity." ".$descr." n'existe pas mais inactive - ignorée";
         return;
       }
     }
 
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
 
     return $results[0]['id']; // retourne l'id de l'entité créée
@@ -1285,10 +1276,10 @@ $container
 
     // Si des custom fields ne sont pas passés à la fonction : return
     if (count($args)==0){
-      $msg="Pas de custom field passé à la fonction ".PHP_EOL;
+      $msg="Pas de custom field passé à la fonction ";
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
       return;
@@ -1416,15 +1407,15 @@ $container
         'checkPermissions' => FALSE,
       ]);
 
-        $msg= "         Type de relation ".$relation_type." désactivé"."\n";
+        $msg= "         Type de relation ".$relation_type." désactivé";
 
 
     } else {
-        $msg= "         Type de relation ".$relation_type." inexistant"."\n";
+        $msg= "         Type de relation ".$relation_type." inexistant";
     }
     \Civi::log()->info("don_corps : ".$msg);
     if (VERBOSE==1){
-      echo $msg;
+      echo $msg.PHP_EOL;
     }
     
 
@@ -1497,19 +1488,19 @@ $container
             $msg= "         Requete ".$searchname." MAJ".PHP_EOL;
 
             } catch (API_Exception $e) {
-              $msg= "         Erreur lors de la MAJ de la requete ".$searchname.": ".$e->getMessage().PHP_EOL;
+              $msg= "         Erreur lors de la MAJ de la requete ".$searchname.": ".$e->getMessage();
             }
 
             \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
-              echo $msg;
+              echo $msg.PHP_EOL;
             }
 
           }else{
-            $msg= "         Requete ".$searchname." MAJ du seul tag".PHP_EOL;
+            $msg= "         Requete ".$searchname." MAJ du seul tag";
             \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
-              echo $msg;
+              echo $msg.PHP_EOL;
             }
           }
 
@@ -1540,10 +1531,10 @@ $container
 
         }
       } else {                                              // si la requete n'exste pas
-        $msg= "         La requete ".$searchname." n'existe pas".PHP_EOL;
+        $msg= "         La requete ".$searchname." n'existe pas";
           \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
-            echo $msg;
+            echo $msg.PHP_EOL;
           }
 
       }
@@ -1595,10 +1586,10 @@ $container
             echo $msg;
 
 
-        $msg= "de la location type : ".$results[0]['name']." (".$results[0]['id'].")".PHP_EOL;
+        $msg= "de la location type : ".$results[0]['name']." (".$results[0]['id'].")";
 
         \Civi::log()->info("don_corps : ".$msg);
-        echo $msg;
+        echo $msg.PHP_EOL;
 
     ## Fin verification location_type pour CESP
 
@@ -1607,9 +1598,9 @@ $container
           $toimport_file = $exp_dir.$name.".txt";
           $json = file_get_contents($toimport_file);
           $toimport = json_decode($json, true);
-          $msg= "      -> ".count($toimport)." Organisations à importer".PHP_EOL;
+          $msg= "      -> ".count($toimport)." Organisations à importer";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
           $check=import_stuffCDC('Contact',$toimport);
           $chk_file = $exp_dir."check_".$name.".txt";
           file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
@@ -1620,9 +1611,9 @@ $container
           $toimport_file = $exp_dir.$name.".txt";
           $json = file_get_contents($toimport_file);
           $toimport = json_decode($json, true);
-          $msg= "      -> ".count($toimport)." Adresses à importer".PHP_EOL;
+          $msg= "      -> ".count($toimport)." Adresses à importer";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
           $check=import_addressCDC('Address',$toimport); // appelle la fonction import  et assigne à check la liste des anciennes id de contact
           $chk_file = $exp_dir."check_".$name.".txt";
           file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
@@ -1633,9 +1624,9 @@ $container
           $toimport_file = $exp_dir.$name.".txt";
           $json = file_get_contents($toimport_file);
           $toimport = json_decode($json, true);
-          $msg = "      -> ".count($toimport)." Téléphones à importer".PHP_EOL;
+          $msg = "      -> ".count($toimport)." Téléphones à importer";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
           $check=import_phoneCDC('Phone',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
           $chk_file = $exp_dir."check_".$name.".txt";
           file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
@@ -1647,9 +1638,9 @@ $container
           $json = file_get_contents($toimport_file);
           $toimport = json_decode($json, true);
 
-          $msg= "      -> ".count($toimport)." Emails à importer".PHP_EOL;
+          $msg= "      -> ".count($toimport)." Emails à importer";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
           $check=import_emailCDC('Email',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
           $chk_file = $exp_dir."check_".$name.".txt";
           file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
@@ -1689,15 +1680,15 @@ $container
   function create_rules(){
     ## les mgd files ne fonctionnent pas correctement car font référence aux id des activités, culstom fields...
     ## qui varient d'une installation à l'autre
-    $msg="  - Création/MAJ des Rules".PHP_EOL;
+    $msg="  - Création/MAJ des Rules";
     
     \Civi::log()->info("don_corps : ".$msg);
-    echo $msg;
+    echo $msg.PHP_EOL;
 
-    $msg="      -> Civirule : Déplace lot de pièces ".PHP_EOL;
+    $msg="      -> Civirule : Déplace lot de pièces ";
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
 
@@ -1781,12 +1772,12 @@ $container
       ];
       create_entity($to_create);
 
-    $msg="      -> Civirule : Supprime lot de pièces ".PHP_EOL;
+    $msg="      -> Civirule : Supprime lot de pièces ";
       
       \Civi::log()->info("don_corps : ".$msg);
       
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
 
       $to_create =  [        //Supprime lot : Déclaration de l'Action
@@ -1870,12 +1861,12 @@ $container
       ];
       create_entity($to_create);
 
-    $msg="      -> Civirule : Inventaire ".PHP_EOL;
+    $msg="      -> Civirule : Inventaire ";
       
       \Civi::log()->info("don_corps : ".$msg);
       
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
 
       $to_create =  [        //Inventaire : Déclaration de l'Action
@@ -1957,12 +1948,12 @@ $container
       create_entity($to_create);
 
 
-    $msg="      -> Civirule : MAJ civilités ".PHP_EOL;
+    $msg="      -> Civirule : MAJ civilités ";
       
       \Civi::log()->info("don_corps : ".$msg);
       
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
       $to_create =  [        //Corriger_civililite : Déclaration de l'Action
           'entity' => 'CiviRulesAction',
@@ -2046,12 +2037,12 @@ $container
 
 
 
-    $msg="      -> Civirule : Compile pieces et utilisations".PHP_EOL;
+    $msg="      -> Civirule : Compile pieces et utilisations";
       
       \Civi::log()->info("don_corps : ".$msg);
       
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
 
       $to_create =  [        //compile pieces et utilisations : Déclaration de l'Action
@@ -2131,12 +2122,12 @@ $container
       create_entity($to_create);
 
 
-    $msg="      -> Civirule : Copie code barre corps".PHP_EOL;
+    $msg="      -> Civirule : Copie code barre corps";
       
       \Civi::log()->info("don_corps : ".$msg);
       
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
       $to_create =  [         //Copie code barre corps : Déclaration de Action
         'entity' => 'CiviRulesAction',
@@ -2218,12 +2209,12 @@ $container
       create_entity($to_create);
 
 
-    $msg="      -> Civirule : Envoyer_mail_si_demande_cremation".PHP_EOL;
+    $msg="      -> Civirule : Envoyer_mail_si_demande_cremation";
       
       \Civi::log()->info("don_corps : ".$msg);
       
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
 
       $to_create =  [     //envoyer_mail_si_demande_cremation : Message template à envoyer
@@ -2387,12 +2378,12 @@ $container
       create_entity($to_create);
 
 
-    $msg="      -> Civirule : Neutralise adresse postale en cas de retour de courrier".PHP_EOL;
+    $msg="      -> Civirule : Neutralise adresse postale en cas de retour de courrier";
       
       \Civi::log()->info("don_corps : ".$msg);
       
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
       //reécupère l'id de l'action "modification des coordonnées"
       $optionValues = civicrm_api4('OptionValue', 'get', [
@@ -2617,9 +2608,9 @@ $container
     }
     #
 
-    #$msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_managed ".PHP_EOL;
+    #$msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_managed ";
     #\Civi::log()->info("don_corps : ".$msg);
-    #echo $msg;
+    #echo $msg.PHP_EOL;
 
       } # fin de la définition de don_corps_civicrm_managed
 
@@ -2629,9 +2620,9 @@ $container
 
   function don_corps_civicrm_config(&$config): void {
     #
-    #$msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_config ".PHP_EOL;
+    #$msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_config ";
     #\Civi::log()->info("don_corps : ".$msg);
-    #echo $msg;
+    #echo $msg.PHP_EOL;
     #
     //function don_corps_civicrm_config(&$config) {
     _don_corps_civix_civicrm_config($config);
@@ -2645,13 +2636,13 @@ $container
     \Civi::log()->warning("don_corps : INSTALL appelé");
     //function don_corps_civicrm_install() {
     
-    $msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_install ".PHP_EOL;
+    $msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_install ";
     \Civi::log()->info("don_corps : ".$msg);
-    echo $msg;
+    echo $msg.PHP_EOL;
 
-    $msg= "  - Création de la table de stockage des tokens pour ical".PHP_EOL;
+    $msg= "  - Création de la table de stockage des tokens pour ical";
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       $sqlFile = __DIR__ . '/sql/install.sql';
       if (!file_exists($sqlFile)) {
           throw new Exception(
@@ -2661,9 +2652,9 @@ $container
       $sql = file_get_contents($sqlFile);
       CRM_Core_DAO::executeQuery($sql);
 
-    $msg= "  - Vérification de la version de l'extension CiviRules".PHP_EOL;
+    $msg= "  - Vérification de la version de l'extension CiviRules";
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       $ext = civicrm_api4('Extension', 'get', [
         'where' => [
           ['key', '=', 'org.civicoop.civirules'],
@@ -2673,18 +2664,18 @@ $container
       ]);
 
       if (empty($ext[0]['version']) || version_compare($ext[0]['version'], '3.36.0', '<')) {
-        $msg= "  L’extension org.civicoop.civirules 3.36.0 ou supérieure est requise".PHP_EOL;
+        $msg= "  L’extension org.civicoop.civirules 3.36.0 ou supérieure est requise";
         \Civi::log()->info("don_corps : ".$msg);
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
 
 
     
 
-    $msg= "  - Création/inactivation des intervales de date personnalisés".PHP_EOL;
+    $msg= "  - Création/inactivation des intervales de date personnalisés";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       $to_create =  [       // intervales de date personnalisés
         'entity' => 'OptionValue',
         'values' => [
@@ -2709,10 +2700,10 @@ $container
       ];
       create_entity($to_create);
 
-    $msg= "  - Création/inactivation des prefixes de contact".PHP_EOL;
+    $msg= "  - Création/inactivation des prefixes de contact";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
       $to_create =  [       // Création des prefixes de contact : Mme
         'entity' => 'OptionValue',
@@ -2812,10 +2803,10 @@ $container
 
 
 
-    $msg= "  - Création/inactivation des types de contact".PHP_EOL;
+    $msg= "  - Création/inactivation des types de contact";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
 
         $to_create =  [       // Création des types de contact : donneur
@@ -2955,10 +2946,10 @@ $container
 
       // fin de la création des types de contact
 
-    $msg= "  - Création/inactivation des types de contributions financieres".PHP_EOL;
+    $msg= "  - Création/inactivation des types de contributions financieres";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
 
       $to_create =  [
@@ -3055,10 +3046,10 @@ $container
       create_entity($to_create);
       // fin de la création des types  de contributions financieres
 
-    $msg= "  - Création/inactivation des status de contribution ".PHP_EOL;
+    $msg= "  - Création/inactivation des status de contribution ";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
 
       $to_create =  [
@@ -3192,10 +3183,10 @@ $container
       create_entity($to_create);
       // Fin de la création des statuts de contribution
 
-    $msg= "  - Création/inactivation des modes de paiement".PHP_EOL;
+    $msg= "  - Création/inactivation des modes de paiement";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
 
       $to_create =  [
@@ -3304,10 +3295,10 @@ $container
       create_entity($to_create);
       // Fin de Création des modes de paiement
 
-    /* $msg= "  - Création/inactivation des types d'evenements".PHP_EOL;
+    /* $msg= "  - Création/inactivation des types d'evenements";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
       $to_create =  [
         'entity' => 'OptionValue',
@@ -3421,10 +3412,10 @@ $container
       create_entity($to_create);
       // fin de Création des types d'evenements */
 
-    $msg= "  - Création/inactivation des types de participants".PHP_EOL;
+    $msg= "  - Création/inactivation des types de participants";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
       $to_create =  [
         'entity' => 'OptionValue',
@@ -3485,10 +3476,10 @@ $container
 
       // Fin de création des types de participants
 
-    $msg= "  - Création/inactivation des Statuts de participants".PHP_EOL;
+    $msg= "  - Création/inactivation des Statuts de participants";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
       $results = civicrm_api4('ParticipantStatusType', 'update', [ // on inactive tous les sttuts non reliée à l'appli
         'values' => [
@@ -3548,10 +3539,10 @@ $container
 
 
 
-    $msg= "  - Création des relations spécifiques à l'application".PHP_EOL;
+    $msg= "  - Création des relations spécifiques à l'application";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
         $to_create =  [
           'entity' => 'RelationshipType',
@@ -3698,10 +3689,10 @@ $container
         create_entity($to_create);
       // Fin de création des relations
 
-    $msg= "  - Déactivation des relations par défaut".PHP_EOL;
+    $msg= "  - Déactivation des relations par défaut";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
       deactivate_relation_type ('Spouse of');
       deactivate_relation_type ('Volunteer for');
@@ -3714,10 +3705,10 @@ $container
 
 
 
-   /*     $msg= "  - Déactivation des champs du profil par defaut ".PHP_EOL; // sans cela le profil contient de champs suppléntaiers
+   /*     $msg= "  - Déactivation des champs du profil par defaut "; // sans cela le profil contient de champs suppléntaiers
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
       $results = civicrm_api4('UFField', 'update', [
         'values' => [
@@ -3746,15 +3737,15 @@ $container
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
 
   function don_corps_civicrm_postInstall() {
-    $msg= PHP_EOL."@@@  hook_civicrm_postinstall ".PHP_EOL;
-    echo $msg;
+    $msg= PHP_EOL."@@@  hook_civicrm_postinstall ";
+    echo $msg.PHP_EOL;
     \Civi::log()->info("don_corps : ".$msg);
 
 
-    $msg= "  - Modification des privilèges civicrm selon le rôle wordpress".PHP_EOL;
+    $msg= "  - Modification des privilèges civicrm selon le rôle wordpress";
       
       \Civi::log()->info("don_corps : ".$msg);  
-      echo $msg;
+      echo $msg.PHP_EOL;
       $all_caps=[                   // liste tous les privileges
         'access_all_custom_data',
         'access_civicontribute',
@@ -3998,10 +3989,10 @@ $container
         ];
 
 
-      $msg = "      -> Suppression des privilèges de tous les rôles".PHP_EOL;
+      $msg = "      -> Suppression des privilèges de tous les rôles";
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
       _myextension_remove_wp_capabilities('editor', $all_caps);
@@ -4010,20 +4001,20 @@ $container
       _myextension_remove_wp_capabilities('subscriber', $all_caps);
       _myextension_remove_wp_capabilities('anonymous_user', $all_caps);
 
-      $msg = "      -> Ajout des privilèges aux rôles utlilisés".PHP_EOL;
+      $msg = "      -> Ajout des privilèges aux rôles utlilisés";
       
       \Civi::log()->info("don_corps : ".$msg);
       if (VERBOSE==1){
-        echo $msg;
+        echo $msg.PHP_EOL;
       }
       
       _myextension_add_wp_capabilities('author', $author_caps);
       _myextension_add_wp_capabilities('contributor', $contributor_caps);
 
 
-    $msg="  - Modification des parametres de localisation, date...".PHP_EOL; //LOG OK // modification des parametres de localisation, date....utilise apiv3 car non porté en V4 pour le moment
+    $msg="  - Modification des parametres de localisation, date..."; //LOG OK // modification des parametres de localisation, date....utilise apiv3 car non porté en V4 pour le moment
         
-      echo $msg;
+      echo $msg.PHP_EOL;
       \Civi::log()->info("don_corps : ".$msg);
       
       $result = civicrm_api3('Setting', 'create', [
@@ -4090,8 +4081,8 @@ $container
       ]);
 
 
-    $msg="  - Modification des tags".PHP_EOL; // LOG OK
-      echo $msg;
+    $msg="  - Modification des tags"; 
+      echo $msg.PHP_EOL;
       
       \Civi::log()->info("don_corps : ".$msg);
       
@@ -4119,8 +4110,8 @@ $container
 
 
 
-    $msg="  - Ajout des centres de don du corps".PHP_EOL;// LOG OK
-      echo $msg;
+    $msg="  - Ajout des centres de don du corps";
+      echo $msg.PHP_EOL;
       
       \Civi::log()->info("don_corps : ".$msg);
       
@@ -4141,10 +4132,10 @@ $container
       deactivate_menu('Reports');
       deactivate_menu('Support');
 
-    $msg="  - Reglage des règles de dédoublonage".PHP_EOL;
+    $msg="  - Reglage des règles de dédoublonage";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       #####
       # Lors de l acréation des dedupe rules en utilisant les fichier mgd, les champs sont mal mappés
       # en raison d'une référence non au nom des champs mais de la tabloe et de la colonne dans la bdd, variabl ed'une installaiton ) l'autre
@@ -4157,10 +4148,10 @@ $container
       ### Passage des regles existantes pour les individus et organizations à l'utilisation "general"
           # "Supervised" : lancée si création depuis l'interface utilisateur
           # "Unsupervised" : lancée si creation online ou import de contact
-          $msg= "      -> Passage des usages de tous les groupes de règles de dédoublonage à General".PHP_EOL;
+          $msg= "      -> Passage des usages de tous les groupes de règles de dédoublonage à General";
             \Civi::log()->info("don_corps : ".$msg);
             if (VERBOSE==1){
-            echo $msg;
+            echo $msg.PHP_EOL;
             }
 
             $results = civicrm_api4('DedupeRuleGroup', 'update', [
@@ -4266,10 +4257,10 @@ $container
                 echo $msg;
               }
           }
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')' ;
           \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
-            echo $msg;
+            echo $msg.PHP_EOL;
           }
 
           foreach($custom_dedupes as $custom_dedupe){
@@ -4282,10 +4273,10 @@ $container
               ],
               'checkPermissions' => FALSE,
               ]);
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
               }
 
@@ -4361,10 +4352,10 @@ $container
                 echo $msg;
               }
           }
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')' ;
           \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
-            echo $msg;
+            echo $msg.PHP_EOL;
           }
 
           foreach($custom_dedupes as $custom_dedupe){
@@ -4377,10 +4368,10 @@ $container
               ],
               'checkPermissions' => FALSE,
               ]);
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
                         \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
             }
 
@@ -4467,10 +4458,10 @@ $container
                 echo $msg;
               }
           }
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')' ;
           \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
-            echo $msg;
+            echo $msg.PHP_EOL;
           }
 
           foreach($custom_dedupes as $custom_dedupe){
@@ -4483,10 +4474,10 @@ $container
               ],
               'checkPermissions' => FALSE,
               ]);
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
             }
 
@@ -4564,10 +4555,10 @@ $container
               }
           }
 
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')'.PHP_EOL ;
+          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')';
           \Civi::log()->info("don_corps : ".$msg);
           if (VERBOSE==1){
-            echo $msg;
+            echo $msg.PHP_EOL;
           }
 
           foreach($custom_dedupes as $custom_dedupe){
@@ -4581,10 +4572,10 @@ $container
               'checkPermissions' => FALSE,
               ]);
 
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'].PHP_EOL;
+              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
               \Civi::log()->info("don_corps : ".$msg);
               if (VERBOSE==1){
-                echo $msg;
+                echo $msg.PHP_EOL;
               }
           }
 
@@ -4604,10 +4595,10 @@ $container
 
     $msg="  - Création des Rules".PHP_EOL;
       create_rules();
-    $msg="  - Modification des requetes".PHP_EOL;
+    $msg="  - Modification des requetes";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
       // Modifie les requetes qui ne sont pas correctement importées
       //  sur le serveur maitre,
@@ -5958,10 +5949,10 @@ $container
       // fin de creation des Layouts
       */
 
-    $msg="  - Changement des icones de menus".PHP_EOL;
+    $msg="  - Changement des icones de menus";
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
 
       change_icon('Contributions','crm-i fa-money-bill-1');
@@ -5972,10 +5963,10 @@ $container
 
      /// Modification des menus de navigation liés aux profil de création de contacts
 
-    $msg="  - Création des templates d'emails".PHP_EOL; // (hors ceux crees par les rules)
+    $msg="  - Création des templates d'emails"; // (hors ceux crees par les rules)
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
 
       $to_create =  [
@@ -6092,10 +6083,10 @@ $container
       /// Fin de Création des messages templates
 
 
-    $msg="  - Création des Templates de cérémonie".PHP_EOL; //les statuts et les roles des participants doivent etre crées en amont
+    $msg="  - Création des Templates de cérémonie"; //les statuts et les roles des participants doivent etre crées en amont
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
       
 
       $to_create =  [
@@ -6176,15 +6167,15 @@ $container
 
 
 
-    $msg="  - Modification des regles de message liés aux cérémonies".PHP_EOL; // si non supprimé un message est envoyé à l'inscription prevenant d'une liste d attente
+    $msg="  - Modification des regles de message liés aux cérémonies"; // si non supprimé un message est envoyé à l'inscription prevenant d'une liste d attente
       
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
 
-      $msg="      -> Inactivation du message template de confirmation d'inscription".PHP_EOL; // si non supprimé un message est envoyé à l'inscription prevenant d'une liste d attente
+      $msg="      -> Inactivation du message template de confirmation d'inscription"; // si non supprimé un message est envoyé à l'inscription prevenant d'une liste d attente
         \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
         
 
@@ -6200,17 +6191,17 @@ $container
           ];
           create_entity($to_create);
 
-        $msg="      -> Modification des règles de message".PHP_EOL;
+        $msg="      -> Modification des règles de message";
         
         \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
 
-      $msg="         Message : 300 Cérémonie invitation (email) pour statut On waitlist (Invité)".PHP_EOL;
+      $msg="         Message : 300 Cérémonie invitation (email) pour statut On waitlist (Invité)";
         \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
 
         $messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// récupère l'id du MessageTemplate
@@ -6254,19 +6245,19 @@ $container
           //print_r($to_create);
 
         } else {
-          echo "         Message template, statut, ou évenement manquent".PHP_EOL;
+          echo "         Message template, statut, ou évenement manquent";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
         
         create_entity($to_create);
 
 
-      $msg="         Message : 310 Cérémonie confirmation  (email) pour statut Registered (Confirmé)".PHP_EOL;
+      $msg="         Message : 310 Cérémonie confirmation  (email) pour statut Registered (Confirmé)";
         
         \Civi::log()->info("don_corps : ".$msg);
         if (VERBOSE==1){
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
         $messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// récupère l'id du MessageTemplate
           'select' => [
@@ -6309,18 +6300,18 @@ $container
           //print_r($to_create);
 
         } else {
-          $msg="         Message template, statut, ou évenement manquent".PHP_EOL;
+          $msg="         Message template, statut, ou évenement manquent";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
         
         create_entity($to_create);
 
 
-      $msg="         Message : 320 Cérémonie non inscription  (email) pour statut Cancelled (Annulé)".PHP_EOL;
+      $msg="         Message : 320 Cérémonie non inscription  (email) pour statut Cancelled (Annulé)";
         
         \Civi::log()->info("don_corps : ".$msg);
-        echo $msg;
+        echo $msg.PHP_EOL;
 
         $messageTemplates = civicrm_api4('MessageTemplate', 'get', [                /// récupère l'id du MessageTemplate
           'select' => [
@@ -6363,17 +6354,17 @@ $container
           //print_r($to_create);
 
         } else {
-          $msg="         Message template, statut, ou évenement manquent".PHP_EOL;
+          $msg="         Message template, statut, ou évenement manquent";
           \Civi::log()->info("don_corps : ".$msg);
-          echo $msg;
+          echo $msg.PHP_EOL;
         }
         
         create_entity($to_create);
 
 
 
-    $msg="  - Modification des profils personnalisés".PHP_EOL;// LOG OK
-      echo $msg;
+    $msg="  - Modification des profils personnalisés";// LOG OK
+      echo $msg.PHP_EOL;
       
       \Civi::log()->info("don_corps : ".$msg);
       
@@ -6405,8 +6396,8 @@ $container
       install_UFGroup ('Nouvel_organisateur', 'ContactsDDC', 'Nouvel organisateur');
      
 
-    $msg = "  - Mise à jour des groupes des SavedSearch" . PHP_EOL;
-      echo $msg;
+    $msg = "  - Mise à jour des groupes des SavedSearch";
+      echo $msg.PHP_EOL;
       \Civi::log()->info("don_corps : ".$msg);
       
 
@@ -6430,9 +6421,9 @@ $container
   # IMPLEMENTS hook_civicrm_uninstall().
 
   function don_corps_civicrm_uninstall() {
-    $msg="  - Activation des menus par défaut".PHP_EOL;
+    $msg="  - Activation des menus par défaut";
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg;
+      echo $msg.PHP_EOL;
 
       activate_menu('Contacts');
       activate_menu('Search');
