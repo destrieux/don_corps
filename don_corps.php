@@ -2596,6 +2596,22 @@ $container
     }     // fin de la focntion create_rules
 # FIN DE LA DECLARATION DES FONCTIONS
 
+##IMPLEMENTS hook don_corps_civicrm_custom
+  # Point d’entrée du hook hook_civicrm_custom. 
+  # CiviCRM l’appelle automatiquement chaque fois que des valeurs de champs personnalisés sont enregistrées.
+  # le nom suit le schema <nom_de_l_extension>_civicrm_<nom_du_hook>
+  # $op	l’opération : create, edit, delete...
+  # $groupID	l’id du groupe de champs personnalisés concerné
+  # $entityID	l’id de l’enregistrement qui porte ces valeurs  
+  # &$params	la liste des valeurs enregistrées, avec leur détail
+  #   & devant $params signifie « passage par référence » : la fonction travaille sur l’original et pourrait le modifier.
+
+  function don_corps_civicrm_custom($op, $groupID, $entityID, &$params) {
+    \Civi\DonCorps\Hook\Custom::handle($op, (int) $groupID, (int) $entityID);
+  }
+
+
+
 # IMPLEMENTS hook_civicrm_managed() // LOGS OK
   # @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed*/
 
@@ -3742,7 +3758,7 @@ $container
     \Civi::log()->info("don_corps : ".$msg);
 
 
-    $msg= "  - Modification des privilèges civicrm selon le rôle wordpress";
+    $msg="  - Modification des privilèges civicrm selon le rôle wordpress";
       
       \Civi::log()->info("don_corps : ".$msg);  
       echo $msg.PHP_EOL;
@@ -4599,7 +4615,7 @@ $container
       
       \Civi::log()->info("don_corps : ".$msg);
       echo $msg.PHP_EOL;
-      
+      // Pour lister les requetes : SavedSearch.get '{"select":["id","name","label"],"checkPermissions":false}' --out=table
       // Modifie les requetes qui ne sont pas correctement importées
       //  sur le serveur maitre,
       //  - dans Searchkit retrouver l'id de la requete en posant la souris sur modifier, l'adresse se modifie ds la basse du bas et donne l'id
