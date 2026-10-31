@@ -570,4 +570,30 @@ return [
       ],
     ],
   ],
+  [
+    'name' => 'CustomGroup_suivi_CustomField_Date_avis_CESP',
+    'entity' => 'CustomField',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'custom_group_id.name' => 'suivi',
+        'name' => 'Date_avis_CESP',
+        'label' => E::ts('Date avis CESP'),
+        'data_type' => 'Date',
+        'html_type' => 'Select Date',
+        'is_searchable' => TRUE,
+        'is_search_range' => TRUE,
+        'text_length' => 255,
+        'date_format' => 'dd/mm/yy',
+        'note_columns' => 60,
+        'note_rows' => 4,
+      ],
+      'match' => [
+        'name',
+        'custom_group_id',
+      ],
+    ],
+  ],
 ];

@@ -15,7 +15,7 @@ return [
         'icon' => 'crm-i fa-heart-o',
         'permission' => ['access CiviCRM'],
         'permission_operator' => 'AND',
-        'weight' => 63,
+        'weight' => 64,
       ],
       'match' => ['name', 'domain_id'],
     ],

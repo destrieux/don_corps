@@ -24,6 +24,11 @@ return [
           'where' => [
             ['start_date', '=', 'this.year'],
             ['is_active', '=', TRUE],
+            [
+              'event_type_id:name',
+              '=',
+              'Cérémonie Hommage',
+            ],
           ],
           'groupBy' => [],
           'join' => [

@@ -1,8 +1,7 @@
 <div af-fieldset="" store-values="1">
   <div class="af-container af-layout-inline">
     <div class="af-container">
-      <af-field name="Event_Saisine_id_de_saisine_01.label" defn="{required: false, input_attrs: {}}" />
-      <af-field name="Event_Saisine_id_de_saisine_01.description" defn="{label: 'Titre', input_attrs: {}}" />
+      <af-field name="Event_Saisine_id_de_saisine_01.label,title,Event_Saisine_id_de_saisine_01.caracteristiques.Demandeur.display_name,Event_Saisine_id_de_saisine_01.caracteristiques.D_posant,Event_Saisine_id_de_saisine_01.description" defn="{required: false, input_attrs: {}, label: 'Recherche sur N&deg; de saisine, intitul&eacute;, d&eacute;posant ou porteur (% pour remplacer toute cha&icirc;ne de caract&egrave;res)'}" />
     </div>
     <div class="af-container">
       <div class="af-container af-layout-cols">
@@ -12,6 +11,5 @@
       <div class="af-container"></div>
     </div>
   </div>
-  <p class="af-text">Enter text</p>
   <crm-search-display-table search-name="Activit_s_labo" display-name="Activit_s_labo_Table_1"></crm-search-display-table>
 </div>

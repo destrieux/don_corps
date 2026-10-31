@@ -189,6 +189,7 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
         ->addSelect('Participants.Nombre_de_Staff')
         ->setCheckPermissions(FALSE)
         ->addWhere('is_active', '=', TRUE)
+        ->addWhere('is_show_calendar_links', '=', TRUE)
         ->addOrderBy('start_date', 'ASC')
         ->execute();
 

@@ -1,0 +1,172 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+return [
+  [
+    'name' => 'SavedSearch_Bilan_detail_activit_au_labo',
+    'entity' => 'SavedSearch',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Bilan_detail_activit_au_labo',
+        'label' => E::ts('Bilan : detail activité au labo'),
+        'api_entity' => 'Event',
+        'api_params' => [
+          'version' => 4,
+          'select' => [
+            'YEAR(start_date) AS YEAR_start_date',
+            'title',
+            'Event_Saisine_id_de_saisine_01.caracteristiques.Type_d_activit_:label',
+            'Event_Saisine_id_de_saisine_01.caracteristiques.Simulation_sans_recours_au_corps:label',
+            'Event_Saisine_id_de_saisine_01.caracteristiques.Participation_d_une_entit_tierce:label',
+            'IF(Event_Saisine_id_de_saisine_01.fichierssaisine.Convention, "Oui", "Non") AS convention_signee',
+            'Donn_es_techniques.Nombre_de_corps_avec_segmentation',
+            'Donn_es_techniques.Nombre_de_corps_avec_prel_vement_d_organe_ou_de_tissu',
+            'Donn_es_techniques.Nombre_de_corps_avec_sortie_temporaire_corps_tissus_organes_',
+            'Participants.Nombre_de_s_ances',
+            'Participants.Total_participants',
+          ],
+          'orderBy' => [],
+          'where' => [
+            [
+              'event_type_id:name',
+              '=',
+              'Activité au laboratoire',
+            ],
+          ],
+          'groupBy' => [],
+          'join' => [
+            [
+              'Saisine AS Event_Saisine_id_de_saisine_01',
+              'LEFT',
+              [
+                'Caract_ristiques_de_l_activit_.id_de_saisine',
+                '=',
+                'Event_Saisine_id_de_saisine_01.id',
+              ],
+            ],
+          ],
+          'having' => [],
+        ],
+      ],
+      'match' => ['name'],
+    ],
+  ],
+  [
+    'name' => 'SavedSearch_Bilan_detail_activit_au_labo_SearchDisplay_Bilan_detail_activit_au_labo_Table_1',
+    'entity' => 'SearchDisplay',
+    'cleanup' => 'unused',
+    'update' => 'unmodified',
+    'params' => [
+      'version' => 4,
+      'values' => [
+        'name' => 'Bilan_detail_activit_au_labo_Table_1',
+        'label' => E::ts('Bilan : detail activité au labo Table 1'),
+        'saved_search_id.name' => 'Bilan_detail_activit_au_labo',
+        'type:name' => 'crm-search-display-table',
+        'settings' => [
+          'description' => E::ts('Ce tableau peut être téléchargé au format .xlsx (Action - Download spreadsheet). Les données peuvent être copiées (à l\'exlusion des titres de colonnes) vers le document excel de bilan, onglét "activité détaillée".ATTENTION : faire un collage spécial - Valeurs pour conserver le formatage du bilan.'),
+          'sort' => [],
+          'limit' => 50,
+          'pager' => [],
+          'placeholder' => 5,
+          'actions' => TRUE,
+          'classes' => ['table', 'table-striped'],
+          'columnMode' => 'custom',
+          'actions_display_mode' => 'menu',
+          'columns' => [
+            [
+              'type' => 'field',
+              'key' => 'YEAR_start_date',
+              'label' => E::ts('Année'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'title',
+              'label' => E::ts('Intitulé'),
+              'sortable' => TRUE,
+              'link' => [
+                'path' => 'civicrm/NouvelleActivite#?Event1=[id]',
+                'entity' => '',
+                'action' => '',
+                'join' => '',
+                'target' => '',
+                'task' => '',
+              ],
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Event_Saisine_id_de_saisine_01.caracteristiques.Type_d_activit_:label',
+              'label' => E::ts('Type'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Event_Saisine_id_de_saisine_01.caracteristiques.Simulation_sans_recours_au_corps:label',
+              'label' => E::ts('Simulation sans recours au corps'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Event_Saisine_id_de_saisine_01.caracteristiques.Participation_d_une_entit_tierce:label',
+              'label' => E::ts('Participation d\'une entité tierce'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
+              'key' => 'convention_signee',
+              'label' => E::ts('Convention signée et téléversée'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Donn_es_techniques.Nombre_de_corps_avec_segmentation',
+              'label' => E::ts('Nb de corps avec segmentation'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Donn_es_techniques.Nombre_de_corps_avec_prel_vement_d_organe_ou_de_tissu',
+              'label' => E::ts('Nb de corps  avec prélèvement'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Donn_es_techniques.Nombre_de_corps_avec_sortie_temporaire_corps_tissus_organes_',
+              'label' => E::ts('Nb de corps avec sortie temporaire (corps, tissus, organes)'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Participants.Nombre_de_s_ances',
+              'label' => E::ts('Nombre de séances'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'Participants.Total_participants',
+              'label' => E::ts('Effectif total pour l\'ensemble des séances'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+            ],
+          ],
+        ],
+      ],
+      'match' => [
+        'saved_search_id',
+        'name',
+      ],
+    ],
+  ],
+];

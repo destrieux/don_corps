@@ -1,10 +1,11 @@
-<div af-fieldset="">
+<div af-fieldset="" store-values="1">
   <div class="af-container af-layout-cols">
     <div class="af-container">
-      <af-field name="label" defn="{required: false, input_attrs: {}}" />
-      <div class="af-container af-layout-cols">
+      <af-field name="label,description,caracteristiques.D_posant.display_name,caracteristiques.Demandeur.display_name" defn="{required: false, input_attrs: {}, label: 'Recherche sur N&deg; de saisine, intitul&eacute;, d&eacute;posant ou porteur (% pour remplacer toute cha&icirc;ne de caract&egrave;res)'}" />
+      <div class="af-container af-layout-inline">
         <af-field name="caracteristiques.Date_d_but_de_validit_" defn="{input_type: 'Select', search_range: true, input_attrs: {}, label: 'D&eacute;but de validit&eacute;'}" />
         <af-field name="caracteristiques.Date_fin_de_validit_" defn="{input_type: 'Select', search_range: true, input_attrs: {}, label: 'Fin de validit&eacute;'}" />
+        <af-field name="suivi.Date_avis_CESP" defn="{input_type: 'Select', search_range: true, input_attrs: {}, label: 'Date avis CESP'}" />
       </div>
     </div>
     <div class="af-container">

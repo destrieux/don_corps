@@ -26,6 +26,7 @@ return [
             'caracteristiques.D_posant.sort_name',
             'caracteristiques.Participation_d_une_entit_tierce:label',
             'suivi.CESP:label',
+            'suivi.Date_avis_CESP',
             'suivi.Convention:label',
             'suivi.Devis:label',
             'suivi.Porteur_notif_',
@@ -91,7 +92,7 @@ return [
         'saved_search_id.name' => 'test_saisines',
         'type:name' => 'crm-search-display-table',
         'settings' => [
-          'description' => E::ts('Les colonnes de gauche indiquent les différentes étapes de la vie d\'une saisine. 
+          'description' => E::ts('Les colonnes de droite indiquent les différentes étapes de la vie d\'une saisine. 
 Vous pouvez modifier les valeurs en cliquent dessus, à l\'exclusion de "Participants" et "Programme" qui passent à "Oui" lorsque les fichers correspondants sont téléchargés dans la fiche saisine, accessible en cliquant sur le numéro de saisine.'),
           'sort' => [],
           'limit' => 50,
@@ -102,12 +103,6 @@ Vous pouvez modifier les valeurs en cliquent dessus, à l\'exclusion de "Partici
           'columnMode' => 'custom',
           'actions_display_mode' => 'menu',
           'columns' => [
-            [
-              'type' => 'field',
-              'key' => 'id',
-              'label' => E::ts('ID'),
-              'sortable' => TRUE,
-            ],
             [
               'type' => 'field',
               'key' => 'label',
@@ -123,6 +118,14 @@ Vous pouvez modifier les valeurs en cliquent dessus, à l\'exclusion de "Partici
                 'task' => '',
               ],
               'title' => E::ts('Activer Saisines'),
+            ],
+            [
+              'type' => 'field',
+              'key' => 'suivi.Date_avis_CESP',
+              'label' => E::ts('Date avis CESP'),
+              'sortable' => TRUE,
+              'alignment' => 'text-center',
+              'editable' => TRUE,
             ],
             [
               'type' => 'field',

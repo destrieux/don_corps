@@ -141,7 +141,7 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'caracteristiques_Participation_d_une_entit_tierce',
-        'label' => E::ts('Aucune'),
+        'label' => E::ts('Aucune (interne à Etab.)'),
         'value' => '1',
         'name' => 'Aucune',
       ],
@@ -181,7 +181,7 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'caracteristiques_Participation_d_une_entit_tierce',
-        'label' => E::ts('Non académique'),
+        'label' => E::ts('Non Académique'),
         'value' => '3',
         'name' => 'Non_acad_mique',
       ],
@@ -362,7 +362,7 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'caracteristiques_Type_d_activit_',
-        'label' => E::ts('Recherche : autre'),
+        'label' => E::ts('Recherche : thèse'),
         'value' => '7',
         'name' => 'Recherche_autre',
       ],
@@ -390,7 +390,6 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'option_group_id.name' => 'caracteristiques_Type_d_activit_',
-        'serialize' => 1,
       ],
       'match' => [
         'name',
@@ -444,7 +443,7 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'Caract_ristiques_de_l_activit_Simulation_sans_recours_au_corps',
-        'label' => E::ts('Associée à la dissection'),
+        'label' => E::ts('Associée à dissection'),
         'value' => '2',
         'name' => 'Associ_e_la_dissection',
       ],

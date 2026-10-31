@@ -4615,7 +4615,7 @@ $container
       
       \Civi::log()->info("don_corps : ".$msg);
       echo $msg.PHP_EOL;
-      // Pour lister les requetes : SavedSearch.get '{"select":["id","name","label"],"checkPermissions":false}' --out=table
+      // Pour lister les requetes : cv api4 SavedSearch.get '{"select":["id","name","label"],"checkPermissions":false}' --out=table
       // Modifie les requetes qui ne sont pas correctement importées
       //  sur le serveur maitre,
       //  - dans Searchkit retrouver l'id de la requete en posant la souris sur modifier, l'adresse se modifie ds la basse du bas et donne l'id
@@ -6430,7 +6430,10 @@ $container
 
   ## Remonte tous les tokens d'utilisation du corps pour les rendre disponibles
   $container->autowire(\Civi\EventSubscriber\CiviOfficeTokenSubscriber::class)->addTag('kernel.event_subscriber');
-
+  
+  ## Idem pour les champs perso des devis
+  $container->autowire(\Civi\EventSubscriber\DevisTokenSubscriber::class)->addTag('kernel.event_subscriber');
+  $container->autowire(\Civi\EventSubscriber\DevisSearchKitTaskSubscriber::class)->addTag('kernel.event_subscriber');
 }
 
 

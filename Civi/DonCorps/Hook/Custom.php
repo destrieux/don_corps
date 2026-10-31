@@ -1,4 +1,7 @@
 <?php
+
+
+
 // Civi/DonCorps/Hook/Custom.php
 namespace Civi\DonCorps\Hook;
     // Elle indique que toutes les classes déclarées dans ce fichier 
@@ -41,7 +44,14 @@ class Custom {
         'Participants.Nombre_de_formateurs',
         'Participants.Nombre_de_Staff',
         'Participants.Total_participants',
-        'Participants.Nombre_de_s_ances'
+        'Participants.Nombre_de_s_ances',
+        'Participants.Tarif_par_apprenant',
+        'Participants.Tarif_par_formateur',
+        'Participants.Tarif_par_staff',
+        'Participants.Montant_Total_Apprenants',
+        'Participants.Montant_total_formateurs',
+        'Participants.Montant_total_Staff',
+        'Participants.Montant_total_devis'
       )
       ->addWhere('id', '=', $entityID)
       ->execute()->first();
@@ -49,21 +59,74 @@ class Custom {
       return;
     }
 
-    $total = ((int) ($event['Participants.Nombre_d_apprenants'] ?? 0)
-           + (int) ($event['Participants.Nombre_de_formateurs'] ?? 0)
-           + (int) ($event['Participants.Nombre_de_Staff'] ?? 0))
-           * (int) ($event['Participants.Nombre_de_s_ances'] ?? 0);
+   $champsCalcules = [
+  'Participants.Total_participants',
+  'Participants.Montant_Total_Apprenants',
+  'Participants.Montant_total_formateurs',
+  'Participants.Montant_total_Staff',
+  'Participants.Montant_total_devis',
+];
 
-    // Garde-fou : on n'écrit que si la valeur change, sinon la mise à jour
-    // redéclenche ce hook en boucle.
-    if ((int) ($event['Participants.Total_participants'] ?? -1) === $total) {
-      return;
-    }
+$event = \Civi\Api4\Event::get(FALSE)
+  ->addSelect(
+    'Participants.Nombre_d_apprenants',
+    'Participants.Nombre_de_formateurs',
+    'Participants.Nombre_de_Staff',
+    'Participants.Nombre_de_s_ances',
+    'Participants.Tarif_par_apprenant',
+    'Participants.Tarif_par_formateur',
+    'Participants.Tarif_par_staff',
+    'Participants.Total_participants',
+    'Participants.Montant_Total_Apprenants',
+    'Participants.Montant_total_formateurs',
+    'Participants.Montant_total_Staff',
+    'Participants.Montant_total_devis'
+  )
+  ->addWhere('id', '=', $entityID)
+  ->execute()->first();
+if (!$event) {
+  return;
+}
 
-    \Civi\Api4\Event::update(FALSE)
-      ->addWhere('id', '=', $entityID)
-      ->addValue('Participants.Total_participants', $total)
-      ->execute();
+$apprenants = (int) ($event['Participants.Nombre_d_apprenants'] ?? 0);
+$formateurs = (int) ($event['Participants.Nombre_de_formateurs'] ?? 0);
+$staff      = (int) ($event['Participants.Nombre_de_Staff'] ?? 0);
+$seances    = (int) ($event['Participants.Nombre_de_s_ances'] ?? 0);
+
+$total = ($apprenants + $formateurs + $staff) * $seances;
+
+$montantApprenants = $apprenants * (float) ($event['Participants.Tarif_par_apprenant'] ?? 0) * $seances;
+$montantFormateurs = $formateurs * (float) ($event['Participants.Tarif_par_formateur'] ?? 0) * $seances;
+$montantStaff      = $staff      * (float) ($event['Participants.Tarif_par_staff'] ?? 0)      * $seances;
+$totalGeneral      = $montantApprenants + $montantFormateurs + $montantStaff;
+
+$nouvelles = [
+  'Participants.Total_participants'        => $total,
+  'Participants.Montant_Total_Apprenants'  => round($montantApprenants, 2),
+  'Participants.Montant_total_formateurs'  => round($montantFormateurs, 2),
+  'Participants.Montant_total_Staff'       => round($montantStaff, 2),
+  'Participants.Montant_total_devis'       => round($totalGeneral, 2),
+];
+
+// On ne garde que les champs dont la valeur a changé
+$aEcrire = [];
+foreach ($nouvelles as $champ => $valeur) {
+  $actuelle = $event[$champ] ?? NULL;
+  if ($actuelle === NULL || abs((float) $actuelle - (float) $valeur) > 0.004) {
+    $aEcrire[$champ] = $valeur;
+  }
+}
+
+// Rien n'a changé : on sort sans écrire (évite la boucle)
+if (!$aEcrire) {
+  return;
+}
+
+$update = \Civi\Api4\Event::update(FALSE)->addWhere('id', '=', $entityID);
+foreach ($aEcrire as $champ => $valeur) {
+  $update->addValue($champ, $valeur);
+}
+$update->execute();
   }
 
 }
