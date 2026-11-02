@@ -1,12 +1,16 @@
 <?php
 use CRM_DonCorps_ExtensionUtil as E;
-use Civi\DonCorps\UpdateSearchGroups;   // impote update search group
+use Civi\DonCorps\UpdateSearchGroups;         // importe update search group
+use Civi\DonCorps\Install;
+use Civi\DonCorps\Install\SearchUpdateToken;  // MAJ des tokens des searches
+use Civi\DonCorps\Install\CustomFieldFilter;  // MAJ des filtres par groupes sur champs de recherche d'individus   
 
 
 ## pour récuperer le schema-version actuel
 ## mysql -u XXX -p
 ## use votre_BDD
 ## SELECT schema_version FROM civicrm_extension WHERE `name` = 'don_corps';
+## 2030 (v2.0.3) en prod ; 2031 (v2.0.4) sur main
 
 /**
  * Collection of upgrade steps.
@@ -18,18 +22,13 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
     // Elle en'est pas rejouée à l'upgrade
     if (!CRM_Core_DAO::checkTableExists('civicrm_saisine')) {
       E::schema()->createEntityTable('schema/Saisine.entityType.php');
-      $msg= "  - Création de la table civicrm_saisine";
+      $msg= "** UPGRADE INITIAL : - Création de la table civicrm_saisine";
       \Civi::log()->info("don_corps : ".$msg);
-      echo $msg.PHP_EOL;
     }
   }
-
-
   public function upgrade_2030() {
-    echo 'Upgrade vers 2.0.3'.PHP_EOL;
-    \Civi::log('don_corps')->info('Upgrade vers 2.0.3');
+    ## Vérifie la version instaléee de civirules, puis en crée de nouvelles
 
-    echo '- Vérification de la version CiviRules'.PHP_EOL;
     $ext = civicrm_api4('Extension', 'get', [
       'where' => [
         ['key', '=', 'org.civicoop.civirules'],
@@ -39,41 +38,39 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
     ]);
 
     if (empty($ext[0]['version']) || version_compare($ext[0]['version'], '3.36.0', '<')) {
-      ECHO' ** ** Echec : org.civicoop.civirules 3.36.0 ou supérieure est requise ** **'.PHP_EOL;
-      \Civi::log('don_corps')->info('Echec : org.civicoop.civirules 3.36.0 ou supérieure est requise');
+      $msg= "** UPGRADE 2030 : - org.civicoop.civirules 3.36.0 ou supérieure est requise ** **";
+      \Civi::log('don_corps')->error($msg);
       return FALSE ;
 
     } else {
-      echo '- Mise à jour des rules'.PHP_EOL;
-      \Civi::log('don_corps')->info('- Mise à jour des rules');
+      $msg= '** UPGRADE 2030 : - Mise à jour des rules';
+      \Civi::log()->info("don_corps : ".$msg);
       supprime_rules();
       create_rules();
 
-    echo"- Mise à jour du cache".PHP_EOL;
     CRM_Core_Invoke::rebuildMenuAndCaches();
 
     return TRUE;
     }
   }
-
   public function upgrade_2031(): bool {
-    echo "******** UPGRADE #2031 DON_CORPS" . PHP_EOL;
-    \Civi::log('don_corps')->error('******** UPGRADE #2031 DON_CORPS : update search groups ********');
+    ## modifie le nom des groupes utilisés dans les requetes (par exemple Archives_64 en Archives_52)
+    $msg= "** UPGRADE 2030 : - update search groups";
+    \Civi::log('don_corps')->info($msg);
     UpdateSearchGroups::updateAll();
     return TRUE;
-    }
-
+  }
   public function upgrade_2032(): bool {
+    ## Inactive le type d'évenement Cérémonie Hommage (historique)
+    ## Ajoute la table civicrm_don_corps_ical_token qui gère les tokens utilisés pour les abonnements icalendar
+    ## Crée le type de contact Intervenant extérieur
+    ## Ajoute les profils personnalisés pour saisie de nouveauxorganisateurs d'évènements
+    ## Crée la table civicrm_saisine 
+    ## Modifie les filtres sur les champs de type contact pour 'Déposants' et 'Demandeurs'
+    ## Modifie les tags des saved searches
+    $msg= "** UPGRADE 2032 : - Inactivation du type évenements Cérémonie Hommage (historique)";
+      \Civi::log()->info("don_corps : ".$msg);
 
-    echo "******** UPGRADE #2032 DON_CORPS ********" . PHP_EOL;
-    
-     $msg= "  - Inactivation du type évenements Cérémonie Hommage (historique)".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-
-      \Civi::log('don_corps')->error('Inactivation du type évenements Cérémonie Hommage (historique)');
       $to_create =  [
         'entity' => 'OptionValue',
         'values' => [
@@ -84,20 +81,8 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
       ];
       create_entity($to_create);
     
-    $msg= "  - Ajout table civicrm_don_corps_ical_token".PHP_EOL;
-      /**
-       * Création de la table de gestion des tokens iCalendar.
-       *
-       * Cette migration est exécutée lors de la mise à jour de l'extension.
-       * La table est également présente dans sql/install.sql pour les
-       * nouvelles installations.
-       */
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-
-      \Civi::log('don_corps')->error('Ajout table civicrm_don_corps_ical_token');
+    $msg= "** UPGRADE 2032 : - Ajout table civicrm_don_corps_ical_token";
+      \Civi::log()->info("don_corps : ".$msg);
 
       CRM_Core_DAO::executeQuery("
           CREATE TABLE IF NOT EXISTS civicrm_don_corps_ical_token (
@@ -116,15 +101,9 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
       ");
 
 
-
-    $msg= "  - Création du type de contact Intervenant extérieur".PHP_EOL;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      echo $msg;
-      fclose($fp);
-      \Civi::log('don_corps')->error('Création du types de contact Intervenant extérieur');
-      
-      $to_create =  [       // Création des types de contact : Organisateurs
+    $msg= "** UPGRADE 2032 : - Création du type de contact Intervenant extérieur";
+      \Civi::log()->info("don_corps : ".$msg);
+      $to_create =  [ 
           'entity' => 'ContactType',
           'values' => [
             'name' => 'Intervenant_ext_rieur',
@@ -137,41 +116,26 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
         ];
       create_entity($to_create);
 
-    $msg="  - Ajout des profils personnalisés organisateurs".PHP_EOL;// LOG OK
-      echo $msg;
-      $fp=fopen(LOGFILE, 'a'); // ouvre le fichier de log
-      fwrite($fp, $msg);
-      fclose($fp);
-      \Civi::log('don_corps')->error('Ajout des profils personnalisés organisateurs');
-      
+    $msg= "** UPGRADE 2032 : - Ajout des profils personnalisés organisateurs";
+      \Civi::log()->info("don_corps : ".$msg);
       install_UFGroup ('Organisateur');
       install_UFGroup ('Nouvel_organisateur', 'ContactsDDC', 'Nouvel organisateur');
 
-    return TRUE;
+    $msg= "** UPGRADE 2032 : - Création de la table civicrm_saisine";
+      if (!CRM_Core_DAO::checkTableExists('civicrm_saisine')) {
+        E::schema()->createEntityTable('schema/Saisine.entityType.php');
+        \Civi::log()->info("don_corps : ".$msg);
+        echo $msg.PHP_EOL;
+      }
+    $msg= "** UPGRADE 2032 : - Modification des filtres de champs personnalisés";
+        \Civi::log()->info("don_corps : ".$msg);
+        CustomFieldFilter::applyGroupFilter('D_posant', 'groupe_d_posants_porteurs_potent_24');
+        CustomFieldFilter::applyGroupFilter('Demandeur', 'groupe_d_posants_porteurs_potent_24');
+
+    $msg= "** UPGRADE 2032 : - Ajout des tags aux SavedSearches";
+      $tag_search_file = E::path() .'/managed/tags_searches.txt';     // fichier contenant les tags attachés aux recherches
+      SearchUpdateToken::updateToken($tag_search_file);
+      \Civi::log()->info("don_corps : ".$msg);
+      return TRUE;
   }
-
-public function upgrade_2034(): bool {
-
-  echo "******** UPGRADE #2033 DON_CORPS ********" . PHP_EOL;
-    // crée la table civicrm_saisine
-    // modifie les filtres sur les champs de type contact pour 'Déposants' et 'Demandeurs'
-
-  $msg= "  - Création de la table civicrm_saisine";
-    if (!CRM_Core_DAO::checkTableExists('civicrm_saisine')) {
-      E::schema()->createEntityTable('schema/Saisine.entityType.php');
-      $msg= "  - Création de la table civicrm_saisine";
-      \Civi::log()->info("don_corps : ".$msg);
-      echo $msg.PHP_EOL;
-    }
-
-  
-  $msg="  - Modification des filtres de champs personnalisés".PHP_EOL; // permet de n'afficher que certains contacts pour certains champs
-      \Civi::log()->info("don_corps : ".$msg);
-      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('D_posant', 'groupe_d_posants_porteurs_potent_24');
-      \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Demandeur', 'groupe_d_posants_porteurs_potent_24');
-
-  return TRUE;
-}
-
-
 }

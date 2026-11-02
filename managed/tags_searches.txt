@@ -1,0 +1,98 @@
+[
+    {
+        "search": "Donneurs_annuul_s",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Anonymis_s_par_la_purge",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Anonymises_sans_protocole",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Proches_sans_relation_1",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Personnels",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Demandeurs_d_informations_plus_d_un_an",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Donneurs_120_ans",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "donneurs_DC_un_an_et_refus",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Donneurs_dont_op_fun_raires_1_an",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Op_rations_fun_raires_de_plus_de_5_ans",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Proches_dont_donneur_DC_1_an_et_refuses",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Contacts_impliqu_s_dans_un_protocole_ex_vivo",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Archives_dans_protocole_in_ni_ex_vivo",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Personnels_tous",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "Groupe_d_posants_potentiels_porteurs_saisines",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "donneur_avec_PAQPF",
+        "tag": "Requ\u00eates utilis\u00e9es pour les purges"
+    },
+    {
+        "search": "tokens_lastDons",
+        "tag": "tokens"
+    },
+    {
+        "search": "Tokens_PAQPF",
+        "tag": "tokens"
+    },
+    {
+        "search": "Tokens_for_contact",
+        "tag": "tokens"
+    },
+    {
+        "search": "Tokens_pour_personne_de_confinace_1",
+        "tag": "tokens"
+    },
+    {
+        "search": "tokens_for_a_pour_personne_de_confiance_1",
+        "tag": "tokens"
+    },
+    {
+        "search": "Token_Contacts_arriv_e_corps",
+        "tag": "tokens"
+    },
+    {
+        "search": "Tokens_de_contact_CB",
+        "tag": "tokens"
+    },
+    {
+        "search": "Tokens_activit_s_labo",
+        "tag": "tokens"
+    }
+]

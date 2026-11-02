@@ -1,28 +1,15 @@
 <?php
+eval(`cv php:boot`);
+use Civi\DonCorps\Install\SearchUpdateToken;
 
-declare(strict_types=1);
+$return = SearchUpdateToken::updateToken("managed/tags_searches.txt");
 
-class Pont
-{
-   public float $longueur;
-   public float $largeur;
-  
-   public function getSurface(): float
-   {
-       return $this->longueur * $this->largeur;
-   }
-}
+//\Civi\DonCorps\Install\SearchUpdateToken::updateToken(__DIR__ . '/managed/tags_searches.txt');
 
-$towerBridge = new Pont;
-$towerBridge->longueur = 286.0;
-$towerBridge->largeur = 15.0;
+if($return){
+    \Civi::log()->warning("don_corps : OK");
 
-$manhattanBridge = new Pont;
-$manhattanBridge->longueur = 2089.0;
-$manhattanBridge->largeur = 36.6;
-
-$towerBridgeSurface = $towerBridge->getSurface();
-$manhattanBridgeSurface = $manhattanBridge->getSurface();
-
-var_dump($towerBridgeSurface);
-var_dump($manhattanBridgeSurface);
+}else{
+       \Civi::log()->warning("don_corps : KO");
+ 
+};

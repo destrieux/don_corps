@@ -214,6 +214,48 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
         return true;
   } // fin de définition de la fonction replaceInfile
 
+
+### Export des Saved searches non crées avec civix export afform (pour tokens et purges)
+
+$tags = ['Requêtes utilisées pour les purges', 'tokens'];
+        // sauve les mgd files et crée un fichier managed/tags_searches.txt
+        // qui liste le tag de chaque search, non exporté avec le search
+
+$tags_searches = []; // tableau donnant le tag à modifier pour chaque search
+
+foreach ($tags as $tag){
+  echo "----------------TAG ".$tag."-------------------------".PHP_EOL;
+
+
+  $savedSearches = \Civi\Api4\SavedSearch::get(FALSE)
+  ->addSelect('label', 'id','name')
+  ->addWhere('base_module', '=', 'don_corps')
+  ->addWhere('tags:label', 'IN', $tag)
+  ->execute();
+
+  if(isset ($savedSearches[0])){
+    foreach ($savedSearches as $savedSearch){
+      echo "exporting Search ".$savedSearch['label']." (".$savedSearch['id'].")".PHP_EOL;
+      $cmd = "civix export SavedSearch ".$savedSearch['id'];
+      exec($cmd, $output, $retval);
+      //echo "Returned with status $retval and output:\n";
+      //print_r($output);
+      //unset ($output);
+      
+      $tags_searches [] = [           // ajoute une entrée à la table 
+        'search'  => $savedSearch['name'],
+        'tag'     => $tag,
+      ];
+    }
+  }
+}
+
+$exp_file=$exp_dir."tags_searches.txt";
+file_put_contents($exp_file, json_encode($tags_searches, JSON_PRETTY_PRINT));
+echo count($tags_searches)." tags pour searches exportés dans ".$exp_file.PHP_EOL;
+
+### Fin de l'export des Saved searches non crées avec civix export afform
+
 ### Export de l'option Value OptionGroup_cg_extend_objects_Saisine
   $name ='civicrm_saisine';
   $optionValue = \Civi\Api4\OptionValue::get(FALSE)
@@ -320,36 +362,6 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
     }
 ### Fin de l'export des Tags
 
-### Export des Saved searches non crées avec civix export afform (pour tokens et purges)
-  $savedSearches = civicrm_api4('SavedSearch', 'get', [
-      'select' => [
-        'id',
-        'label',
-      ],
-      'where' => [
-        ['base_module', '=', 'don_corps'],
-        ['tags:label', 'IN', ['Requêtes utilisées pour les purges', 'tokens']],
-      ],
-      'orderBy' => [
-        'name' => 'ASC',
-      ],
-      'checkPermissions' => FALSE,
-    ]);
-
-  if(isset ($savedSearches[0])){
-    foreach ($savedSearches as $savedSearch){
-      echo "exporting Search ".$savedSearch['label']." (".$savedSearch['id'].")".PHP_EOL;
-      $cmd = "civix export SavedSearch ".$savedSearch['id'];
-      echo $cmd.PHP_EOL;
-      exec($cmd, $output, $retval);
-      echo "Returned with status $retval and output:\n";
-      print_r($output);
-      unset ($output);
-    }
-  }
-
-### Fin de l'export des Saved searches non crées avec civix export afform
-
 ### Export du Groupe archives
   $groups = civicrm_api4('Group', 'get', [
       'select' => [
@@ -435,7 +447,6 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
 
 ### Fin de l'export des options de choix multiples (Option groups)
 
-
 ### Export des formulaires (afforms)
  # Lorsqu'on exporte un formulaire lié à une recherche, 
  # la recherche est sauvegardée dans le meme temps
@@ -465,6 +476,19 @@ $exp_dir = './managed/';       // racine du répertoire d'import export
     }
   }
 ### Fin de l'export des formulaires (afforms)
+
+### Export des afblockCustom, utilisé pour creer/modifier/voir les utilisations
+  $blocks = [
+    'afformViewCustom_Utilisation_du_corps', 
+    'afblockCustom_Utilisation_du_corps'
+    ];
+
+  foreach ($blocks as $block){
+    $cmd = "civix export Afform ".$block;
+    echo $cmd.PHP_EOL;
+    exec($cmd, $output, $retval);
+  }
+### Fin de l'export du bloc afblockCustom_Utilisation_du_corps
 
 ### Export des menus de navigation
   // remove navigation menus mgd files created by afform (sinon doublons)

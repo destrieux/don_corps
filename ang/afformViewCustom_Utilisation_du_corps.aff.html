@@ -1,0 +1,58 @@
+<af-form ctrl="afform">
+  <af-entity type="Custom_Utilisation_du_corps" name="Record" label="Individual Utilisation du corps" actions="{create: false, update: true}" security="RBAC" url-autofill="1" />
+  <fieldset af-fieldset="Record" class="af-container">
+    <af-field name="entity_id" defn="{input_type: 'Hidden', label: false}" />
+    <div class="af-container af-layout-inline">
+      <div class="af-container af-container-style-pane" af-title="Identification">
+        <af-field name="N_de_pi_ce_ou_de_corps" defn="{input_type: 'DisplayOnly', label: 'N&deg; de pi&egrave;ce ou de corps', input_attrs: {}}" />
+        <af-field name="Type_de_poi_ce_3" defn="{input_type: 'DisplayOnly', label: 'Type de pi&egrave;ce', input_attrs: {}}" />
+        <af-field name="cote2" defn="{input_type: 'DisplayOnly', label: 'C&ocirc;t&eacute;'}" />
+      </div>
+      <div class="af-container af-container-style-pane" af-title="Utilisation">
+        <af-field name="Utilisation2" defn="{input_type: 'DisplayOnly', label: 'Type'}" />
+        <af-field name="Protocole_de_recherche_ex_vivo2" defn="{input_type: 'DisplayOnly', label: 'Protocole'}" />
+        <af-field name="Compl_ment" defn="{input_type: 'DisplayOnly', label: 'Compl&eacute;ment / identifiant', help_post: ''}" />
+      </div>
+    </div>
+    <div class="af-container af-layout-cols">
+      <div class="af-container af-container-style-pane" af-title="Pr&eacute;paration">
+        <af-field name="Pr_par_par" defn="{input_type: 'DisplayOnly', label: 'Pr&eacute;par&eacute; par'}" />
+        <p class="af-text">Enter text</p>
+        <div class="af-container af-layout-cols">
+          <af-field name="D_lai_en_heure_entre_d_c_s_h_0_et_injection" defn="{input_type: 'DisplayOnly', label: 'D&eacute;lai en heures entre d&eacute;c&egrave;s (h=0) et injection', help_pre: '', help_post: ''}" />
+          <af-field name="D_lai_en_heure_entre_d_c_s_h_0_et_pr_l_vement_ventuel" defn="{input_type: 'DisplayOnly', label: 'D&eacute;lai en heure entre d&eacute;c&egrave;s (h=0) et pr&eacute;l&egrave;vement &eacute;ventuel', help_pre: '', help_post: ''}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <af-field name="Site_inject_" defn="{input_type: 'DisplayOnly', label: 'Site inject&eacute;'}" />
+          <af-field name="M_dium_inject_" defn="{input_type: 'DisplayOnly', label: 'M&eacute;dium inject&eacute;'}" />
+          <af-field name="Bain_de_conservation" defn="{input_type: 'DisplayOnly', label: 'Bain de conservation'}" />
+        </div>
+      </div>
+      <div class="af-container af-container-style-pane" af-title="Techniques sp&eacute;cifiques">
+        <af-field name="Imagerie2" defn="{input_type: 'DisplayOnly', label: 'Imagerie'}" />
+        <af-field name="Klingler2" defn="{input_type: 'DisplayOnly', label: 'Klingler'}" />
+        <af-field name="Inclusion_en_paraffine2" defn="{input_type: 'DisplayOnly', label: 'Inclusion en paraffine'}" />
+      </div>
+    </div>
+    <div class="af-container af-layout-cols">
+      <div class="af-container af-container-style-pane" af-title="Localisation">
+        <div class="af-container af-layout-cols">
+          <af-field name="Lacalisation" defn="{input_type: 'DisplayOnly', label: 'Localisation', help_post: ''}" />
+          <af-field name="Complement_location" defn="{input_type: 'DisplayOnly', label: 'Compl&eacute;ment localisation'}" />
+        </div>
+        <div class="af-container af-layout-cols">
+          <af-field name="Sortie" defn="{input_type: 'DisplayOnly', label: 'Date de pr&ecirc;t &eacute;ventuel'}" />
+          <af-field name="Date_de_retour" defn="{input_type: 'DisplayOnly', label: 'Date de retour'}" />
+        </div>
+      </div>
+      <div class="af-container af-container-style-pane af-layout-cols" af-title="Elimination">
+        <af-field name="Mode_limination_hors_corps_2" defn="{input_type: 'DisplayOnly'}" />
+        <af-field name="Date_limination_pi_ce" defn="{input_type: 'DisplayOnly'}" />
+      </div>
+    </div>
+    <div class="af-container af-layout-cols af-container-style-pane" af-title="Divers">
+      <af-field name="Remarques" defn="{input_type: 'DisplayOnly'}" />
+      <af-field name="Inventaires" defn="{input_type: 'DisplayOnly'}" />
+    </div>
+  </fieldset>
+</af-form>

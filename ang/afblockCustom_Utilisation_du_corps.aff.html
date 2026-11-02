@@ -1,0 +1,55 @@
+<div class="af-container af-layout-cols">
+  <div class="af-container af-container-style-pane" af-title="Identification">
+    <af-field name="N_de_pi_ce_ou_de_corps" defn="{label: 'N&deg; de pi&egrave;ce ou de corps', input_attrs: {}}" />
+    <af-field name="Type_de_poi_ce_3" defn="{label: 'Type de pi&egrave;ce', input_attrs: {}}" />
+    <af-field name="cote2" defn="{label: 'C&ocirc;t&eacute;', input_attrs: {}}" />
+  </div>
+  <div class="af-container af-container-style-pane" af-title="Utilisation">
+    <af-field name="Utilisation2" defn="{label: 'Type', input_attrs: {}}" />
+    <af-field name="Protocole_de_recherche_ex_vivo2" defn="{label: 'Protocole', input_attrs: {}}" />
+    <af-field name="Compl_ment" defn="{label: 'Compl&eacute;ment / identifiant', input_attrs: {}, help_post: '&lt;p&gt;Si multiples, s&eacute;parer les entr&eacute;es par des virgules&lt;/p&gt;\n'}" />
+  </div>
+</div>
+<p class="af-text"></p>
+<div class="af-container af-layout-cols">
+  <div class="af-container af-container-style-pane" af-title="Pr&eacute;paration">
+    <af-field name="Pr_par_par" defn="{label: 'Pr&eacute;par&eacute; par', input_attrs: {}}" />
+    <div class="af-container af-layout-inline">
+      <af-field name="D_lai_en_heure_entre_d_c_s_h_0_et_injection" defn="{help_pre: '', input_attrs: {}, label: 'D&eacute;lai d&eacute;c&egrave;s (h=0) et injection (h)'}" />
+      <af-field name="D_lai_en_heure_entre_d_c_s_h_0_et_pr_l_vement_ventuel" defn="{label: 'D&eacute;lai d&eacute;c&egrave;s (h=0) pr&eacute;l&egrave;vement', input_attrs: {}, help_pre: ''}" />
+    </div>
+    <div class="af-container af-layout-cols">
+      <af-field name="Site_inject_" defn="{label: 'Site inject&eacute;', input_attrs: {}}" />
+      <af-field name="M_dium_inject_" defn="{label: 'M&eacute;dium inject&eacute;', input_attrs: {}}" />
+      <af-field name="Bain_de_conservation" defn="{label: 'Bain de conservation', input_attrs: {}}" />
+    </div>
+  </div>
+  <div class="af-container af-container-style-pane" af-title="Techniques sp&eacute;cifiques">
+    <af-field name="Imagerie2" defn="{label: 'Imagerie ex vivo', input_attrs: {}}" />
+    <af-field name="Inclusion_en_paraffine2" defn="{label: 'Inclusion en paraffine', input_attrs: {}}" />
+    <af-field name="Klingler2" defn="{label: 'Klingler', input_attrs: {}}" />
+    <div class="af-container"></div>
+  </div>
+</div>
+<p class="af-text"></p>
+<div class="af-container af-layout-cols">
+  <div class="af-container af-container-style-pane" af-title="Localisation">
+    <div class="af-container af-layout-cols">
+      <af-field name="Lacalisation" defn="{label: 'Localisation', input_attrs: {}}" />
+      <af-field name="Complement_location" />
+    </div>
+    <div class="af-container af-layout-cols">
+      <af-field name="Sortie" defn="{label: 'Date de pr&ecirc;t &eacute;ventuel', input_attrs: {}}" />
+      <af-field name="Date_de_retour" defn="{label: 'Date de retour', input_attrs: {}}" />
+    </div>
+  </div>
+  <div class="af-container af-container-style-pane af-layout-cols" af-title="Elimination">
+    <af-field name="Mode_limination_hors_corps_2" defn="{label: 'Mode &eacute;limination', input_attrs: {}}" />
+    <af-field name="Date_limination_pi_ce" defn="{label: 'Date &eacute;limination', input_attrs: {}}" />
+  </div>
+</div>
+<p class="af-text"></p>
+<div class="af-container af-container-style-pane af-layout-cols" af-title="Divers">
+  <af-field name="Remarques" defn="{label: 'Remarques'}" />
+  <af-field name="Inventaires" defn="{label: 'Inventaires', input_attrs: {}}" />
+</div>

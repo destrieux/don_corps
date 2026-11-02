@@ -21,6 +21,7 @@ return [
             'end_date',
             'Event_Saisine_id_de_saisine_01.caracteristiques.D_posant.display_name',
             'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],
