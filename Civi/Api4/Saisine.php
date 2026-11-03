@@ -115,4 +115,14 @@ namespace Civi\Api4;
  */
 class Saisine extends Generic\DAOEntity {
 
+    public static function permissions(): array {
+    return [
+      'meta'    => ['access CiviCRM'],
+      'get'     => ['access saisines'],
+      'create'  => ['access saisines'],
+      'update'  => ['access saisines'],
+      'delete'  => ['administer CiviCRM'],
+      'default' => ['administer CiviCRM'],
+    ];
+  }
 }

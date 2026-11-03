@@ -22,11 +22,28 @@ require_once 'don_corps.civix.php';
 use CRM_DonCorps_ExtensionUtil as E;
 use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouvelles actions pour utilation des corps
 use Civi\DonCorps\UpdateSearchGroups;
-use Civi\DonCorps\Install\SearchUpdateToken;                 ## MAJ des tokens des searches
+use Civi\DonCorps\Install\SearchUpdateTag;                 ## MAJ des tokens des searches
+
+
+function don_corps_civicrm_permission(&$permissions) {
+  /* Le hook hook_civicrm_permission sert à construire la liste de toutes les permissions du site. 
+  Il est déclenché notamment :
+  quand vous ouvrez la page Administrer → Utilisateurs et permissions → Contrôle d’accès WordPress (la liste des permissions) ;
+  quand CiviCRM vérifie un droit et doit connaître les permissions déclarées ;
+  quand la liste est reconstruite, par exemple après un cv flush, car cette liste est mise en cache. */
+  
+  $permissions['access saisines'] = [
+    'label' => 'don_corps : accéder aux saisines',
+    'description' => 'Consulter et modifier les saisines',
+  ];
+}
+
 
 // VARIABLES
-$mgd_dir = E::path() .'/managed/';                   // répertoire des managed files
-$tag_search_file = $mgd_dir."tags_searches.txt";  // fichier contenant les tags attachés aux recherches
+
+
+
+
 
 
 ## Gestion des logs
@@ -3852,6 +3869,7 @@ $container
         'administer_afform',
         'access_civioffice',
         'author',
+        'access_saisines',
         ];
 
 
@@ -4496,8 +4514,8 @@ $container
       create_rules();
     $msg="  - Ajout des tags aux SavedSearches";
       // Pour lister les requetes : cv api4 SavedSearch.get '{"select":["id","name","label"],"checkPermissions":false}' --out=table
-
-      SearchUpdateToken::updateToken($tag_search_file);
+      $tag_search_file = E::path() .'/managed/tags_searches.txt';  // fichier contenant les tags attachés aux recherches
+      SearchUpdateTag::updateTag($tag_search_file);
       \Civi::log()->info("don_corps : ".$msg);
       
 
@@ -6092,7 +6110,9 @@ $container
   function don_corps_civicrm_container(ContainerBuilder $container): void {
   ## Ajoute l'action imprimer document civioffice dans les utilisations du corps
   $container->autowire(\Civi\EventSubscriber\CiviOfficeSearchKitTaskSubscriber::class)->addTag('kernel.event_subscriber');
-
+  ## Contournement d'un défaut de CiviOffice : le droit est déclaré pour l'action « renderWeb », alors que l'action s'appelle « render ».
+  $container->autowire(\Civi\EventSubscriber\CiviOfficeAuthorizeSubscriber::class)->addTag('kernel.event_subscriber');
+  
   ## Remonte tous les tokens d'utilisation du corps pour les rendre disponibles
   $container->autowire(\Civi\EventSubscriber\CiviOfficeTokenSubscriber::class)->addTag('kernel.event_subscriber');
   

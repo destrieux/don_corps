@@ -134,7 +134,7 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
 
     $msg= "** UPGRADE 2032 : - Ajout des tags aux SavedSearches";
       $tag_search_file = E::path() .'/managed/tags_searches.txt';     // fichier contenant les tags attachés aux recherches
-      SearchUpdateToken::updateToken($tag_search_file);
+      SearchUpdateTag::updateTag($tag_search_file);
       \Civi::log()->info("don_corps : ".$msg);
       return TRUE;
   }

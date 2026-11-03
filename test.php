@@ -1,15 +1,87 @@
 <?php
 eval(`cv php:boot`);
-use Civi\DonCorps\Install\SearchUpdateToken;
 
-$return = SearchUpdateToken::updateToken("managed/tags_searches.txt");
 
-//\Civi\DonCorps\Install\SearchUpdateToken::updateToken(__DIR__ . '/managed/tags_searches.txt');
+$author_caps = [              // liste des privileges du role author
+        'upload_files',
+        'edit_posts',
+        'edit_published_posts',
+        'publish_posts',
+        'read',
+        'level_2',
+        'level_1',
+        'level_0',
+        'delete_posts',
+        'delete_published_posts',
+        'sign_civicrm_petition',
+        'access_civimember',
+        'edit_memberships',
+        'delete_in_civimember',
+        'add_contacts',
+        'view_all_contacts',
+        'edit_all_contacts',
+        'view_my_contact',
+        'edit_my_contact',
+        'delete_contacts',
+        'access_deleted_contacts',
+        'edit_groups',
+        'access_uploaded_files',
+        'profile_listings',
+        'profile_create',
+        'profile_edit',
+        'profile_view',
+        'access_all_custom_data',
+        'view_all_activities',
+        'delete_activities',
+        'edit_inbound_email_basic_information',
+        'edit_inbound_email_basic_information_and_content',
+        'access_civicrm',
+        'access_contact_dashboard',
+        'manage_tags',
+        'administer_reserved_groups',
+        'administer_tagsets',
+        'administer_reserved_tags',
+        'administer_dedupe_rules',
+        'merge_duplicate_contacts',
+        'force_merge_duplicate_contacts',
+        'view_all_notes',
+        'add_contact_notes',
+        'access_contact_reference_fields',
+        'edit_message_templates',
+        'edit_system_workflow_message_templates',
+        'edit_user_driven_message_templates',
+        'view_my_invoices',
+        'access_civievent',
+        'edit_event_participants',
+        'edit_all_events',
+        'register_for_events',
+        'view_event_info',
+        'view_event_participants',
+        'delete_in_civievent',
+        'manage_event_profiles',
+        'access_civicontribute',
+        'edit_contributions',
+        'make_online_contributions',
+        'delete_in_civicontribute',
+        'access_civimail',
+        'access_civimail_subscribe_unsubscribe_pages',
+        'delete_in_civimail',
+        'view_public_civimail_content',
+        'access_civireport',
+        'access_report_criteria',
+        'save_report_criteria',
+        'administer_private_reports',
+        'administer_reserved_reports',
+        'administer_reports',
+        'view_report_sql',
+        'administer_search_kit',
+        'administer_afform',
+        'access_civioffice',
+        'author',
+        'access_saisines',
+        ];
 
-if($return){
-    \Civi::log()->warning("don_corps : OK");
 
-}else{
-       \Civi::log()->warning("don_corps : KO");
- 
-};
+
+      
+      _myextension_add_wp_capabilities('author', $author_caps);

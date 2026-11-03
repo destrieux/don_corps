@@ -2,14 +2,14 @@
 namespace Civi\DonCorps\Install; //Le nom complet de la classe est \Civi\DonCorps\Install\CustomFieldFilter, 
                                  //et il correspond au fichier Civi/DonCorps/Install/CustomFieldFilter.php.
 
-class SearchUpdateToken {        // Nom de la classe
+class SearchUpdateTag {        // Nom de la classe
 
   /**
    * Modifie le tag d'une recherche, non exporté aveec mgd files
    * @return bool TRUE si le tag a été déposé
    */
 
-  public static function updateToken(string $exp_file): bool {
+  public static function updateTag(string $exp_file): bool {
       // public : fonction appellable depuis n'importe ou 
       // static : on l'appelle directement sur la classe
       // string $exp_file : 1er parametre qui doit être du texte : nom du fichier contenant les tags à mofiider
