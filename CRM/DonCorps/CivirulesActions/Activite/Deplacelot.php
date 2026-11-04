@@ -16,7 +16,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Deplacelot extends CRM_Civirules_Ac
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return NULL;
+    return FALSE;
   }
 
   /**

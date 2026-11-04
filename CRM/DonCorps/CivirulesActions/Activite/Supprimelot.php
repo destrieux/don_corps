@@ -17,7 +17,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Supprimelot extends CRM_Civirules_A
    */
 
   public function getExtraDataInputUrl($ruleActionId) {
-    return NULL;
+    return FALSE;
   }
 
   /**

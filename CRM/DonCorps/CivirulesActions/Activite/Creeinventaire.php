@@ -17,7 +17,7 @@ class CRM_DonCorps_CivirulesActions_Activite_Creeinventaire extends CRM_Civirule
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return NULL;
+    return FALSE;
   }
 
 

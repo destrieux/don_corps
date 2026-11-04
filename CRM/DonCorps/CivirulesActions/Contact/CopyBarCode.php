@@ -15,9 +15,9 @@ class CRM_DonCorps_CivirulesActions_Contact_CopyBarCode extends CRM_Civirules_Ac
    *
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
-    $contactId = $triggerData->getContactId();  // id du contact passé par le trigger 
+    $contactId = $triggerData->getContactId();  // id du contact passé par le trigger
 
-   
+
    // Liste les contacts ayant une utilisation avec une piece de type corps
     $contacts = civicrm_api4('Contact', 'get', [
       'select' => [
@@ -43,7 +43,7 @@ class CRM_DonCorps_CivirulesActions_Contact_CopyBarCode extends CRM_Civirules_Ac
       $piece_ple = $contacts[0]['custom_utilisation_du_corps.N_de_pi_ce_ou_de_corps'];
 
     } else {                      // Si ce contact n'a pas de piece de type corps on met $piece_ple à NULL
-      //echo "Pas de piece de type corps".PHP_EOL;             
+      //echo "Pas de piece de type corps".PHP_EOL;
       $piece_ple = NULL;
     }
 
@@ -69,7 +69,7 @@ class CRM_DonCorps_CivirulesActions_Contact_CopyBarCode extends CRM_Civirules_Ac
    * @access public
    */
   public function getExtraDataInputUrl($ruleActionId) {
-    return NULL;
+    return FALSE;
   }
 
 
