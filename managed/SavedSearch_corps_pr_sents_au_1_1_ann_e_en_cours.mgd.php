@@ -42,9 +42,18 @@ return [
               ],
             ],
             [
-              'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
-              '!=',
-              TRUE,
+              'OR',
+              [
+                [
+                  'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
+                  '!=',
+                  TRUE,
+                ],
+                [
+                  'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires',
+                  'IS EMPTY',
+                ],
+              ],
             ],
           ],
           'groupBy' => ['contact_type'],
@@ -83,7 +92,7 @@ return [
         'name' => 'corps_pr_sents_au_1_1_ann_e_en_cours_List_1',
         'label' => E::ts('bilan : corps présents au 1/1 année en cours List 1'),
         'saved_search_id.name' => 'corps_pr_sents_au_1_1_ann_e_en_cours',
-        'type:name' => 'crm-search-display-list',
+        'type' => 'list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,

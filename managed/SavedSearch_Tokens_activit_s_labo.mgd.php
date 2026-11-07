@@ -22,6 +22,7 @@ return [
             'Event_Saisine_id_de_saisine_01.caracteristiques.D_posant.display_name',
             'id',
             'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],
@@ -54,7 +55,7 @@ return [
         'name' => 'Tokens_activit_s_labo_Champs_de_fusion_1',
         'label' => E::ts('Tokens activités labo Champs de fusion 1'),
         'saved_search_id.name' => 'Tokens_activit_s_labo',
-        'type:name' => 'crm-search-display-tokens',
+        'type' => 'tokens',
         'settings' => [
           'columns' => [
             [

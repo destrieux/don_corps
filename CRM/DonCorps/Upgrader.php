@@ -55,7 +55,7 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
   }
   public function upgrade_2031(): bool {
     ## modifie le nom des groupes utilisés dans les requetes (par exemple Archives_64 en Archives_52)
-    $msg= "** UPGRADE 2030 : - update search groups";
+    $msg= "** UPGRADE 2031 : - update search groups";
     \Civi::log('don_corps')->info($msg);
     UpdateSearchGroups::updateAll();
     return TRUE;

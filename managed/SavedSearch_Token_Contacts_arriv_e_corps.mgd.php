@@ -24,6 +24,7 @@ return [
             'id',
             'id',
             'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],
@@ -56,7 +57,7 @@ return [
         'name' => 'Token_Contacts_arriv_e_corps_Champs_de_fusion_1',
         'label' => E::ts('Token Contacts arrivée corps'),
         'saved_search_id.name' => 'Token_Contacts_arriv_e_corps',
-        'type:name' => 'crm-search-display-tokens',
+        'type' => 'tokens',
         'settings' => [
           'columns' => [
             [
