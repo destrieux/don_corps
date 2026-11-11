@@ -1,6 +1,6 @@
 [
     {
-        "search": "Donneurs_annuul_s",
+        "search": "Donneurs_annul_s",
         "tag": "Requ\u00eates utilis\u00e9es pour les purges"
     },
     {

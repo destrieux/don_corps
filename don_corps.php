@@ -3,11 +3,17 @@
 
 /*VERIFICATION
 
-affichage groupes dynamiques dans CONTACT LAYOUT DB error
-
-
-que les formules de politess par courrier et par mail suivantes sont actives
-madame; monsieur; madamoiselle; MadameMonsieur, nom prénom
+9/11/26 - Issue signalée : lors de l'affichage descontacts supprimés via advanceed search 
+https://lab.civicrm.org/dev/core/-/work_items/6918
+Dans /Applications/MAMP/htdocs/dev/wp-content/plugins/civicrm/civicrm/CRM/Contact/Selector.php, line 792-5
+Ajouter "weight' => 100,"
+            [
+              'name' => ts('Restore'),
+              'url' => 'civicrm/contact/view/delete',
+              'qs' => 'reset=1&cid=%%id%%&restore=1',
+              'title' => ts('Restore Contact'),  ## modif CD pour afficher contacts supprimés
+              'weight' => 100,
+            ],
 
 */
 /* 
@@ -22,8 +28,9 @@ require_once 'don_corps.civix.php';
 use CRM_DonCorps_ExtensionUtil as E;
 use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouvelles actions pour utilation des corps
 use Civi\DonCorps\UpdateSearchGroups;
-use Civi\DonCorps\Install\SearchUpdateTag;                 ## MAJ des tokens des searches
-
+use Civi\DonCorps\Install\SearchUpdateTag;      ## MAJ des tokens des searches
+use Civi\DonCorps\Contacts\ImportCDC;           ## import des CDC, de leurz adresses, telephones ...
+use Civi\DonCorps\WPUsers\WPPriviledges;        ## export - import des privilèges civicrm/WP
 
 function don_corps_civicrm_permission(&$permissions) {
   /* Le hook hook_civicrm_permission sert à construire la liste de toutes les permissions du site. 
@@ -217,7 +224,7 @@ $container
   // ce fichier fait référence au controleur CRM_DonCorps_Page_DonCorpsICal ou le calendrier est défini
   function don_corps_civicrm_xmlMenu(&$files) {     // format reconnu par civicrm : extension_civicrm_nom du hook
     $files[] = __DIR__ . '/xml/Menu/don_corps.xml';
-  }
+   }
 
   function after ($thisv, $inthatv){ // récupère la partie de chaine $inthatv située après $thisv
         if (!is_bool(strpos($inthatv, $thisv)))
@@ -482,427 +489,6 @@ $container
       return false;
     }   // fin de définition de fonction _don_corps_is_civirules_installed(
 
-  function import_stuffCDC(){     // LOG OK utilisée pour importer les CDC
-        $count=1;
-        $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
-        $values = func_get_arg(1);     // parametres de cette entité
-        $check=array();
-
-        
-
-        foreach ($values as $value) {
-            unset ($value['external_identifier']);
-            unset ($value['id']);
-            unset ($value['hash']);
-            unset ($value['email_greeting_id']);
-            unset ($value['email_greeting_custom']);
-            unset ($value['email_greeting_display']);
-
-            unset ($value['postal_greeting_id']);
-            unset ($value['postal_greeting_custom']);
-            unset ($value['postal_greeting_display']);
-
-            unset ($value['suffix_id']);
-            unset ($value['communication_style_id']);
-
-            unset ($value['prefix_id']);
-            $value['gender_id']=NULL;
-
-            if (isset($value['employer_id'])){                     // si le contact a un champ employer_id non null
-
-            $msg="employer_id : ".$value['employer_id'];   // on en modifie la valeur par l'id de l'institution crée au préalable
-            \Civi::log()->info("don_corps : ".$msg);
-
-            if (VERBOSE==1){
-              // echo $msg.PHP_EOL;
-            }
-
-            $employeur = civicrm_api4('Contact', 'get', [
-                    'select' => [
-                    'id',
-                    ],
-                    'where' => [
-                    ['contact_type', '=', 'Organization'],
-                    ['external_identifier', '=', $value['employer_id']],
-                    ],
-                    'checkPermissions' => FALSE,
-                ]);
-
-                if (isset($employeur)){
-                    $value['employer_id']=$employeur[0]['id'];
-                    $msg="employer_id new: ".$value['employer_id'];
-                    \Civi::log()->info("don_corps : ".$msg);
-                    if (VERBOSE==1){
-                      // echo $msg.PHP_EOL;
-                    }
-                } else {
-                    $msg = "employer_id  extereal identifier n'existe pas : ".$value['employer_id '];
-                    \Civi::log()->info("don_corps : ".$msg);
-                    if (VERBOSE==1){
-                      // echo $msg.PHP_EOL;
-                    }
-                 }
-            }
-
-            $contacts = civicrm_api4('Contact', 'get', [  // on recheche contacts avec le meme siret
-                'where' => [
-                ['legal_identifier', '=', $value['legal_identifier']],
-                ],
-                'limit' => 1,
-                'checkPermissions' => FALSE,
-            ]);
-
-            $value['addressee_id']=1;
-
-            if (!isset($contacts[0]['id'])){             // si le contact n'existe pas on le crée
-                $results = civicrm_api4('Contact', 'create', [
-                'values' => $value,
-                'checkPermissions' => FALSE,
-                ]);
-                $msg = "         ".$count." CREATION : ".$value['sort_name'];
-                \Civi::log()->info("don_corps : ".$msg);
-                if (VERBOSE==1){
-                  // echo $msg.PHP_EOL;
-                }
-                ++$count;
-
-            } else {                                    // si le contact exite on l'update
-
-                $id_to_update=$contacts[0]['id'];
-
-                $results = civicrm_api4('Contact', 'update', [
-                'values' => $value,
-                'where' => [
-                    ['id', '=', $id_to_update],
-                ],
-                'checkPermissions' => FALSE,
-                ]);
-                $msg= "         ".$count." MAJ : ".$value['sort_name']." | id : ".$id_to_update;
-                \Civi::log()->info("don_corps : ".$msg);
-                if (VERBOSE==1){
-                  // echo $msg.PHP_EOL;
-                }
-                ++$count;
-            }
-
-            array_push($check, $results[0]['id']);
-        }
-
-        $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-        \Civi::log()->info("don_corps : ".$msg);
-        if (VERBOSE==1){
-          // echo $msg;
-        }
-
-        if (count($check)==count($values)) {    // le bon nombre de lignes a été importées
-            $msg= " ---> OK";
-            \Civi::log()->info("don_corps : ".$msg);
-            if (VERBOSE==1){
-              // echo $msg.PHP_EOL;
-            }
-        }else {
-        $msg ="---> VERIFIER LIMPORT : LIGNES MANQUANTES";
-        \Civi::log()->info("don_corps : ".$msg);
-        // echo $msg.PHP_EOL;
-        }
-        return ($check);
-
-    }   // fin de définition de fonction import_stuffCDC
-
-  function import_addressCDC(){   // LOG OK utilisée pour importer les adresses des CDC
-      $count=1;
-      $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
-      $values = func_get_arg(1);     // parametres de cette entité
-      $check=array();
-      
-
-      foreach ($values as $value) {
-          // on verifie que le CDC rattaché à l'adresse a bien été crée,
-          // c'est à dire qu'un CDC avect le meme SIRET (legal_identifier) existe bien
-
-          $contacts = civicrm_api4('Contact', 'get', [
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['legal_identifier', '=', $value['contact_id.legal_identifier']],
-              ],
-              'limit' => 1,
-              'checkPermissions' => FALSE,
-              ]);
-
-          $contact_id=$contacts[0]['id'];
-
-          if (isset($contact_id)){          // le CDC lié à l'adresse existe
-              $addresses = civicrm_api4('Address', 'get', [   // on recherche si une adresse identique existe pour ce contact
-
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['contact_id', '=', $contact_id],
-                  ['OR', [['street_address', '=', $value['street_address']], ['street_address', 'IS NULL']]],
-                  ['OR', [['postal_code', '=', $value['postal_code']], ['postal_code', 'IS NULL']]],
-                  ['OR', [['city', '=', $value['city']], ['city', 'IS NULL']]],
-                  ['location_type_id', '=',$value['location_type_id']],
-              ],
-              'checkPermissions' => FALSE,
-
-              ]);
-              $old_contact_id=$value['contact_id'];   // id du contact dans le fichier export
-              $value['contact_id']=$contact_id;       // id du contact dans la nouvelle base
-
-              if (!isset($addresses[0]['id'])){       //  cette adresse n'existe pas pour ce contact ; on la crée
-
-              $results = civicrm_api4('Address', 'create', [
-              'values' => $value,
-                  'checkPermissions' => FALSE,
-              ]);
-              $msg= "         ".$count." CREATION adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-              ++$count;
-
-              }  else {                                // cette adresse existe pour ce contact ; on la cmodifie
-                  $address_to_create = $addresses[0]['id'];
-                  $creation = civicrm_api4('Address', 'update', [
-                  'values' => $value,
-                  'where' => [
-                  ['id', '=', $address_to_create],
-                  ],
-                  'checkPermissions' => FALSE,
-              ]);
-              $msg= "         ".$count." MAJ adresse : ".$value['street_address']." pour CDC id ".$value['contact_id'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-              ++$count;
-          }
-          }
-          array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
-                                              // à utiliser avec check_address.php
-      }
-      $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-      \Civi::log()->info("don_corps : ".$msg);
-      if (VERBOSE==1){
-        // echo $msg;
-      }
-
-          if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-              $msg= " ---> OK";
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-          }else {
-          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES";
-          \Civi::log()->info("don_corps : ".$msg);
-          // echo $msg.PHP_EOL;
-          }
-          return ($check);
-
-      
-    }   // fin de définition de fonction import_addressCDC
-
-  function import_phoneCDC(){     // LOG OK utilisée pour importer les telephones des CDC
-      $count=1;
-      $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
-      $values = func_get_arg(1);     // parametres de cette entité
-      $check=array();
-      
-
-      foreach ($values as $value) {
-          // on verifie que le CDC rattaché au téléphone existe bien
-          // i.e., avec le meme numéro de SIRET (legal_identifier)
-          $contacts = civicrm_api4('Contact', 'get', [
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['legal_identifier', '=', $value['contact_id.legal_identifier']],
-              ],
-              'limit' => 1,
-              'checkPermissions' => FALSE,
-              ]);
-
-          if (isset($contacts[0]['id'])){          // le contact lié à l'adresse existe
-              $contact_id=$contacts[0]['id'];       // adresse du contact dans la nouvelle base
-
-              $phones = civicrm_api4('Phone', 'get', [   // on recherche si un téléphone identique existe pour ce contact
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['contact_id', '=', $contact_id],
-                  ['phone', '=',$value['phone']],
-              ],
-              'checkPermissions' => FALSE,
-
-              ]);
-              $old_contact_id=$value['contact_id'];     // on remplace le contact_id de l'anceinne base par celui dans la nouvelle
-              $value['contact_id']=$contact_id;
-
-              if (!isset($phones[0]['id'])){             //  ce tel n'existe pas pour ce CDC ; on la crée
-
-              $results = civicrm_api4('Phone', 'create', [
-              'values' => $value,
-                  'checkPermissions' => FALSE,
-              ]);
-              $msg = "         ".$count." CREATION téléphone: ".$value['phone']." pour CDC id ".$value['contact_id'].PHP_EOL;
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg;
-              }
-              ++$count;
-
-              }  else {                                // ce tel existe pour ce CDC ; on la cmodifie
-                  $phone_to_create = $phones[0]['id'];
-                  $creation = civicrm_api4('Phone', 'update', [
-                  'values' => $value,
-                  'where' => [
-                  ['id', '=', $phone_to_create],
-                  ],
-                  'checkPermissions' => FALSE,
-              ]);
-              $msg= "         ".$count." MAJ téléphone : ".$value['phone']." pour CDC id ".$value['contact_id'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-              ++$count;
-              ++$count;
-          }
-          }
-          array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
-                                              // à utiliser avec check_address.php
-      }
-
-      $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg;
-              }
-
-          if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-              $msg= " ---> OK";
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-          }else {
-          $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES";
-          \Civi::log()->info("don_corps : ".$msg);
-          // echo $msg.PHP_EOL;
-          }
-          return ($check);
-
-      
-    }   // fin de définition de fonction import_phoneCDC
-
-  function import_emailCDC(){     // LOG OK utilisée pour importer les mails des CDC
-      $count=1;
-      $entity = func_get_arg(0);     // nom de l'entité à créer (contact...)
-      $values = func_get_arg(1);     // parametres de cette entité
-      $check=array();
-      
-
-      foreach ($values as $value) {
-          // on verifie que le contact rattaché au mail existe bien
-          // CAD avec le meme SIRET (legal-identifier)
-          $contacts = civicrm_api4('Contact', 'get', [
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['legal_identifier', '=', $value['contact_id.legal_identifier']],
-              ],
-              'limit' => 1,
-              'checkPermissions' => FALSE,
-              ]);
-
-          $contact_id=$contacts[0]['id'];
-
-          if (isset($contacts[0]['id'])){               // le CDC lié au mail existe dans la nouvelle base
-              $contact_id=$contacts[0]['id'];             // id du CDC dans la nouvelle base
-              $emails = civicrm_api4('Email', 'get', [   // on recherche si un mail identique existe pour ce CDC
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['contact_id', '=', $contact_id],
-                  ['email', '=',$value['email']],
-              ],
-              'checkPermissions' => FALSE,
-
-              ]);
-              $old_contact_id=$value['contact_id'];
-              $value['contact_id']=$contact_id;       // on remplace le contact_id de l'anceinne base par celui dans la nouvelle
-
-
-
-
-              if (!isset($emails[0]['id'])){             //  ce mail n'existe pas pour ce contact ; on le crée
-
-              $results = civicrm_api4('Email', 'create', [
-              'values' => $value,
-                  'checkPermissions' => FALSE,
-              ]);
-              $msg= "         ".$count." CREATION email: ".$value['email']." pour CDC id ".$value['contact_id'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-
-              ++$count;
-
-              }  else {                                // ce tel existe pour ce contact ; on la cmodifie
-                  $email_to_create = $emails[0]['id'];
-                  $creation = civicrm_api4('Email', 'update', [
-                  'values' => $value,
-                  'where' => [
-                  ['id', '=', $email_to_create],
-                  ],
-                  'checkPermissions' => FALSE,
-              ]);
-              $msg= "         ".$count." MAJ email : ".$value['email']." pour CDC id ".$value['contact_id'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-              ++$count;
-
-          }
-          }
-          array_push($check, $old_contact_id); // crée un tableau avec les n° originaux des contacts (external id dans la nouvelle base)
-                                              // à utiliser avec check_address.php
-
-      }
-
-
-      $msg= "         ".$entity." : ".count($check)." lignes ont été importées sur ".count($values);
-      \Civi::log()->info("don_corps : ".$msg);
-      if (VERBOSE==1){
-        // echo $msg;
-      }
-
-      if (count($check)==count($values)) {// le bon nombre de lignes a été importées
-        $msg=" ---> OK";
-        \Civi::log()->info("don_corps : ".$msg);
-        if (VERBOSE==1){
-          // echo $msg.PHP_EOL;
-        }
-      }else {
-      $msg= "---> VERIFIER LIMPORT : LIGNES MANQUANTES";
-      \Civi::log()->info("don_corps : ".$msg);
-      // echo $msg.PHP_EOL;
-      }
-
-      
-    }   // fin de définition de fonction import_emailCDC
-
     ############
     ## Les fonctions _myextension_remove_wp_capabilities et _myextension_add_wp_capabilities
     ##  modifient les privileges des utilisateurs wp selon leur rôle wordpress
@@ -917,50 +503,7 @@ $container
     ##  Pour Lister les privileges d'un utilisateur : wp user list-caps <user id>
     ############
 
-  function _myextension_remove_wp_capabilities() { // LOG OK arguments role, caps
-    if (!function_exists('get_role')) {
-        return;
-    }
-    
-    $roleName = func_get_arg(0);
-    $caps = func_get_arg(1);
-
-    $role = get_role($roleName);
-    if ($role) {
-      $msg= "         SUPPRESSION de toutes les permissions pour le role ".$roleName;
-      \Civi::log()->info("don_corps : ".$msg);
-      if (VERBOSE==1){
-        // echo $msg.PHP_EOL;
-      }
-      
-
-      foreach ($caps as $cap) {
-        $role->remove_cap($cap);
-        }
-      }
-    }   // fin de définition de fonction _myextension_remove_wp_capabilities
-
-  function _myextension_add_wp_capabilities() { // LOG OK arguments role, caps
-    if (!function_exists('get_role')) {
-        return;
-    }
-    
-    $roleName = func_get_arg(0);
-    $caps = func_get_arg(1);
-
-    $role = get_role($roleName);
-    if ($role) {
-      $msg="         AJOUT des permissions pour le role ".$roleName;
-      \Civi::log()->info("don_corps : ".$msg);
-      if (VERBOSE==1){
-        // echo $msg.PHP_EOL;
-      }
-      
-      foreach ($caps as $cap) {
-        $role->add_cap($cap);
-        }
-      }
-    }   // fin de définition de _myextension_add_wp_capabilities
+  
 
   function deactivate_menu(){   // // LOG OK invoquée à l'installation pour desactiver un menu original
     // syntaxe : deactivate_menu ('nom_du_menu_a_desactiver');
@@ -1444,112 +987,8 @@ $container
     }   // Fin de la définition de la fonction : deactivate_relation_type()
 
 
-  function ajoute_CDC(){ // LOG OK
-       $exp_dir = func_get_arg(0); // liste des menus à modifier
-       
-    ## On vérifie qu'il existe bien une location_type pour le cesp - Sinon on la crée
+     
 
-        $locationTypes = civicrm_api4('LocationType', 'get', [
-            'where' => [
-            ['name', '=', 'CESP'],
-            ],
-            'checkPermissions' => FALSE,
-        ]);
-
-        if(isset($locationTypes[0])){
-            $results = civicrm_api4('LocationType', 'update', [
-            'values' => [
-                'name' => 'CESP',
-                'display_name' => 'CESP',
-            ],
-            'where' => [
-                ['id', '=', $locationTypes[0]['id']],
-            ],
-            'checkPermissions' => FALSE,
-            ]);
-
-            $msg= "      -> MAJ ";
-
-        }else{
-            $results = civicrm_api4('LocationType', 'create', [
-            'values' => [
-            'name' => 'CESP',
-            'display_name' => 'CESP',
-            'is_active' => TRUE,
-            ],
-            'checkPermissions' => FALSE,
-            ]);
-
-            $msg= "      -> Création ";
-        }
-            \Civi::log()->info("don_corps : ".$msg);
-            // echo $msg;
-
-
-        $msg= "de la location type : ".$results[0]['name']." (".$results[0]['id'].")";
-
-        \Civi::log()->info("don_corps : ".$msg);
-        // echo $msg.PHP_EOL;
-
-    ## Fin verification location_type pour CESP
-
-      // import organisations
-          $name =  "05_organisations";
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-          $msg= "      -> ".count($toimport)." Organisations à importer";
-          \Civi::log()->info("don_corps : ".$msg);
-          // echo $msg.PHP_EOL;
-          $check=import_stuffCDC('Contact',$toimport);
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          //echo $chk_file." écrit".PHP_EOL;
-
-      // import adresses
-          $name =  "15_adresses";
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-          $msg= "      -> ".count($toimport)." Adresses à importer";
-          \Civi::log()->info("don_corps : ".$msg);
-          // echo $msg.PHP_EOL;
-          $check=import_addressCDC('Address',$toimport); // appelle la fonction import  et assigne à check la liste des anciennes id de contact
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          //echo $chk_file." écrit".PHP_EOL;
-
-      // import telephones
-          $name = '20_telephone';                     // nom du fichier à importer sans le suffixe
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-          $msg = "      -> ".count($toimport)." Téléphones à importer";
-          \Civi::log()->info("don_corps : ".$msg);
-          // echo $msg.PHP_EOL;
-          $check=import_phoneCDC('Phone',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          //echo $chk_file." écrit".PHP_EOL;
-
-      // import email
-          $name = '25_Email';                     // nom du fichier à importer sans le suffixe
-          $toimport_file = $exp_dir.$name.".txt";
-          $json = file_get_contents($toimport_file);
-          $toimport = json_decode($json, true);
-
-          $msg= "      -> ".count($toimport)." Emails à importer";
-          \Civi::log()->info("don_corps : ".$msg);
-          // echo $msg.PHP_EOL;
-          $check=import_emailCDC('Email',$toimport);           // appelle la fonction import  et assigne à check la liste des anciennes id de contact
-          $chk_file = $exp_dir."check_".$name.".txt";
-          file_put_contents($chk_file, json_encode($check, JSON_PRETTY_PRINT));     // crée un fichier pour verifier les entites crrées
-          //echo $chk_file." écrit".PHP_EOL;
-          
-       # fin de Ajout des centres de don du corps
-
-
-   }    // Fin de la définition de la fonction ajoute_CDC
 
   function supprime_rules()
    {
@@ -2532,29 +1971,17 @@ $container
 
 # IMPLEMENTS hook_civicrm_config() // LOGS OK
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
-
-
   function don_corps_civicrm_config(&$config): void {
-    #
-    #$msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_config ";
-    #\Civi::log()->info("don_corps : ".$msg);
-    #// echo $msg.PHP_EOL;
-    #
-    //function don_corps_civicrm_config(&$config) {
     _don_corps_civix_civicrm_config($config);
-
   }
 
 # IMPLEMENTS hook_civicrm_install() //LOG OK
   # @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install/
 
-  function don_corps_civicrm_install(): void {
-    \Civi::log()->warning("don_corps : INSTALL appelé");
-    //function don_corps_civicrm_install() {
-    
+  function don_corps_civicrm_install(): void {    
     $msg=PHP_EOL.date("Y-m-d H:i:s")." @@@  hook_civicrm_install ";
-    \Civi::log()->info("don_corps : ".$msg);
-    // echo $msg.PHP_EOL;
+      \Civi::log()->info("don_corps : ".$msg);
+      // echo $msg.PHP_EOL;
 
     $msg= "  - Création de la table de stockage des tokens pour ical";
       \Civi::log()->info("don_corps : ".$msg);
@@ -3657,277 +3084,8 @@ $container
     // echo $msg.PHP_EOL;
     \Civi::log()->info("don_corps : ".$msg);
 
-
-    $msg="  - Modification des privilèges civicrm selon le rôle wordpress";
-      
-      \Civi::log()->info("don_corps : ".$msg);  
-      // echo $msg.PHP_EOL;
-      $all_caps=[                   // liste tous les privileges
-        'access_all_custom_data',
-        'access_civicontribute',
-        'access_civicrm',
-        'access_civievent',
-        'access_civimail_subscribe_unsubscribe_pages',
-        'access_civimail',
-        'access_civimember',
-        'access_civioffice',
-        'access_civireport',
-        'access_contact_dashboard',
-        'access_contact_reference_fields',
-        'access_deleted_contacts',
-        'access_report_criteria',
-        'access_uploaded_files',
-        'activate_plugins',
-        'add_contact_notes',
-        'add_contacts',
-        'administer_afform',
-        'administer_dedupe_rules',
-        'administer_private_reports',
-        'administer_reports',
-        'administer_reserved_groups',
-        'administer_reserved_reports',
-        'administer_reserved_tags',
-        'administer_search_kit',
-        'administer_tagsets',
-        'administrator',
-        'author',
-        'contributor',
-        'create_users',
-        'delete_activities',
-        'delete_contacts',
-        'delete_in_civicontribute',
-        'delete_in_civievent',
-        'delete_in_civimail',
-        'delete_in_civimember',
-        'delete_others_pages',
-        'delete_others_posts',
-        'delete_pages',
-        'delete_plugins',
-        'delete_posts',
-        'delete_private_pages',
-        'delete_private_posts',
-        'delete_published_pages',
-        'delete_published_posts',
-        'delete_themes',
-        'delete_users',
-        'edit_all_contacts',
-        'edit_all_events',
-        'edit_contributions',
-        'edit_dashboard',
-        'edit_event_participants',
-        'edit_files',
-        'edit_groups',
-        'edit_inbound_email_basic_information_and_content',
-        'edit_inbound_email_basic_information',
-        'edit_memberships',
-        'edit_message_templates',
-        'edit_my_contact',
-        'edit_others_pages',
-        'edit_others_posts',
-        'edit_pages',
-        'edit_plugins',
-        'edit_posts',
-        'edit_private_pagesv',
-        'edit_private_posts',
-        'edit_published_pages',
-        'edit_published_posts',
-        'edit_system_workflow_message_templates',
-        'edit_theme_options',
-        'edit_themes',
-        'edit_user_driven_message_templates',
-        'edit_users',
-        'export',
-        'force_merge_duplicate_contacts',
-        'import',
-        'install_plugins',
-        'install_themes',
-        'level_0',
-        'level_1',
-        'level_10',
-        'level_2',
-        'level_3',
-        'level_4',
-        'level_5',
-        'level_6',
-        'level_7',
-        'level_8',
-        'level_9',
-        'list_users',
-        'make_online_contributions',
-        'manage_categories',
-        'manage_event_profiles',
-        'manage_links',
-        'manage_options',
-        'manage_tags',
-        'merge_duplicate_contacts',
-        'moderate_comments',
-        'profile_create',
-        'profile_edit',
-        'profile_listings',
-        'profile_view',
-        'promote_users',
-        'publish_pages',
-        'publish_posts',
-        'read_private_pages',
-        'read_private_posts',
-        'read',
-        'register_for_events',
-        'remove_users',
-        'save_report_criteria',
-        'sign_civicrm_petition',
-        'switch_themes',
-        'unfiltered_html',
-        'unfiltered_upload',
-        'update_core',
-        'update_plugins',
-        'update_themes',
-        'upload_files',
-        'view_all_activities',
-        'view_all_contacts',
-        'view_all_notes',
-        'view_event_info',
-        'view_event_participants',
-        'view_my_contact',
-        'view_my_invoices',
-        'view_public_civimail_content',
-        'view_report_sql',
-        ];
-
-      $author_caps = [              // liste des privileges du role author
-        'upload_files',
-        'edit_posts',
-        'edit_published_posts',
-        'publish_posts',
-        'read',
-        'level_2',
-        'level_1',
-        'level_0',
-        'delete_posts',
-        'delete_published_posts',
-        'sign_civicrm_petition',
-        'access_civimember',
-        'edit_memberships',
-        'delete_in_civimember',
-        'add_contacts',
-        'view_all_contacts',
-        'edit_all_contacts',
-        'view_my_contact',
-        'edit_my_contact',
-        'delete_contacts',
-        'access_deleted_contacts',
-        'edit_groups',
-        'access_uploaded_files',
-        'profile_listings',
-        'profile_create',
-        'profile_edit',
-        'profile_view',
-        'access_all_custom_data',
-        'view_all_activities',
-        'delete_activities',
-        'edit_inbound_email_basic_information',
-        'edit_inbound_email_basic_information_and_content',
-        'access_civicrm',
-        'access_contact_dashboard',
-        'manage_tags',
-        'administer_reserved_groups',
-        'administer_tagsets',
-        'administer_reserved_tags',
-        'administer_dedupe_rules',
-        'merge_duplicate_contacts',
-        'force_merge_duplicate_contacts',
-        'view_all_notes',
-        'add_contact_notes',
-        'access_contact_reference_fields',
-        'edit_message_templates',
-        'edit_system_workflow_message_templates',
-        'edit_user_driven_message_templates',
-        'view_my_invoices',
-        'access_civievent',
-        'edit_event_participants',
-        'edit_all_events',
-        'register_for_events',
-        'view_event_info',
-        'view_event_participants',
-        'delete_in_civievent',
-        'manage_event_profiles',
-        'access_civicontribute',
-        'edit_contributions',
-        'make_online_contributions',
-        'delete_in_civicontribute',
-        'access_civimail',
-        'access_civimail_subscribe_unsubscribe_pages',
-        'delete_in_civimail',
-        'view_public_civimail_content',
-        'access_civireport',
-        'access_report_criteria',
-        'save_report_criteria',
-        'administer_private_reports',
-        'administer_reserved_reports',
-        'administer_reports',
-        'view_report_sql',
-        'administer_search_kit',
-        'administer_afform',
-        'access_civioffice',
-        'author',
-        'access_saisines',
-        ];
-
-
-
-      $contributor_caps = [         // liste des privileges du role contributor
-        'edit_posts',
-        'read',
-        'level_1',
-        'level_0',
-        'delete_posts',
-        'sign_civicrm_petition',
-        'view_all_contacts',
-        'view_my_contact',
-        'access_uploaded_files',
-        'profile_listings',
-        'profile_create',
-        'profile_edit',
-        'profile_view',
-        'access_all_custom_data',
-        'view_all_activities',
-        'access_civicrm',
-        'access_contact_dashboard',
-        'view_all_notes',
-        'add_contact_notes',
-        'view_my_invoices',
-        'access_civievent',
-        'register_for_events',
-        'view_event_info',
-        'view_event_participants',
-        'make_online_contributions',
-        'access_civimail_subscribe_unsubscribe_pages',
-        'view_public_civimail_content',
-        'contributor',
-        ];
-
-
-      $msg = "      -> Suppression des privilèges de tous les rôles";
-      \Civi::log()->info("don_corps : ".$msg);
-      if (VERBOSE==1){
-        // echo $msg.PHP_EOL;
-      }
-      
-      _myextension_remove_wp_capabilities('editor', $all_caps);
-      _myextension_remove_wp_capabilities('author', $all_caps);
-      _myextension_remove_wp_capabilities('contributor', $all_caps);
-      _myextension_remove_wp_capabilities('subscriber', $all_caps);
-      _myextension_remove_wp_capabilities('anonymous_user', $all_caps);
-
-      $msg = "      -> Ajout des privilèges aux rôles utlilisés";
-      
-      \Civi::log()->info("don_corps : ".$msg);
-      if (VERBOSE==1){
-        // echo $msg.PHP_EOL;
-      }
-      
-      _myextension_add_wp_capabilities('author', $author_caps);
-      _myextension_add_wp_capabilities('contributor', $contributor_caps);
-
+    ### Modification des privilèges civicrm selon le rôle wordpress";
+      WPPriviledges::ModifyCaps('00_Civicrm_WP_perm.txt');
 
     $msg="  - Modification des parametres de localisation, date..."; //LOG OK // modification des parametres de localisation, date....utilise apiv3 car non porté en V4 pour le moment
         
@@ -4027,13 +3185,57 @@ $container
 
 
 
-    $msg="  - Ajout des centres de don du corps";
-      // echo $msg.PHP_EOL;
-      
+    
+    
+    ### Ajout des centres de don du corps
       \Civi::log()->info("don_corps : ".$msg);
-      
-      $exp_dir = Civi::paths()->getPath("[civicrm.root]/ext/don_corps/managed/");;    // racine du répertoire d'import export
-      ajoute_CDC($exp_dir);
+      ImportCDC::ImportMain("05_organisations.txt");
+      ImportCDC::ImportTel("20_telephone.txt");
+      ImportCDC::ImportEmail("25_Email.txt");
+      ImportCDC::ImportAdresse("15_adresses.txt"); 
+
+      /* PROBABLEMENT A SUPPRIMER
+      $locationTypes = civicrm_api4('LocationType', 'get', [.  
+            'where' => [
+            ['name', '=', 'CESP'],
+            ],
+            'checkPermissions' => FALSE,
+        ]);
+
+        if(isset($locationTypes[0])){
+            $results = civicrm_api4('LocationType', 'update', [
+            'values' => [
+                'name' => 'CESP',
+                'display_name' => 'CESP',
+            ],
+            'where' => [
+                ['id', '=', $locationTypes[0]['id']],
+            ],
+            'checkPermissions' => FALSE,
+            ]);
+
+            $msg= "      -> MAJ ";
+
+        }else{
+            $results = civicrm_api4('LocationType', 'create', [
+            'values' => [
+            'name' => 'CESP',
+            'display_name' => 'CESP',
+            'is_active' => TRUE,
+            ],
+            'checkPermissions' => FALSE,
+            ]);
+
+            $msg= "      -> Création ";
+        }
+            \Civi::log()->info("don_corps : ".$msg);
+            // echo $msg;
+
+
+        $msg= "de la location type : ".$results[0]['name']." (".$results[0]['id'].")"; 
+
+        \Civi::log()->info("don_corps : ".$msg);
+        // echo $msg.PHP_EOL;*/
 
 
     $msg="  - Désactivation des menus par défaut".PHP_EOL;
@@ -6095,13 +5297,8 @@ $container
       install_UFGroup ('Nouvel_organisateur', 'ContactsDDC', 'Nouvel organisateur');
      
 
-    $msg = "  - Mise à jour des groupes des SavedSearch";
-      // echo $msg.PHP_EOL;
-      \Civi::log()->info("don_corps : ".$msg);
-      
-
+    ### Mise à jour des groupes des SavedSearch
       UpdateSearchGroups::updateAll();
-    // fin MAJ des groupes des SavedSearch
 
 
   }   // fin Implements hook_civicrm_postInstall().

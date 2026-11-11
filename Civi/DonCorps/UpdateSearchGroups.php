@@ -66,6 +66,8 @@ class UpdateSearchGroups {
         string $group_title,
         string $group_name_prefix
     ): void {
+        $msg ='Update des noms de groupes utilisés par les SavedSearches';
+        \Civi::log()->info("don_corps : ".$msg);
 
         $file = \Civi::paths()->getPath(
             '[civicrm.root]/ext/don_corps/managed/'

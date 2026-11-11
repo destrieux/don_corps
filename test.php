@@ -1,4 +1,8 @@
 <?php
-$fichier = \CRM_DonCorps_ExtensionUtil::path('managed/toto.json');
-var_dump($fichier, file_exists($fichier));
-var_dump(\Civi\DonCorps\Contacts\ImportCDC::ImportMain($fichier));
+eval(`cv php:boot`);
+use CRM_DonCorps_ExtensionUtil as E;
+use Civi\DonCorps\WPUsers\WPPriviledges;
+
+//WPPriviledges::ExportCaps('00_Civicrm_WP_perm.txt');
+WPPriviledges::ModifyCaps('00_Civicrm_WP_perm.txt');
+   

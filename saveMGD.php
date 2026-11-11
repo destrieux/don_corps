@@ -1,6 +1,7 @@
 <?php
 eval(`cv php:boot`);
 use CRM_DonCorps_ExtensionUtil as E;
+use Civi\DonCorps\WPUsers\WPPriviledges;
 
 $exp_dir = './managed/';       // racine du répertoire d'import export
 
@@ -552,6 +553,9 @@ echo count($tags_searches)." tags pour searches exportés dans ".$exp_file.PHP_E
         export_stuffCDC('Email','CDC', $exp_file);
 
 ### Fin de l'export des CDC dans le repertoire managed/
+
+### Export des privilèges civicrm selon le rôle WP
+  WPPriviledges::ExportCaps('00_Civicrm_WP_perm.txt');
 
 
 

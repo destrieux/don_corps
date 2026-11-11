@@ -15,57 +15,70 @@ class SearchUpdateTag {        // Nom de la classe
       // string $exp_file : 1er parametre qui doit être du texte : nom du fichier contenant les tags à mofiider
       // bool : type de retour : la méthode renvoie true ou false
 
-    if (!file_exists($exp_file)) {
+      if (!file_exists($exp_file)) {
       \Civi::log()->warning("don_corps : le fichier ".$exp_file." n'existe pas - tags des searches non mofifies");
       return FALSE;
-    } else {
-      $json = file_get_contents($exp_file);
-      $tags_searches = json_decode($json, true);
-
-      foreach ($tags_searches as $tags_search){
-        // vérification que le tag et le search existent bien 
-        $search = \Civi\Api4\SavedSearch::get(FALSE)
-          ->addSelect('id')
-          ->addWhere('name', '=', $tags_search['search'])
-          ->execute()
-          ->first();
-
-        if (!$search) {
-          \Civi::log()->warning("don_corps : recherche '{$tags_search['search']}' introuvable - tag non modifié.");
-          return FALSE;
-        }
-
-        $tag = \Civi\Api4\Tag::get(FALSE)
-          ->addSelect('id','name')
-          ->addWhere('label', '=', $tags_search['tag'])
-          ->execute()
-          ->first();
-
-        if (!$tag) {
-          \Civi::log()->warning("don_corps : tag '{$tags_search['tag']}' introuvable - tag de la recherche '{$tags_search['search']}' non modifié.");
-          return FALSE;
-        }
-
-        // le tag et le search existent : on vérifie si le tag est déja associé au search
-        $entity_tag = \Civi\Api4\EntityTag::get(FALSE)
-          ->addSelect('id')
-          ->addWhere('entity_table', '=', 'civicrm_saved_search')
-          ->addWhere('entity_id', '=', $search['id'])
-          ->execute()
-          ->first();
-
-        if($entity_tag){
-          //\Civi::log()->info("don_corps : tag '{$tags_search['tag']}' déja associé à la recherche '{$tags_search['search']}' non modifié.");
-        }else{
-          $entity_tag = \Civi\Api4\EntityTag::create(FALSE)
-          ->addValue('entity_table','civicrm_saved_search')
-          ->addValue('tag_id.name', $tag['name'])
-          ->addValue('entity_id', $search['id'])
-          ->execute();
-          //\Civi::log()->info("don_corps : nouveau tag '{$tags_search['tag']}' associé à la recherche '{$tags_search['search']}.");
-        }
       }
-      return TRUE;
-    }
+
+      $tags_searches = json_decode(file_get_contents($exp_file), TRUE);
+      if (!is_array($tags_searches)) {
+      \Civi::log()->error('don_corps : fichier tagSearches illisible : ' . json_last_error_msg());
+      return FALSE;
+      }
+
+      $echecs=0;
+
+      try {
+
+        foreach ($tags_searches as $tags_search){
+          // vérification que le tag et le search existent bien 
+          //\Civi::log()->info('don_corps : ajout du tag '.$tags_search['tag'].' aux requetes');
+
+          $search = \Civi\Api4\SavedSearch::get(FALSE)
+            ->addSelect('id')
+            ->addWhere('name', '=', $tags_search['search'])
+            ->execute()
+            ->first();
+
+          if (!$search) {
+            \Civi::log()->warning("don_corps : recherche '{$tags_search['search']}' introuvable - tag non modifié.");
+            return FALSE;
+          }
+
+          $tag = \Civi\Api4\Tag::get(FALSE)
+            ->addSelect('id','name')
+            ->addWhere('label', '=', $tags_search['tag'])
+            ->execute()
+            ->first();
+
+          if (!$tag) {
+            \Civi::log()->warning("don_corps : tag '{$tags_search['tag']}' introuvable - tag de la recherche '{$tags_search['search']}' non modifié.");
+            return FALSE;
+          }
+
+          // le tag et le search existent : on vérifie si le tag est déja associé au search
+          $entity_tag = \Civi\Api4\EntityTag::get(FALSE)
+            ->addSelect('id')
+            ->addWhere('entity_table', '=', 'civicrm_saved_search')
+            ->addWhere('entity_id', '=', $search['id'])
+            ->execute()
+            ->first();
+
+          if($entity_tag){
+            //\Civi::log()->info("don_corps : tag '{$tags_search['tag']}' déja associé à la recherche '{$tags_search['search']}' non modifié.");
+          }else{
+            $entity_tag = \Civi\Api4\EntityTag::create(FALSE)
+            ->addValue('entity_table','civicrm_saved_search')
+            ->addValue('tag_id.name', $tag['name'])
+            ->addValue('entity_id', $search['id'])
+            ->execute();
+            //\Civi::log()->info("don_corps : nouveau tag '{$tags_search['tag']}' associé à la recherche '{$tags_search['search']}.");
+          }
+        }
+      } catch (\Throwable $e) {
+        $echecs++;
+        \Civi::log()->error('don_corps : échec ajout des tags aux requêtes ' . ($value['sort_name'] ?? '?') . ' : ' . $e->getMessage());
+      }  
+      return $echecs === 0;;
   }
 }

@@ -4,7 +4,7 @@ use Civi\DonCorps\UpdateSearchGroups;         // importe update search group
 use Civi\DonCorps\Install;
 use Civi\DonCorps\Install\SearchUpdateToken;  // MAJ des tokens des searches
 use Civi\DonCorps\Install\CustomFieldFilter;  // MAJ des filtres par groupes sur champs de recherche d'individus   
-
+use Civi\DonCorps\WPUsers\WPPriviledges;      // MAJ des permissions pour inclure gesiont saisines
 
 ## pour récuperer le schema-version actuel
 ## mysql -u XXX -p
@@ -127,6 +127,9 @@ class CRM_DonCorps_Upgrader extends \CRM_Extension_Upgrader_Base {
         \Civi::log()->info("don_corps : ".$msg);
         echo $msg.PHP_EOL;
       }
+    ### Modifie les permissions civicrm pour ajouter la gestion des saisines
+     WPPriviledges::ModifyCaps('00_Civicrm_WP_perm.txt');
+
     $msg= "** UPGRADE 2032 : - Modification des filtres de champs personnalisés";
         \Civi::log()->info("don_corps : ".$msg);
         CustomFieldFilter::applyGroupFilter('D_posant', 'groupe_d_posants_porteurs_potent_24');
