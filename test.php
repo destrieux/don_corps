@@ -1,8 +1,7 @@
 <?php
 eval(`cv php:boot`);
-use CRM_DonCorps_ExtensionUtil as E;
-use Civi\DonCorps\WPUsers\WPPriviledges;
+use Civi\DonCorps\Install\CiviRules;
 
-//WPPriviledges::ExportCaps('00_Civicrm_WP_perm.txt');
-WPPriviledges::ModifyCaps('00_Civicrm_WP_perm.txt');
-   
+CiviRules::checkVersion();
+CiviRules::installTriggers();
+
