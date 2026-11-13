@@ -13,7 +13,9 @@ return [
         'name' => 'Participants',
         'title' => E::ts('Participants'),
         'extends' => 'Event',
-        'extends_entity_column_value' => ['101'],
+        'extends_entity_column_value:name' => [
+        'Activité au laboratoire',
+      ],
         'weight' => 19,
         'collapse_adv_display' => TRUE,
       ],

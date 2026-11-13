@@ -35,6 +35,9 @@ return [
             'id',
             'id',
             'id',
+            'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [
@@ -88,7 +91,7 @@ return [
         'name' => 'Tokens_PAQPF_Champs_de_fusion_1',
         'label' => E::ts('Tokens PAQPF Champs de fusion 1'),
         'saved_search_id.name' => 'Tokens_PAQPF',
-        'type:name' => 'crm-search-display-tokens',
+        'type' => 'tokens',
         'settings' => [
           'columns' => [
             [

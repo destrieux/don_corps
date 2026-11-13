@@ -13,7 +13,9 @@ return [
         'name' => 'Arriv_e_du_corps_new',
         'title' => E::ts('Arrivée du corps'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur'],
+        'extends_entity_column_value:name' => [
+        'Donateur',
+      ],
         'style' => 'Tab with table',
         'weight' => 4,
         'is_multiple' => TRUE,

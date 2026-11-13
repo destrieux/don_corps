@@ -14,7 +14,7 @@ return [
         'name' => 'ContactsDDC',
         'icon' => 'crm-i fa-address-book-o',
         'has_separator' => NULL,
-        'weight' => 31,
+        'weight' => 32,
       ],
       'match' => ['name', 'domain_id'],
     ],
@@ -29,7 +29,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau Donneur'),
         'name' => 'New DonateurDDC',
-        'url' => 'civicrm/profile/create/?gid=21&reset=1',
+        'url' => 'civicrm/profile/create?gid=21&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'ContactsDDC',
       ],
@@ -46,7 +46,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau proche de donneur'),
         'name' => 'Ajouter proche donateurDDC',
-        'url' => 'civicrm/profile/create/?gid=23&reset=1',
+        'url' => 'civicrm/profile/create?gid=23&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'ContactsDDC',
       ],
@@ -63,7 +63,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau Demandeur d\'information'),
         'name' => 'New Demandeur_d_informationDDC',
-        'url' => 'civicrm/profile/create/?gid=18&reset=1',
+        'url' => 'civicrm/profile/create?gid=18&reset=1',
         'permission' => ['add contacts'],
         'permission_operator' => 'OR',
         'parent_id.name' => 'ContactsDDC',
@@ -81,7 +81,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvel organisateur'),
         'name' => 'Nouvel organisateur',
-        'url' => 'civicrm/profile/create/?gid=32&reset=1',
+        'url' => 'civicrm/profile/create?gid=32&reset=1',
         'permission' => ['add contacts'],
         'permission_operator' => 'AND',
         'parent_id.name' => 'ContactsDDC',
@@ -99,7 +99,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle pièce anat comparée'),
         'name' => 'Nouvelle pièce anat comparée',
-        'url' => 'civicrm/profile/create/?gid=20&reset=1',
+        'url' => 'civicrm/profile/create?gid=20&reset=1',
         'icon' => 'crm-i fa-cow',
         'permission' => ['add contacts'],
         'parent_id.name' => 'ContactsDDC',
@@ -135,7 +135,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle Mairie'),
         'name' => 'New Mairies',
-        'url' => 'civicrm/profile/create/?gid=25&reset=1',
+        'url' => 'civicrm/profile/create?gid=25&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'MairiesDDC',
       ],
@@ -205,7 +205,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau Centre de don de corps'),
         'name' => 'New CDC',
-        'url' => 'civicrm/profile/create/?gid=14&reset=1',
+        'url' => 'civicrm/profile/create?gid=14&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'Centres de don du corpsDDC',
       ],
@@ -222,7 +222,7 @@ return [
       'values' => [
         'label' => E::ts('Nouveau personnel de CDC'),
         'name' => 'New Personnel',
-        'url' => 'civicrm/profile/create/?gid=27&reset=1',
+        'url' => 'civicrm/profile/create?gid=27&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'Centres de don du corpsDDC',
         'has_separator' => 1,
@@ -275,7 +275,7 @@ return [
       'values' => [
         'label' => E::ts('Nouvelle entreprise de Pompes Funèbres'),
         'name' => 'New Pompes',
-        'url' => 'civicrm/profile/create/?gid=22&reset=1',
+        'url' => 'civicrm/profile/create?gid=22&reset=1',
         'permission' => ['add contacts'],
         'parent_id.name' => 'Pompes funebresDDC',
       ],

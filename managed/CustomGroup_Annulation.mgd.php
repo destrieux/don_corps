@@ -13,7 +13,9 @@ return [
         'name' => 'Annulation',
         'title' => E::ts('Annulation'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur'],
+        'extends_entity_column_value:name' => [
+        'Donateur',
+      ],
         'weight' => 2,
       ],
       'match' => ['name'],

@@ -56,9 +56,9 @@ return [
         'name' => 'Bilan_saisines_annee_en_cours_non_acad_mique',
         'label' => E::ts('Bilan : saisines annee en cours non académique'),
         'saved_search_id.name' => 'Bilan_saisines_annee_en_cours_non_academique',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [],
           'limit' => 0,
           'pager' => FALSE,
@@ -70,7 +70,7 @@ return [
             [
               'type' => 'field',
               'key' => 'suivi.CESP:label',
-              'label' => E::ts(''),
+              'label' => '',
               'sortable' => TRUE,
               'tally' => [
                 'fn' => NULL,
@@ -81,7 +81,7 @@ return [
             [
               'type' => 'field',
               'key' => 'COUNT_id',
-              'label' => E::ts(''),
+              'label' => '',
               'sortable' => TRUE,
               'tally' => [
                 'fn' => 'SUM',

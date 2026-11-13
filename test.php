@@ -1,7 +1,6 @@
 <?php
 eval(`cv php:boot`);
-use Civi\DonCorps\Install\CiviRules;
+use Civi\DonCorps\Install\UpdateSearchGroups;   ## MAJ du nom des grouopes utilisés dans les requêtes
 
-CiviRules::checkVersion();
-CiviRules::installTriggers();
 
+    UpdateSearchGroups::updateAll();

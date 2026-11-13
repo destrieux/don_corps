@@ -54,7 +54,7 @@ return [
         'name' => 'in_memoriam_Table_1',
         'label' => E::ts('memoriam Table 1'),
         'saved_search_id.name' => 'in_memoriam',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
           'description' => E::ts('Liste les donneurs décédés ayant souhaité que leur nom soit affiche sur le site ou la stele'),
           'sort' => [

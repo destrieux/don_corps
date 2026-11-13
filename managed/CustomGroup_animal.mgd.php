@@ -13,7 +13,9 @@ return [
         'name' => 'animal',
         'title' => E::ts('animal'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Animal'],
+        'extends_entity_column_value:name' => [
+        'Animal',
+      ],
         'weight' => 13,
         'collapse_adv_display' => TRUE,
       ],

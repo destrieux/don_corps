@@ -28,6 +28,9 @@ return [
             'id',
             'id',
             'id',
+            'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [
@@ -66,7 +69,7 @@ return [
         'name' => 'tokens_lastDons',
         'label' => E::ts('tokens_lastDons'),
         'saved_search_id.name' => 'tokens_lastDons',
-        'type:name' => 'crm-search-display-tokens',
+        'type' => 'tokens',
         'settings' => [
           'columns' => [
             [

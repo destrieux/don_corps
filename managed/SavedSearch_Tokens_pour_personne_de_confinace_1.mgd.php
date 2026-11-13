@@ -34,6 +34,9 @@ return [
             'id',
             'id',
             'id',
+            'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [
@@ -96,7 +99,7 @@ return [
         'name' => 'PernConf_1_Champs_de_fusion_1',
         'label' => E::ts('PersConf1'),
         'saved_search_id.name' => 'Tokens_pour_personne_de_confinace_1',
-        'type:name' => 'crm-search-display-tokens',
+        'type' => 'tokens',
         'settings' => [
           'columns' => [
             [

@@ -45,7 +45,7 @@ return [
         'name' => 'Bilan_nombre_de_demandeurs_d_information_List_1',
         'label' => E::ts('Bilan : nombre de demandeurs d\'information année A-1List 1'),
         'saved_search_id.name' => 'Bilan_nombre_de_demandeurs_d_information',
-        'type:name' => 'crm-search-display-list',
+        'type' => 'list',
         'settings' => [
           'style' => 'ul',
           'limit' => 0,
@@ -59,7 +59,7 @@ return [
               'key' => 'COUNT_Demandeur_information_Date_d_envoi_d_informations',
               'dataType' => 'Integer',
               'label' => E::ts('Nombre de demandes de dossier d\'information (A -1) :'),
-              'title' => E::ts(''),
+              'title' => '',
             ],
           ],
           'placeholder' => 0,

@@ -45,9 +45,9 @@ return [
         'name' => 'Dons_ann_e_en_cours_Table_1',
         'label' => E::ts('Bilan : dons année Table 1'),
         'saved_search_id.name' => 'Dons_ann_e_en_cours',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [],
           'limit' => 0,
           'pager' => FALSE,

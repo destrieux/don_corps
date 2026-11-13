@@ -13,7 +13,9 @@ return [
         'name' => 'Transfert_vers_autre_centre',
         'title' => E::ts('Transfert vers autre centre'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur'],
+        'extends_entity_column_value:name' => [
+        'Donateur',
+      ],
         'collapse_display' => TRUE,
         'help_pre' => E::ts('<p>R&eacute;orientation du corps vers un autre centre de don</p>'),
         'weight' => 10,

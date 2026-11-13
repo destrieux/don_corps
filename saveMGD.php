@@ -2,6 +2,8 @@
 eval(`cv php:boot`);
 use CRM_DonCorps_ExtensionUtil as E;
 use Civi\DonCorps\WPUsers\WPPriviledges;
+use Civi\DonCorps\Export\OptionValues;
+
 
 $exp_dir = './managed/';       // racine du répertoire d'import export
 
@@ -414,37 +416,17 @@ echo count($tags_searches)." tags pour searches exportés dans ".$exp_file.PHP_E
         unset ($output);
       }
     }
+
+    require E::path('bin/fix-mgd-extends.php');
 ### Fin de l'export des groupes de champs personnalisés (custom groups)
 
 ### Export des options de choix multiples (Option groups)
-  $optionGroups = civicrm_api4('OptionGroup', 'get', [
-      'select' => [
-        'id',
-        'name',
-      ],
-      'where' => [
-        ['OR', [['name', '=', 'event_type'],['name', '=', 'document_type'], ['name', '=', 'activity_type'], ['name', '=', 'email_greeting'], ['name', '=', 'gender'], ['name', '=', 'postal_greeting']]],
-      ],
-      'checkPermissions' => FALSE,
-    ]);
-
-    if(isset ($optionGroups[0])){
-      foreach ($optionGroups as $optionGroup){
-        echo "exporting optionGroups ".$optionGroup['name']." (".$optionGroup['id'].")".PHP_EOL;
-        $cmd = "civix export OptionGroup ".$optionGroup['id'];
-        echo $cmd.PHP_EOL;
-        exec($cmd, $output, $retval);
-        echo "Returned with status $retval and output:\n";
-        print_r($output);
-        unset ($output);
-
-        rename('managed/OptionGroup_'.$optionGroup['name'].'.mgd.php', 'managed/05_OptionGroup_'.$optionGroup['name'].'.mgd.php');
-
-      }
-    }
-
-
-
+OptionValues::export("activity_type", "Entities_to_create_types_activites.php");
+OptionValues::export("event_type", "Entities_to_create_types_evenements.php");
+OptionValues::export("document_type", "Entities_to_create_types_documents");
+OptionValues::export("email_greeting", "Entities_to_create_salutations_email");
+OptionValues::export("postal_greeting", "Entities_to_create_salutations_postale");
+OptionValues::export("gender", "Entities_to_create_genre.php");
 
 ### Fin de l'export des options de choix multiples (Option groups)
 

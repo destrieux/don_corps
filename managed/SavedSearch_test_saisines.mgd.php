@@ -57,7 +57,7 @@ return [
         'name' => 'Autocomplete_saisines',
         'label' => E::ts('Autocomplete saisines'),
         'saved_search_id.name' => 'test_saisines',
-        'type:name' => 'crm-search-display-autocomplete',
+        'type' => 'autocomplete',
         'settings' => [
           'sort' => [],
           'columns' => [
@@ -90,7 +90,7 @@ return [
         'name' => 'Saisines_Table_1',
         'label' => E::ts('Suivi des Saisines'),
         'saved_search_id.name' => 'test_saisines',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
           'description' => E::ts('Les colonnes de droite indiquent les différentes étapes de la vie d\'une saisine. 
 Vous pouvez modifier les valeurs en cliquent dessus, à l\'exclusion de "Participants" et "Programme" qui passent à "Oui" lorsque les fichers correspondants sont téléchargés dans la fiche saisine, accessible en cliquant sur le numéro de saisine.'),

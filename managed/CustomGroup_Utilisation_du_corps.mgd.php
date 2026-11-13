@@ -13,7 +13,10 @@ return [
         'name' => 'Utilisation_du_corps',
         'title' => E::ts('Utilisation du corps'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur', 'Animal'],
+        'extends_entity_column_value:name' => [
+        'Donateur',
+        'Animal',
+      ],
         'style' => 'Tab with table',
         'weight' => 12,
         'is_multiple' => TRUE,

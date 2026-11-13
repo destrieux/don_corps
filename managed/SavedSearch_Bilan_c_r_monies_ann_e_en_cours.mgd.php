@@ -73,9 +73,9 @@ return [
         'name' => 'Bilan_c_r_monies_ann_e_en_cours_Table_1',
         'label' => E::ts('Bilan : cérémonies année en cours Table 1'),
         'saved_search_id.name' => 'Bilan_c_r_monies_ann_e_en_cours',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [
             ['start_date', 'ASC'],
           ],
@@ -100,7 +100,7 @@ return [
             [
               'type' => 'field',
               'key' => 'loc_block_id.address_id.city',
-              'label' => E::ts(''),
+              'label' => '',
               'sortable' => TRUE,
             ],
           ],

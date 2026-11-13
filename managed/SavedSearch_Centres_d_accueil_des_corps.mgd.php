@@ -66,9 +66,9 @@ return [
         'name' => 'Contact_Search_by_M_Christophe_Destrieux_Table_1',
         'label' => E::ts('Contact Search by M. Christophe Destrieux Table 1'),
         'saved_search_id.name' => 'Centres_d_accueil_des_corps',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [
             [
               'Contact_Address_contact_id_01.city',

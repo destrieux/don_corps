@@ -13,8 +13,10 @@ return [
         'name' => 'Prise_en_charge_au_d_c_s',
         'title' => E::ts('Prise en charge au décès'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur'],
-        'weight' => 11,
+        'extends_entity_column_value:name' => [
+        'Donateur',
+      ],
+        'weight' => 16,
       ],
       'match' => ['name'],
     ],

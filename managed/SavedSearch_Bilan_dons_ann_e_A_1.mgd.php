@@ -53,9 +53,9 @@ return [
         'name' => 'dons_A_1_Table_1',
         'label' => E::ts('dons A -1 Table 1'),
         'saved_search_id.name' => 'Bilan_dons_ann_e_A_1',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [
             ['receive_date', 'ASC'],
           ],

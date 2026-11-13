@@ -83,7 +83,7 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'filter' => 'action=lookup&group=24',
+        'filter' => 'action=lookup&group=13',
       ],
       'match' => [
         'name',
@@ -107,7 +107,7 @@ return [
         'text_length' => 255,
         'note_columns' => 60,
         'note_rows' => 4,
-        'filter' => 'action=lookup&group=24',
+        'filter' => 'action=lookup&group=13',
       ],
       'match' => [
         'name',

@@ -35,6 +35,9 @@ return [
             'id',
             'id',
             'id',
+            'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [
@@ -97,7 +100,7 @@ return [
         'name' => 'tokens_for_a_pour_personne_de_confiance_1_Champs_de_fusion_1',
         'label' => E::ts('PersConf2'),
         'saved_search_id.name' => 'tokens_for_a_pour_personne_de_confiance_1',
-        'type:name' => 'crm-search-display-tokens',
+        'type' => 'tokens',
         'settings' => [
           'columns' => [
             [

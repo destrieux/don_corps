@@ -1,0 +1,70 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+// Option values du groupe postal_greeting, exportées le 2026-11-13 14:47
+return [
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => 'Dear {contact.first_name}',
+      'label' => E::ts('Cher(e) {contact.first_name}'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => 'Dear {contact.prefix_id:label} {contact.first_name} {contact.last_name}',
+      'label' => E::ts('Cher(e) {contact.prefix_id:label} {contact.first_name} {contact.last_name}'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => 'Dear {contact.prefix_id:label} {contact.last_name}',
+      'label' => E::ts('Cher(e) {contact.prefix_id:label} {contact.last_name}'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => 'Dear {contact.household_name}',
+      'label' => E::ts('Cher(e) {contact.household_name}'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => 'Madame',
+      'label' => E::ts('Madame'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => 'Monsieur',
+      'label' => E::ts('Monsieur'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => '{contact.first_name} {contact.last_name}',
+      'label' => E::ts('{contact.first_name} {contact.last_name}'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'postal_greeting',
+      'name' => 'Mademoiselle',
+      'label' => E::ts('Mademoiselle'),
+    ],
+  ],
+];

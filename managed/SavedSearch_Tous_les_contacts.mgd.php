@@ -54,7 +54,7 @@ return [
         'saved_search_id.name' => 'Tous_les_contacts',
         'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [
             ['last_name', 'ASC'],
             ['first_name', 'ASC'],

@@ -44,6 +44,9 @@ return [
             'id',
             'id',
             'id',
+            'id',
+            'id',
+            'id',
           ],
           'orderBy' => [],
           'where' => [],
@@ -76,7 +79,7 @@ return [
         'name' => 'Tokens_for_contact_Champs_de_fusion_1',
         'label' => E::ts('Tokens for contact Champs de fusion 1'),
         'saved_search_id.name' => 'Tokens_for_contact',
-        'type:name' => 'crm-search-display-tokens',
+        'type' => 'tokens',
         'settings' => [
           'columns' => [
             [

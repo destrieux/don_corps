@@ -1,5 +1,5 @@
 <?php
-namespace Civi\DonCorps;
+namespace Civi\DonCorps\Install;
 
 class UpdateSearchGroups {
     //////////// update_search_group() /////////
@@ -69,12 +69,7 @@ class UpdateSearchGroups {
         $msg ='Update des noms de groupes utilisés par les SavedSearches';
         \Civi::log()->info("don_corps : ".$msg);
 
-        $file = \Civi::paths()->getPath(
-            '[civicrm.root]/ext/don_corps/managed/'
-        ) . $file;
-
-        //echo "Title : " . $group_title . PHP_EOL;
-        //echo "Prefix : " . $group_name_prefix . PHP_EOL;
+    $file = \CRM_DonCorps_ExtensionUtil::path('Civi/DonCorps/Install/').$file;
 
         $groups = civicrm_api4('Group', 'get', [
             'select' => [

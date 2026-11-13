@@ -13,7 +13,9 @@ return [
         'name' => 'Promesse_de_don',
         'title' => E::ts('Promesse de don'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur'],
+        'extends_entity_column_value:name' => [
+        'Donateur',
+      ],
         'weight' => 7,
       ],
       'match' => ['name'],

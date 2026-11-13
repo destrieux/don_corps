@@ -67,9 +67,9 @@ return [
         'name' => 'Bilan_corps_sortis_ann_e_en_cours_Table_1',
         'label' => E::ts('Bilan : corps sortis année en cours Table 1'),
         'saved_search_id.name' => 'Bilan_corps_recus_et_devenir_ann_e_en_cours',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [
             ['sort_name', 'ASC'],
           ],

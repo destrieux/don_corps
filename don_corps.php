@@ -27,7 +27,7 @@ require_once 'don_corps.civix.php';
 
 use CRM_DonCorps_ExtensionUtil as E;
 use Symfony\Component\DependencyInjection\ContainerBuilder;  ## pour créer nouvelles actions pour utilation des corps
-use Civi\DonCorps\UpdateSearchGroups;
+use Civi\DonCorps\Install\UpdateSearchGroups;   ## MAJ du nom des grouopes utilisés dans les requêtes
 use Civi\DonCorps\Install\SearchUpdateTag;      ## MAJ des tokens des searches
 use Civi\DonCorps\Contacts\ImportCDC;           ## import des CDC, de leurz adresses, telephones ...
 use Civi\DonCorps\WPUsers\WPPriviledges;        ## export - import des privilèges civicrm/WP
@@ -37,9 +37,7 @@ use Civi\DonCorps\Install\Params;               ## règle les parametres de loca
 use Civi\DonCorps\Install\Menus;                ## désactive / active les menus
 use Civi\DonCorps\ICal\Calendar;                ## gestion calendrier
 use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
-
-
-    
+use Civi\DonCorps\Install\Dedupe;               ## installation des règles de dédoubonage
 
 ### Flux iCalendar : interception WordPress (template_redirect) 
   \Civi\DonCorps\ICal\Calendar::register();
@@ -117,28 +115,11 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
    }   // fin de définition de fonction don_corps_civicrm_pageRun
 
 
-    ############
-    ## Les fonctions _myextension_remove_wp_capabilities et _myextension_add_wp_capabilities
-    ##  modifient les privileges des utilisateurs wp selon leur rôle wordpress
-    ##  elles sont lancées à l'installation
-    ##  ces modifications ne sont pas accessibles depuis l'API
-    ##
-    ##  syntaxe : _myextension_remove_wp_capabilities(role, caps)
-    ##      role : role wordpress (chaine : author, contributor...)
-    ##      caps : privilèges (array)
-    ##
-    ##  Pour lister les utilisateurs : wp user list
-    ##  Pour Lister les privileges d'un utilisateur : wp user list-caps <user id>
-    ############
+    
 
   
 
-  
-
-
-  
-
-  function change_icon (){      // LOG OK invoquée en post installation pour remplacer l'icone du menu
+ /*  function change_icon (){      // LOG OK invoquée en post installation pour remplacer l'icone du menu
     // syntaxe : change_icon  ('nom_du_menu_dont les sous_rubriques_sont_a_desactiver', 'icone');
     //
     // elle est appelée par : function don_corps_civicrm_postinstall()
@@ -171,10 +152,10 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
     // echo $msg.PHP_EOL;
     
 
-    }   // Fin de définition de la fonction : change_icon()
+  }   // Fin de définition de la fonction : change_icon() */
 
   
-  function serialize_custom_fields(){
+  /* function serialize_custom_fields(){
     //////////// focntion serialize_custom_fields() /////////
     // Cette fonction est invoquée à en post installation pour :
     //    - récupérer les champs customs utilisés par les conditions civirules
@@ -225,9 +206,9 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
 
     return serialize($array);                           // retourne la valeur en sértialisant (foramt atendu par condition_params)
 
-   }   // Fin de la définition de la fonction : serialize_custom_fields()
+   }   // Fin de la définition de la fonction : serialize_custom_fields() */
 
-  function delete_contact_type (){
+  /* function delete_contact_type (){
     //////////// function delete_contact_type /////////
     // Cette fonction est invoquée à la désinstallation pour supprimer les contacts crées à l'installation
     //
@@ -290,12 +271,10 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
       }
 
 
-   }   // Fin de la définition de la fonction : delete_contact_type()
+   }   // Fin de la définition de la fonction : delete_contact_type() */
 
-  //function modif_filtre() reecrite : \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Mon_champ', 'Mon_groupe');
    
 
-# FIN DE LA DECLARATION DES FONCTIONS
 
 ### IMPLEMENTS hook don_corps_civicrm_custom
   # Point d’entrée du hook hook_civicrm_custom. 
@@ -313,9 +292,8 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
 
 ### IMPLEMENTS hook_civicrm_managed()
   # @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed*/
-  function don_corps_civicrm_managed(&$entities) {
 
-  } 
+ 
 
 ### IMPLEMENTS hook_civicrm_config() 
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
@@ -338,6 +316,12 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
       ## Civi/DonCorps/Entities/
       InstallEntities::installFile('Entities_to_create_intervalles_dates.php');
       InstallEntities::installFile('Entities_to_create_prefixes_de_contacts.php');
+      InstallEntities::installFile("Entities_to_create_types_activites.php");
+      InstallEntities::installFile("Entities_to_create_types_evenements.php");
+      InstallEntities::installFile("Entities_to_create_types_documents");
+      InstallEntities::installFile("Entities_to_create_salutations_email");
+      InstallEntities::installFile("Entities_to_create_salutations_postale");
+      InstallEntities::installFile("Entities_to_create_genre.php");
       InstallEntities::installFile('Entities_to_create_types_contacts.php');
       InstallEntities::installFile('Entities_to_create_Financial_Types.php');
       InstallEntities::installFile('Entities_to_create_Contribution_Status.php');
@@ -370,31 +354,7 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
       \Civi::log()->info("don_corps : ".$msg);
       Params::Apply();
 
-    $msg="  - Modification des tags"; 
-      // echo $msg.PHP_EOL;
-      
-      \Civi::log()->info("don_corps : ".$msg);
-      
-      $entities[] =
-      [
-        'module' => 'don_corps',
-        'name' => 'Tag_bilan',
-        'entity' => 'Tag',
-        'cleanup' => 'unused',
-        'update' => 'unused',
-        'params' => [
-          'version' => 4,
-          'values' => [
-            'name' => 'bilan',
-            'label' => E::ts('bilan'),
-            'used_for' => [
-              E::ts('civicrm_saved_search'),
-            ],
-            'color' => '#3df542',
-          ],
-          'match' => [E::ts('name')],
-        ],
-      ];
+    
     
     $msg="*** Ajout des centres de don du corps";
       \Civi::log()->info("don_corps : ".$msg);
@@ -460,466 +420,15 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
           ]
       );
 
-    $msg="  - Reglage des règles de dédoublonage";
-      
+    $msg="*** Reglage des règles de dédoublonage";
       \Civi::log()->info("don_corps : ".$msg);
-      // echo $msg.PHP_EOL;
-      #####
-      # Lors de l acréation des dedupe rules en utilisant les fichier mgd, les champs sont mal mappés
-      # en raison d'une référence non au nom des champs mais de la tabloe et de la colonne dans la bdd, variabl ed'une installaiton ) l'autre
-      # ici, on récupère les valeurs de table et de colonne dans la nouvelle bdd à parir du nom du champ
-      # et on modifie la regle de dédoublonage
-      #
-      # dans $custom_dedupes lister le name des custom fields utilisés dans les regles de dédoublonage
-      #####
+      Dedupe::install();
 
-      ### Passage des regles existantes pour les individus et organizations à l'utilisation "general"
-          # "Supervised" : lancée si création depuis l'interface utilisateur
-          # "Unsupervised" : lancée si creation online ou import de contact
-          $msg= "      -> Passage des usages de tous les groupes de règles de dédoublonage à General";
-            \Civi::log()->info("don_corps : ".$msg);
-            if (VERBOSE==1){
-            // echo $msg.PHP_EOL;
-            }
-
-            $results = civicrm_api4('DedupeRuleGroup', 'update', [
-            'values' => [
-                'used' => 'General',
-            ],
-            'where' => [
-                ['OR', [['contact_type', '=', 'Organization'], ['contact_type', '=', 'Individual']]],
-            ],
-            'checkPermissions' => FALSE,
-            ]);
-
-      ### individuals : création de la table $custom_dedupes qui contient les valeurs de table et de colonne pour chque champ
-
-          $custom_dedupes = ['N_annulation', 'N_de_don', 'N_de_d_c_s'];
-          $custom_table=array();
-
-          foreach($custom_dedupes as $custom_dedupe){
-              //echo $custom_dedupe.PHP_EOL;
-              $customFields = civicrm_api4('CustomField', 'get', [
-                  'select' => [
-                      'column_name',
-                      'custom_group_id.table_name',
-                  ],
-                  'where' => [
-                      ['name', '=', $custom_dedupe],
-                  ],
-                  'checkPermissions' => FALSE,
-              ]);
-
-              if(isset($customFields[0])){
-                  $custom_table[$custom_dedupe]['table']=$customFields[0]['custom_group_id.table_name'];
-                  $custom_table[$custom_dedupe]['column']=$customFields[0]['column_name'];
-              }
-          }
-
-      ### individuals : création règle supervisée de dédoublonage utilisant les n° de don d'annulation et de deces
-          $rule_name = 'num_don_annulation_deces';
-          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['name', '=', $rule_name],
-              ],
-              'checkPermissions' => FALSE,
-          ]);
-
-          if(isset($dedupeRuleGroups[0])){
-              $results = civicrm_api4('DedupeRuleGroup', 'update', [
-                  'values' => [
-                      'contact_type' => 'Individual',
-                      'threshold' => 10,
-                      'used' => 'Supervised',
-                      'title' => E::ts('num don ou annulation ou deces (supervisée)'),
-                  ],
-                  'where' => [
-                      ['id', '=', $dedupeRuleGroups[0]['id']],
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-                  $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  \Civi::log()->info("don_corps : ".$msg);
-                  if (VERBOSE==1){
-                    // echo $msg;
-                  }
-                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-
-                  if(isset($dedupeRules[0])){
-                      $results = civicrm_api4('DedupeRule', 'delete', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-                      $msg= " et suppression des règles attachées";
-                      \Civi::log()->info("don_corps : ".$msg);
-                      if (VERBOSE==1){
-                        // echo $msg;
-                      }
-                  }
-
-          } else {
-              $results = civicrm_api4('DedupeRuleGroup', 'create', [
-                  'values' => [
-                      'contact_type' => 'Individual',
-                      'threshold' => 10,
-                      'used' => 'Supervised',
-                      'title' => E::ts('num don ou annulation ou deces (supervisée)'),
-                      'name' => $rule_name,
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-
-              $msg= "      -> Création groupe de règles de dédoublonage";
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg;
-              }
-          }
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')' ;
-          \Civi::log()->info("don_corps : ".$msg);
-          if (VERBOSE==1){
-            // echo $msg.PHP_EOL;
-          }
-
-          foreach($custom_dedupes as $custom_dedupe){
-              $results = civicrm_api4('DedupeRule', 'create', [
-              'values' => [
-                  'dedupe_rule_group_id.name' => $rule_name,
-                  'rule_table' => $custom_table[$custom_dedupe]['table'],
-                  'rule_field' => $custom_table[$custom_dedupe]['column'],
-                  'rule_weight' => '10',
-              ],
-              'checkPermissions' => FALSE,
-              ]);
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-              }
-
-
-
-      ### individuals : création règle automatique de dédoublonage utilisant les n° de don d'annulation et de deces
-          $rule_name = 'numeros_don_annulation_dc_2';
-          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['name', '=', $rule_name],
-              ],
-              'checkPermissions' => FALSE,
-          ]);
-
-          if(isset($dedupeRuleGroups[0])){
-              $results = civicrm_api4('DedupeRuleGroup', 'update', [
-                  'values' => [
-                      'contact_type' => 'Individual',
-                      'threshold' => 10,
-                      'used' => 'Unsupervised',
-                      'title' => E::ts('num don ou annulation ou deces (automatique)'),
-                  ],
-                  'where' => [
-                      ['id', '=', $dedupeRuleGroups[0]['id']],
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-                  $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  \Civi::log()->info("don_corps : ".$msg);
-                  if (VERBOSE==1){
-                    // echo $msg;
-                  }
-
-                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-
-                  if(isset($dedupeRules[0])){
-                      $results = civicrm_api4('DedupeRule', 'delete', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-                      $msg= " et suppression des règles attachées";
-                      \Civi::log()->info("don_corps : ".$msg);
-                      if (VERBOSE==1){
-                        // echo $msg;
-                      }
-                  }
-
-          } else {
-              $results = civicrm_api4('DedupeRuleGroup', 'create', [
-                  'values' => [
-                      'contact_type' => 'Individual',
-                      'threshold' => 10,
-                      'used' => 'Unsupervised',
-                      'title' => E::ts('num don ou annulation ou deces (automatique)'),
-                      'name' => $rule_name,
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-
-              $msg= "      -> Création groupe de règles de dédoublonage";
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg;
-              }
-          }
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')' ;
-          \Civi::log()->info("don_corps : ".$msg);
-          if (VERBOSE==1){
-            // echo $msg.PHP_EOL;
-          }
-
-          foreach($custom_dedupes as $custom_dedupe){
-              $results = civicrm_api4('DedupeRule', 'create', [
-              'values' => [
-                  'dedupe_rule_group_id.name' => $rule_name,
-                  'rule_table' => $custom_table[$custom_dedupe]['table'],
-                  'rule_field' => $custom_table[$custom_dedupe]['column'],
-                  'rule_weight' => '10',
-              ],
-              'checkPermissions' => FALSE,
-              ]);
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
-                        \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-            }
-
-
-
-      ### Organisation : création de la table $custom_dedupes qui contient les valeurs de table et de colonne pour chque champ
-
-              $custom_dedupes = ['name', 'email'];
-              $custom_table=array();
-
-              $custom_table['name']['table']='civicrm_contact';
-              $custom_table['name']['column']='organization_name';
-              $custom_table['email']['table']='civicrm_email';
-              $custom_table['email']['column']='email';
-
-
-      ### Organisation : création règle supervisée de dédoublonage utilisant le nom ou courriel
-          $rule_name = 'OrganizationSupervised';
-          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['name', '=', $rule_name],
-              ],
-              'checkPermissions' => FALSE,
-          ]);
-
-          if(isset($dedupeRuleGroups[0])){
-              $results = civicrm_api4('DedupeRuleGroup', 'update', [
-                  'values' => [
-                      'contact_type' => 'Organization',
-                      'threshold' => 20,
-                      'used' => 'Supervised',
-                      'title' => E::ts('Nom ou courriel (supervisée)'),
-                  ],
-                  'where' => [
-                      ['id', '=', $dedupeRuleGroups[0]['id']],
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-                  $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  \Civi::log()->info("don_corps : ".$msg);
-                  if (VERBOSE==1){
-                    // echo $msg;
-                  }
-
-                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-
-                  if(isset($dedupeRules[0])){
-                      $results = civicrm_api4('DedupeRule', 'delete', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-                      $msg= " et suppression des règles attachées";
-                      \Civi::log()->info("don_corps : ".$msg);
-                      if (VERBOSE==1){
-                        // echo $msg;
-                      }
-                  }
-
-          } else {
-              $results = civicrm_api4('DedupeRuleGroup', 'create', [
-                  'values' => [
-                      'contact_type' => 'Organization',
-                      'threshold' => 20,
-                      'used' => 'Supervised',
-                      'title' => E::ts('Nom ou courriel (supervisée)'),
-                      'name' => $rule_name,
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-
-              $msg= "      -> Création groupe de règles de dédoublonage";
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg;
-              }
-          }
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')' ;
-          \Civi::log()->info("don_corps : ".$msg);
-          if (VERBOSE==1){
-            // echo $msg.PHP_EOL;
-          }
-
-          foreach($custom_dedupes as $custom_dedupe){
-              $results = civicrm_api4('DedupeRule', 'create', [
-              'values' => [
-                  'dedupe_rule_group_id.name' => $rule_name,
-                  'rule_table' => $custom_table[$custom_dedupe]['table'],
-                  'rule_field' => $custom_table[$custom_dedupe]['column'],
-                  'rule_weight' => '10',
-              ],
-              'checkPermissions' => FALSE,
-              ]);
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-            }
-
-
-
-      ### Organization : création règle automatique de dédoublonage utilisant le nom ou courriel
-          $rule_name = 'OrganizationUnsupervised';
-          $dedupeRuleGroups = civicrm_api4('DedupeRuleGroup', 'get', [
-              'select' => [
-                  'id',
-              ],
-              'where' => [
-                  ['name', '=', $rule_name],
-              ],
-              'checkPermissions' => FALSE,
-          ]);
-
-          if(isset($dedupeRuleGroups[0])){
-              $results = civicrm_api4('DedupeRuleGroup', 'update', [
-                  'values' => [
-                      'contact_type' => 'Organization',
-                      'threshold' => 20,
-                      'used' => 'Unsupervised',
-                      'title' => E::ts('Nom ou courriel (automatique)'),
-                  ],
-                  'where' => [
-                      ['id', '=', $dedupeRuleGroups[0]['id']],
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-                  $msg= "      -> MAJ groupe de règles de dédoublonage";
-                  \Civi::log()->info("don_corps : ".$msg);
-                  if (VERBOSE==1){
-                    // echo $msg;
-                  }
-
-                  $dedupeRules = civicrm_api4('DedupeRule', 'get', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-
-                  if(isset($dedupeRules[0])){
-                      $results = civicrm_api4('DedupeRule', 'delete', [
-                      'where' => [
-                          ['dedupe_rule_group_id.name', '=', $rule_name],
-                      ],
-                      'checkPermissions' => FALSE,
-                      ]);
-
-                      $msg= " et suppression des règles attachées";
-                      \Civi::log()->info("don_corps : ".$msg);
-                      if (VERBOSE==1){
-                        // echo $msg;
-                      }
-                  }
-
-          } else {
-              $results = civicrm_api4('DedupeRuleGroup', 'create', [
-                  'values' => [
-                      'contact_type' => 'Organization',
-                      'threshold' => 10,
-                      'used' => 'Supervised',
-                      'title' => E::ts('Nom ou courriel (automatique)'),
-                      'name' => $rule_name,
-                  ],
-                  'checkPermissions' => FALSE,
-                  ]);
-
-              $msg= "      -> Création groupe de règles de dédoublonage";
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg;
-              }
-          }
-
-          $msg= " : ".$rule_name.' (id : '.$results['0']['id'].')';
-          \Civi::log()->info("don_corps : ".$msg);
-          if (VERBOSE==1){
-            // echo $msg.PHP_EOL;
-          }
-
-          foreach($custom_dedupes as $custom_dedupe){
-              $results = civicrm_api4('DedupeRule', 'create', [
-              'values' => [
-                  'dedupe_rule_group_id.name' => $rule_name,
-                  'rule_table' => $custom_table[$custom_dedupe]['table'],
-                  'rule_field' => $custom_table[$custom_dedupe]['column'],
-                  'rule_weight' => '10',
-              ],
-              'checkPermissions' => FALSE,
-              ]);
-
-              $msg= "         Rule_table = ".$results[0]['rule_table']." - rule_field = ".$results[0]['rule_field']." - rule_weight = ".$results[0]['rule_weight'];
-              \Civi::log()->info("don_corps : ".$msg);
-              if (VERBOSE==1){
-                // echo $msg.PHP_EOL;
-              }
-          }
-
-      // ferme fichier de log
-
-     /// Fin de Reglage des règles de dédoublonage
-
-
-    $msg="  - Modification des filtres de champs personnalisés"; // permet de n'afficher que certains contacts pour certains champs
+    $msg="*** Modification des filtres de champs personnalisés"; // permet de n'afficher que certains contacts pour certains champs
       \Civi::log()->info("don_corps : ".$msg);
-      //\Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Pr_par_par', 'Personnel_centre_de_don_77'); // INUTILE CAR DEFINITION SUR LE SUBTYPE NON SUR GROUPE
       \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Lacalisation', 'Emprunteurs_44');
       \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('D_posant', 'groupe_d_posants_porteurs_potent_24');
       \Civi\DonCorps\Install\CustomFieldFilter::applyGroupFilter('Demandeur', 'groupe_d_posants_porteurs_potent_24');
-
-    
 
     $msg="*** Création/MAJ des Rules";
         \Civi::log()->info("don_corps : ".$msg);
@@ -937,23 +446,17 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
       InstallEntities::installFile('Entities_to_create_rules_demande_cremation.php');
       InstallEntities::installFile('Entities_to_create_rules_neutralise_adresse.php');
 
-    $msg="  - Ajout des tags aux SavedSearches";
+    $msg="*** Ajout des tags aux SavedSearches";
       // Pour lister les requetes : cv api4 SavedSearch.get '{"select":["id","name","label"],"checkPermissions":false}' --out=table
       $tag_search_file = E::path() .'/managed/tags_searches.txt';  // fichier contenant les tags attachés aux recherches
       SearchUpdateTag::updateTag($tag_search_file);
       \Civi::log()->info("don_corps : ".$msg);
       
-
-  
-    $msg="  - Changement des icones de menus";
-      
+    /*     $msg="  - Changement des icones de menus";
       \Civi::log()->info("don_corps : ".$msg);
-      // echo $msg.PHP_EOL;
-    
       change_icon('Contributions','crm-i fa-money-bill-1');
       change_icon('Events','crm-i fa-users');
-      // Fin du Changement des icones de menus
-
+      // Fin du Changement des icones de menus */
 
     $msg="*** Création des Templates de cérémonie"; //les statuts et les roles des participants doivent etre crées en amont (dans install)
       \Civi::log()->info("don_corps : ".$msg);
@@ -994,7 +497,6 @@ use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
 
     $msg="*** Mise à jour des groupes des SavedSearch";
       UpdateSearchGroups::updateAll();
-
   }   // fin Implements hook_civicrm_postInstall().
 
 # IMPLEMENTS hook_civicrm_container().

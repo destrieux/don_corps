@@ -64,9 +64,9 @@ return [
         'name' => 'Activit_s_labo_Table_1',
         'label' => E::ts('Activités labo Table 1'),
         'saved_search_id.name' => 'Activit_s_labo',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [],
           'limit' => 50,
           'pager' => [],

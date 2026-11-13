@@ -12,7 +12,7 @@ return [
       'values' => [
         'name' => 'champs_caches',
         'title' => E::ts('champs caches'),
-        'weight' => 16,
+        'weight' => 17,
         'collapse_adv_display' => TRUE,
       ],
       'match' => ['name'],

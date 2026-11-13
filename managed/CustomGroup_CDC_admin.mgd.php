@@ -13,7 +13,9 @@ return [
         'name' => 'CDC_admin',
         'title' => E::ts('CDC admin'),
         'extends' => 'Organization',
-        'extends_entity_column_value' => ['CDC'],
+        'extends_entity_column_value:name' => [
+        'CDC',
+      ],
         'weight' => 8,
         'collapse_adv_display' => TRUE,
       ],

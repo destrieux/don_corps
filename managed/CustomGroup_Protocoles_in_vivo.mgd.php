@@ -13,9 +13,11 @@ return [
         'name' => 'Protocoles_in_vivo',
         'title' => E::ts('Protocoles in vivo'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur'],
+        'extends_entity_column_value:name' => [
+        'Donateur',
+      ],
         'style' => 'Tab with table',
-        'weight' => 15,
+        'weight' => 20,
         'is_multiple' => TRUE,
         'collapse_adv_display' => TRUE,
       ],

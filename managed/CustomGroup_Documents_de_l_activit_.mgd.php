@@ -13,8 +13,10 @@ return [
         'name' => 'Documents_de_l_activit_',
         'title' => E::ts('Documents de l\'activité'),
         'extends' => 'Event',
-        'extends_entity_column_value' => ['101'],
-        'weight' => 20,
+        'extends_entity_column_value:name' => [
+        'Activité au laboratoire',
+      ],
+        'weight' => 15,
         'collapse_adv_display' => TRUE,
       ],
       'match' => ['name'],

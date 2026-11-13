@@ -65,7 +65,7 @@ return [
         'name' => 'Bilan_detail_activit_au_labo_Table_1',
         'label' => E::ts('Bilan : detail activité au labo Table 1'),
         'saved_search_id.name' => 'Bilan_detail_activit_au_labo',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
           'description' => E::ts('Ce tableau peut être téléchargé au format .xlsx (Action - Download spreadsheet). Les données peuvent être copiées (à l\'exlusion des titres de colonnes) vers le document excel de bilan, onglét "activité détaillée".ATTENTION : faire un collage spécial - Valeurs pour conserver le formatage du bilan.'),
           'sort' => [],

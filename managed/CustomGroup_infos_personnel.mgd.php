@@ -13,7 +13,9 @@ return [
         'name' => 'infos_personnel',
         'title' => E::ts('Informations Personnel'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Personnel'],
+        'extends_entity_column_value:name' => [
+        'Personnel',
+      ],
         'weight' => 14,
       ],
       'match' => ['name'],

@@ -68,10 +68,6 @@
         "tag": "tokens"
     },
     {
-        "search": "Tokens_PAQPF",
-        "tag": "tokens"
-    },
-    {
         "search": "Tokens_for_contact",
         "tag": "tokens"
     },
@@ -93,6 +89,10 @@
     },
     {
         "search": "Tokens_activit_s_labo",
+        "tag": "tokens"
+    },
+    {
+        "search": "Tokens_PAQPF",
         "tag": "tokens"
     }
 ]

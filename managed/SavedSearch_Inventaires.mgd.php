@@ -69,9 +69,9 @@ return [
         'name' => 'Inventaires_Table_1',
         'label' => E::ts('Inventaires'),
         'saved_search_id.name' => 'Inventaires',
-        'type:name' => 'crm-search-display-table',
+        'type' => 'table',
         'settings' => [
-          'description' => E::ts(''),
+          'description' => '',
           'sort' => [],
           'limit' => 50,
           'pager' => [],

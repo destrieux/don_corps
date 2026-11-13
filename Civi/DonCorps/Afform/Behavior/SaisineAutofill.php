@@ -1,13 +1,31 @@
 <?php
 
 namespace Civi\DonCorps\Afform\Behavior;
-
+use CRM_DonCorps_ExtensionUtil as E;
 use Civi\Afform\AbstractBehavior;
 use Civi\Afform\Event\AfformEntitySortEvent;
 use Civi\Afform\Event\AfformPrefillEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+
 class SaisineAutofill extends AbstractBehavior implements EventSubscriberInterface {
+
+  /**
+   * Modes proposés dans Form Builder pour ce comportement.
+   *
+   * @param string $entityName Entité du formulaire (ex. 'Event')
+   * @return array Liste de modes : name, label, description
+   */
+  public static function getModes(string $entityName): array {
+    return [
+      [
+        'name' => 'saisine',
+        'label' => E::ts('Pré-remplir depuis la saisine'),
+        'description' => E::ts('Remplit les champs avec les données de la saisine sélectionnée'),
+      ],
+    ];
+  }
+
 
   public static function getSubscribedEvents(): array {
     return [

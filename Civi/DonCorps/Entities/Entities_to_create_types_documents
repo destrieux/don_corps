@@ -1,0 +1,62 @@
+<?php
+use CRM_DonCorps_ExtensionUtil as E;
+
+// Option values du groupe document_type, exportées le 2026-11-13 14:47
+return [
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'document_type',
+      'name' => 'General',
+      'label' => E::ts('Général'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'document_type',
+      'name' => 'Promesse de don',
+      'label' => E::ts('Promesse de don'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'document_type',
+      'name' => 'RGPD',
+      'label' => E::ts('RGPD'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'document_type',
+      'name' => 'Tous documents incription',
+      'label' => E::ts('Tous documents incription'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'document_type',
+      'name' => 'Assurance',
+      'label' => E::ts('Assurance'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'document_type',
+      'name' => 'Courriers',
+      'label' => E::ts('Courriers'),
+    ],
+  ],
+  [
+    'entity' => 'OptionValue',
+    'values' => [
+      'option_group_id:name' => 'document_type',
+      'name' => 'Extrait de certificat de décès',
+      'label' => E::ts('Extrait de certificat de décès'),
+    ],
+  ],
+];

@@ -13,7 +13,9 @@ return [
         'name' => 'Ant_c_dents_m_dicaux',
         'title' => E::ts('Antécédents médicaux'),
         'extends' => 'Individual',
-        'extends_entity_column_value' => ['Donateur'],
+        'extends_entity_column_value:name' => [
+        'Donateur',
+      ],
         'weight' => 3,
       ],
       'match' => ['name'],
