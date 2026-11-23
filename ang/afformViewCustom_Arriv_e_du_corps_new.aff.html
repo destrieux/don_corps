@@ -1,0 +1,17 @@
+<af-form ctrl="afform">
+  <af-entity type="Custom_Arriv_e_du_corps_new" name="Record" label="Individual Arriv&eacute;e du corps" actions="{create: false, update: true}" security="RBAC" url-autofill="1" />
+  <fieldset af-fieldset="Record" class="af-container">
+    <af-field name="entity_id" defn="{input_type: 'Hidden', label: false}" />
+    <af-field name="Signataire_certificat_de_d_c_s" defn="{input_type: 'DisplayOnly', label: 'Signataire certificat de d&eacute;c&egrave;s (nom, tel, ville)'}" />
+    <af-field name="Pathologies_cibles_recueillies" defn="{input_type: 'DisplayOnly', label: 'Pathologies cibles recueillies'}" />
+    <af-field name="Retrait_Stimulateur_piles:name" defn="{afform_default: 'A v&eacute;rifier', input_type: 'DisplayOnly'}" />
+    <af-field name="S_rologie_VIH:name" defn="{afform_default: 'Non_realis_es', input_type: 'DisplayOnly'}" />
+    <af-field name="S_rologie_HBV:name" defn="{afform_default: 'non_r_alis_e', input_type: 'DisplayOnly'}" />
+    <af-field name="S_rologie_COVID:name" defn="{afform_default: 'non_r_alis_e', input_type: 'DisplayOnly'}" />
+    <af-field name="PCR_COVID:name" defn="{afform_default: 'non_r_alis_e', input_type: 'DisplayOnly'}" />
+    <af-field name="PCR_COVID_nasopharyng_e:name" defn="{afform_default: 'non_r_alis_e', input_type: 'DisplayOnly'}" />
+    <af-field name="Effets_personnels:name" defn="{input_type: 'DisplayOnly'}" />
+    <af-field name="Effets_personnels_retir_s" defn="{afform_default: 'Aucun', input_type: 'DisplayOnly'}" />
+    <af-field name="Commentaire" defn="{input_type: 'DisplayOnly'}" />
+  </fieldset>
+</af-form>

@@ -1,0 +1,19 @@
+<af-form ctrl="afform">
+  <af-entity
+    type="Custom_Utilisation_du_corps"
+    name="Record"
+    label="Individual Utilisation du corps"
+    actions='{"create":true,"update":false}'
+    security="RBAC"
+    url-autofill=""
+    />
+
+  <fieldset af-fieldset="Record" class="af-container">
+    <af-field
+        name="entity_id"
+        defn='{"input_type":"Hidden","label":false}'
+        />
+    <afblock-custom-utilisation-du-corps />
+  </fieldset>
+  <button class="af-button btn btn-primary" crm-icon="fa-save" ng-click="afform.submit()">Save</button>
+</af-form>

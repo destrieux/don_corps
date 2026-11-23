@@ -1,0 +1,42 @@
+<div class="af-container af-layout-cols">
+  <div class="af-container">
+    <div class="af-container af-container-style-pane" af-title="Certificat de d&eacute;c&egrave;s">
+      <af-field name="Signataire_certificat_de_d_c_s" defn="{label: 'Signataire certificat de d&eacute;c&egrave;s (nom, tel, ville)', input_attrs: {}}" />
+      <af-field name="Pathologies_cibles_recueillies" defn="{label: 'Pathologies cibles recueillies', input_type: 'Toggle'}" />
+    </div>
+    <p class="af-text"></p>
+    <p class="af-text">Enter text</p>
+    <div class="af-container af-container-style-pane" af-title="Stimulateur &agrave; piles">
+      <af-field name="Retrait_Stimulateur_piles:name" defn="{afform_default: 'A v&eacute;rifier', input_attrs: {}, label: false}" />
+    </div>
+  </div>
+  <div class="af-container af-container-style-pane af-layout-cols" af-title="S&eacute;rologies - PCR">
+    <div class="af-container">
+      <af-field name="S_rologie_VIH:name" defn="{afform_default: 'Non_realis_es', input_attrs: {}, label: 'S&eacute;rologie VIH'}" />
+      <af-field name="S_rologie_HBV:name" defn="{afform_default: 'non_r_alis_e', input_attrs: {}, label: 'S&eacute;rologie HBV'}" />
+    </div>
+    <div class="af-container">
+      <af-field name="S_rologie_COVID:name" defn="{afform_default: 'non_r_alis_e', input_attrs: {}, label: 'S&eacute;rologie COVID'}" />
+      <af-field name="PCR_COVID:name" defn="{afform_default: 'non_r_alis_e', input_attrs: {}, label: 'PCR COVID selles'}" />
+      <af-field name="PCR_COVID_nasopharyng_e:name" defn="{afform_default: 'non_r_alis_e', input_attrs: {}, label: 'PCR COVID nasopharyng&eacute;e'}" />
+    </div>
+  </div>
+</div>
+<p class="af-text"></p>
+<div class="af-container af-layout-cols">
+  <div class="af-container af-container-style-pane" af-title="Effets Personnels">
+    <af-field name="Effets_personnels:name" defn="{label: 'Effets personnels', input_attrs: {}}" />
+    <div class="af-markup">
+      <p><strong>En cas d'effets personnels de valeur retrouvés sur le donneur :</strong></p>
+
+      <p>Décrivez-les le plus précisément possible</p>
+
+      <p>Imprimez le certificat de retrait et joignez-le à l'objet avant de le remettre au secrétariat&nbsp; : Action -&gt; Créer CiviOfficeDocument : 030-ARRIVEE_Reçu_objets_personnels : cocher créer une activité Effets Personnels et attacher le document au dossier</p>
+
+    </div>
+    <af-field name="Effets_personnels_retir_s" defn="{afform_default: 'Aucun', help_pre: null, input_attrs: {}, label: false}" />
+  </div>
+  <div class="af-container af-container-style-pane" af-title="Commentaire">
+    <af-field name="Commentaire" defn="{label: false, input_attrs: {}}" />
+  </div>
+</div>

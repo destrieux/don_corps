@@ -209,6 +209,7 @@ return [
               'key' => 'Event_Saisine_id_de_saisine_01.caracteristiques.Type_d_activit_:label',
               'label' => E::ts('Type d\'activité'),
               'sortable' => TRUE,
+              'editable' => TRUE,
             ],
             [
               'type' => 'field',
@@ -230,6 +231,25 @@ return [
                   'FALSE',
                 ],
               ],
+            ],
+            [
+              'links' => [
+                [
+                  'style' => 'default',
+                  'text' => E::ts('Dupliquer'),
+                  'icon' => 'fa-copy',
+                  'conditions' => [],
+                  'path' => 'civicrm/don-corps/copier-evenement?reset=1&id=[id]',
+                  'task' => '',
+                  'entity' => '',
+                  'action' => '',
+                  'join' => '',
+                  'target' => '',
+                ],
+              ],
+              'type' => 'links',
+              'alignment' => 'text-right',
+              'label' => E::ts('Actions'),
             ],
           ],
         ],

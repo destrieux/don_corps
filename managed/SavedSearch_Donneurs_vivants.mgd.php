@@ -159,9 +159,14 @@ return [
             ],
           ],
           'actions' => TRUE,
-          'classes' => ['table', 'table-striped'],
+          'classes' => [
+            'table',
+            'table-striped',
+            'crm-sticky-header',
+          ],
           'headerCount' => TRUE,
           'actions_display_mode' => 'menu',
+          'columnMode' => 'custom',
         ],
       ],
       'match' => [

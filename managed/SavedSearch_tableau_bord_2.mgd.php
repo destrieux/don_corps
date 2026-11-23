@@ -6,7 +6,7 @@ return [
     'name' => 'SavedSearch_tableau_bord_2',
     'entity' => 'SavedSearch',
     'cleanup' => 'unused',
-    'update' => 'unmodified',
+    'update' => 'always',
     'params' => [
       'version' => 4,
       'values' => [
@@ -33,7 +33,7 @@ return [
             'Contact_Custom_Utilisation_du_corps_entity_id_01.Mode_limination_hors_corps_2:label',
             'Devenir_du_corps.Date_op_rations_fun_raires',
             'Devenir_du_corps.Date_approximative_de_r_alisation_des_op_rations_fun_raires:label',
-            'id',
+            'liste_activites',
           ],
           'orderBy' => [],
           'where' => [
@@ -51,7 +51,26 @@ return [
                   'Corps_entier_tronc',
                 ],
                 [
-                  'Contact_Custom_Utilisation_du_corps_entity_id_01.N_de_pi_ce_ou_de_corps',
+                  'Contact_Custom_Utilisation_du_corps_entity_id_01.entity_id',
+                  'IS EMPTY',
+                ],
+              ],
+            ],
+            [
+              'Prise_en_charge_au_d_c_s.Date_d_arriv_e_au_CDC',
+              '<=',
+              'now',
+            ],
+            [
+              'OR',
+              [
+                [
+                  'Devenir_du_corps.Date_de_sortie_d_finitive',
+                  '>=',
+                  'now',
+                ],
+                [
+                  'Devenir_du_corps.Date_de_sortie_d_finitive',
                   'IS EMPTY',
                 ],
               ],
@@ -59,48 +78,16 @@ return [
             [
               'OR',
               [
-                ['is_deceased', '=', TRUE],
                 [
-                  'Prise_en_charge_au_d_c_s.N_de_d_c_s',
-                  'IS NOT EMPTY',
+                  'Devenir_du_corps.Date_op_rations_fun_raires',
+                  '>=',
+                  'now',
                 ],
-                ['deceased_date', 'IS NOT EMPTY'],
                 [
-                  'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-                  '!=',
-                  'Pas_de_refus',
+                  'Devenir_du_corps.Date_op_rations_fun_raires',
+                  'IS EMPTY',
                 ],
               ],
-            ],
-            [
-              'OR',
-              [
-                [
-                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Mode_limination_hors_corps_2:name',
-                  '=',
-                  'Non_limin_e',
-                ],
-                [
-                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Mode_limination_hors_corps_2:name',
-                  '=',
-                  'Conservation_illimit_e',
-                ],
-                [
-                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Mode_limination_hors_corps_2:name',
-                  '=',
-                  'Demander_cr_mation',
-                ],
-                [
-                  'Contact_Custom_Utilisation_du_corps_entity_id_01.Mode_limination_hors_corps_2:name',
-                  '=',
-                  'Cr_mation_demand_e',
-                ],
-              ],
-            ],
-            [
-              'Prise_en_charge_au_d_c_s.Motif_de_refus_du_corps:name',
-              '=',
-              'Pas_de_refus',
             ],
           ],
           'groupBy' => [],
@@ -134,7 +121,7 @@ return [
     'name' => 'SavedSearch_tableau_bord_2_SearchDisplay_Tableau_bord_corps',
     'entity' => 'SearchDisplay',
     'cleanup' => 'unused',
-    'update' => 'unmodified',
+    'update' => 'always',
     'params' => [
       'version' => 4,
       'values' => [
@@ -143,7 +130,7 @@ return [
         'saved_search_id.name' => 'tableau_bord_2',
         'type' => 'table',
         'settings' => [
-          'description' => E::ts('Tableau de bord des corps présents (Donneurs décédés sans date d\'opérations funéraires)
+          'description' => E::ts('Tableau de bord des corps présents 
 Alertes si : restitution, pas de numéro de décès ou de code barres, stimulateur à piles non vérifié, pièce non localisée'),
           'sort' => [
             ['sort_name', 'ASC'],
@@ -333,6 +320,12 @@ Alertes si : restitution, pas de numéro de décès ou de code barres, stimulate
             ],
             [
               'type' => 'field',
+              'key' => 'liste_activites',
+              'label' => E::ts('Utilisé pour :'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
               'key' => 'Contact_Custom_Utilisation_du_corps_entity_id_01.Compl_ment',
               'dataType' => 'String',
               'label' => E::ts('Identifiant ou complément'),
@@ -342,9 +335,14 @@ Alertes si : restitution, pas de numéro de décès ou de code barres, stimulate
             ],
           ],
           'actions' => TRUE,
-          'classes' => ['table', 'table-striped'],
+          'classes' => [
+            'table',
+            'table-striped',
+            'crm-sticky-header',
+          ],
           'headerCount' => TRUE,
           'actions_display_mode' => 'menu',
+          'columnMode' => 'custom',
         ],
       ],
       'match' => [

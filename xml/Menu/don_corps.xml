@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Déclaration des routes CiviCRM de l'extension Don Corps.
 
@@ -13,7 +12,6 @@
   Le paramètre is_public permet à CiviCRM de rendre ces routes
   accessibles sans session CiviCRM.
 -->
-
 <menu>
   <item>
     <path>civicrm/event/doncorpsical</path>
@@ -28,5 +26,11 @@
     <page_callback>CRM_DonCorps_Page_DonCorpsICalToken</page_callback>
     <access_callback>1</access_callback>
     <is_public>true</is_public>
+  </item>
+  <item>
+    <path>civicrm/don-corps/copier-evenement</path>
+    <page_callback>CRM_DonCorps_Page_CopierEvenement</page_callback>
+    <title>Dupliquer un événement</title>
+    <access_arguments>edit all events</access_arguments>
   </item>
 </menu>

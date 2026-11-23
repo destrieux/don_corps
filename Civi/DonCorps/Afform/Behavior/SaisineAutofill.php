@@ -7,6 +7,12 @@ use Civi\Afform\Event\AfformEntitySortEvent;
 use Civi\Afform\Event\AfformPrefillEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Pré-remplit les champs d'un formulaire Event avec les données de la saisine sélectionnée.
+ *
+ * @service
+ * @internal
+ */
 
 class SaisineAutofill extends AbstractBehavior implements EventSubscriberInterface {
 

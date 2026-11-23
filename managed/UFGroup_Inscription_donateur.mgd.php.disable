@@ -14,8 +14,8 @@ return [
         'group_type' => ['Contact', 'Donateur'],
         'title' => E::ts('Inscription donateur'),
         'frontend_title' => E::ts('Inscription donateur'),
-        'post_url' => 'http://localhost:8888/dev/wp-admin/admin.php?page=CiviCRM&q=civicrm/contact/view&reset=1&cid={contact.id}',
-        'cancel_url' => 'http://localhost:8888/dev/wp-admin/admin.php?page=CiviCRM',
+        'post_url' => 'http://localhost:8888/dev/wp-admin/admin.php?page=CiviCRM&q=civicrm%2Fcontact%2Fview&reset=1&cid={contact.id}',
+        'cancel_url' => 'http://localhost:8888/dev/wp-admin/admin.php?page=CiviCRM&q=civicrm%2Fdashboard&reset=1',
       ],
       'match' => ['name'],
     ],
@@ -115,7 +115,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_donateur',
-        'field_name:name' => 'Promesse_de_don.Centre_de_don',
+        'field_name' => 'custom_82',
         'is_required' => TRUE,
         'in_selector' => TRUE,
         'label' => E::ts('Centre de don'),
@@ -132,7 +132,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_donateur',
-        'field_name:name' => 'Promesse_de_don.Date_du_don',
+        'field_name' => 'custom_84',
         'is_required' => TRUE,
         'visibility' => 'Public Pages and Listings',
         'in_selector' => TRUE,
@@ -150,7 +150,7 @@ return [
       'version' => 4,
       'values' => [
         'uf_group_id.name' => 'Inscription_donateur',
-        'field_name:name' => 'Promesse_de_don.N_de_don',
+        'field_name' => 'custom_83',
         'is_required' => TRUE,
         'help_post' => E::ts('37#AAAA-NNNNN
 AAAA: année

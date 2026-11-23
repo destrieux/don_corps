@@ -19,6 +19,7 @@
     <ext>org.civicoop.documents</ext>
     <ext>org.civicoop.emailapi</ext>
     <ext>org.civicrm.afform_admin</ext>
+    <ext>civicrm_admin_ui</ext>
     <ext>org.civicrm.contactlayout</ext>
     <ext>de.systopia.eventmessages</ext>
     <ext>org.civicrm.afform</ext>
@@ -34,7 +35,7 @@
   <version>2.0.9</version>
   <develStage>alpha</develStage>
   <compatibility>
-    <ver>6.16</ver>
+    <ver>6.17</ver>
   </compatibility>
   <comments>This is a new, undeveloped module</comments>
   <classloader>

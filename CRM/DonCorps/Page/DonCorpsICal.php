@@ -223,21 +223,21 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
 
       $output[] = 'BEGIN:VEVENT';// début de l'évenement
       $output[] = 'CLASS:PUBLIC';//
-      $start = new DateTime(
-          $event['start_date'],
-          new DateTimeZone('Europe/Paris')
-      );
 
-      $end = new DateTime(
-          $event['end_date'],
-          new DateTimeZone('Europe/Paris')
-      );
+      $tz = new DateTimeZone('Europe/Paris');
+      $start = new DateTime($event['start_date'], $tz);
 
-      $output[] = 'DTSTART;TZID=Europe/Paris:' .
-          $start->format('Ymd\THis');
+      // Date de fin : celle de l'événement si elle est renseignée et postérieure au début,
+      // sinon 2 heures après le début (new DateTime(NULL) donnerait l'heure actuelle)
+      $end = !empty($event['end_date']) ? new DateTime($event['end_date'], $tz) : NULL;
+      if (!$end || $end <= $start) {
+        $end = (clone $start)->modify('+2 hours');
+      }
 
-      $output[] = 'DTEND;TZID=Europe/Paris:' .
-          $end->format('Ymd\THis');
+      $output[] = 'DTSTART;TZID=Europe/Paris:' . $start->format('Ymd\THis');
+      
+      $output[] = 'DTEND;TZID=Europe/Paris:' . $end->format('Ymd\THis');
+
       $output[] = 'DTSTAMP:' . gmdate('Ymd\THis\Z');          // date de génération du fichier en gmt
       
       $confirmation = $event['Caract_ristiques_de_l_activit_.En_attente_de_confirmation'] ?? '';
@@ -337,9 +337,6 @@ class CRM_DonCorps_Page_DonCorpsICal extends CRM_Core_Page {
     }
     CRM_Utils_System::civiExit();
   } 
-
-
-
 
   private function escapeIcal($value) {
     /**

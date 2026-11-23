@@ -67,7 +67,9 @@ return [
         'saved_search_id.name' => 'Bilan_detail_activit_au_labo',
         'type' => 'table',
         'settings' => [
-          'description' => E::ts('Ce tableau peut être téléchargé au format .xlsx (Action - Download spreadsheet). Les données peuvent être copiées (à l\'exlusion des titres de colonnes) vers le document excel de bilan, onglét "activité détaillée".ATTENTION : faire un collage spécial - Valeurs pour conserver le formatage du bilan.'),
+          'description' => E::ts('Ce tableau peut être téléchargé au format .xlsx (Action - Download spreadsheet). 
+Les données peuvent être copiées (à l\'exclusion des titres de colonnes) vers le document excel du bilan, onglet "activité détaillée".
+ATTENTION : faire un collage spécial - Valeurs pour conserver le formatage du bilan.'),
           'sort' => [],
           'limit' => 50,
           'pager' => [],

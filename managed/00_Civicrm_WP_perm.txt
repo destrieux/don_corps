@@ -1,9 +1,7 @@
 [
     {
         "role": "editor",
-        "caps": [
-            "sign_civicrm_petition"
-        ]
+        "caps": []
     },
     {
         "role": "author",

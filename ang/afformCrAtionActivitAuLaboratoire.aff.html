@@ -2,7 +2,8 @@
   <af-entity actions="{create: true, update: true}" type="Event" name="Event1" label="&Eacute;v&eacute;nement 1" security="RBAC" url-autofill="1" />
   <fieldset af-fieldset="Event1" class="af-container">
     <div class="af-container af-container-style-pane" af-title="Saisine">
-      <af-field name="Caract_ristiques_de_l_activit_.id_de_saisine" defn="{label: false, input_attrs: {}}" />
+      <af-field name="Caract_ristiques_de_l_activit_.id_de_saisine" defn="{input_attrs: {}, label: false}" />
+      <p class="af-text text-info">Recherche sur le N°, l'intitulé, le porteur, ou le déposant. Utilisez "%" pour remplacer tout caractère.</p>
     </div>
     <div class="af-container af-layout-cols">
       <div class="af-container af-container-style-pane" af-title="Caract&eacute;ristiques de l'activit&eacute;">
@@ -23,7 +24,7 @@
               <p class="af-text">Les activités non exportées n'apparaissent pas au calendrier, mais sont comptabilisées au bilan.</p>
             </div>
           </div>
-          <af-field name="Participants.Nombre_de_s_ances" />
+          <af-field name="Participants.Nombre_de_s_ances" defn="{label: 'Nombre de s&eacute;ances', input_attrs: {}}" />
         </div>
         <div class="af-container">
           <af-field name="Donn_es_techniques.Remarques" defn="{label: 'Remarques'}" />

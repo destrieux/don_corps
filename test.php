@@ -1,6 +1,8 @@
 <?php
+
 eval(`cv php:boot`);
-use Civi\DonCorps\Install\UpdateSearchGroups;   ## MAJ du nom des grouopes utilisés dans les requêtes
+
+use Civi\DonCorps\Entities\InstallEntities;     ## création des entités
 
 
-    UpdateSearchGroups::updateAll();
+      InstallEntities::installFile('Entities_to_create_rules_demande_cremation.php');

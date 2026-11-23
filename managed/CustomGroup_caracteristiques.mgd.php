@@ -362,7 +362,7 @@ return [
       'version' => 4,
       'values' => [
         'option_group_id.name' => 'caracteristiques_Type_d_activit_',
-        'label' => E::ts('Recherche : thèse'),
+        'label' => E::ts('Recherche : autre'),
         'value' => '7',
         'name' => 'Recherche_autre',
       ],
@@ -390,6 +390,7 @@ return [
         'note_columns' => 60,
         'note_rows' => 4,
         'option_group_id.name' => 'caracteristiques_Type_d_activit_',
+        'serialize' => 1,
       ],
       'match' => [
         'name',

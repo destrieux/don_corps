@@ -22,6 +22,7 @@ return [
             'Type_de_poi_ce_3:label',
             'Utilisation2:label',
             'Protocole_de_recherche_ex_vivo2:label',
+            'Imagerie2:label',
             'Compl_ment',
             'Lacalisation.display_name',
             'Complement_location',
@@ -137,6 +138,12 @@ return [
             ],
             [
               'type' => 'field',
+              'key' => 'Imagerie2:label',
+              'label' => E::ts('Imagerie'),
+              'sortable' => TRUE,
+            ],
+            [
+              'type' => 'field',
               'key' => 'Compl_ment',
               'dataType' => 'String',
               'label' => E::ts('Complément ou identifiant'),
@@ -183,9 +190,14 @@ return [
             ],
           ],
           'actions' => TRUE,
-          'classes' => ['table', 'table-striped'],
+          'classes' => [
+            'table',
+            'table-striped',
+            'crm-sticky-header',
+          ],
           'headerCount' => TRUE,
           'actions_display_mode' => 'menu',
+          'columnMode' => 'custom',
         ],
       ],
       'match' => [

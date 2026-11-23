@@ -136,6 +136,7 @@ return [
         'label' => E::ts('Atelier'),
         'value' => '6',
         'name' => 'Workshop',
+    	'is_active' => FALSE,
       ],
       'match' => [
         'option_group_id',

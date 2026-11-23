@@ -5,7 +5,7 @@
 
 9/11/26 - Issue signalée : lors de l'affichage descontacts supprimés via advanceed search 
 https://lab.civicrm.org/dev/core/-/work_items/6918
-Dans /Applications/MAMP/htdocs/dev/wp-content/plugins/civicrm/civicrm/CRM/Contact/Selector.php, line 792-5
+Dans .../wp-content/plugins/civicrm/civicrm/CRM/Contact/Selector.php, line 792-5
 Ajouter "weight' => 100,"
             [
               'name' => ts('Restore'),
@@ -38,6 +38,8 @@ use Civi\DonCorps\Install\Menus;                ## désactive / active les menus
 use Civi\DonCorps\ICal\Calendar;                ## gestion calendrier
 use Civi\DonCorps\Install\CiviRules;            ## gestion des rules
 use Civi\DonCorps\Install\Dedupe;               ## installation des règles de dédoubonage
+
+
 
 ### Flux iCalendar : interception WordPress (template_redirect) 
   \Civi\DonCorps\ICal\Calendar::register();
@@ -299,6 +301,7 @@ use Civi\DonCorps\Install\Dedupe;               ## installation des règles de d
   #@link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
   function don_corps_civicrm_config(&$config): void {
     _don_corps_civix_civicrm_config($config);
+
   }
 
 ### IMPLEMENTS hook_civicrm_install() 
@@ -318,9 +321,8 @@ use Civi\DonCorps\Install\Dedupe;               ## installation des règles de d
       InstallEntities::installFile('Entities_to_create_prefixes_de_contacts.php');
       InstallEntities::installFile("Entities_to_create_types_activites.php");
       InstallEntities::installFile("Entities_to_create_types_evenements.php");
-      InstallEntities::installFile("Entities_to_create_types_documents");
-      InstallEntities::installFile("Entities_to_create_salutations_email");
-      InstallEntities::installFile("Entities_to_create_salutations_postale");
+      InstallEntities::installFile("Entities_to_create_types_documents.php");
+      InstallEntities::installFile("Entities_to_create_salutations_email.php");
       InstallEntities::installFile("Entities_to_create_genre.php");
       InstallEntities::installFile('Entities_to_create_types_contacts.php');
       InstallEntities::installFile('Entities_to_create_Financial_Types.php');
@@ -440,7 +442,7 @@ use Civi\DonCorps\Install\Dedupe;               ## installation des règles de d
       InstallEntities::installFile('Entities_to_create_rules_deplace_lot.php');
       InstallEntities::installFile('Entities_to_create_rules_supprime_lot.php');
       InstallEntities::installFile('Entities_to_create_rules_inventaires.php');
-      InstallEntities::installFile('Entities_to_create_rules_corrige_civilité.php');    
+      InstallEntities::installFile('Entities_to_create_rules_corrige_civilite.php');    
       InstallEntities::installFile('Entities_to_create_rules_compile_pieces_utilisations.php');
       InstallEntities::installFile('Entities_to_create_rules_copy_code_barres.php');
       InstallEntities::installFile('Entities_to_create_rules_demande_cremation.php');
@@ -531,3 +533,5 @@ use Civi\DonCorps\Install\Dedupe;               ## installation des règles de d
 
 
   }
+
+

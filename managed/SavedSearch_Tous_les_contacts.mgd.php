@@ -207,10 +207,15 @@ return [
             ],
           ],
           'actions' => TRUE,
-          'classes' => ['table', 'table-striped'],
+          'classes' => [
+            'table',
+            'table-striped',
+            'crm-sticky-header',
+          ],
           'headerCount' => TRUE,
           'button' => NULL,
           'actions_display_mode' => 'menu',
+          'columnMode' => 'custom',
         ],
       ],
       'match' => [

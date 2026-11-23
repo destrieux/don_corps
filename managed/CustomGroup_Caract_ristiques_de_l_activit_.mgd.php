@@ -13,9 +13,6 @@ return [
         'name' => 'Caract_ristiques_de_l_activit_',
         'title' => E::ts('Caractéristiques de l\'activité'),
         'extends' => 'Event',
-        'extends_entity_column_value:name' => [
-        'Activité au laboratoire',
-      ],
         'weight' => 9,
         'collapse_adv_display' => TRUE,
       ],

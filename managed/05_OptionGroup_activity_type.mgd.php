@@ -29,7 +29,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Réunion'),
-        'value' => '1',
         'name' => 'Meeting',
         'is_default' => NULL,
         'is_reserved' => TRUE,
@@ -52,7 +51,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Appel téléphonique'),
-        'value' => '2',
         'name' => 'Phone Call',
         'is_default' => NULL,
         'is_reserved' => TRUE,
@@ -75,7 +73,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Courriel'),
-        'value' => '3',
         'name' => 'Email',
         'filter' => 1,
         'is_default' => NULL,
@@ -100,7 +97,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('SMS sortant'),
-        'value' => '4',
         'name' => 'SMS',
         'filter' => 1,
         'is_default' => NULL,
@@ -125,7 +121,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Inscription à événement'),
-        'value' => '5',
         'name' => 'Event Registration',
         'filter' => 1,
         'is_default' => NULL,
@@ -150,7 +145,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Don financier'),
-        'value' => '6',
         'name' => 'Contribution',
         'filter' => 1,
         'is_default' => NULL,
@@ -175,7 +169,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Adhésion'),
-        'value' => '7',
         'name' => 'Membership Signup',
         'filter' => 1,
         'is_default' => NULL,
@@ -200,7 +193,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Renouvellement d\'adhésion'),
-        'value' => '8',
         'name' => 'Membership Renewal',
         'filter' => 1,
         'is_default' => NULL,
@@ -225,7 +217,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Recommander à un ami'),
-        'value' => '9',
         'name' => 'Tell a Friend',
         'filter' => 1,
         'is_default' => NULL,
@@ -249,7 +240,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Accusé de réception d\'engagement de don'),
-        'value' => '10',
         'name' => 'Pledge Acknowledgment',
         'filter' => 1,
         'is_default' => NULL,
@@ -274,7 +264,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Rappel d\'engagement de don'),
-        'value' => '11',
         'name' => 'Pledge Reminder',
         'filter' => 1,
         'is_default' => NULL,
@@ -299,7 +288,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Courriel entrant'),
-        'value' => '12',
         'name' => 'Inbound Email',
         'filter' => 1,
         'is_default' => NULL,
@@ -323,9 +311,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Dossier ouvert'),
-        'value' => '13',
         'name' => 'Open Case',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-folder-open-o',
@@ -347,9 +333,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Suivi'),
-        'value' => '14',
         'name' => 'Follow up',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-share-square-o',
@@ -371,9 +355,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Changer le type du dossier'),
-        'value' => '15',
         'name' => 'Change Case Type',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-random',
@@ -395,9 +377,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Changer le statut du dossier'),
-        'value' => '16',
         'name' => 'Change Case Status',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-pencil-square-o',
@@ -419,7 +399,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Rappel de renouvellement d\'adhésion'),
-        'value' => '17',
         'name' => 'Membership Renewal Reminder',
         'filter' => 1,
         'is_default' => NULL,
@@ -444,9 +423,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Changer la date d\'ouverture du dossier'),
-        'value' => '18',
         'name' => 'Change Case Start Date',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-calendar',
@@ -468,7 +445,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Envoi massif'),
-        'value' => '19',
         'name' => 'Bulk Email',
         'filter' => 1,
         'is_default' => NULL,
@@ -492,9 +468,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Assigner un rôle au dossier'),
-        'value' => '20',
         'name' => 'Assign Case Role',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-user-plus',
@@ -516,9 +490,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Enlever un rôle du dossier'),
-        'value' => '21',
         'name' => 'Remove Case Role',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-user-times',
@@ -540,7 +512,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Imprimer/fusionner le document'),
-        'value' => '22',
         'name' => 'Print PDF Letter',
         'is_default' => NULL,
         'description' => E::ts('Exporter les lettres et autres documents imprimables.'),
@@ -564,10 +535,8 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Fusionner des dossiers'),
-        'value' => '23',
         'name' => 'Merge Case',
         'is_default' => NULL,
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-compress',
@@ -589,10 +558,8 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Dossier réassigné'),
-        'value' => '24',
         'name' => 'Reassigned Case',
         'is_default' => NULL,
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-user-circle-o',
@@ -614,10 +581,8 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Lier des dossiers'),
-        'value' => '25',
         'name' => 'Link Cases',
         'is_default' => NULL,
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-link',
@@ -639,9 +604,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Changer des étiquettes de dossier'),
-        'value' => '26',
         'name' => 'Change Case Tags',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-tags',
@@ -663,9 +626,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Ajouter un client au dossier'),
-        'value' => '27',
         'name' => 'Add Client To Case',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-users',
@@ -687,9 +648,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Questionnaire'),
-        'value' => '28',
         'name' => 'Survey',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCampaign',
       ],
@@ -710,9 +669,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Démarcher'),
-        'value' => '29',
         'name' => 'Canvass',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCampaign',
       ],
@@ -733,9 +690,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Banque par téléphone'),
-        'value' => '30',
         'name' => 'PhoneBank',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCampaign',
       ],
@@ -756,9 +711,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Liste itinéraire'),
-        'value' => '31',
         'name' => 'WalkList',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCampaign',
       ],
@@ -779,9 +732,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Signature de pétition'),
-        'value' => '32',
         'name' => 'Petition',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCampaign',
       ],
@@ -802,9 +753,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Changer les données personnalisées'),
-        'value' => '33',
         'name' => 'Change Custom Data',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-table',
@@ -826,7 +775,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Envoi groupé de SMS '),
-        'value' => '34',
         'name' => 'Mass SMS',
         'filter' => 1,
         'is_default' => NULL,
@@ -850,7 +798,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Modifier le statut d\'adhésion'),
-        'value' => '35',
         'name' => 'Change Membership Status',
         'filter' => 1,
         'is_default' => NULL,
@@ -875,7 +822,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Changer le type d\'adhésion'),
-        'value' => '36',
         'name' => 'Change Membership Type',
         'filter' => 1,
         'is_default' => NULL,
@@ -900,10 +846,8 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Supprimer la contribution périodique'),
-        'value' => '37',
         'name' => 'Cancel Recurring Contribution',
         'filter' => 1,
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviContribute',
       ],
@@ -924,10 +868,8 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Mettre à jour les données de facturation de la contribution périodique'),
-        'value' => '38',
         'name' => 'Update Recurring Contribution Billing Details',
         'filter' => 1,
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviContribute',
       ],
@@ -948,10 +890,8 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Mettre à jour la contribution périodique'),
-        'value' => '39',
         'name' => 'Update Recurring Contribution',
         'filter' => 1,
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviContribute',
       ],
@@ -972,10 +912,8 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Rappel Envoyé'),
-        'value' => '40',
         'name' => 'Reminder Sent',
         'filter' => 1,
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
       ],
       'match' => [
@@ -995,7 +933,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Export comptabilité par lot'),
-        'value' => '41',
         'name' => 'Export Accounting Batch',
         'filter' => 1,
         'description' => E::ts('Exporter la comptabilité par lot'),
@@ -1019,7 +956,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Envoi SMS'),
-        'value' => '44',
         'name' => 'SMS delivery',
         'filter' => 1,
         'is_default' => NULL,
@@ -1043,7 +979,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('SMS entrant'),
-        'value' => '45',
         'name' => 'Inbound SMS',
         'filter' => 1,
         'is_default' => NULL,
@@ -1067,7 +1002,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Paiement'),
-        'value' => '46',
         'name' => 'Payment',
         'filter' => 1,
         'is_default' => NULL,
@@ -1092,7 +1026,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Remboursement'),
-        'value' => '47',
         'name' => 'Refund',
         'filter' => 1,
         'is_default' => NULL,
@@ -1117,7 +1050,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Modifier l\'inscription'),
-        'value' => '48',
         'name' => 'Change Registration',
         'filter' => 1,
         'is_default' => NULL,
@@ -1142,7 +1074,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Facture téléchargée'),
-        'value' => '49',
         'name' => 'Downloaded Invoice',
         'filter' => 1,
         'is_default' => NULL,
@@ -1166,7 +1097,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Facture envoyée par courrier électronique'),
-        'value' => '50',
         'name' => 'Emailed Invoice',
         'filter' => 1,
         'is_default' => NULL,
@@ -1190,7 +1120,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Contact fusionné'),
-        'value' => '51',
         'name' => 'Contact Merged',
         'filter' => 1,
         'is_default' => NULL,
@@ -1214,7 +1143,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Contact supprimé par fusion'),
-        'value' => '52',
         'name' => 'Contact Deleted by Merge',
         'filter' => 1,
         'is_default' => NULL,
@@ -1238,9 +1166,7 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Modifier le sujet de Dossier'),
-        'value' => '53',
         'name' => 'Change Case Subject',
-        'description' => E::ts(''),
         'is_reserved' => TRUE,
         'component_id:name' => 'CiviCase',
         'icon' => 'fa-pencil-square-o',
@@ -1262,7 +1188,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Paiement échoué'),
-        'value' => '54',
         'name' => 'Failed Payment',
         'filter' => 1,
         'description' => E::ts('Paiement échoué'),
@@ -1286,7 +1211,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Le client du dossier a été retiré du dossier'),
-        'value' => '55',
         'name' => 'Case Client Removed',
         'description' => E::ts('Le client du dossier a été retiré d\'un dossier'),
         'component_id:name' => 'CiviCase',
@@ -1309,7 +1233,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Document ajouté au dossier'),
-        'value' => '56',
         'name' => 'Document ajouté au dossier',
         'icon' => 'fa-file-word-o',
       ],
@@ -1330,7 +1253,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Modification des coordonnées'),
-        'value' => '57',
         'name' => 'Modification des coordonnées',
       ],
       'match' => [
@@ -1350,7 +1272,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Retrait effets personnels'),
-        'value' => '58',
         'name' => 'Retrait effets personnels',
         'description' => E::ts('<p>Retrait d\'effet personnel de valeur</p>'),
         'icon' => 'fa-diamond',
@@ -1372,7 +1293,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Retrait de pace maker'),
-        'value' => '59',
         'name' => 'Retrait de pace maker',
         'icon' => 'fa-heart-circle-bolt',
       ],
@@ -1393,7 +1313,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Inventaire'),
-        'value' => '60',
         'name' => 'Inventaire',
         'description' => E::ts('<p>Inventaire des pièces et corps d\'un lieu de conservation,<strong> à créer depuis la fiche du lieu de conservation</strong>.</p>
 
@@ -1427,7 +1346,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Suppression d\'un lot de pièces'),
-        'value' => '61',
         'name' => 'Suppression d\'une pièces',
         'description' => E::ts('<p>Permet la suppression des pièces par lot.&nbsp;</p>
 
@@ -1451,7 +1369,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Déplacer un lot de pièces/corps'),
-        'value' => '62',
         'name' => 'Déplacer un lot de pièces/corps',
         'description' => E::ts('<p>Déplace vers ce local un lot de pièces ou de corps dont les codes-barres sont saisis dans le champ <em>Détails</em> de l\'activité.</p>'),
         'icon' => 'fa-arrow-right-arrow-left',
@@ -1473,7 +1390,6 @@ return [
       'values' => [
         'option_group_id.name' => 'activity_type',
         'label' => E::ts('Event Message sent'),
-        'value' => '63',
         'name' => 'event_message_sent',
       ],
       'match' => [

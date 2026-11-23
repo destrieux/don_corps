@@ -4,6 +4,12 @@ namespace Civi\DonCorps\Entities;
 /**
  * Création / mise à jour des entités CiviCRM de l'extension don_corps
  * lors de l'installation ou d'un upgrade.
+ *
+ * Chaque définition a la forme :
+ *   ['entity' => 'OptionValue', 'values' => [...]]
+ *
+ * Une entité existante (retrouvée grâce à MATCH_KEYS) est mise à jour,
+ * sinon elle est créée.
  */
 class InstallEntities {
 
@@ -24,14 +30,37 @@ class InstallEntities {
   ];
 
   /**
+   * Installe les entités définies dans un fichier de Civi/DonCorps/Entities/.
+   *
+   * @param string $file Nom du fichier (ex. 'contact_types.php')
+   * @return array Identifiants, comme install()
+   * @throws \CRM_Core_Exception si le fichier est introuvable ou ne retourne pas un tableau
+   */
+  public static function installFile(string $file): array {
+    $path = \CRM_DonCorps_ExtensionUtil::path('Civi/DonCorps/Entities/' . $file);
+
+    if (!is_file($path)) {
+      self::fail("fichier introuvable ($path), entités non créées");
+    }
+
+    $defs = require $path;
+    if (!is_array($defs)) {
+      self::fail("le fichier $path ne retourne pas un tableau, entités non créées");
+    }
+
+    \Civi::log()->info("don_corps : installation de $file");
+    return self::install($defs);
+  }
+
+  /**
    * Installe une ou plusieurs entités.
    *
    * @param array $defs Une définition ['entity' => ..., 'values' => [...]]
    *                    ou une liste de définitions.
    * @return array Identifiants (id, ou name pour Afform), dans l'ordre des
    *               définitions ; NULL pour une entité inactive ignorée.
+   * @throws \CRM_Core_Exception
    */
-  
   public static function install(array $defs): array {
     // Accepte aussi une définition seule
     if (isset($defs['entity'])) {
@@ -39,41 +68,11 @@ class InstallEntities {
     }
 
     $ids = [];
-    foreach ($defs as $def) {
+    foreach ($defs as $i => $def) {
+      if (!isset($def['entity'], $def['values']) || !is_array($def['values'])) {
+        self::fail("définition n° $i invalide : 'entity' et 'values' sont attendus");
+      }
       $ids[] = self::installOne($def['entity'], $def['values']);
-    }
-    return $ids;
-  }
-  
-  /**
-   * Installe les entités définies dans un fichier PHP qui retourne un tableau de définitions.
-   *
-   * @param string $file Chemin relatif à la racine de l'extension (ex. 'entities/contact_types.php')
-   * @return array Identifiants, comme install()
-   * @throws \CRM_Core_Exception
-   */
-  public static function installFile(string $fileDefs): array {
-
-    $fileDefs = \CRM_DonCorps_ExtensionUtil::path('Civi/DonCorps/Entities/').$fileDefs;
-      if (!file_exists($fileDefs)) {
-      \Civi::log()->error("don_corps : fichier introuvable ($fileDefs), entité non crée");
-      return FALSE;
-      }
-
-    $defs = require $fileDefs;
-      if (!is_array($defs)) {
-      \Civi::log()->error('don_corps : fichier illisible ($fileDefs),entité non crée');
-      return FALSE;
-      }
-
-    // si définition seule -> transformation en tableau
-    if (isset($defs['entity'])) {
-      $defs = [$defs];
-    }
-
-    $ids = [];
-    foreach ($defs as $def) {
-        $ids[] = self::installOne($def['entity'], $def['values']);
     }
     return $ids;
   }
@@ -86,22 +85,17 @@ class InstallEntities {
    */
   private static function installOne(string $entity, array $values) {
     $keys    = self::MATCH_KEYS[$entity] ?? ['name'];
-        // Prends la liste de champs prévue pour cette entité (par exemple ['option_group_id:name', 'name'] pour OptionValue). 
-        // Si l’entité n’est pas dans la table, ?? utilise ['name'] par défaut.
-
     $idField = ($entity === 'Afform') ? 'name' : 'id';   // Afform n'a pas d'id
-        // Si entity vaut exactement 'Afform' (mêmem cop,ntenu meme type)
-        // alors $idField = name
-        // sinon $idField = id
 
+    // Critères de recherche de l'entité existante
     $where = [];
     foreach ($keys as $key) {
-      if (!array_key_exists($key, $values)) { // Si le tableau $value ne contient pas la clé $key
-        throw new \CRM_Core_Exception("don_corps : $entity, champ d'identification '$key' manquant");
+      if (!array_key_exists($key, $values)) {
+        self::fail("$entity : champ d'identification '$key' manquant");
       }
       $where[] = [$key, '=', $values[$key]];
     }
-    $descr = $entity . ' ' . implode(' / ', array_map(fn($k) => $values[$k], $keys));
+    $descr = $entity . ' ' . implode(' / ', array_map(fn($k) => json_encode($values[$k], JSON_UNESCAPED_UNICODE), $keys));
 
     $existing = civicrm_api4($entity, 'get', [
       'select' => [$idField],
@@ -109,6 +103,7 @@ class InstallEntities {
       'checkPermissions' => FALSE,
     ])->first();
 
+    // Existe : mise à jour
     if ($existing) {
       $id = $existing[$idField];
       civicrm_api4($entity, 'update', [
@@ -116,22 +111,33 @@ class InstallEntities {
         'where' => [[$idField, '=', $id]],
         'checkPermissions' => FALSE,
       ]);
-      $msg = 'Entity '.$descr." existe - update ($id)";
+      \Civi::log()->info("don_corps : $descr existe - mise à jour ($id)");
+      return $id;
     }
-    elseif (isset($values['is_active']) && !$values['is_active']) {
+
+    // N'existe pas et inactive : ignorée
+    if (isset($values['is_active']) && !$values['is_active']) {
       \Civi::log()->info("don_corps : $descr n'existe pas mais inactive - ignorée");
       return NULL;
     }
-    else {
-      $id = civicrm_api4($entity, 'create', [
-        'values' => $values,
-        'checkPermissions' => FALSE,
-      ])->first()[$idField];
-      $msg = "$descr n'existe pas - création ($id)";
-    }
 
-    \Civi::log()->info("don_corps : $msg");
+    // N'existe pas : création
+    $id = civicrm_api4($entity, 'create', [
+      'values' => $values,
+      'checkPermissions' => FALSE,
+    ])->first()[$idField];
+    \Civi::log()->info("don_corps : $descr n'existe pas - création ($id)");
     return $id;
+  }
+
+  /**
+   * Écrit l'erreur dans le journal et arrête l'exécution.
+   *
+   * @throws \CRM_Core_Exception
+   */
+  private static function fail(string $message): void {
+    \Civi::log()->error("don_corps : $message");
+    throw new \CRM_Core_Exception("don_corps : $message");
   }
 
 }

@@ -86,13 +86,10 @@ return [
       'action_id.name' => 'emailapi_send',
       'action_params' => [
         'from_name' => 'Techniciens labo anatomie',
-        'from_email' => 'techlabos@domain.fr',
         'template_id' => $msgId,
         'disable_smarty' => FALSE,
         'location_type_id' => '',
         'from_email_option' => '',
-        'alternative_receiver_address' => 'pompes@domain.fr',
-        'cc' => 'votre.labo@domain.fr',
         'bcc' => '',
         'file_on_case' => FALSE,
       ],

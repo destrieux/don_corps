@@ -74,7 +74,7 @@ return [
 
 'description' => [
   'title' => E::ts('Intitulé'),
-  'sql_type' => 'varchar(50)',
+  'sql_type' => 'varchar(150)',
   'input_type' => 'Text',
   'description' => E::ts('Intitulé de la saisine'),
   'usage' => [

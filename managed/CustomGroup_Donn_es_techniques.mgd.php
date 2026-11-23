@@ -13,9 +13,6 @@ return [
         'name' => 'Donn_es_techniques',
         'title' => E::ts('Données techniques'),
         'extends' => 'Event',
-        'extends_entity_column_value:name' => [
-        'Activité au laboratoire',
-      ],
         'weight' => 18,
         'collapse_adv_display' => TRUE,
       ],

@@ -6,7 +6,7 @@ return [
     'name' => 'SavedSearch_test_saisines',
     'entity' => 'SavedSearch',
     'cleanup' => 'unused',
-    'update' => 'unmodified',
+    'update' => 'always',
     'params' => [
       'version' => 4,
       'values' => [
@@ -33,6 +33,8 @@ return [
             'suivi.Saisine:label',
             'ISNOTNULL(fichierssaisine.Liste_des_participants) AS ISNOTNULL_fichierssaisine_Liste_des_participants',
             'ISNOTNULL(fichierssaisine.Programme) AS ISNOTNULL_fichierssaisine_Programme',
+            'jours_restants',
+            'etat_validite',
           ],
           'orderBy' => [],
           'where' => [
@@ -47,17 +49,18 @@ return [
     ],
   ],
   [
-    'name' => 'SavedSearch_test_saisines_SearchDisplay_Autocomplete_saisines',
+    'name' => 'SavedSearch_test_saisines_SearchDisplay_Saisines_Autocomplete_1',
     'entity' => 'SearchDisplay',
     'cleanup' => 'unused',
-    'update' => 'unmodified',
+    'update' => 'always',
     'params' => [
       'version' => 4,
       'values' => [
-        'name' => 'Autocomplete_saisines',
-        'label' => E::ts('Autocomplete saisines'),
+        'name' => 'Saisines_Autocomplete_1',
+        'label' => E::ts('Saisines Autocomplete 1'),
         'saved_search_id.name' => 'test_saisines',
         'type' => 'autocomplete',
+        'is_autocomplete_default' => TRUE,
         'settings' => [
           'sort' => [],
           'columns' => [
@@ -69,8 +72,21 @@ return [
               'type' => 'field',
               'key' => 'description',
             ],
+            [
+              'type' => 'field',
+              'key' => 'caracteristiques.Demandeur.sort_name',
+            ],
+            [
+              'type' => 'field',
+              'key' => 'caracteristiques.D_posant.sort_name',
+            ],
           ],
-          'searchFields' => ['id', 'label', 'description'],
+          'searchFields' => [
+            'label',
+            'description',
+            'caracteristiques.Demandeur.display_name',
+            'caracteristiques.D_posant.sort_name',
+          ],
         ],
       ],
       'match' => [
@@ -83,7 +99,7 @@ return [
     'name' => 'SavedSearch_test_saisines_SearchDisplay_Saisines_Table_1',
     'entity' => 'SearchDisplay',
     'cleanup' => 'unused',
-    'update' => 'unmodified',
+    'update' => 'always',
     'params' => [
       'version' => 4,
       'values' => [
@@ -94,12 +110,19 @@ return [
         'settings' => [
           'description' => E::ts('Les colonnes de droite indiquent les différentes étapes de la vie d\'une saisine. 
 Vous pouvez modifier les valeurs en cliquent dessus, à l\'exclusion de "Participants" et "Programme" qui passent à "Oui" lorsque les fichers correspondants sont téléchargés dans la fiche saisine, accessible en cliquant sur le numéro de saisine.'),
-          'sort' => [],
+          'sort' => [
+            ['label', 'DESC'],
+          ],
           'limit' => 50,
           'pager' => [],
           'placeholder' => 5,
           'actions' => TRUE,
-          'classes' => ['table', 'table-striped', 'table-bordered'],
+          'classes' => [
+            'table',
+            'table-striped',
+            'table-bordered',
+            'crm-sticky-header',
+          ],
           'columnMode' => 'custom',
           'actions_display_mode' => 'menu',
           'columns' => [
@@ -157,6 +180,10 @@ Vous pouvez modifier les valeurs en cliquent dessus, à l\'exclusion de "Partici
               'label' => E::ts('Fin de validité'),
               'sortable' => TRUE,
               'editable' => TRUE,
+              'cssRules' => [
+                ['bg-warning', 'etat_validite', '=', 'bientot'],
+                ['bg-danger', 'etat_validite', '=', 'expire'],
+              ],
             ],
             [
               'type' => 'field',

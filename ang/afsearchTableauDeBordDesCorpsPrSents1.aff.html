@@ -1,8 +1,13 @@
-<div af-fieldset="" store-values="1">
-  <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.N_de_pi_ce_ou_de_corps" defn="{label: 'Code barres du corps', input_attrs: {}, help_pre: '% : caract\u00e8re g\u00e9n\u00e9rique'}" />
-  <af-field name="Prise_en_charge_au_d_c_s.N_de_d_c_s" defn="{label: 'N\u00b0 de d\u00e9c\u00e8s', input_attrs: {}}" />
-  <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.M_dium_inject_" defn="{input_attrs: {multiple: true}, label: 'M\u00e9dium inject\u00e9'}" />
-  <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.Lacalisation.display_name" defn="{label: 'Localisation', input_attrs: {}}" />
-  <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.Mode_limination_hors_corps_2" defn="{input_attrs: {multiple: true}, label: 'Mode \u00e9limination'}" />
+<!-- <div class="don-corps-activites">-->
+<!-- </div>-->
+
+<div af-fieldset="">
+  <div class="af-container af-layout-inline">
+    <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.N_de_pi_ce_ou_de_corps" defn="{label: 'Code Barre', input_attrs: {}}" />
+    <af-field name="Promesse_de_don.N_de_don" defn="{label: 'N&deg; de don', input_attrs: {}, help_pre: '', help_post: ''}" />
+    <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.M_dium_inject_:name" defn="{input_attrs: {multiple: true}, label: 'M&eacute;dium inject&eacute;'}" />
+    <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.Lacalisation.display_name" defn="{label: 'Localisation', input_attrs: {}}" />
+    <af-field name="Contact_Custom_Utilisation_du_corps_entity_id_01.Mode_limination_hors_corps_2:name" defn="{input_attrs: {multiple: true}, label: 'Mode &eacute;limination'}" />
+  </div>
   <crm-search-display-table search-name="tableau_bord_2" display-name="Tableau_bord_corps"></crm-search-display-table>
 </div>
